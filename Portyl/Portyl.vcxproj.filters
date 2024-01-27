@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="extern">
+      <UniqueIdentifier>{2b0814a0-3edf-4f03-8bf5-5509d178d954}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern\glad">
+      <UniqueIdentifier>{5f2433d9-19b2-434e-8089-21b4becec3fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern\ImGui">
+      <UniqueIdentifier>{edf94d91-72fe-40c0-9fe4-e53a05c3bba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{8524c619-366a-42ab-9476-4304994d5617}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern\ImGui\backend">
+      <UniqueIdentifier>{1bb55335-4ddc-4c44-90fa-4d15e1eb7f94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Portyl">
+      <UniqueIdentifier>{4c0c638d-f6fa-456d-8a82-f18d00da181e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Portyl\Core">
+      <UniqueIdentifier>{78f06b65-6811-43cb-aa4f-b84ba8317b20}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\extern\inc\ImGUI\imgui_tables.cpp">
+      <Filter>extern\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extern\inc\ImGUI\imgui_widgets.cpp">
+      <Filter>extern\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extern\inc\ImGUI\imgui.cpp">
+      <Filter>extern\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extern\inc\ImGUI\imgui_demo.cpp">
+      <Filter>extern\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extern\inc\ImGUI\imgui_draw.cpp">
+      <Filter>extern\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extern\inc\ImGUI\backend\imgui_impl_opengl3.cpp">
+      <Filter>extern\ImGui\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extern\inc\ImGUI\backend\imgui_impl_glfw.cpp">
+      <Filter>extern\ImGui\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\extern\src\glad.c">
+      <Filter>extern\glad</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Portyl\Core\window.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Portyl\Core\application.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Portyl\Core\core.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Portyl\Core\layer.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Portyl\Core\layer_imgui.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Portyl\Core\layerstack.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Portyl\Core\entrypoint.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\extern\inc\ImGUI\imstb_rectpack.h">
+      <Filter>extern\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\extern\inc\ImGUI\imstb_textedit.h">
+      <Filter>extern\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\extern\inc\ImGUI\imstb_truetype.h">
+      <Filter>extern\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\extern\inc\ImGUI\imconfig.h">
+      <Filter>extern\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\extern\inc\ImGUI\imgui.h">
+      <Filter>extern\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\extern\inc\ImGUI\imgui_internal.h">
+      <Filter>extern\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\extern\inc\ImGUI\backend\imgui_impl_opengl3.h">
+      <Filter>extern\ImGui\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\extern\inc\ImGUI\backend\imgui_impl_opengl3_loader.h">
+      <Filter>extern\ImGui\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\extern\inc\ImGUI\backend\imgui_impl_glfw.h">
+      <Filter>extern\ImGui\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Portyl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Portyl\Core\window.h">
+      <Filter>Header Files\Portyl\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Portyl\Core\application.h">
+      <Filter>Header Files\Portyl\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Portyl\Core\core.h">
+      <Filter>Header Files\Portyl\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Portyl\Core\layer.h">
+      <Filter>Header Files\Portyl\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Portyl\Core\layer_imgui.h">
+      <Filter>Header Files\Portyl\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Portyl\Core\layerstack.h">
+      <Filter>Header Files\Portyl\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Portyl\Core\entrypoint.h">
+      <Filter>Header Files\Portyl\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
