@@ -1,6 +1,6 @@
 #pragma once
 
-//#include <glad/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <string>
@@ -23,6 +23,10 @@ namespace Portyl
   class Window
   {
   public:
+    Window(WindowProps props = {})
+    {
+      CreateWindow(props);
+    }
     ~Window() = default;
 
     bool CreateWindow(WindowProps props);

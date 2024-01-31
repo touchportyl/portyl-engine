@@ -17,14 +17,16 @@ namespace Portyl
 
     void PushLayer(Layer* layer);
     void PushOverlay(Layer* layer);
-
-    Window& GetWindow() { return *m_window; }
+    void PopLayer(Layer* layer);
+    void PopOverlay(Layer* layer);
 
     void Close();
 
     ImGuiLayer* GetImGuiLayer() { return m_imguilayer; }
 
     static Application& Get() { return *s_instance; }
+    Window& GetWindow() { return *m_window; }
+    GLFWwindow* GetGLFWWindow() { return m_glfwwindow; }
 
   private:
     void Run();
@@ -32,11 +34,12 @@ namespace Portyl
     bool m_is_running{ true };
     bool m_is_minimized{ false };
 
-    Window* m_window;
     LayerStack m_layerstack;
     ImGuiLayer* m_imguilayer;
 
     static Application* s_instance;
+    Window* m_window;
+    GLFWwindow* m_glfwwindow;
 
     friend int ::main(int argc, char** argv);
   };

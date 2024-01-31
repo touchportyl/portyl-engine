@@ -9,12 +9,11 @@ namespace Portyl
   {
   public:
     LauncherLayer();
-    virtual ~LauncherLayer() = default;
+    ~LauncherLayer() = default;
 
     virtual void OnAttach() override;
     virtual void OnDetach() override;
-
-    void OnUpdate() override;
+    virtual void OnUpdate() override;
     virtual void OnImGuiRender() override;
   };
 
