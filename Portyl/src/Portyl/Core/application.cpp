@@ -2,8 +2,6 @@
 
 #include "application.h"
 
-#include "core.h"
-
 namespace Portyl
 {
 
