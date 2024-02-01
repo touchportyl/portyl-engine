@@ -69,9 +69,6 @@
     <ClCompile Include="src\Portyl\Core\application.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\core.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\Portyl\Core\layer.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
@@ -117,9 +114,6 @@
       <Filter>Header Files\Portyl\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Portyl\Core\application.h">
-      <Filter>Header Files\Portyl\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Portyl\Core\core.h">
       <Filter>Header Files\Portyl\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Portyl\Core\layer.h">

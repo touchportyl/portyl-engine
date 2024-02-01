@@ -17,12 +17,6 @@ namespace Portyl
     // create layer stack
     m_layerstack = LayerStack();
 
-    // initialize and configure glfw
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
     // create window
     m_window = new Window();
     assert((m_window != nullptr) && "Window not created!");
@@ -39,16 +33,10 @@ namespace Portyl
 
     m_imguilayer = new ImGuiLayer();
     PushOverlay(m_imguilayer);
-
-    // Core -> Init
-    Portyl::Core::Init();
   }
 
   Application::~Application()
   {
-    // Core -> Shutdown
-    Portyl::Core::Shutdown();
-
     //Renderer::Shutdown();
 
     glfwTerminate();
@@ -94,8 +82,12 @@ namespace Portyl
         continue;
       }
 
-      // Core -> Update
-      Portyl::Core::Update();
+      // quit application
+      // TODO: replace glfw get key with a proper input system
+      if (glfwGetKey(Portyl::Application::Get().GetGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+      {
+        glfwSetWindowShouldClose(Portyl::Application::Get().GetGLFWWindow(), true);
+      }
 
       // clear screen
       glClearColor(0.f, 0.f, 0.f, 1.f);

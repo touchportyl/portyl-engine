@@ -1,4 +1,5 @@
-//#include <Portyl.h>
+#include <Portyl.h>
+#include <Portyl/Core/EntryPoint.h>
 
 #include "layer_launcher.h"
 
@@ -8,6 +9,7 @@ namespace Portyl
   {
   public:
     PortylLauncher()
+      : Application()
     {
       PushLayer(new LauncherLayer());
     }
@@ -15,6 +17,6 @@ namespace Portyl
   
   Application* CreateApplication()
   {
-    return new Application();
+    return new PortylLauncher();
   }
 }

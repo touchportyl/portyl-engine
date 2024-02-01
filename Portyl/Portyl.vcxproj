@@ -161,10 +161,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\core.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src\Portyl\Core\layer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
@@ -195,7 +191,6 @@
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Portyl.h" />
     <ClInclude Include="src\Portyl\Core\application.h" />
-    <ClInclude Include="src\Portyl\Core\core.h" />
     <ClInclude Include="src\Portyl\Core\entrypoint.h" />
     <ClInclude Include="src\Portyl\Core\layer.h" />
     <ClInclude Include="src\Portyl\Core\layerstack.h" />
