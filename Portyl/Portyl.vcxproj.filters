@@ -81,9 +81,6 @@
     <ClCompile Include="src\Portyl\Core\layerstack.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\entrypoint.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\extern\inc\ImGUI\imstb_rectpack.h">
