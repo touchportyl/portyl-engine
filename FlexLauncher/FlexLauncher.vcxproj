@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{84452d1f-b012-42f7-be62-bfc9850c8e21}</ProjectGuid>
-    <RootNamespace>PortylLauncher</RootNamespace>
+    <RootNamespace>FlexLauncher</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)PortylLauncher\src\Launcher;$(SolutionDir)PortylLauncher\src;$(SolutionDir)Portyl\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)FlexLauncher\src\Launcher;$(SolutionDir)FlexLauncher\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)extern\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)PortylLauncher\src\Launcher;$(SolutionDir)PortylLauncher\src;$(SolutionDir)Portyl\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)FlexLauncher\src\Launcher;$(SolutionDir)FlexLauncher\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)extern\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -118,7 +118,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrt.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)$(IntDir)Portyl.lib;$(SolutionDir)extern\lib\GLFW\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(IntDir)FlexEngine.lib;$(SolutionDir)extern\lib\GLFW\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -137,7 +137,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrtd.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)$(IntDir)Portyl.lib;$(SolutionDir)extern\lib\GLFW\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(IntDir)FlexEngine.lib;$(SolutionDir)extern\lib\GLFW\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

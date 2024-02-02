@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Portyl.h>
+#include <FlexEngine.h>
 
-namespace Portyl
+namespace FlexEngine
 {
 
   class LauncherLayer : public Layer

@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace Portyl
+namespace FlexEngine
 {
 
   class LayerStack

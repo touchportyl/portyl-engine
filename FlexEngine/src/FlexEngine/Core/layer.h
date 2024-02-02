@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Portyl
+namespace FlexEngine
 {
 
   class Layer

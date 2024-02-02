@@ -7,7 +7,7 @@
 
 int main(int argc, char** argv);
 
-namespace Portyl
+namespace FlexEngine
 {
   class Application
   {

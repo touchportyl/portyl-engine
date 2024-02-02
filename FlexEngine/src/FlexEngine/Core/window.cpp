@@ -16,7 +16,7 @@ namespace
 
 }
 
-namespace Portyl
+namespace FlexEngine
 {
 
   WindowProps Window::s_props{};

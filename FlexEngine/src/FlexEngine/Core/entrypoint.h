@@ -2,12 +2,12 @@
 
 #include "application.h"
 
-extern Portyl::Application* Portyl::CreateApplication();
+extern FlexEngine::Application* FlexEngine::CreateApplication();
 
 #pragma warning(suppress : 4100)
 int main(int argc, char** argv)
 {
-  auto app = Portyl::CreateApplication();
+  auto app = FlexEngine::CreateApplication();
   app->Run();
   delete app;
 }

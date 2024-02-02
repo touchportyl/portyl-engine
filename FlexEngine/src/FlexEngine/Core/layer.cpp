@@ -2,7 +2,7 @@
 
 #include "layer.h"
 
-namespace Portyl
+namespace FlexEngine
 {
 
   Layer::Layer(const std::string& name)

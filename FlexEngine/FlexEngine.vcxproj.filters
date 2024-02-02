@@ -28,33 +28,33 @@
     <Filter Include="extern\ImGui\backend">
       <UniqueIdentifier>{1bb55335-4ddc-4c44-90fa-4d15e1eb7f94}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Portyl">
+    <Filter Include="Header Files\FlexEngine">
       <UniqueIdentifier>{4c0c638d-f6fa-456d-8a82-f18d00da181e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Portyl\Core">
+    <Filter Include="Header Files\FlexEngine\Core">
       <UniqueIdentifier>{78f06b65-6811-43cb-aa4f-b84ba8317b20}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\extern\inc\ImGUI\imgui_tables.cpp">
+    <ClCompile Include="..\extern\inc\ImGui\imgui_tables.cpp">
       <Filter>extern\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\extern\inc\ImGUI\imgui_widgets.cpp">
+    <ClCompile Include="..\extern\inc\ImGui\imgui_widgets.cpp">
       <Filter>extern\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\extern\inc\ImGUI\imgui.cpp">
+    <ClCompile Include="..\extern\inc\ImGui\imgui.cpp">
       <Filter>extern\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\extern\inc\ImGUI\imgui_demo.cpp">
+    <ClCompile Include="..\extern\inc\ImGui\imgui_demo.cpp">
       <Filter>extern\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\extern\inc\ImGUI\imgui_draw.cpp">
+    <ClCompile Include="..\extern\inc\ImGui\imgui_draw.cpp">
       <Filter>extern\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\extern\inc\ImGUI\backend\imgui_impl_opengl3.cpp">
+    <ClCompile Include="..\extern\inc\ImGui\backend\imgui_impl_opengl3.cpp">
       <Filter>extern\ImGui\backend</Filter>
     </ClCompile>
-    <ClCompile Include="..\extern\inc\ImGUI\backend\imgui_impl_glfw.cpp">
+    <ClCompile Include="..\extern\inc\ImGui\backend\imgui_impl_glfw.cpp">
       <Filter>extern\ImGui\backend</Filter>
     </ClCompile>
     <ClCompile Include="..\extern\src\glad.c">
@@ -63,73 +63,73 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\window.cpp">
+    <ClCompile Include="src\FlexEngine\Core\window.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\application.cpp">
+    <ClCompile Include="src\FlexEngine\Core\application.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\layer.cpp">
+    <ClCompile Include="src\FlexEngine\Core\layer.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\layer_imgui.cpp">
+    <ClCompile Include="src\FlexEngine\Core\layer_imgui.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\layerstack.cpp">
+    <ClCompile Include="src\FlexEngine\Core\layerstack.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\extern\inc\ImGUI\imstb_rectpack.h">
+    <ClInclude Include="..\extern\inc\ImGui\imstb_rectpack.h">
       <Filter>extern\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\extern\inc\ImGUI\imstb_textedit.h">
+    <ClInclude Include="..\extern\inc\ImGui\imstb_textedit.h">
       <Filter>extern\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\extern\inc\ImGUI\imstb_truetype.h">
+    <ClInclude Include="..\extern\inc\ImGui\imstb_truetype.h">
       <Filter>extern\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\extern\inc\ImGUI\imconfig.h">
+    <ClInclude Include="..\extern\inc\ImGui\imconfig.h">
       <Filter>extern\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\extern\inc\ImGUI\imgui.h">
+    <ClInclude Include="..\extern\inc\ImGui\imgui.h">
       <Filter>extern\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\extern\inc\ImGUI\imgui_internal.h">
+    <ClInclude Include="..\extern\inc\ImGui\imgui_internal.h">
       <Filter>extern\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\extern\inc\ImGUI\backend\imgui_impl_opengl3.h">
+    <ClInclude Include="..\extern\inc\ImGui\backend\imgui_impl_opengl3.h">
       <Filter>extern\ImGui\backend</Filter>
     </ClInclude>
-    <ClInclude Include="..\extern\inc\ImGUI\backend\imgui_impl_opengl3_loader.h">
+    <ClInclude Include="..\extern\inc\ImGui\backend\imgui_impl_opengl3_loader.h">
       <Filter>extern\ImGui\backend</Filter>
     </ClInclude>
-    <ClInclude Include="..\extern\inc\ImGUI\backend\imgui_impl_glfw.h">
+    <ClInclude Include="..\extern\inc\ImGui\backend\imgui_impl_glfw.h">
       <Filter>extern\ImGui\backend</Filter>
     </ClInclude>
-    <ClInclude Include="src\Portyl.h">
+    <ClInclude Include="src\FlexEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Portyl\Core\window.h">
-      <Filter>Header Files\Portyl\Core</Filter>
+    <ClInclude Include="src\FlexEngine\Core\window.h">
+      <Filter>Header Files\FlexEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Portyl\Core\application.h">
-      <Filter>Header Files\Portyl\Core</Filter>
+    <ClInclude Include="src\FlexEngine\Core\application.h">
+      <Filter>Header Files\FlexEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Portyl\Core\layer.h">
-      <Filter>Header Files\Portyl\Core</Filter>
+    <ClInclude Include="src\FlexEngine\Core\layer.h">
+      <Filter>Header Files\FlexEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Portyl\Core\layer_imgui.h">
-      <Filter>Header Files\Portyl\Core</Filter>
+    <ClInclude Include="src\FlexEngine\Core\layer_imgui.h">
+      <Filter>Header Files\FlexEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Portyl\Core\layerstack.h">
-      <Filter>Header Files\Portyl\Core</Filter>
+    <ClInclude Include="src\FlexEngine\Core\layerstack.h">
+      <Filter>Header Files\FlexEngine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Portyl\Core\entrypoint.h">
-      <Filter>Header Files\Portyl\Core</Filter>
+    <ClInclude Include="src\FlexEngine\Core\entrypoint.h">
+      <Filter>Header Files\FlexEngine\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

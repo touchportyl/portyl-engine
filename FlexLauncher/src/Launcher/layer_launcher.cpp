@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-namespace Portyl
+namespace FlexEngine
 {
   static bool show_demo_window{ true };
   static bool show_another_window{ false };

@@ -2,7 +2,7 @@
 
 #include "application.h"
 
-namespace Portyl
+namespace FlexEngine
 {
 
   Application* Application::s_instance = nullptr;
@@ -82,9 +82,9 @@ namespace Portyl
 
       // quit application
       // TODO: replace glfw get key with a proper input system
-      if (glfwGetKey(Portyl::Application::Get().GetGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+      if (glfwGetKey(FlexEngine::Application::Get().GetGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
       {
-        glfwSetWindowShouldClose(Portyl::Application::Get().GetGLFWWindow(), true);
+        glfwSetWindowShouldClose(FlexEngine::Application::Get().GetGLFWWindow(), true);
       }
 
       // clear screen

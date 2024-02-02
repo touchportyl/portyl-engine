@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{3e5799f5-c88a-446f-929f-98f4f73be2f5}</ProjectGuid>
-    <RootNamespace>Portyl</RootNamespace>
+    <RootNamespace>FlexEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Portyl\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)FlexEngine\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)extern\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Portyl\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)FlexEngine\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)extern\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -145,57 +145,57 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\extern\inc\ImGUI\backend\imgui_impl_glfw.cpp" />
-    <ClCompile Include="..\extern\inc\ImGUI\backend\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="..\extern\inc\ImGUI\imgui.cpp" />
-    <ClCompile Include="..\extern\inc\ImGUI\imgui_demo.cpp" />
-    <ClCompile Include="..\extern\inc\ImGUI\imgui_draw.cpp" />
-    <ClCompile Include="..\extern\inc\ImGUI\imgui_tables.cpp" />
-    <ClCompile Include="..\extern\inc\ImGUI\imgui_widgets.cpp" />
+    <ClCompile Include="..\extern\inc\ImGui\backend\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\extern\inc\ImGui\backend\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\extern\inc\ImGui\imgui.cpp" />
+    <ClCompile Include="..\extern\inc\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="..\extern\inc\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="..\extern\inc\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="..\extern\inc\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="..\extern\src\glad.c" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\application.cpp">
+    <ClCompile Include="src\FlexEngine\Core\application.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\layer.cpp">
+    <ClCompile Include="src\FlexEngine\Core\layer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\layerstack.cpp">
+    <ClCompile Include="src\FlexEngine\Core\layerstack.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\layer_imgui.cpp">
+    <ClCompile Include="src\FlexEngine\Core\layer_imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Portyl\Core\window.cpp">
+    <ClCompile Include="src\FlexEngine\Core\window.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\extern\inc\ImGUI\backend\imgui_impl_glfw.h" />
-    <ClInclude Include="..\extern\inc\ImGUI\backend\imgui_impl_opengl3.h" />
-    <ClInclude Include="..\extern\inc\ImGUI\backend\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="..\extern\inc\ImGUI\imconfig.h" />
-    <ClInclude Include="..\extern\inc\ImGUI\imgui.h" />
-    <ClInclude Include="..\extern\inc\ImGUI\imgui_internal.h" />
-    <ClInclude Include="..\extern\inc\ImGUI\imstb_rectpack.h" />
-    <ClInclude Include="..\extern\inc\ImGUI\imstb_textedit.h" />
-    <ClInclude Include="..\extern\inc\ImGUI\imstb_truetype.h" />
+    <ClInclude Include="..\extern\inc\ImGui\backend\imgui_impl_glfw.h" />
+    <ClInclude Include="..\extern\inc\ImGui\backend\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\extern\inc\ImGui\backend\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="..\extern\inc\ImGui\imconfig.h" />
+    <ClInclude Include="..\extern\inc\ImGui\imgui.h" />
+    <ClInclude Include="..\extern\inc\ImGui\imgui_internal.h" />
+    <ClInclude Include="..\extern\inc\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="..\extern\inc\ImGui\imstb_textedit.h" />
+    <ClInclude Include="..\extern\inc\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\Portyl.h" />
-    <ClInclude Include="src\Portyl\Core\application.h" />
-    <ClInclude Include="src\Portyl\Core\entrypoint.h" />
-    <ClInclude Include="src\Portyl\Core\layer.h" />
-    <ClInclude Include="src\Portyl\Core\layerstack.h" />
-    <ClInclude Include="src\Portyl\Core\layer_imgui.h" />
-    <ClInclude Include="src\Portyl\Core\window.h" />
+    <ClInclude Include="src\FlexEngine.h" />
+    <ClInclude Include="src\FlexEngine\Core\application.h" />
+    <ClInclude Include="src\FlexEngine\Core\entrypoint.h" />
+    <ClInclude Include="src\FlexEngine\Core\layer.h" />
+    <ClInclude Include="src\FlexEngine\Core\layerstack.h" />
+    <ClInclude Include="src\FlexEngine\Core\layer_imgui.h" />
+    <ClInclude Include="src\FlexEngine\Core\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

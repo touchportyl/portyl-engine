@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace Portyl
+namespace FlexEngine
 {
 
   struct WindowProps
@@ -14,7 +14,7 @@ namespace Portyl
     int width, height;
 
     WindowProps(
-      std::string const& title = "Portyl Engine",
+      std::string const& title = "FlexEngine",
       int width = 1600,
       int height = 900
     ) : title(title), width(width), height(height) {}

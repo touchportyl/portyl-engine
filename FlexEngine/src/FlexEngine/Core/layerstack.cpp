@@ -2,7 +2,7 @@
 
 #include "layerstack.h"
 
-namespace Portyl {
+namespace FlexEngine {
 
   LayerStack::~LayerStack()
   {
