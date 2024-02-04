@@ -70,14 +70,8 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)FlexEngine\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)extern\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)FlexEngine\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)extern\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -113,6 +107,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\ImGui;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -122,6 +118,9 @@
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrt.lib</IgnoreSpecificDefaultLibraries>
       <AdditionalDependencies>$(SolutionDir)extern\lib\GLFW\glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <AdditionalDependencies>$(SolutionDir)third_party\lib\fastgltf\fastgltf.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf_simdjson.lib;$(SolutionDir)third_party\lib\GLFW\glfw3.lib;$(SolutionDir)third_party\lib\ImGui\ImGuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -132,6 +131,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\ImGui;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -143,16 +144,12 @@
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrtd.lib</IgnoreSpecificDefaultLibraries>
     </Link>
+    <Lib>
+      <AdditionalDependencies>$(SolutionDir)third_party\lib\fastgltf\fastgltf.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf_simdjson.lib;$(SolutionDir)third_party\lib\GLFW\glfw3.lib;$(SolutionDir)third_party\lib\ImGui\ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\extern\inc\ImGui\backend\imgui_impl_glfw.cpp" />
-    <ClCompile Include="..\extern\inc\ImGui\backend\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="..\extern\inc\ImGui\imgui.cpp" />
-    <ClCompile Include="..\extern\inc\ImGui\imgui_demo.cpp" />
-    <ClCompile Include="..\extern\inc\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="..\extern\inc\ImGui\imgui_tables.cpp" />
-    <ClCompile Include="..\extern\inc\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="..\extern\src\glad.c" />
+    <ClCompile Include="..\third_party\src\glad\glad.c" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -179,15 +176,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\extern\inc\ImGui\backend\imgui_impl_glfw.h" />
-    <ClInclude Include="..\extern\inc\ImGui\backend\imgui_impl_opengl3.h" />
-    <ClInclude Include="..\extern\inc\ImGui\backend\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="..\extern\inc\ImGui\imconfig.h" />
-    <ClInclude Include="..\extern\inc\ImGui\imgui.h" />
-    <ClInclude Include="..\extern\inc\ImGui\imgui_internal.h" />
-    <ClInclude Include="..\extern\inc\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="..\extern\inc\ImGui\imstb_textedit.h" />
-    <ClInclude Include="..\extern\inc\ImGui\imstb_truetype.h" />
+    <ClInclude Include="src\FlexEngine\Loader\gltf.h" />
+    <ClInclude Include="src\FlexEngine\Loader\shaders.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\FlexEngine.h" />
     <ClInclude Include="src\FlexEngine\Core\application.h" />

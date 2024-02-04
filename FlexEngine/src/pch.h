@@ -2,7 +2,7 @@
 
 // https://en.cppreference.com/w/cpp/header
 
-#include <assert.h>         // Conditionally compiled macro that compares its argument to zero
+#include <cassert>          // Conditionally compiled macro that compares its argument to zero
 
 #include <iostream>         // Several standard stream objects
 #include <string>           // std::basic_string class template
@@ -16,6 +16,6 @@
 #include <memory>           // High-level memory management utilities
 //#include <utility>          // Various utility components
 //#include <algorithm>        // Algorithms that operate on ranges
-//#include <functional>       // Function objects, Function invocations, Bind operations and Reference wrappers
+#include <functional>       // Function objects, Function invocations, Bind operations and Reference wrappers
 
 //#include "Core/log.hpp"     // Log class

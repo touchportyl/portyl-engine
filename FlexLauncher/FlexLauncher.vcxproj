@@ -70,14 +70,8 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)FlexLauncher\src\Launcher;$(SolutionDir)FlexLauncher\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)extern\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)FlexLauncher\src\Launcher;$(SolutionDir)FlexLauncher\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)extern\inc\ImGui;$(SolutionDir)extern\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)extern\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -113,12 +107,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)FlexLauncher\src\Launcher;$(SolutionDir)FlexLauncher\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\ImGui;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(IncludePath)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrt.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)$(IntDir)FlexEngine.lib;$(SolutionDir)extern\lib\GLFW\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(IntDir)FlexEngine.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf_simdjson.lib;$(SolutionDir)third_party\lib\GLFW\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,6 +126,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)FlexLauncher\src\Launcher;$(SolutionDir)FlexLauncher\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\ImGui;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(IncludePath)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,15 +135,15 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrtd.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)$(IntDir)FlexEngine.lib;$(SolutionDir)extern\lib\GLFW\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(IntDir)FlexEngine.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf_simdjson.lib;$(SolutionDir)third_party\lib\GLFW\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="src\shaders\demo.frag" />
-    <None Include="src\shaders\demo.vert" />
+    <None Include="src\shaders\viewer.frag" />
+    <None Include="src\shaders\viewer.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\launcherapp.cpp" />
+    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Launcher\layer_launcher.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,47 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="src">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Source Files\shaders">
+    <Filter Include="src\shaders">
       <UniqueIdentifier>{de088b15-461b-405a-b9be-22a0a91e756c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Launcher">
+    <Filter Include="src\Launcher">
       <UniqueIdentifier>{5be727a7-0a49-4108-810b-c937c23b98c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Launcher">
-      <UniqueIdentifier>{e3982075-0159-446b-97ba-fc3af47aebec}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\demo.vert">
-      <Filter>Source Files\shaders</Filter>
+    <None Include="src\shaders\viewer.vert">
+      <Filter>src\shaders</Filter>
     </None>
-    <None Include="src\shaders\demo.frag">
-      <Filter>Source Files\shaders</Filter>
+    <None Include="src\shaders\viewer.frag">
+      <Filter>src\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\launcherapp.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Launcher\layer_launcher.cpp">
-      <Filter>Source Files\Launcher</Filter>
+      <Filter>src\Launcher</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Launcher\layer_launcher.h">
-      <Filter>Header Files\Launcher</Filter>
+      <Filter>src\Launcher</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -109,7 +109,7 @@ namespace FlexEngine
 
       // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
       glfwSwapBuffers(m_glfwwindow);
-      glfwPollEvents();
+      //glfwPollEvents(); // TODO: temporary fix for glTF renderer, uncomment later
     }
   }
 
