@@ -90,6 +90,9 @@ namespace FlexEngine
   auto gltfFile = std::string_view{ "assets\\models\\trailer.glb" };
   Viewer viewer;
 
+  constexpr glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+  std::vector<int> keys_held = { 0 };
+
   void updateCameraMatrix(Viewer* viewer) {
     glm::mat4 viewProjection = viewer->projectionMatrix * viewer->viewMatrix;
     glUniformMatrix4fv(viewer->viewProjectionMatrixUniform, 1, GL_FALSE, &viewProjection[0][0]);
@@ -131,26 +134,18 @@ namespace FlexEngine
   }
 
   void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    void* ptr = glfwGetWindowUserPointer(window);
-    auto* viewer = static_cast<Viewer*>(ptr);
-    constexpr glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-    auto& acceleration = viewer->accelerationVector;
-    switch (key) {
-    case GLFW_KEY_W:
-      acceleration += viewer->direction;
-      break;
-    case GLFW_KEY_S:
-      acceleration -= viewer->direction;
-      break;
-    case GLFW_KEY_D:
-      acceleration += glm::normalize(glm::cross(viewer->direction, cameraUp));
-      break;
-    case GLFW_KEY_A:
-      acceleration -= glm::normalize(glm::cross(viewer->direction, cameraUp));
-      break;
-    default:
-      break;
+    // hard coded key held feature
+    // add key to held list
+    switch (action)
+    {
+      case GLFW_PRESS:
+        keys_held.push_back(key);
+        break;
+      case GLFW_RELEASE:
+        keys_held.erase(std::find(keys_held.begin(), keys_held.end(), key));
+        break;
+      default:
+        break;
     }
   }
 
@@ -601,6 +596,36 @@ namespace FlexEngine
 
     // Updates the acceleration vector and direction vectors.
     glfwPollEvents();
+
+    // for each key in held list
+    // handle key
+    for (int k : keys_held)
+    {
+      float dt = 0.1f;
+      switch (k)
+      {
+      case GLFW_KEY_W:
+        viewer.accelerationVector += dt * viewer.direction;
+        break;
+      case GLFW_KEY_S:
+        viewer.accelerationVector -= dt * viewer.direction;
+        break;
+      case GLFW_KEY_D:
+        viewer.accelerationVector += dt * glm::normalize(glm::cross(viewer.direction, cameraUp));
+        break;
+      case GLFW_KEY_A:
+        viewer.accelerationVector -= dt * glm::normalize(glm::cross(viewer.direction, cameraUp));
+        break;
+      case GLFW_KEY_Q:
+        viewer.accelerationVector += dt * cameraUp;
+        break;
+      case GLFW_KEY_Z:
+        viewer.accelerationVector -= dt * cameraUp;
+        break;
+      default:
+        break;
+      }
+    }
 
     // Factor the deltaTime into the amount of acceleration
     viewer.velocity += (viewer.accelerationVector * 50.0f) * viewer.deltaTime;
