@@ -87,7 +87,7 @@ namespace FlexEngine
     bool firstMouse = true;
   };
 
-  auto gltfFile = std::string_view{ "assets\\models\\pony_cartoon.glb" };
+  auto gltfFile = std::string_view{ "assets\\models\\trailer.glb" };
   Viewer viewer;
 
   void updateCameraMatrix(Viewer* viewer) {
