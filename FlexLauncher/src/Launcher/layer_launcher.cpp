@@ -617,9 +617,11 @@ namespace FlexEngine
         viewer.accelerationVector -= dt * glm::normalize(glm::cross(viewer.direction, cameraUp));
         break;
       case GLFW_KEY_Q:
+      case GLFW_KEY_SPACE:
         viewer.accelerationVector += dt * cameraUp;
         break;
       case GLFW_KEY_Z:
+      case GLFW_KEY_LEFT_CONTROL:
         viewer.accelerationVector -= dt * cameraUp;
         break;
       default:
