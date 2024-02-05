@@ -144,7 +144,7 @@ namespace FlexEngine
         m_vertex_shader == 0 || m_fragment_shader == 0) // check if shaders are compiled
       {
         std::cout << "ERROR::SHADER::LINKER::SHADERS_NOT_COMPILED" << std::endl;
-        assert(false);
+        abort();
       }
 
       // create shader program
@@ -163,7 +163,7 @@ namespace FlexEngine
         glDetachShader(m_shader_program, m_fragment_shader);
         glGetProgramInfoLog(m_shader_program, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-        assert(false);
+        abort();
       }
 
       // delete shaders
