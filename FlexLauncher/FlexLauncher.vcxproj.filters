@@ -5,20 +5,15 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="src\shaders">
-      <UniqueIdentifier>{de088b15-461b-405a-b9be-22a0a91e756c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Launcher">
       <UniqueIdentifier>{5be727a7-0a49-4108-810b-c937c23b98c4}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\shaders\viewer.vert">
-      <Filter>src\shaders</Filter>
-    </None>
-    <None Include="src\shaders\viewer.frag">
-      <Filter>src\shaders</Filter>
-    </None>
+    <Filter Include="assets">
+      <UniqueIdentifier>{50b82f5c-1ae6-48ce-b023-e1d25611a9de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders">
+      <UniqueIdentifier>{de088b15-461b-405a-b9be-22a0a91e756c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -32,5 +27,13 @@
     <ClInclude Include="src\Launcher\layer_launcher.h">
       <Filter>src\Launcher</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\viewer.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\viewer.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -139,15 +139,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="src\shaders\viewer.frag" />
-    <None Include="src\shaders\viewer.vert" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Launcher\layer_launcher.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Launcher\layer_launcher.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\viewer.frag" />
+    <None Include="assets\shaders\viewer.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -476,7 +476,7 @@ namespace FlexEngine
   void LauncherLayer::OnAttach()
   {
     // load a shader
-    shader.SetBasePath("src/shaders")
+    shader.SetBasePath("assets/shaders")
       ->CreateVertexShader("viewer.vert")
       ->CreateFragmentShader("viewer.frag")
       ->Link();
