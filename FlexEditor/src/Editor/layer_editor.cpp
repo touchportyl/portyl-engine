@@ -47,9 +47,20 @@ namespace FlexEngine
 
   void EditorLayer::OnImGuiRender()
   {
+    ImGui::ShowDemoWindow();
+
     ImGui::Begin("Test");
     ImGui::Text("This is to test if imgui works.");
     ImGui::End();
+    
+    ImGui::Begin("Another Window");
+    ImGui::Text("This is another window to test docking.");
+    ImGui::End();
+    
+    ImGui::Begin("Third Window");
+    ImGui::Text("Third window for the lols.");
+    ImGui::End();
+
   }
 
 }
