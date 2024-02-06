@@ -595,10 +595,7 @@ namespace FlexEngine
     viewer.accelerationVector = glm::vec3(0.0f);
 
     // Updates the acceleration vector and direction vectors.
-    glfwPollEvents();
-
-    // for each key in held list
-    // handle key
+    // handle each key in held list
     for (int k : keys_held)
     {
       float dt = 0.1f;
