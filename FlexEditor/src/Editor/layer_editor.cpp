@@ -1,6 +1,7 @@
 #include "layer_editor.h"
 
 #include <imgui.h>
+#include <imgui_internal.h>
 
 //#include <glm/glm.hpp>
 //#include <glm/gtc/matrix_transform.hpp>
@@ -47,20 +48,42 @@ namespace FlexEngine
 
   void EditorLayer::OnImGuiRender()
   {
-    ImGui::ShowDemoWindow();
+    // https://github.com/ocornut/imgui/blob/docking/imgui_demo.cpp
 
-    ImGui::Begin("Test");
-    ImGui::Text("This is to test if imgui works.");
-    ImGui::End();
+    // check for viewport and docking
+    ImGuiIO& io = ImGui::GetIO();
+    if (!(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable && io.ConfigFlags & ImGuiConfigFlags_DockingEnable))
+    {
+      std::cerr << "ImGui Docking and/or Viewports are not enabled!" << std::endl;
+      abort();
+    }
+
+    ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+
+    ImGui::DockBuilderRemoveNode(dockspace_id);
+    ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
+    ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
     
-    ImGui::Begin("Another Window");
-    ImGui::Text("This is another window to test docking.");
-    ImGui::End();
+    // split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
+    //   window ID to split, direction, fraction (between 0 and 1), the final two setting let's us choose which id we want (which ever one we DON'T set as NULL, will be returned by the function)
+    //                                                              out_id_at_dir is the id of the node in the direction we specified earlier, out_id_at_opposite_dir is in the opposite direction
+    auto dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.2f, nullptr, &dockspace_id);
+    auto dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 0.25f, nullptr, &dockspace_id);
     
-    ImGui::Begin("Third Window");
-    ImGui::Text("Third window for the lols.");
+    // we now dock our windows into the docking node we made above
+    ImGui::DockBuilderDockWindow("Down", dock_id_down);
+    ImGui::DockBuilderDockWindow("Left", dock_id_left);
+    ImGui::DockBuilderFinish(dockspace_id);
+
+    ImGui::Begin("Left");
+    ImGui::Text("Hello, left!");
     ImGui::End();
 
+    ImGui::Begin("Down");
+    ImGui::Text("Hello, down!");
+    ImGui::End();
+
+    //ImGui::ShowDemoWindow();
   }
 
 }
