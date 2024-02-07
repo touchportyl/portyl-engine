@@ -27,7 +27,7 @@ namespace FlexEngine
     }
   };
 
-  std::filesystem::path file_path; // todo: change to a vector of file paths
+  std::vector<File> files; // todo: change to a vector of file paths
 
   std::filesystem::path base_path = std::filesystem::current_path();
 
@@ -128,8 +128,6 @@ namespace FlexEngine
 
     ImGui::Begin("Content Browser");
 
-    static std::filesystem::path base_path = std::filesystem::current_path();
-
     if (ImGui::Button("Reload"))
     {
       // pull filesystem from path
@@ -163,9 +161,12 @@ namespace FlexEngine
         if (ImGui::Button(entry.path().filename().generic_string().c_str()))
         {
           // get file
-          file_path = entry.path();
-          //std::ifstream file(file_path);
-          //std::string file_contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+          File file(entry.path());
+
+          if (entry.path().extension() == ".md" || entry.path().extension() == ".cpp")
+          {
+            files.push_back(file);
+          }
         }
       }
     }
@@ -174,26 +175,29 @@ namespace FlexEngine
 
     #pragma endregion
 
-    // if file is a .txt file, display the contents
-    if (file_path.extension() == ".md")
+    for (auto& file : files)
     {
-      ImGui::Begin(file_path.filename().string().c_str());
-
-      // simply read file
-      std::ifstream file(file_path);
-
-      std::string line;
-      while (std::getline(file, line))
+      // if file is a .txt file, display the contents
+      if (file.extension == ".md" || file.extension == ".cpp")
       {
-        ImGui::Text(line.c_str());
+        ImGui::Begin(file.name.c_str());
+
+        // simply read file
+        std::ifstream ifs(file.path);
+
+        std::string line;
+        while (std::getline(ifs, line))
+        {
+          ImGui::Text(line.c_str());
+        }
+
+        // print the entire file as an editable text box
+        //ImGui::InputTextMultiline("##source",
+        //  &file_contents[0], file_contents.size(),
+        //  ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()), ImGuiInputTextFlags_AllowTabInput);
+
+        ImGui::End();
       }
-
-      // print the entire file as an editable text box
-      //ImGui::InputTextMultiline("##source",
-      //  &file_contents[0], file_contents.size(),
-      //  ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()), ImGuiInputTextFlags_AllowTabInput);
-
-      ImGui::End();
     }
 
   }
