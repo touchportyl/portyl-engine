@@ -82,7 +82,7 @@ namespace
 
     style.Colors[ImGuiCol_WindowBg]               = ImColor( 22,  22,  22, 255);
     style.Colors[ImGuiCol_ChildBg]                = ImColor(  0,   0,   0,   0);
-    style.Colors[ImGuiCol_PopupBg]                = ImColor( 22,  22,  22, 180);
+    style.Colors[ImGuiCol_PopupBg]                = ImColor( 33,  33,  33, 255);
 
     style.Colors[ImGuiCol_Border]                 = ImColor(120, 120, 120,  80);
     style.Colors[ImGuiCol_BorderShadow]           = ImColor(  0,   0,   0,   0);

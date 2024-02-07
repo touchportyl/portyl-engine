@@ -31,6 +31,10 @@ namespace FlexEngine
       glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
       glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+      // todo: custom title bar
+      // https://www.glfw.org/docs/3.0/window.html#window_hints
+      //glfwWindowHint(GLFW_DECORATED, false);
+
       // create window
       CreateWindow(props);
     }
