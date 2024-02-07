@@ -20,12 +20,21 @@ namespace FlexEngine
     void PopLayer(Layer* layer);
     void PopOverlay(Layer* layer);
 
+    /// <summary>
+    /// Closes the application.
+    /// <para>Sets the glfwSetWindowShouldClose flag</para>
+    /// </summary>
     void Close();
 
     ImGuiLayer* GetImGuiLayer() { return m_imguilayer; }
 
+    /// <returns>The instance of the application</returns>
     static Application& Get() { return *s_instance; }
+
+    /// <returns>The window</returns>
     Window& GetWindow() { return *m_window; }
+
+    /// <returns>The glfw window</returns>
     GLFWwindow* GetGLFWWindow() { return m_glfwwindow; }
 
   private:

@@ -4,6 +4,9 @@
 
 namespace FlexEngine {
 
+  /// <summary>
+  /// Custom layer for ImGui.
+  /// </summary>
   class ImGuiLayer : public Layer
   {
   public:

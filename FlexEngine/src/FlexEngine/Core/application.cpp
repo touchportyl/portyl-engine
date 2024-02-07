@@ -24,7 +24,8 @@ namespace FlexEngine
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
       glfwTerminate();
-      assert(false && "Failed to initialize GLAD!");
+      std::cerr << "Failed to initialize GLAD!" << std::endl;
+      abort();
     }
 
     //Renderer::Init();
@@ -38,6 +39,8 @@ namespace FlexEngine
     //Renderer::Shutdown();
 
     glfwTerminate();
+
+    delete m_window;
   }
 
   void Application::PushLayer(Layer* layer)
@@ -74,11 +77,15 @@ namespace FlexEngine
   {
     while (m_is_running && !glfwWindowShouldClose(m_glfwwindow))
     {
+      // wait events if minimized
       if (m_is_minimized)
       {
         glfwWaitEvents();
         continue;
       }
+
+      // poll IO events (keys pressed/released, mouse moved etc.)
+      glfwPollEvents();
 
       // quit application
       // TODO: replace glfw get key with a proper input system
@@ -107,9 +114,8 @@ namespace FlexEngine
       }
       m_imguilayer->End();
 
-      // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+      // swap buffers
       glfwSwapBuffers(m_glfwwindow);
-      glfwPollEvents();
     }
   }
 
