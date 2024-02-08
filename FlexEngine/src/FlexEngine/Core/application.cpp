@@ -17,7 +17,7 @@ namespace FlexEngine
 
     // create window
     m_window = new Window();
-    assert((m_window != nullptr) && "Window not created!");
+    assert((m_window != nullptr) && "Window object not created!");
     m_glfwwindow = m_window->GetGLFWWindow(); // cache glfw window
 
     // load all OpenGL function pointers (glad)

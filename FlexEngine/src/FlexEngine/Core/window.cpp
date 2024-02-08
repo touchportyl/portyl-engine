@@ -25,7 +25,7 @@ namespace FlexEngine
 
   WindowProps Window::s_props{};
 
-  bool Window::CreateWindow(WindowProps props) {
+  void Window::CreateWindow(WindowProps props) {
 
     s_props = props;
 
@@ -34,12 +34,11 @@ namespace FlexEngine
     {
       std::cout << "Failed to create GLFW window" << std::endl;
       glfwTerminate();
-      return false;
+      abort();
     }
 
     glfwMakeContextCurrent(m_glfwwindow);
     glfwSetFramebufferSizeCallback(m_glfwwindow, framebuffer_size_callback);
-    return true;
   }
 
 }

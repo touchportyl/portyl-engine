@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <iostream>
 #include <string>
 
 namespace FlexEngine
@@ -39,7 +40,7 @@ namespace FlexEngine
       //glfwWindowHint(GLFW_DECORATED, false);
 
       // create window
-      assert((CreateWindow(props)) && "Window not created!");
+      CreateWindow(props);
     }
     ~Window() = default;
 
@@ -52,7 +53,7 @@ namespace FlexEngine
     GLFWwindow* GetGLFWWindow() const { return m_glfwwindow; }
 
   private:
-    bool CreateWindow(WindowProps props);
+    void CreateWindow(WindowProps props);
     GLFWwindow* m_glfwwindow{ nullptr };
     static WindowProps s_props;
   };

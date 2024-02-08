@@ -16,9 +16,12 @@ namespace FlexEngine
     std::string name;
     std::string extension;
     std::string data;
+    bool is_open;  // flag for closing the file
+    bool is_dirty; // flag for checking if the file has been modified
 
     File(const std::filesystem::path& path)
-      : path(path), name(path.filename().string()), extension(path.extension().string())
+      : path(path), name(path.filename().string()), extension(path.extension().string()),
+        is_open(true), is_dirty(false)
     {
       // automatically read the file
       std::ifstream file(path);
@@ -30,6 +33,28 @@ namespace FlexEngine
   std::vector<File> files; // todo: change to a vector of file paths
 
   std::filesystem::path base_path = std::filesystem::current_path();
+
+  bool IsEditable(const std::string& extension)
+  {
+    bool flag = false;
+    std::vector<std::string> common_extensions = { ".txt", ".md", ".h", ".c", ".hpp", ".cpp", ".ini" };
+
+    // check against common extensions
+    for (const auto& ext : common_extensions)
+    {
+      if (extension == ext)
+      {
+        flag = true;
+        break;
+      }
+    }
+
+    return flag;
+  }
+  bool IsEditable(const std::filesystem::path path)
+  {
+    return IsEditable(path.extension().string());
+  }
 
   CodeLayer::CodeLayer()
     : Layer("Flex Code")
@@ -160,11 +185,10 @@ namespace FlexEngine
       {
         if (ImGui::Button(entry.path().filename().generic_string().c_str()))
         {
-          // get file
-          File file(entry.path());
-
-          if (entry.path().extension() == ".md" || entry.path().extension() == ".cpp")
+          // get file if editable
+          if (IsEditable(entry.path()))
           {
+            File file(entry.path());
             files.push_back(file);
           }
         }
@@ -175,26 +199,33 @@ namespace FlexEngine
 
     #pragma endregion
 
+    // loop through all stored files
     for (auto& file : files)
     {
-      // if file is a .txt file, display the contents
-      if (file.extension == ".md" || file.extension == ".cpp")
+      // pop closed files
+      if (!file.is_open)
       {
-        ImGui::Begin(file.name.c_str());
+        //files.erase(std::remove(files.begin(), files.end(), file), files.end());
+      }
+
+      // if file is an editable file, display the contents
+      if (IsEditable(file.extension))
+      {
+        ImGui::Begin(file.name.c_str(), &file.is_open);
 
         // simply read file
-        std::ifstream ifs(file.path);
-
-        std::string line;
-        while (std::getline(ifs, line))
-        {
-          ImGui::Text(line.c_str());
-        }
+        //std::ifstream ifs(file.path);
+        //
+        //std::string line;
+        //while (std::getline(ifs, line))
+        //{
+        //  ImGui::Text(line.c_str());
+        //}
 
         // print the entire file as an editable text box
-        //ImGui::InputTextMultiline("##source",
-        //  &file_contents[0], file_contents.size(),
-        //  ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()), ImGuiInputTextFlags_AllowTabInput);
+        ImGui::InputTextMultiline("##source",
+          &file.data[0], file.data.size(),
+          ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()), ImGuiInputTextFlags_AllowTabInput);
 
         ImGui::End();
       }
