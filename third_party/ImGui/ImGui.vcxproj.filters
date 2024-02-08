@@ -8,6 +8,9 @@
     <Filter Include="src\backends">
       <UniqueIdentifier>{b192dc1b-d3fc-4756-9c8f-53f90e336402}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\misc">
+      <UniqueIdentifier>{44c2dcae-9371-4f53-84d0-72bfa47b86b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\backends\imgui_impl_glfw.cpp">
@@ -30,6 +33,9 @@
     </ClCompile>
     <ClCompile Include="src\imgui_widgets.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\misc\imgui_stdlib.cpp">
+      <Filter>src\misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +65,9 @@
     </ClInclude>
     <ClInclude Include="src\imstb_truetype.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc\imgui_stdlib.h">
+      <Filter>src\misc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
