@@ -12,14 +12,12 @@ namespace FlexEngine
 {
   std::filesystem::path Log::log_base_path{ std::filesystem::current_path() / ".log" };
   std::filesystem::path Log::log_file_path{ log_base_path / "~$app.log" };
-  File Log::log_history{};
+  File Log::log_stream{};
   bool Log::is_fatal = false;
   int Log::flow_scope = 0;
 
   Log::Log()
   {
-    FE_FLOW_BEGINSCOPE();
-
     // create logs directory
     if (!std::filesystem::exists(log_base_path))
     {
@@ -28,24 +26,17 @@ namespace FlexEngine
     // hide log folder
     SetFileAttributes(log_base_path.c_str(), FILE_ATTRIBUTE_HIDDEN);
 
-    // create temporary log file (so that it can be viewed in the folder)
-    std::ofstream ofs(log_file_path.string(), std::ios::out);
-    if (ofs)
-    {
-      ofs.close();
-    }
-    else
-    {
-      Fatal("Could not create log file.");
-    }
-
     // open log file
-    log_history.open(log_file_path.string(), std::ios::out | std::ios::trunc);
-    if (!log_history.is_open())
+    log_stream.open(log_file_path.string(), std::ios::out | std::ios::app); // can't use std::ios::trunc
+    if (!log_stream.is_open())
     {
-      Fatal("Could not open log file.");
+      //Fatal("Could not open log file.");
+    
+      // can't use logger here, it's not created yet
+      std::cerr << "Could not open log file." << '\n';
+      abort();
     }
-
+    
     // hide temporary log file
     SetFileAttributes(log_file_path.c_str(), FILE_ATTRIBUTE_HIDDEN);
 
@@ -53,11 +44,23 @@ namespace FlexEngine
     // file will be opened and updated frequently in debug mode
     log_history.close();
 #endif
+
+    FE_FLOW_BEGINSCOPE();
   }
   Log::~Log()
   {
-    // close file
-    log_history.close();
+    FE_FLOW_ENDSCOPE();
+
+#ifdef _DEBUG
+    // dump logs if debugging
+    Log::DumpLogs();
+#else
+    // dump logs only on fatal errors
+    if (Log::IsFatal()) Log::DumpLogs();
+#endif
+
+    // close log file
+    log_stream.close();
 
     // remove temporary log file
     try
@@ -66,12 +69,14 @@ namespace FlexEngine
     }
     catch (const std::filesystem::filesystem_error& e)
     {
-      std::stringstream error{};
-      error << "Error removing file: " << e.what() << '\n';
-      Error(error.str());
-    }
+      //std::stringstream error{};
+      //error << "Error removing file: " << e.what() << '\n';
+      //Error(error.str());
 
-    FE_FLOW_ENDSCOPE();
+      // can't use logger here, it's already destroyed
+      std::cerr << "Error removing temporary logger file: " << e.what() << '\n';
+      abort();
+    }
   }
 
   std::tm Log::GetTime(void)
@@ -141,11 +146,11 @@ namespace FlexEngine
     }
 
     // full logs will be saved in release mode
-    if (!log_history.is_open())
+    if (!log_stream.is_open())
     {
-      log_history.open(log_file_path.string(), std::ios::out | std::ios::trunc);
+      log_stream.open(log_file_path.string(), std::ios::out | std::ios::app);
     }
-    log_history << ss.str();
+    log_stream << ss.str();
 #endif
 
     // quit application if fatal
@@ -158,6 +163,9 @@ namespace FlexEngine
   
   void Log::DumpLogs(void)
   {
+    // close temporary file to save contents
+    log_stream.close();
+
     // get filename
     std::stringstream filename{};
     filename << GetFormattedTime("%Y-%m-%d") << ".log";

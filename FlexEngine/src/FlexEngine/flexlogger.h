@@ -88,7 +88,7 @@ namespace FlexEngine
 
     static std::filesystem::path log_base_path;
     static std::filesystem::path log_file_path;
-    static File log_history;
+    static File log_stream;
     static bool is_fatal;
     static int flow_scope;
   };

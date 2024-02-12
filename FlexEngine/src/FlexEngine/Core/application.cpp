@@ -49,14 +49,6 @@ namespace FlexEngine
     delete m_window;
 
     FE_FLOW_ENDSCOPE();
-
-#ifdef _DEBUG
-    // dump logs if debugging
-    Log::DumpLogs();
-#else
-    // dump logs only on fatal errors
-    if (Log::IsFatal()) Log::DumpLogs();
-#endif
   }
 
   void Application::PushLayer(Layer* layer)
