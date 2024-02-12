@@ -42,7 +42,7 @@ namespace FlexEngine
 
 #ifdef _DEBUG
     // file will be opened and updated frequently in debug mode
-    log_history.close();
+    log_stream.close();
 #endif
 
     FE_FLOW_BEGINSCOPE();
@@ -135,9 +135,9 @@ namespace FlexEngine
     std::cout << ss.str();
 
     // file will be opened and updated frequently in debug mode
-    log_history.open(log_file_path.string(), std::ios::out | std::ios::app);
-    log_history << ss.str();
-    log_history.close();
+    log_stream.open(log_file_path.string(), std::ios::out | std::ios::app);
+    log_stream << ss.str();
+    log_stream.close();
 #else
     // only log debug messages to console
     if (level == WarningLevel::_Debug)
