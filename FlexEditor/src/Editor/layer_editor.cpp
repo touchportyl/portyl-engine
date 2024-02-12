@@ -226,7 +226,7 @@ namespace FlexEngine
     ImGui::Begin("Viewport");
     ImGui::Text("pointer = %p", test_image.texture);
     ImGui::Text("size = %d x %d", test_image.width, test_image.height);
-    ImGui::Image((void*)(intptr_t)test_image.texture, ImVec2(test_image.width, test_image.height));
+    ImGui::Image((void*)(intptr_t)test_image.texture, ImVec2(static_cast<float>(test_image.width), static_cast<float>(test_image.height)));
     ImGui::End();
 
     ImGui::ShowDemoWindow();

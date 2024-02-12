@@ -1,10 +1,13 @@
 #pragma once
 
+#ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#endif
 
 #include "application.h"
+#include "../flexlogger.h"
 
 /// <summary>
 /// Create an application through the chain of inheritance.
@@ -21,6 +24,9 @@ int main(int argc, char** argv)
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+  // Create the logger
+  FlexEngine::Log log;
+  
   // Create the application and run it.
   auto app = FlexEngine::CreateApplication();
   app->Run();

@@ -43,6 +43,21 @@
     <ClCompile Include="..\third_party\src\glad\glad.c">
       <Filter>third_party\glad</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\playerprefs.cpp">
+      <Filter>src\FlexEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\input.cpp">
+      <Filter>src\FlexEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\flexlogger.cpp">
+      <Filter>src\FlexEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Loader\files.cpp">
+      <Filter>src\FlexEngine\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Loader\shaders.cpp">
+      <Filter>src\FlexEngine\Loader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -73,6 +88,21 @@
       <Filter>src\FlexEngine\Loader</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Loader\gltf.h">
+      <Filter>src\FlexEngine\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\playerprefs.h">
+      <Filter>src\FlexEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\timer.h">
+      <Filter>src\FlexEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\input.h">
+      <Filter>src\FlexEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\flexlogger.h">
+      <Filter>src\FlexEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Loader\files.h">
       <Filter>src\FlexEngine\Loader</Filter>
     </ClInclude>
   </ItemGroup>

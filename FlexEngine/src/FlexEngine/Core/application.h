@@ -40,8 +40,8 @@ namespace FlexEngine
   private:
     void Run();
 
-    bool m_is_running{ true };
-    bool m_is_minimized{ false };
+    bool m_is_running = true;
+    bool m_is_minimized = false;
 
     LayerStack m_layerstack;
     ImGuiLayer* m_imguilayer;

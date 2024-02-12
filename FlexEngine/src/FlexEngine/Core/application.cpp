@@ -1,15 +1,20 @@
 #include "pch.h"
 
 #include "application.h"
+#include "input.h"
 
 namespace FlexEngine
 {
-
   Application* Application::s_instance = nullptr;
 
   Application::Application()
   {
-    assert(!s_instance && "Application already exists!");
+    FE_FLOW_BEGINSCOPE();
+
+    if (s_instance)
+    {
+      Log::Fatal("Application already exists!");
+    }
     s_instance = this;
 
     // create layer stack
@@ -17,15 +22,16 @@ namespace FlexEngine
 
     // create window
     m_window = new Window();
-    assert((m_window != nullptr) && "Window object not created!");
+    if (m_window == nullptr)
+    {
+      Log::Fatal("Window object not created!");
+    }
     m_glfwwindow = m_window->GetGLFWWindow(); // cache glfw window
 
     // load all OpenGL function pointers (glad)
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-      glfwTerminate();
-      std::cerr << "Failed to initialize GLAD!" << std::endl;
-      abort();
+      Log::Fatal("Failed to initialize GLAD!");
     }
 
     //Renderer::Init();
@@ -41,6 +47,16 @@ namespace FlexEngine
     glfwTerminate();
 
     delete m_window;
+
+    FE_FLOW_ENDSCOPE();
+
+#ifdef _DEBUG
+    // dump logs if debugging
+    Log::DumpLogs();
+#else
+    // dump logs only on fatal errors
+    if (Log::IsFatal()) Log::DumpLogs();
+#endif
   }
 
   void Application::PushLayer(Layer* layer)
@@ -69,6 +85,8 @@ namespace FlexEngine
 
   void Application::Close()
   {
+    FE_FLOW_FUNCTION();
+
     glfwSetWindowShouldClose(m_glfwwindow, true);
     m_is_running = false;
   }
@@ -89,9 +107,14 @@ namespace FlexEngine
 
       // quit application
       // TODO: replace glfw get key with a proper input system
-      if (glfwGetKey(FlexEngine::Application::Get().GetGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+      //if (glfwGetKey(FlexEngine::Application::Get().GetGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+      //{
+      //  glfwSetWindowShouldClose(FlexEngine::Application::Get().GetGLFWWindow(), true);
+      //}
+
+      if (Input::GetKey(GLFW_KEY_LEFT_CONTROL) && Input::GetKeyDown(GLFW_KEY_Q))
       {
-        glfwSetWindowShouldClose(FlexEngine::Application::Get().GetGLFWWindow(), true);
+        Close();
       }
 
       // clear screen

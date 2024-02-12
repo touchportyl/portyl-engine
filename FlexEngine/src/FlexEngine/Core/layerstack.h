@@ -10,7 +10,7 @@ namespace FlexEngine
   class LayerStack
   {
   public:
-    LayerStack() = default;
+    LayerStack();
     ~LayerStack();
 
     void PushLayer(Layer* layer);
@@ -28,7 +28,7 @@ namespace FlexEngine
     std::vector<Layer*>::const_reverse_iterator rbegin() const { return m_layers.rbegin(); }
     std::vector<Layer*>::const_reverse_iterator rend() const { return m_layers.rend(); }
   private:
-    std::vector<Layer*> m_layers;
+    std::vector<Layer*> m_layers{};
     unsigned int m_layers_insert_index = 0;
   };
 

@@ -1,7 +1,6 @@
 #include "layer_code.h"
 
-#include <iostream>
-#include <filesystem>
+#include <sstream>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -11,35 +10,37 @@
 
 namespace FlexEngine
 {
-  struct File
-  {
-    std::filesystem::path path{};
-    std::string name{};
-    std::string extension{};
-    std::string data{};
-    bool is_open{ true };  // flag for closing the file
-    bool is_dirty{ false }; // flag for checking if the file has been modified
-    bool to_dock{ true };  // flag for docking the window
 
-    // overload the == operator to compare files
-    bool operator==(const File& other)
+  struct EditableFile
+  {
+    std::filesystem::path path{}; // file path object
+    std::string name{};           // file name without the extension
+    std::string extension{};      // file extension with the dot
+    std::string data{};           // data read from the file
+    bool is_open = true;         // flag for closing the file
+    bool is_dirty = false;       // flag for checking if the file has been modified
+    bool to_dock = true;         // flag for docking the window
+
+    // overload the == and != operators to compare files
+    bool operator==(const EditableFile& other)
     {
       return path == other.path;
     }
-    bool operator!=(const File& other)
+    bool operator!=(const EditableFile& other)
     {
       return path != other.path;
     }
 
-    File(const std::filesystem::path& path)
-      : path(path), name(path.filename().string()), extension(path.extension().string())
+    EditableFile(const std::filesystem::path& path)
+      : path(path), name(path.filename().generic_string()), extension(path.extension().generic_string())
     {
       // automatically read the file
       std::ifstream ifs(path);
       if (!ifs)
       {
-        std::cerr << "Error: Could not open file " << path << std::endl;
-        abort();
+        std::stringstream error{};
+        error << "Could not open file " << path.string();
+        Log::Fatal(error.str());
       }
 
       std::string _data((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
@@ -47,16 +48,18 @@ namespace FlexEngine
     }
   };
 
-  std::vector<File> files;
-
-  std::filesystem::path base_path = std::filesystem::current_path();
-
-  File* window_popup_save_file;
+  std::vector<EditableFile> files; // vector of files
+  std::filesystem::path base_path = std::filesystem::current_path(); // base path for the content browser
+  EditableFile* window_popup_save_file; // pointer to the file that is being saved
 
   bool IsEditable(const std::string& extension)
   {
     bool flag = false;
-    std::vector<std::string> common_extensions = { ".txt", ".md", ".h", ".c", ".hpp", ".cpp", ".ini" };
+    std::vector<std::string> common_extensions = {
+      ".txt", ".md", ".log", ".json", ".xml", ".yaml", ".yml", ".toml", ".csv",
+      ".h", ".c", ".hpp", ".cpp", ".cc", ".cs", ".cxx", ".hxx", ".hh", ".inl",
+      ".ini", ".cfg", ".conf", ".config", ".properties", ".prefs", ".settings",
+    };
 
     // check against common extensions
     for (const auto& ext : common_extensions)
@@ -76,16 +79,16 @@ namespace FlexEngine
   }
 
   CodeLayer::CodeLayer()
-    : Layer("Flex Code")
-  {
-  }
+    : Layer("Flex Code") {}
 
   void CodeLayer::OnAttach()
   {
+    FE_FLOW_FUNCTION();
   }
 
   void CodeLayer::OnDetach()
   {
+    FE_FLOW_FUNCTION();
   }
 
   void CodeLayer::OnUpdate()
@@ -100,8 +103,7 @@ namespace FlexEngine
     ImGuiIO& io = ImGui::GetIO();
     if (!(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable && io.ConfigFlags & ImGuiConfigFlags_DockingEnable))
     {
-      std::cerr << "ImGui Docking and/or Viewports are not enabled!" << std::endl;
-      abort();
+      Log::Fatal("ImGui Docking and/or Viewports are not enabled!");
     }
 
     // setup dockspace
@@ -167,7 +169,11 @@ namespace FlexEngine
       base_path = std::filesystem::current_path();
     }
 
-    ImGui::Separator();
+    {
+      std::stringstream ss;
+      ss << "Path: " << base_path.generic_string();
+      ImGui::SeparatorText(ss.str().c_str());
+    }
 
     // if the base path has a parent path, display a button to go up a directory
     if (base_path.has_parent_path())
@@ -210,7 +216,7 @@ namespace FlexEngine
 
             if (!is_open)
             {
-              File file(entry.path());
+              EditableFile file(entry.path());
               files.push_back(file);
             }
           }
@@ -348,6 +354,7 @@ namespace FlexEngine
       if (ImGui::Button("Cancel", ImVec2(80, 0)))
       {
         // cancel the saving process
+        #pragma warning(suppress: 6011) // dereferencing null pointer
         window_popup_save_file->is_open = true;
         window_popup_save_file = nullptr;
         ImGui::CloseCurrentPopup();

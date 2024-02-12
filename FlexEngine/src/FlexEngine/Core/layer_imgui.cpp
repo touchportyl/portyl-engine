@@ -164,15 +164,15 @@ namespace FlexEngine
 {
 
   ImGuiLayer::ImGuiLayer()
-    : Layer("ImGuiLayer")
-  {
-  }
+    : Layer("ImGuiLayer") {}
 
   void ImGuiLayer::OnAttach()
   {
+    FE_FLOW_BEGINSCOPE();
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
 
     // set config flags
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
@@ -184,7 +184,10 @@ namespace FlexEngine
     //ImGui::StyleColorsDark();
     CustomImguiStyle();
 
+    // load font
+    io.Fonts->AddFontFromFileTTF("..\\FlexEngine\\assets\\fonts\\Noto_Sans\\static\\NotoSans-Regular.ttf", 21.f);
 
+    // setup platform/renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(Application::Get().GetWindow().GetGLFWWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 460");
   }
@@ -194,6 +197,8 @@ namespace FlexEngine
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+
+    FE_FLOW_ENDSCOPE();
   }
 
   void ImGuiLayer::Begin()

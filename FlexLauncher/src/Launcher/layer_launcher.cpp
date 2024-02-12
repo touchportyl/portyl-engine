@@ -100,9 +100,9 @@ namespace FlexEngine
 
   void windowSizeCallback(GLFWwindow* window, int width, int height) {
     void* ptr = glfwGetWindowUserPointer(window);
-    auto* viewer = static_cast<Viewer*>(ptr);
+    auto* m_viewer = static_cast<Viewer*>(ptr);
 
-    viewer->projectionMatrix = glm::perspective(glm::radians(75.0f),
+    m_viewer->projectionMatrix = glm::perspective(glm::radians(75.0f),
       static_cast<float>(width) / static_cast<float>(height),
       0.01f, 1000.0f);
 
@@ -111,25 +111,25 @@ namespace FlexEngine
 
   void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
     void* ptr = glfwGetWindowUserPointer(window);
-    auto* viewer = static_cast<Viewer*>(ptr);
+    auto* m_viewer = static_cast<Viewer*>(ptr);
 
-    if (viewer->firstMouse) {
-      viewer->lastCursorPosition = { xpos, ypos };
-      viewer->firstMouse = false;
+    if (m_viewer->firstMouse) {
+      m_viewer->lastCursorPosition = { xpos, ypos };
+      m_viewer->firstMouse = false;
     }
 
-    auto offset = glm::vec2(xpos - viewer->lastCursorPosition.x, viewer->lastCursorPosition.y - ypos);
-    viewer->lastCursorPosition = { xpos, ypos };
+    auto offset = glm::vec2(xpos - m_viewer->lastCursorPosition.x, m_viewer->lastCursorPosition.y - ypos);
+    m_viewer->lastCursorPosition = { xpos, ypos };
     offset *= 0.1f;
 
-    viewer->yaw += offset.x;
-    viewer->pitch += offset.y;
-    viewer->pitch = glm::clamp(viewer->pitch, -89.0f, 89.0f);
+    m_viewer->yaw += offset.x;
+    m_viewer->pitch += offset.y;
+    m_viewer->pitch = glm::clamp(m_viewer->pitch, -89.0f, 89.0f);
 
-    auto& direction = viewer->direction;
-    direction.x = cos(glm::radians(viewer->yaw)) * cos(glm::radians(viewer->pitch));
-    direction.y = sin(glm::radians(viewer->pitch));
-    direction.z = sin(glm::radians(viewer->yaw)) * cos(glm::radians(viewer->pitch));
+    auto& direction = m_viewer->direction;
+    direction.x = cos(glm::radians(m_viewer->yaw)) * cos(glm::radians(m_viewer->pitch));
+    direction.y = sin(glm::radians(m_viewer->pitch));
+    direction.z = sin(glm::radians(m_viewer->yaw)) * cos(glm::radians(m_viewer->pitch));
     direction = glm::normalize(direction);
   }
 
