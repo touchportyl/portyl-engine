@@ -13,7 +13,7 @@ namespace FlexEngine
   class Shader
   {
   public:
-    Shader();
+    Shader() = default;
     ~Shader();
 
     /// <summary>
@@ -54,9 +54,9 @@ namespace FlexEngine
 
   private:
     std::string m_base_path{};
-    unsigned int m_shader_program{};
-    unsigned int m_vertex_shader{};
-    unsigned int m_fragment_shader{};
+    unsigned int m_shader_program = 0;
+    unsigned int m_vertex_shader = 0;
+    unsigned int m_fragment_shader = 0;
   };
 
 }

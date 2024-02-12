@@ -17,9 +17,6 @@ namespace FlexEngine
     }
     s_instance = this;
 
-    // create layer stack
-    m_layerstack = LayerStack();
-
     // create window
     m_window = new Window();
     if (m_window == nullptr)

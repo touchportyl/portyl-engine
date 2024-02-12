@@ -6,8 +6,6 @@
 #include <imgui_internal.h>
 #include <misc/imgui_stdlib.h>
 
-#include "FlexEngine/Loader/shaders.h"
-
 namespace FlexEngine
 {
 
@@ -93,6 +91,10 @@ namespace FlexEngine
 
   void CodeLayer::OnUpdate()
   {
+    if (Input::GetKeyDown(GLFW_KEY_P))
+    {
+      Log::Fatal("P for panic!");
+    }
   }
 
   void CodeLayer::OnImGuiRender()

@@ -1,79 +1,21 @@
 #include "layer_editor.h"
 
-#include <filesystem>
-
 #include <imgui.h>
 #include <imgui_internal.h>
-
-//#include <glm/glm.hpp>
-//#include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/type_ptr.hpp>
-//#define GLM_ENABLE_EXPERIMENTAL
-//#include <glm/gtx/quaternion.hpp>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
-#include "FlexEngine/Loader/shaders.h"
-
-#pragma region copium and pasta
-
-bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
-{
-  // Load from file
-  int image_width = 0;
-  int image_height = 0;
-  unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
-  if (image_data == NULL)
-    return false;
-
-  // Create a OpenGL texture identifier
-  GLuint image_texture;
-  glGenTextures(1, &image_texture);
-  glBindTexture(GL_TEXTURE_2D, image_texture);
-
-  // Setup filtering parameters for display
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // This is required on WebGL for non power-of-two textures
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Same
-
-  // Upload pixels into texture
-#if defined(GL_UNPACK_ROW_LENGTH) && !defined(__EMSCRIPTEN__)
-  glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-#endif
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
-  stbi_image_free(image_data);
-
-  *out_texture = image_texture;
-  *out_width = image_width;
-  *out_height = image_height;
-
-  return true;
-}
-
-#pragma endregion
-
-// temporary struct
-struct Image
-{
-  int width, height;
-  GLuint texture;
-};
 
 namespace FlexEngine
 {
   Shader shader_color;
 
-  Image test_image;
+  Asset::Texture test_image;
 
   EditorLayer::EditorLayer()
-    : Layer("Flex Editor")
-  {
-  }
+    : Layer("Flex Editor") {}
 
   void EditorLayer::OnAttach()
   {
+    FE_FLOW_BEGINSCOPE();
+
     // load shaders
     shader_color.SetBasePath("assets/shaders")
       ->CreateVertexShader("color.vert")
@@ -81,8 +23,8 @@ namespace FlexEngine
       ->Link();
 
     // load image
-    bool ret = LoadTextureFromFile("assets/images/Body_SG1_baseColor.jpeg", &test_image.texture, &test_image.width, &test_image.height);
-    assert(ret);
+    //test_image.Load();
+    test_image.Load("assets/images/Body_SG1_baseColor.jpeg");
 
     // todo: add opengl rendering
     // vertex buffer objects (VBO)
@@ -93,6 +35,8 @@ namespace FlexEngine
   void EditorLayer::OnDetach()
   {
     shader_color.Destroy();
+
+    FE_FLOW_ENDSCOPE();
   }
 
   void EditorLayer::OnUpdate()
@@ -114,24 +58,24 @@ namespace FlexEngine
     // setup dockspace
     ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-    if (glfwGetKey(Application::Get().GetGLFWWindow(), GLFW_KEY_R))
-    {
-      // setup dock node
-      ImGui::DockBuilderRemoveNode(dockspace_id);
-      ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
-      ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
-
-      // split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
-      //   window ID to split, direction, fraction (between 0 and 1), the final two setting let's us choose which id we want (which ever one we DON'T set as NULL, will be returned by the function)
-      //                                                              out_id_at_dir is the id of the node in the direction we specified earlier, out_id_at_opposite_dir is in the opposite direction
-      auto dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.35f, nullptr, &dockspace_id);
-      auto dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 0.25f, nullptr, &dockspace_id);
-
-      // we now dock our windows into the docking node we made above
-      ImGui::DockBuilderDockWindow("Content Browser", dock_id_left);
-      ImGui::DockBuilderDockWindow("Down", dock_id_down);
-      ImGui::DockBuilderFinish(dockspace_id);
-    }
+    //if (glfwGetKey(Application::Get().GetGLFWWindow(), GLFW_KEY_R))
+    //{
+    //  // setup dock node
+    //  ImGui::DockBuilderRemoveNode(dockspace_id);
+    //  ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
+    //  ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
+    //
+    //  // split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
+    //  //   window ID to split, direction, fraction (between 0 and 1), the final two setting let's us choose which id we want (which ever one we DON'T set as NULL, will be returned by the function)
+    //  //                                                              out_id_at_dir is the id of the node in the direction we specified earlier, out_id_at_opposite_dir is in the opposite direction
+    //  auto dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.35f, nullptr, &dockspace_id);
+    //  auto dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 0.25f, nullptr, &dockspace_id);
+    //
+    //  // we now dock our windows into the docking node we made above
+    //  ImGui::DockBuilderDockWindow("Content Browser", dock_id_left);
+    //  ImGui::DockBuilderDockWindow("Down", dock_id_down);
+    //  ImGui::DockBuilderFinish(dockspace_id);
+    //}
 
     #pragma region Main Menu Bar
 
@@ -224,9 +168,9 @@ namespace FlexEngine
     ImGui::End();
 
     ImGui::Begin("Viewport");
-    ImGui::Text("pointer = %p", test_image.texture);
-    ImGui::Text("size = %d x %d", test_image.width, test_image.height);
-    ImGui::Image((void*)(intptr_t)test_image.texture, ImVec2(static_cast<float>(test_image.width), static_cast<float>(test_image.height)));
+    ImGui::Text("pointer = %p", test_image.GetTexture());
+    ImGui::Text("size = %d x %d", test_image.GetWidth(), test_image.GetHeight());
+    ImGui::Image(test_image.GetTextureImGui(), ImVec2(test_image.GetWidthF(), test_image.GetHeightF()));
     ImGui::End();
 
     ImGui::ShowDemoWindow();

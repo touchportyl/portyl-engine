@@ -153,6 +153,7 @@
     <ClCompile Include="src\FlexEngine\input.cpp" />
     <ClCompile Include="src\FlexEngine\flexlogger.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\files.cpp" />
+    <ClCompile Include="src\FlexEngine\Loader\textures.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\shaders.cpp" />
     <ClCompile Include="src\FlexEngine\playerprefs.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -184,6 +185,7 @@
     <ClInclude Include="src\FlexEngine\input.h" />
     <ClInclude Include="src\FlexEngine\Loader\files.h" />
     <ClInclude Include="src\FlexEngine\Loader\gltf.h" />
+    <ClInclude Include="src\FlexEngine\Loader\textures.h" />
     <ClInclude Include="src\FlexEngine\Loader\shaders.h" />
     <ClInclude Include="src\FlexEngine\flexlogger.h" />
     <ClInclude Include="src\FlexEngine\playerprefs.h" />

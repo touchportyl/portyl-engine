@@ -8,3 +8,6 @@
 #include "FlexEngine/flexlogger.h"
 #include "FlexEngine/playerprefs.h"
 #include "FlexEngine/input.h"
+
+#include "FlexEngine/Loader/shaders.h"
+#include "FlexEngine/Loader/textures.h"

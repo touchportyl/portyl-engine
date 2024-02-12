@@ -6,17 +6,10 @@
 
 namespace FlexEngine
 {
-  Shader::Shader()
-    : m_vertex_shader(0), m_fragment_shader(0), m_shader_program(0)
-  {
-    FE_FLOW_BEGINSCOPE();
-  }
 
   Shader::~Shader()
   {
     Destroy();
-
-    FE_FLOW_ENDSCOPE();
   }
 
   void Shader::Destroy()

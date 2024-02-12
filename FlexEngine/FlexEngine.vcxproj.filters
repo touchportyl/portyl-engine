@@ -58,6 +58,9 @@
     <ClCompile Include="src\FlexEngine\Loader\shaders.cpp">
       <Filter>src\FlexEngine\Loader</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\Loader\textures.cpp">
+      <Filter>src\FlexEngine\Loader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -103,6 +106,9 @@
       <Filter>src\FlexEngine</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Loader\files.h">
+      <Filter>src\FlexEngine\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Loader\textures.h">
       <Filter>src\FlexEngine\Loader</Filter>
     </ClInclude>
   </ItemGroup>
