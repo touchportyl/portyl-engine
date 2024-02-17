@@ -1,12 +1,12 @@
 #include "layer_code.h"
 
-#include <sstream>
-
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <misc/imgui_stdlib.h>
 
-namespace FlexEngine
+using namespace FlexEngine;
+
+namespace FlexCode
 {
 
   struct EditableFile
@@ -32,25 +32,25 @@ namespace FlexEngine
     EditableFile(const std::filesystem::path& path)
       : path(path), name(path.filename().generic_string()), extension(path.extension().generic_string())
     {
-      // automatically read the file
       std::ifstream ifs(path);
-      if (!ifs)
-      {
-        std::stringstream error{};
-        error << "Could not open file " << path.string();
-        Log::Fatal(error.str());
-      }
+      FLX_ASSERT(ifs, "Could not open file " + path.string());
 
+      // automatically read the file
       std::string _data((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
       data = _data;
     }
   };
 
+
   std::vector<EditableFile> files; // vector of files
   std::filesystem::path base_path = std::filesystem::current_path(); // base path for the content browser
-  EditableFile* window_popup_save_file; // pointer to the file that is being saved
+  EditableFile* window_popup_save_file = nullptr; // pointer to the file that is being saved
 
-  bool IsEditable(const std::string& extension)
+  EditableFile* last_focused_file = nullptr; // pointer to the most recent focused file
+  EditableFile* focused_file = nullptr; // pointer to the file that is currently focused, nullptr if none
+
+
+  static bool IsEditable(const std::string& extension)
   {
     bool flag = false;
     std::vector<std::string> common_extensions = {
@@ -71,64 +71,90 @@ namespace FlexEngine
 
     return flag;
   }
-  bool IsEditable(const std::filesystem::path path)
+  static bool IsEditable(const std::filesystem::path& path)
   {
     return IsEditable(path.extension().string());
   }
+
+  static void SaveFile(EditableFile& file)
+  {
+    std::ofstream out(file.path);
+    FLX_ASSERT(out, "Could not open file " + file.path.string());
+    out << file.data;
+    file.is_dirty = false;
+  }
+
+  static void CloseFile(EditableFile& file)
+  {
+    file.is_open = false;
+  }
+
 
   CodeLayer::CodeLayer()
     : Layer("Flex Code") {}
 
   void CodeLayer::OnAttach()
   {
-    FE_FLOW_FUNCTION();
+    FLX_FLOW_FUNCTION();
   }
 
   void CodeLayer::OnDetach()
   {
-    FE_FLOW_FUNCTION();
+    FLX_FLOW_FUNCTION();
   }
 
   void CodeLayer::OnUpdate()
   {
-    if (Input::GetKeyDown(GLFW_KEY_P))
+
+    // get the current active file
+    ImGuiContext* context = ImGui::GetCurrentContext();
+    if (context)
     {
-      Log::Fatal("P for panic!");
+      ImGuiWindow* focusedWindow = context->NavWindow;
+      if (focusedWindow)
+      {
+        focused_file = nullptr; // default to nullptr
+
+        // find the file that is currently focused
+        for (auto& file : files)
+        {
+          std::string window_name = focusedWindow->Name;
+
+          // match found
+          if (file.name == window_name)
+          {
+            // cache an updated focused file variable
+            // and the last focused file which doesn't get set to nullptr
+            last_focused_file = focused_file = &file;
+            break;
+          }
+        }
+      }
     }
+    
+    // focused file shortcuts
+    if (focused_file)
+    {
+      if (Input::GetKey(GLFW_KEY_LEFT_CONTROL))
+      {
+        if (Input::GetKeyDown(GLFW_KEY_S)) { SaveFile(*focused_file); }
+        if (Input::GetKeyDown(GLFW_KEY_W)) { CloseFile(*focused_file); }
+      }
+    }
+
   }
 
   void CodeLayer::OnImGuiRender()
   {
-    // https://github.com/ocornut/imgui/blob/docking/imgui_demo.cpp
-
     // check for viewport and docking
     ImGuiIO& io = ImGui::GetIO();
-    if (!(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable && io.ConfigFlags & ImGuiConfigFlags_DockingEnable))
-    {
-      Log::Fatal("ImGui Docking and/or Viewports are not enabled!");
-    }
+    FLX_ASSERT(
+      io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable && io.ConfigFlags & ImGuiConfigFlags_DockingEnable,
+      "ImGui Docking and/or Viewports are not enabled!"
+    );
 
     // setup dockspace
     ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-
-    //if (glfwGetKey(Application::Get().GetGLFWWindow(), GLFW_KEY_R))
-    //{
-    //  // setup dock node
-    //  ImGui::DockBuilderRemoveNode(dockspace_id);
-    //  ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
-    //  ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
-    //
-    //  // split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
-    //  //   window ID to split, direction, fraction (between 0 and 1), the final two setting let's us choose which id we want (which ever one we DON'T set as NULL, will be returned by the function)
-    //  //                                                              out_id_at_dir is the id of the node in the direction we specified earlier, out_id_at_opposite_dir is in the opposite direction
-    //  auto dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.25f, nullptr, &dockspace_id);
-    //  auto dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 0.25f, nullptr, &dockspace_id);
-    //
-    //  // we now dock our windows into the docking node we made above
-    //  ImGui::DockBuilderDockWindow("Content Browser", dock_id_left);
-    //  ImGui::DockBuilderDockWindow("Down", dock_id_down);
-    //  ImGui::DockBuilderFinish(dockspace_id);
-    //}
 
     #pragma region Main Menu Bar
 
@@ -141,9 +167,24 @@ namespace FlexEngine
       if (ImGui::BeginMenu("File"))
       {
         //if (ImGui::MenuItem("New", "Ctrl+N")) {}
-        //if (ImGui::MenuItem("Save", "Ctrl+S")) {}
+        if (ImGui::MenuItem("Save", "Ctrl+S")) { if (focused_file) SaveFile(*focused_file); }
         //if (ImGui::MenuItem("Reload", "Ctrl+R")) {}
-        if (ImGui::MenuItem("Exit", "Ctrl+Q")) { Application::Get().Close(); }
+        if (ImGui::MenuItem("Close File", "Ctrl+W")) { if (focused_file) CloseFile(*focused_file); }
+        if (ImGui::MenuItem("Exit", "Ctrl+Q"))
+        {
+          // check if any files are still open
+          // if any files are dirty, ask to save
+          for (auto& file : files)
+          {
+            if (file.is_dirty)
+            {
+              window_popup_save_file = &file;
+              ImGui::OpenPopup("Save Changes?");
+              return;
+            }
+          }
+          Application::Get().Close();
+        }
         ImGui::EndMenu();
       }
     
@@ -171,11 +212,7 @@ namespace FlexEngine
       base_path = std::filesystem::current_path();
     }
 
-    {
-      std::stringstream ss;
-      ss << "Path: " << base_path.generic_string();
-      ImGui::SeparatorText(ss.str().c_str());
-    }
+    ImGui::SeparatorText(std::string("Path: " + base_path.generic_string()).c_str());
 
     // if the base path has a parent path, display a button to go up a directory
     if (base_path.has_parent_path())
@@ -322,38 +359,35 @@ namespace FlexEngine
     if (ImGui::BeginPopupModal("Save Changes?", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
     {
       // assert that the file is not null
-      assert(window_popup_save_file && "window_popup_save_file is null");
+      FLX_ASSERT(window_popup_save_file, "window_popup_save_file is null");
 
       ImGui::Text("Do you want to save changes to %s?", window_popup_save_file->name.c_str());
-      if (ImGui::Button("Save", ImVec2(80, 0)))
+
+      // set the width of the buttons
+      float width = 120.f;
+
+      if (ImGui::Button("Save", ImVec2(width, 0)))
       {
         // save the file
-        std::ofstream out(window_popup_save_file->path);
-        if (!out)
-        {
-          std::cerr << "Error: Could not open file " << window_popup_save_file->path << std::endl;
-          abort();
-        }
-        out << window_popup_save_file->data;
+        SaveFile(*window_popup_save_file);
 
         // close the file
-        window_popup_save_file->is_dirty = false;
-        window_popup_save_file->is_open = false;
+        CloseFile(*window_popup_save_file);
         window_popup_save_file = nullptr;
         ImGui::CloseCurrentPopup();
       }
       ImGui::SetItemDefaultFocus();
       ImGui::SameLine();
-      if (ImGui::Button("Don't Save", ImVec2(80, 0)))
+      if (ImGui::Button("Don't Save", ImVec2(width, 0)))
       {
         // close the file
-        window_popup_save_file->is_dirty = false;
-        window_popup_save_file->is_open = false;
+        window_popup_save_file->is_dirty = false; // must be set to false to avoid the save prompt
+        CloseFile(*window_popup_save_file);
         window_popup_save_file = nullptr;
         ImGui::CloseCurrentPopup();
       }
       ImGui::SameLine();
-      if (ImGui::Button("Cancel", ImVec2(80, 0)))
+      if (ImGui::Button("Cancel", ImVec2(width, 0)))
       {
         // cancel the saving process
         #pragma warning(suppress: 6011) // dereferencing null pointer

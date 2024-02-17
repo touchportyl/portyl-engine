@@ -28,12 +28,15 @@ namespace FlexEngine
 
   Window::Window(WindowProps const& props)
   {
-    FE_FLOW_FUNCTION();
+    FLX_FLOW_FUNCTION();
 
     s_props = props;
 
     // initialize and configure glfw
     glfwInit();
+    FreeQueue::Push([]() { glfwMakeContextCurrent(NULL); });
+    FreeQueue::Push([]() { glfwTerminate(); });
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -44,10 +47,7 @@ namespace FlexEngine
 
     // create window
     m_glfwwindow = glfwCreateWindow(s_props.width, s_props.height, s_props.title.c_str(), nullptr, nullptr);
-    if (m_glfwwindow == nullptr)
-    {
-      Log::Fatal("Failed to create GLFW window");
-    }
+    FLX_NULLPTR_ASSERT(m_glfwwindow, "Failed to create GLFW window");
     glfwMakeContextCurrent(m_glfwwindow);
 
     // set callbacks

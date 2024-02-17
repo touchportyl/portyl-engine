@@ -3,20 +3,24 @@
 
 #include "layer_editor.h"
 
-namespace FlexEngine
+namespace FlexEditor
 {
-  class FlexEditor : public Application
+  class FlexApplication : public FlexEngine::Application
   {
   public:
-    FlexEditor()
+    FlexApplication()
       : Application()
     {
       PushLayer(new EditorLayer());
     }
   };
-  
+
+}
+
+namespace FlexEngine
+{
   Application* CreateApplication()
   {
-    return new FlexEditor();
+    return new FlexEditor::FlexApplication();
   }
 }

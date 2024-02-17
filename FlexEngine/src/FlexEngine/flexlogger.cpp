@@ -1,7 +1,5 @@
 #include "pch.h"
 
-#include "flexlogger.h"
-
 #include <Windows.h> // SetFileAttributes
 
 #include <chrono>
@@ -11,7 +9,7 @@
 namespace FlexEngine
 {
   std::filesystem::path Log::log_base_path{ std::filesystem::current_path() / ".log" };
-  std::filesystem::path Log::log_file_path{ log_base_path / "~$app.log" };
+  std::filesystem::path Log::log_file_path{ log_base_path / "~$flexapp.log" };
   File Log::log_stream{};
   bool Log::is_fatal = false;
   int Log::flow_scope = 0;
@@ -28,14 +26,7 @@ namespace FlexEngine
 
     // open log file
     log_stream.open(log_file_path.string(), std::ios::out | std::ios::app); // can't use std::ios::trunc
-    if (!log_stream.is_open())
-    {
-      //Fatal("Could not open log file.");
-    
-      // can't use logger here, it's not created yet
-      std::cerr << "Could not open log file." << '\n';
-      abort();
-    }
+    FLX_INTERNAL_ASSERT(log_stream.is_open(), "Could not open log file.");
     
     // hide temporary log file
     SetFileAttributes(log_file_path.c_str(), FILE_ATTRIBUTE_HIDDEN);
@@ -45,38 +36,22 @@ namespace FlexEngine
     log_stream.close();
 #endif
 
-    FE_FLOW_BEGINSCOPE();
+    FLX_FLOW_BEGINSCOPE();
   }
   Log::~Log()
   {
-    FE_FLOW_ENDSCOPE();
+    FLX_FLOW_ENDSCOPE();
 
 #ifdef _DEBUG
     // dump logs if debugging
     Log::DumpLogs();
-#else
-    // dump logs only on fatal errors
-    if (Log::IsFatal()) Log::DumpLogs();
 #endif
 
     // close log file
     log_stream.close();
 
     // remove temporary log file
-    try
-    {
-      std::filesystem::remove(log_file_path);
-    }
-    catch (const std::filesystem::filesystem_error& e)
-    {
-      //std::stringstream error{};
-      //error << "Error removing file: " << e.what() << '\n';
-      //Error(error.str());
-
-      // can't use logger here, it's already destroyed
-      std::cerr << "Error removing temporary logger file: " << e.what() << '\n';
-      abort();
-    }
+    FLX_INTERNAL_ASSERT(std::filesystem::remove(log_file_path), "Error removing temporary log file.");
   }
 
   std::tm Log::GetTime(void)
@@ -109,13 +84,13 @@ namespace FlexEngine
     // append warning level
     switch (level)
     {
-    case WarningLevel::_Debug:   ss << "Debug: ";   break;
-    case WarningLevel::_Flow:    ss << "Flow: ";    break;
-    case WarningLevel::_Info:    ss << "Info: ";    break;
-    case WarningLevel::_Warning: ss << "Warning: "; break;
-    case WarningLevel::_Error:   ss << "Error: ";   break;
-    case WarningLevel::_Fatal:   ss << "Fatal: ";   break;
-    default:                     ss << "Unknown: "; break;
+    case WarningLevel::_Debug:   ss << "Debug -> ";   break;
+    case WarningLevel::_Flow:    ss << "Flow -> ";    break;
+    case WarningLevel::_Info:    ss << "Info -> ";    break;
+    case WarningLevel::_Warning: ss << "Warning -> "; break;
+    case WarningLevel::_Error:   ss << "Error -> ";   break;
+    case WarningLevel::_Fatal:   ss << "Fatal -> ";   break;
+    default:                     ss << "Unknown -> "; break;
     }
 
     // append flow scope
@@ -139,8 +114,8 @@ namespace FlexEngine
     log_stream << ss.str();
     log_stream.close();
 #else
-    // only log debug messages to console
-    if (level == WarningLevel::_Debug)
+    // log everything except debug messages to console
+    if (level != WarningLevel::_Debug)
     {
       std::cout << ss.str();
     }
@@ -156,8 +131,8 @@ namespace FlexEngine
     // quit application if fatal
     if (level == WarningLevel::_Fatal)
     {
-      is_fatal = true;
-      Application::Get().Close();
+      Log::DumpLogs();
+      std::exit(EXIT_FAILURE);
     }
   }
   
@@ -172,17 +147,17 @@ namespace FlexEngine
     std::filesystem::path save_path = log_base_path / filename.str();
 
     // save log file
-    try
+    bool success = false;
+    success = std::filesystem::copy_file(log_file_path, save_path, std::filesystem::copy_options::overwrite_existing);
+    if (success)
     {
-      std::filesystem::copy_file(log_file_path, save_path, std::filesystem::copy_options::overwrite_existing);
       SetFileAttributes(save_path.c_str(), FILE_ATTRIBUTE_NORMAL);
       Debug("Log file saved to " + save_path.string());
     }
-    catch (const std::filesystem::filesystem_error& e)
+    else
     {
-      std::stringstream error{};
-      error << "Error copying file: " << e.what() << '\n';
-      Error(error.str());
+      Error("Error copying log file.");
     }
+
   }
 }

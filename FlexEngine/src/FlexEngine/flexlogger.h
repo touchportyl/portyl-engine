@@ -4,9 +4,9 @@
 
 #include "Loader/files.h" // includes <fstream> and <string>
 
-#define FE_FLOW_FUNCTION()   FlexEngine::Log::Flow(__FUNCTION__)
-#define FE_FLOW_BEGINSCOPE() FE_FLOW_FUNCTION(); FlexEngine::Log::UpdateFlowScope(1)
-#define FE_FLOW_ENDSCOPE()   FlexEngine::Log::UpdateFlowScope(-1); FE_FLOW_FUNCTION()
+#define FLX_FLOW_FUNCTION()   FlexEngine::Log::Flow(__FUNCTION__)
+#define FLX_FLOW_BEGINSCOPE() FLX_FLOW_FUNCTION(); FlexEngine::Log::UpdateFlowScope(1)
+#define FLX_FLOW_ENDSCOPE()   FlexEngine::Log::UpdateFlowScope(-1); FLX_FLOW_FUNCTION()
 
 namespace FlexEngine
 {
@@ -34,7 +34,7 @@ namespace FlexEngine
     static void Debug(std::string message)   { Debug(message.c_str()); }
     /// <summary>
     /// Messages for debugging the flow of the application
-    /// <para>Use the FE_FLOW_FUNCTION() macro</para>
+    /// <para>Use the FLX_FLOW_FUNCTION() macro</para>
     /// <para>This is not meant to be used directly</para>
     /// </summary>
     static void Flow (const char* message)   { Logger(_Flow, message); }
@@ -73,7 +73,7 @@ namespace FlexEngine
 
     /// <summary>
     /// Adds indentations to the flow to make it easier to read
-    /// <para>Use the FE_FLOW_BEGINSCOPE() and FE_FLOW_ENDSCOPE() macros</para>
+    /// <para>Use the FLX_FLOW_BEGINSCOPE() and FLX_FLOW_ENDSCOPE() macros</para>
     /// <para>This is not meant to be used directly</para>
     /// </summary>
     static void UpdateFlowScope(int indent) { flow_scope += indent; }

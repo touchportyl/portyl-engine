@@ -2,15 +2,7 @@
 
 #include "RapidJSON/document.h"
 
-#include <RapidJSON/istreamwrapper.h>
-#include <RapidJSON/ostreamwrapper.h>
-
-#include <RapidJSON/writer.h>
-#include <RapidJSON/prettywriter.h>
-
 using namespace rapidjson;
-
-constexpr const char* PLAYERPREFS_FILE_PATH = "playerprefs.json";
 
 namespace FlexEngine
 {

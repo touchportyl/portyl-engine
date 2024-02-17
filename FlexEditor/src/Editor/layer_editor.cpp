@@ -3,8 +3,11 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
-namespace FlexEngine
+using namespace FlexEngine;
+
+namespace FlexEditor
 {
+
   Shader shader_color;
 
   Asset::Texture test_image;
@@ -14,7 +17,7 @@ namespace FlexEngine
 
   void EditorLayer::OnAttach()
   {
-    FE_FLOW_BEGINSCOPE();
+    FLX_FLOW_BEGINSCOPE();
 
     // load shaders
     shader_color.SetBasePath("assets/shaders")
@@ -23,7 +26,7 @@ namespace FlexEngine
       ->Link();
 
     // load image
-    //test_image.Load();
+    //test_image.Load(); // default texture
     test_image.Load("assets/images/Body_SG1_baseColor.jpeg");
 
     // todo: add opengl rendering
@@ -36,7 +39,7 @@ namespace FlexEngine
   {
     shader_color.Destroy();
 
-    FE_FLOW_ENDSCOPE();
+    FLX_FLOW_ENDSCOPE();
   }
 
   void EditorLayer::OnUpdate()
@@ -49,14 +52,13 @@ namespace FlexEngine
 
     // check for viewport and docking
     ImGuiIO& io = ImGui::GetIO();
-    if (!(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable && io.ConfigFlags & ImGuiConfigFlags_DockingEnable))
-    {
-      std::cerr << "ImGui Docking and/or Viewports are not enabled!" << std::endl;
-      abort();
-    }
+    FLX_ASSERT(
+      io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable && io.ConfigFlags & ImGuiConfigFlags_DockingEnable,
+      "ImGui Docking and/or Viewports are not enabled!"
+    );
 
     // setup dockspace
-    ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+    //ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
     //if (glfwGetKey(Application::Get().GetGLFWWindow(), GLFW_KEY_R))
     //{

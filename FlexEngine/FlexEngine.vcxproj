@@ -150,6 +150,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\src\glad\glad.c" />
+    <ClCompile Include="src\FlexEngine\freequeue.cpp" />
+    <ClCompile Include="src\FlexEngine\functionqueue.cpp" />
     <ClCompile Include="src\FlexEngine\input.cpp" />
     <ClCompile Include="src\FlexEngine\flexlogger.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\files.cpp" />
@@ -182,6 +184,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\FlexEngine\flexassert.h" />
+    <ClInclude Include="src\FlexEngine\freequeue.h" />
+    <ClInclude Include="src\FlexEngine\functionqueue.h" />
     <ClInclude Include="src\FlexEngine\input.h" />
     <ClInclude Include="src\FlexEngine\Loader\files.h" />
     <ClInclude Include="src\FlexEngine\Loader\gltf.h" />

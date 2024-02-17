@@ -27,7 +27,7 @@ namespace FlexEngine
 
   Shader* Shader::CreateVertexShader(const std::string& path_to_vertex_shader)
   {
-    FE_FLOW_FUNCTION();
+    FLX_FLOW_FUNCTION();
 
     // chain error handling
     if (this == nullptr) return nullptr;
@@ -48,9 +48,7 @@ namespace FlexEngine
     }
     catch (const std::ifstream::failure& e)
     {
-      std::stringstream error{};
-      error << "Could not read vertex shader file!\n" << e.what() << '\n';
-      Log::Error(error.str());
+      Log::Error(std::string("Could not read vertex shader file!\n") + e.what() + '\n');
       return nullptr;
     }
 
@@ -66,9 +64,7 @@ namespace FlexEngine
     glGetShaderiv(m_vertex_shader, GL_COMPILE_STATUS, &success);
     if (!success) {
       glGetShaderInfoLog(m_vertex_shader, 512, NULL, infoLog);
-      std::stringstream error{};
-      error << "Vertex shader did not compile!\n" << infoLog << '\n';
-      Log::Error(error.str());
+      Log::Error(std::string("Vertex shader did not compile!\n") + infoLog + '\n');
       return nullptr;
     }
 
@@ -77,7 +73,7 @@ namespace FlexEngine
 
   Shader* Shader::CreateFragmentShader(const std::string& path_to_fragment_shader)
   {
-    FE_FLOW_FUNCTION();
+    FLX_FLOW_FUNCTION();
 
     // chain error handling
     if (this == nullptr) return nullptr;
@@ -98,9 +94,7 @@ namespace FlexEngine
     }
     catch (const std::ifstream::failure& e)
     {
-      std::stringstream error{};
-      error << "Could not read fragment shader file!\n" << e.what() << '\n';
-      Log::Error(error.str());
+      Log::Error(std::string("Could not read fragment shader file!\n") + e.what() + '\n');
       return nullptr;
     }
 
@@ -116,9 +110,7 @@ namespace FlexEngine
     glGetShaderiv(m_fragment_shader, GL_COMPILE_STATUS, &success);
     if (!success) {
       glGetShaderInfoLog(m_fragment_shader, 512, NULL, infoLog);
-      std::stringstream error{};
-      error << "Fragment shader did not compile!\n" << infoLog << '\n';
-      Log::Error(error.str());
+      Log::Error(std::string("Fragment shader did not compile!\n") + infoLog + '\n');
       return nullptr;
     }
 
@@ -127,7 +119,7 @@ namespace FlexEngine
 
   void Shader::Link()
   {
-    FE_FLOW_FUNCTION();
+    FLX_FLOW_FUNCTION();
 
     if (this == nullptr || // chain error handling
       m_vertex_shader == 0 || m_fragment_shader == 0) // check if shaders are compiled
@@ -151,9 +143,7 @@ namespace FlexEngine
       glDetachShader(m_shader_program, m_vertex_shader);
       glDetachShader(m_shader_program, m_fragment_shader);
       glGetProgramInfoLog(m_shader_program, 512, NULL, infoLog);
-      std::stringstream error{};
-      error << "Shader linker error!\n" << infoLog << '\n';
-      Log::Fatal(error.str());
+      Log::Fatal(std::string("Shader linker error!\n") + infoLog + '\n');
     }
 
     // delete shaders

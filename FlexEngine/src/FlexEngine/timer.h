@@ -6,9 +6,9 @@
 #include "flexlogger.h"
 
 #ifdef _DEBUG
-#define FE_SCOPED_TIMER() FlexEngine::Timer timer(__FUNCTION__);
+#define FLX_SCOPED_TIMER() FlexEngine::Timer timer(__FUNCTION__);
 #else
-#define FE_SCOPED_TIMER()
+#define FLX_SCOPED_TIMER()
 #endif
 
 namespace FlexEngine

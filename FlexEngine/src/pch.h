@@ -2,7 +2,7 @@
 
 // https://en.cppreference.com/w/cpp/header
 
-#include <cassert>                    // Conditionally compiled macro that compares its argument to zero
+//#include <cassert>                    // Conditionally compiled macro that compares its argument to zero
 
 //#include <iostream>                   // Several standard stream objects
 //#include <string>                     // std::basic_string class template
@@ -16,7 +16,9 @@
 #include <memory>                     // High-level memory management utilities
 //#include <utility>                    // Various utility components
 #include <algorithm>                  // Algorithms that operate on ranges
-#include <functional>                 // Function objects, Function invocations, Bind operations and Reference wrappers
+//#include <functional>                 // Function objects, Function invocations, Bind operations and Reference wrappers
 
+#include "FlexEngine/flexassert.h"    // FLX_INTERNAL_ASSERT, FLX_CORE_ASSERT, FLX_ASSERT, FLX_NULLPTR_ASSERT
+                                      // (includes <iostream>, "flexlogger.h", and "freequeue.h")
+                                      // (dependancy includes "files.h", <filesystem>, <fstream>, <string>, <deque>, and <functional>)
 #include "FlexEngine/timer.h"         // Timer class (includes <iostream> and <chrono>)
-#include "FlexEngine/flexlogger.h"    // Log class (includes <filesystem>) (dependancy includes <fstream> and <string>)

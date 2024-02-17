@@ -2,6 +2,12 @@
 
 #include <string>
 
+/// <summary>
+/// Helper macro to display a texture for ImGui
+/// using the ImGui::Image function
+/// <para>Example:</para>
+/// <para>ImGui::Image(IMGUI_IMAGE(texture_variable));</para>
+/// </summary>
 #define IMGUI_IMAGE(TEXTURE) TEXTURE.GetTextureImGui(), ImVec2(TEXTURE.GetWidthF(), TEXTURE.GetHeightF())
 
 namespace FlexEngine

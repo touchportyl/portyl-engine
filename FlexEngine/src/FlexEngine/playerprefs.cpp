@@ -2,6 +2,14 @@
 
 #include "playerprefs.h"
 
+#include <RapidJSON/istreamwrapper.h>
+#include <RapidJSON/ostreamwrapper.h>
+
+#include <RapidJSON/writer.h>
+#include <RapidJSON/prettywriter.h>
+
+constexpr const char* PLAYERPREFS_FILE_PATH = "playerprefs.json";
+
 namespace FlexEngine
 {
   // static members
@@ -9,7 +17,7 @@ namespace FlexEngine
 
   void PlayerPrefs::Create()
   {
-    FE_FLOW_FUNCTION();
+    FLX_FLOW_FUNCTION();
 
     if (m_document.IsObject())
     {
@@ -37,9 +45,9 @@ namespace FlexEngine
 
   void PlayerPrefs::Load()
   {
-    FE_FLOW_FUNCTION();
+    FLX_FLOW_FUNCTION();
 
-    FE_SCOPED_TIMER();
+    FLX_SCOPED_TIMER();
 
     std::ifstream ifs(PLAYERPREFS_FILE_PATH);
     if (!ifs.is_open())
@@ -69,9 +77,9 @@ namespace FlexEngine
 
   void PlayerPrefs::Save(bool prettify)
   {
-    FE_FLOW_FUNCTION();
+    FLX_FLOW_FUNCTION();
 
-    FE_SCOPED_TIMER();
+    FLX_SCOPED_TIMER();
 
     std::ofstream ofs(PLAYERPREFS_FILE_PATH);
     if (!ofs.is_open())

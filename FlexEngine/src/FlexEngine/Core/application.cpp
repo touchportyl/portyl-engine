@@ -9,20 +9,16 @@ namespace FlexEngine
 
   Application::Application()
   {
-    FE_FLOW_BEGINSCOPE();
+    FLX_FLOW_BEGINSCOPE();
 
-    if (s_instance)
-    {
-      Log::Fatal("Application already exists!");
-    }
-    s_instance = this;
+    // check if application already exists
+    if (s_instance) Log::Fatal("Application already exists!"); 
+    else s_instance = this;
 
     // create window
     m_window = new Window();
-    if (m_window == nullptr)
-    {
-      Log::Fatal("Window object not created!");
-    }
+    FLX_NULLPTR_ASSERT(m_window, "Window object not created!");
+    FreeQueue::Push([&]() { delete m_window; });
     m_glfwwindow = m_window->GetGLFWWindow(); // cache glfw window
 
     // load all OpenGL function pointers (glad)
@@ -32,6 +28,7 @@ namespace FlexEngine
     }
 
     //Renderer::Init();
+    //FreeQueue::Push(Renderer::Shutdown);
 
     m_imguilayer = new ImGuiLayer();
     PushOverlay(m_imguilayer);
@@ -39,13 +36,7 @@ namespace FlexEngine
 
   Application::~Application()
   {
-    //Renderer::Shutdown();
-
-    glfwTerminate();
-
-    delete m_window;
-
-    FE_FLOW_ENDSCOPE();
+    FLX_FLOW_ENDSCOPE();
   }
 
   void Application::PushLayer(Layer* layer)
@@ -74,7 +65,7 @@ namespace FlexEngine
 
   void Application::Close()
   {
-    FE_FLOW_FUNCTION();
+    FLX_FLOW_FUNCTION();
 
     glfwSetWindowShouldClose(m_glfwwindow, true);
     m_is_running = false;
@@ -95,12 +86,6 @@ namespace FlexEngine
       glfwPollEvents();
 
       // quit application
-      // TODO: replace glfw get key with a proper input system
-      //if (glfwGetKey(FlexEngine::Application::Get().GetGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-      //{
-      //  glfwSetWindowShouldClose(FlexEngine::Application::Get().GetGLFWWindow(), true);
-      //}
-
       if (Input::GetKey(GLFW_KEY_LEFT_CONTROL) && Input::GetKeyDown(GLFW_KEY_Q))
       {
         Close();

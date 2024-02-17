@@ -8,6 +8,7 @@
 
 #include "application.h"
 #include "../flexlogger.h"
+#include "../freequeue.h"
 
 /// <summary>
 /// Create an application through the chain of inheritance.
@@ -25,10 +26,21 @@ int main(int argc, char** argv)
 #endif
 
   // Create the logger
-  FlexEngine::Log log;
+  //FlexEngine::Log log;
+  auto log = new FlexEngine::Log();
+
+  // Ensure that the FreeQueue is run at the end of the program
+  std::atexit(FlexEngine::FreeQueue::Free);
   
-  // Create the application and run it.
+  // Create the application
   auto app = FlexEngine::CreateApplication();
+
+  // Ensure that the application and logger are deleted at the end of the program
+  FlexEngine::FreeQueue::Push([&]() { delete app; delete log; });
+
+  // Run the application
   app->Run();
-  delete app;
+
+  // Exit the program
+  std::exit(0);
 }

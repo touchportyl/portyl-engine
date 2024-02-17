@@ -138,7 +138,10 @@ namespace FlexEngine
 
     void Texture::Unload() const
     {
-      glDeleteTextures(1, &m_texture);
+      if (m_texture != 0)
+      {
+        glDeleteTextures(1, &m_texture);
+      }
     }
 
   }

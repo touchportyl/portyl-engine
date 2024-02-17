@@ -3,20 +3,24 @@
 
 #include "layer_code.h"
 
-namespace FlexEngine
+namespace FlexCode
 {
-  class FlexCode : public Application
+  class FlexApplication : public FlexEngine::Application
   {
   public:
-    FlexCode()
+    FlexApplication()
       : Application()
     {
       PushLayer(new CodeLayer());
     }
   };
-  
+
+}
+
+namespace FlexEngine
+{
   Application* CreateApplication()
   {
-    return new FlexCode();
+    return new FlexCode::FlexApplication();
   }
 }

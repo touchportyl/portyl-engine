@@ -2,10 +2,10 @@
 
 #include <FlexEngine.h>
 
-namespace FlexEngine
+namespace FlexEditor
 {
 
-  class EditorLayer : public Layer
+  class EditorLayer : public FlexEngine::Layer
   {
   public:
     EditorLayer();

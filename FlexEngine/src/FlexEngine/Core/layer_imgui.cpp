@@ -168,7 +168,7 @@ namespace FlexEngine
 
   void ImGuiLayer::OnAttach()
   {
-    FE_FLOW_BEGINSCOPE();
+    FLX_FLOW_BEGINSCOPE();
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -198,7 +198,7 @@ namespace FlexEngine
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    FE_FLOW_ENDSCOPE();
+    FLX_FLOW_ENDSCOPE();
   }
 
   void ImGuiLayer::Begin()

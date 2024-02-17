@@ -2,10 +2,10 @@
 
 #include <FlexEngine.h>
 
-namespace FlexEngine
+namespace FlexCode
 {
 
-  class CodeLayer : public Layer
+  class CodeLayer : public FlexEngine::Layer
   {
   public:
     CodeLayer();
