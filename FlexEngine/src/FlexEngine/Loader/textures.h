@@ -2,6 +2,8 @@
 
 #include <string>
 
+#define IMGUI_IMAGE(TEXTURE) TEXTURE.GetTextureImGui(), ImVec2(TEXTURE.GetWidthF(), TEXTURE.GetHeightF())
+
 namespace FlexEngine
 {
   namespace Asset

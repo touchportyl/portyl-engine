@@ -170,7 +170,7 @@ namespace FlexEngine
     ImGui::Begin("Viewport");
     ImGui::Text("pointer = %p", test_image.GetTexture());
     ImGui::Text("size = %d x %d", test_image.GetWidth(), test_image.GetHeight());
-    ImGui::Image(test_image.GetTextureImGui(), ImVec2(test_image.GetWidthF(), test_image.GetHeightF()));
+    ImGui::Image(IMGUI_IMAGE(test_image));
     ImGui::End();
 
     ImGui::ShowDemoWindow();
