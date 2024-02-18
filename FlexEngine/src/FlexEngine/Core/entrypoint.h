@@ -26,7 +26,6 @@ int main(int argc, char** argv)
 #endif
 
   // Create the logger
-  //FlexEngine::Log log;
   auto log = new FlexEngine::Log();
 
   // Ensure that the FreeQueue is run at the end of the program

@@ -49,6 +49,8 @@ namespace FlexCode
   EditableFile* last_focused_file = nullptr; // pointer to the most recent focused file
   EditableFile* focused_file = nullptr; // pointer to the file that is currently focused, nullptr if none
 
+  Asset::Texture flexengine_logo;
+
 
   static bool IsEditable(const std::string& extension)
   {
@@ -96,6 +98,8 @@ namespace FlexCode
   void CodeLayer::OnAttach()
   {
     FLX_FLOW_FUNCTION();
+
+    flexengine_logo.Load("../FlexEngine/assets/images/flexengine/flexengine_logo_white.png");
   }
 
   void CodeLayer::OnDetach()
@@ -158,12 +162,23 @@ namespace FlexCode
 
     #pragma region Main Menu Bar
 
-    //ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 12.0f));
-    //ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(18.0f, 12.0f));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 8.0f));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(16.0f, 8.0f));
 
     if (ImGui::BeginMainMenuBar())
     {
-    
+      // center the logo
+      float logo_scl = 25.f;
+      float prev_cursor_y = ImGui::GetCursorPosY();
+      float cursor_y = prev_cursor_y + (ImGui::GetFrameHeight() - logo_scl) * 0.5f;
+      ImGui::SetCursorPosY(cursor_y);
+
+      // display the flexengine logo
+      ImGui::Image(flexengine_logo.GetTextureImGui(), ImVec2((logo_scl / 7 * 20), logo_scl));
+
+      // reset the cursor position
+      ImGui::SetCursorPosY(prev_cursor_y);
+
       if (ImGui::BeginMenu("File"))
       {
         //if (ImGui::MenuItem("New", "Ctrl+N")) {}
@@ -198,7 +213,7 @@ namespace FlexCode
       ImGui::EndMainMenuBar();
     }
 
-    //ImGui::PopStyleVar(2);
+    ImGui::PopStyleVar(2);
 
     #pragma endregion
 
