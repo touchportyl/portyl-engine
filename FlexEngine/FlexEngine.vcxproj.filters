@@ -67,6 +67,9 @@
     <ClCompile Include="src\FlexEngine\functionqueue.cpp">
       <Filter>src\FlexEngine</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\Loader\fmodstudio.cpp">
+      <Filter>src\FlexEngine\Loader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -125,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\flexassert.h">
       <Filter>src\FlexEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Loader\fmodstudio.h">
+      <Filter>src\FlexEngine\Loader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

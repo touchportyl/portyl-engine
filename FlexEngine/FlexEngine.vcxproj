@@ -107,7 +107,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -119,8 +119,12 @@
       <AdditionalDependencies>$(SolutionDir)extern\lib\GLFW\glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>$(SolutionDir)third_party\lib\fastgltf\fastgltf.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf_simdjson.lib;$(SolutionDir)third_party\lib\GLFW\glfw3.lib;$(SolutionDir)third_party\lib\ImGui\ImGuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)third_party\lib\fastgltf\fastgltf.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf_simdjson.lib;$(SolutionDir)third_party\lib\fmod\studio\fmodstudioL_vc.lib;$(SolutionDir)third_party\lib\GLFW\glfw3.lib;$(SolutionDir)third_party\lib\ImGui\ImGuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)third_party\lib\fmod\core\fmodL.dll" "$(OutDir)" /s /r /y /q
+xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudioL.dll" "$(OutDir)" /s /r /y /q</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -131,7 +135,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -145,8 +149,12 @@
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrtd.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <Lib>
-      <AdditionalDependencies>$(SolutionDir)third_party\lib\fastgltf\fastgltf.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf_simdjson.lib;$(SolutionDir)third_party\lib\GLFW\glfw3.lib;$(SolutionDir)third_party\lib\ImGui\ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)third_party\lib\fastgltf\fastgltf.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf_simdjson.lib;$(SolutionDir)third_party\lib\fmod\studio\fmodstudio_vc.lib;$(SolutionDir)third_party\lib\GLFW\glfw3.lib;$(SolutionDir)third_party\lib\ImGui\ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)third_party\lib\fmod\core\fmod.dll" "$(OutDir)" /s /r /y /q
+xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s /r /y /q</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\src\glad\glad.c" />
@@ -155,6 +163,7 @@
     <ClCompile Include="src\FlexEngine\input.cpp" />
     <ClCompile Include="src\FlexEngine\flexlogger.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\files.cpp" />
+    <ClCompile Include="src\FlexEngine\Loader\fmodstudio.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\textures.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\shaders.cpp" />
     <ClCompile Include="src\FlexEngine\playerprefs.cpp" />
@@ -189,6 +198,7 @@
     <ClInclude Include="src\FlexEngine\functionqueue.h" />
     <ClInclude Include="src\FlexEngine\input.h" />
     <ClInclude Include="src\FlexEngine\Loader\files.h" />
+    <ClInclude Include="src\FlexEngine\Loader\fmodstudio.h" />
     <ClInclude Include="src\FlexEngine\Loader\gltf.h" />
     <ClInclude Include="src\FlexEngine\Loader\textures.h" />
     <ClInclude Include="src\FlexEngine\Loader\shaders.h" />
