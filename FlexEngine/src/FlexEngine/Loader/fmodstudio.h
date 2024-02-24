@@ -3,7 +3,7 @@
 #include "fmod_studio.hpp"
 #include "fmod_errors.h"
 
-// assert function wrapper
+// assert function wrapper for fmod
 #define FLX_FMOD_ASSERT(FUNCTION)            \
 FlexEngine::FmodStudio::m_result = FUNCTION; \
 FLX_ASSERT(FlexEngine::FmodStudio::m_result == FMOD_OK, FMOD_ErrorString(FlexEngine::FmodStudio::m_result))
@@ -20,8 +20,13 @@ namespace FlexEngine
   public:
     ~FmodStudio();
 
+    /// <returns>FmodStudio instance</returns>
     static FmodStudio* GetInstance();
 
+    /// <summary>
+    /// FMOD Studio update function
+    /// <para>Call this function every frame</para>
+    /// </summary>
     static void Update() { FLX_FMOD_ASSERT(FmodStudio::GetInstance()->GetSystem()->update()); }
 
     // first bank is always the master bank
