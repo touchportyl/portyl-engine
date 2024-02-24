@@ -8,6 +8,105 @@ using namespace FlexEngine;
 namespace FlexEditor
 {
 
+  class Renderer2D
+  {
+    Renderer2D() = delete;
+    ~Renderer2D() = delete;
+
+    static void Init()
+    {
+      // create vertex buffer
+      glGenBuffers(1, &s_Data.QuadVertexBuffer);
+      glBindBuffer(GL_ARRAY_BUFFER, s_Data.QuadVertexBuffer);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW);
+
+      // create vertex array
+      glGenVertexArrays(1, &s_Data.QuadVertexArray);
+      glBindVertexArray(s_Data.QuadVertexArray);
+
+      // create vertex buffer layout
+      glEnableVertexAttribArray(0);
+      glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (const void*)0);
+      glEnableVertexAttribArray(1);
+      glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (const void*)(sizeof(float) * 2));
+
+      // create index buffer
+      unsigned int indices[6] = { 0, 1, 2, 2, 3, 0 };
+      glGenBuffers(1, &s_Data.QuadIndexBuffer);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Data.QuadIndexBuffer);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    }
+
+    static void Shutdown()
+    {
+      glDeleteBuffers(1, &s_Data.QuadVertexBuffer);
+      glDeleteBuffers(1, &s_Data.QuadIndexBuffer);
+      glDeleteVertexArrays(1, &s_Data.QuadVertexArray);
+    }
+
+    static void BeginScene()
+    {
+      glBindVertexArray(s_Data.QuadVertexArray);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Data.QuadIndexBuffer);
+    }
+
+    static void EndScene()
+    {
+    }
+
+    static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+    {
+      glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW);
+
+      float vertices[4 * 4] = {
+        position.x, position.y, 0.0f, 0.0f,
+        position.x + size.x, position.y, 1.0f, 0.0f,
+        position.x + size.x, position.y + size.y, 1.0f, 1.0f,
+        position.x, position.y + size.y, 0.0f, 1.0f
+      };
+
+      glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+      glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    }
+
+  private:
+    struct QuadVertex
+    {
+      glm::vec3 Position;
+      glm::vec4 Color;
+      glm::vec2 TexCoord;
+      float TexIndex;
+      float TilingFactor;
+    };
+
+    struct Renderer2DData
+    {
+      static const unsigned int MaxQuads = 10000;
+      static const unsigned int MaxVertices = MaxQuads * 4;
+      static const unsigned int MaxIndices = MaxQuads * 6;
+      static const unsigned int MaxTextureSlots = 32; // TODO: RenderCaps
+
+      unsigned int QuadVertexArray;
+      unsigned int QuadVertexBuffer;
+      unsigned int QuadIndexBuffer;
+      unsigned int WhiteTexture;
+      unsigned int TextureSlots[MaxTextureSlots];
+      unsigned int TextureSlotIndex = 1; // 0 = white texture
+    };
+
+    static Renderer2DData s_Data;
+  };
+
+  //struct IndirectDrawCommand {
+  //  unsigned int count;         // Draw Count: The number of draw calls to execute.
+  //  unsigned int instanceCount; // Instance Count: The number of instances to render.
+  //  unsigned int firstIndex;    // First Index: The starting index within an index buffer.
+  //  unsigned int baseVertex;    // Base Vertex: A constant offset to add to each index before fetching the vertex data.
+  //  unsigned int baseInstance;  // Base Instance: A constant offset to add to each instance ID before fetching per-instance data.
+  //};
+
+
   Shader shader_color;
 
   Asset::Texture test_image;
