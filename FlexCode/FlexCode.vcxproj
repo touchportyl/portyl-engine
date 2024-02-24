@@ -77,8 +77,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)FlexCode\src\Code;$(SolutionDir)FlexCode\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)$(IntDir);$(SolutionDir)third_party\lib\ImGui;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\fastgltf;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)FlexCode\src\Code;$(SolutionDir)FlexCode\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)$(IntDir);$(SolutionDir)third_party\lib\ImGui;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\fastgltf;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -114,14 +120,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)FlexCode\src\Code;$(SolutionDir)FlexCode\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src;$(IncludePath)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrt.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)$(IntDir)FlexEngine.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf_simdjson.lib;$(SolutionDir)third_party\lib\GLFW\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FlexEngine.lib;glfw3.lib;fastgltf.lib;fastgltf_simdjson.lib;ImGuid.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,7 +138,6 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)FlexCode\src\Code;$(SolutionDir)FlexCode\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src;$(IncludePath)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,7 +146,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrtd.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)$(IntDir)FlexEngine.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf.lib;$(SolutionDir)third_party\lib\fastgltf\fastgltf_simdjson.lib;$(SolutionDir)third_party\lib\GLFW\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FlexEngine.lib;glfw3.lib;fastgltf.lib;fastgltf_simdjson.lib;ImGui.lib;fmodstudio_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

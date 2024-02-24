@@ -11,12 +11,15 @@ FlexEngine is a work-in-progress game engine.
 - RapidJSON 1.1.0
 - fmod 2.02
 
+## working on implementation
+
+## unsure if allowed
 - fastgltf 0.6.1
 
 ### potential third_party libraries
-- wwise
-- freetype
-- property
-- RTTR (Run Time Type Reflection) http://www.axelmenzel.de/projects/coding/rttr/
+- freetype (will implement after setting up the 2d opengl renderer)
+- wwise (will look into it as a replacement to fmod)
+- property (terrible to work with)
+- rttr (doesn't work)
 
-- ImGuizmo
+- ImGuizmo (unsure if allowed)
