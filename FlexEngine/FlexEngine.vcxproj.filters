@@ -20,6 +20,12 @@
     <Filter Include="src\FlexEngine\Loader">
       <UniqueIdentifier>{af4987ea-e5b4-45ee-bde7-d86af28bbe18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\FlexEngine\Component">
+      <UniqueIdentifier>{056a8a36-4ac8-4d06-acb5-bd1ac0bc8b49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\FlexEngine\Reflection">
+      <UniqueIdentifier>{d2d4ae95-2e5f-4107-bf03-f3b530bff88d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -69,6 +75,18 @@
     </ClCompile>
     <ClCompile Include="src\FlexEngine\Loader\fmodstudio.cpp">
       <Filter>src\FlexEngine\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\uuid.cpp">
+      <Filter>src\FlexEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Component\transform.cpp">
+      <Filter>src\FlexEngine\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Core\gameobject.cpp">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Core\scene.cpp">
+      <Filter>src\FlexEngine\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +149,33 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Loader\fmodstudio.h">
       <Filter>src\FlexEngine\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Component\base.h">
+      <Filter>src\FlexEngine\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Component\transform.h">
+      <Filter>src\FlexEngine\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Reflection\base.h">
+      <Filter>src\FlexEngine\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\uuid.h">
+      <Filter>src\FlexEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Core\components.h">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Core\gameobject.h">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Core\scene.h">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Reflection\property.h">
+      <Filter>src\FlexEngine\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Reflection\propertymap.h">
+      <Filter>src\FlexEngine\Reflection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

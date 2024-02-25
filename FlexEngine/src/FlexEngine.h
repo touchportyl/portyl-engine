@@ -18,6 +18,21 @@
 // The ImGuiLayer is automatically pushed to the top of the layer stack.
 #include "FlexEngine/Core/layer.h"
 
+// Contains the scene class.
+// Scenes are used to manage entities and systems.
+// Scenes are used to load and unload levels.
+// Scenes are used to update and render entities.
+#include "FlexEngine/Core/scene.h"
+
+// Contains the gameobject class.
+// GameObjects are used to represent objects in the game world.
+// Components can be attached to GameObjects.
+// GameObjects are managed by the scene class.
+#include "FlexEngine/Core/gameobject.h"
+
+// Contains all the components that can be attached to game objects.
+#include "FlexEngine/Core/components.h"
+
 
 /* |---------------------------| */
 /* |---------- Tools ----------| */
@@ -32,6 +47,12 @@
 // Use FLX_ASSERT in place of regular assertions.
 // Use FLX_NULLPTR_ASSERT for checking pointers.
 #include "FlexEngine/flexassert.h"
+
+// UUID class for generating unique identifiers.
+// Objects will be automatically assigned a unique identifier upon creation.
+// Get the UUID of an object by casting it to a hash, string, or by
+// using the << operator.
+#include "FlexEngine/uuid.h"
 
 // Scoped timer to measure time taken by functions.
 // Call the constructor at the start of the scope to start the timer.

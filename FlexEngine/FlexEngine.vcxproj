@@ -129,9 +129,8 @@
       <AdditionalDependencies>glfw3.lib;fastgltf.lib;fastgltf_simdjson.lib;ImGuid.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudioL.dll" "$(OutDir)" /s /r /y /q
-xcopy "$(SolutionDir)third_party\rttr\bin\Debug\rttr_core_d.dll" "$(OutDir)" /s /r /y /q
-xcopy "$(SolutionDir)third_party\rttr\bin\Debug\rttr_core_d.pdb" "$(OutDir)" /s /r /y /q</Command>
+      <Command>xcopy "$(SolutionDir)third_party\lib\fmod\core\fmod.dll" "$(OutDir)" /s /r /y /q
+xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudioL.dll" "$(OutDir)" /s /r /y /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,12 +161,14 @@ xcopy "$(SolutionDir)third_party\rttr\bin\Debug\rttr_core_d.pdb" "$(OutDir)" /s 
     </Lib>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)third_party\lib\fmod\core\fmod.dll" "$(OutDir)" /s /r /y /q
-xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s /r /y /q
-xcopy "$(SolutionDir)third_party\rttr\bin\Release\rttr_core.dll" "$(OutDir)" /s /r /y /q</Command>
+xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s /r /y /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\src\glad\glad.c" />
+    <ClCompile Include="src\FlexEngine\Component\transform.cpp" />
+    <ClCompile Include="src\FlexEngine\Core\gameobject.cpp" />
+    <ClCompile Include="src\FlexEngine\Core\scene.cpp" />
     <ClCompile Include="src\FlexEngine\freequeue.cpp" />
     <ClCompile Include="src\FlexEngine\functionqueue.cpp" />
     <ClCompile Include="src\FlexEngine\input.cpp" />
@@ -177,6 +178,7 @@ xcopy "$(SolutionDir)third_party\rttr\bin\Release\rttr_core.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Loader\textures.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\shaders.cpp" />
     <ClCompile Include="src\FlexEngine\playerprefs.cpp" />
+    <ClCompile Include="src\FlexEngine\uuid.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -203,6 +205,11 @@ xcopy "$(SolutionDir)third_party\rttr\bin\Release\rttr_core.dll" "$(OutDir)" /s 
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\FlexEngine\Component\base.h" />
+    <ClInclude Include="src\FlexEngine\Component\transform.h" />
+    <ClInclude Include="src\FlexEngine\Core\components.h" />
+    <ClInclude Include="src\FlexEngine\Core\gameobject.h" />
+    <ClInclude Include="src\FlexEngine\Core\scene.h" />
     <ClInclude Include="src\FlexEngine\flexassert.h" />
     <ClInclude Include="src\FlexEngine\freequeue.h" />
     <ClInclude Include="src\FlexEngine\functionqueue.h" />
@@ -214,7 +221,11 @@ xcopy "$(SolutionDir)third_party\rttr\bin\Release\rttr_core.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Loader\shaders.h" />
     <ClInclude Include="src\FlexEngine\flexlogger.h" />
     <ClInclude Include="src\FlexEngine\playerprefs.h" />
+    <ClInclude Include="src\FlexEngine\Reflection\base.h" />
+    <ClInclude Include="src\FlexEngine\Reflection\property.h" />
+    <ClInclude Include="src\FlexEngine\Reflection\propertymap.h" />
     <ClInclude Include="src\FlexEngine\timer.h" />
+    <ClInclude Include="src\FlexEngine\uuid.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\FlexEngine.h" />
     <ClInclude Include="src\FlexEngine\Core\application.h" />

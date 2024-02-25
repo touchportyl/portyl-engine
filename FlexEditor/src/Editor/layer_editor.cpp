@@ -3,6 +3,8 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include <sstream>
+
 using namespace FlexEngine;
 
 namespace FlexEditor
@@ -128,6 +130,36 @@ namespace FlexEditor
     //test_image.Load(); // default texture
     test_image.Load("assets/images/Body_SG1_baseColor.jpeg");
 
+
+    // todo: remove debug code
+
+    //UUID uuid;
+    //Log::Debug(uuid);
+
+    Scene scene{};
+
+    GameObject* go1 = scene.AddGameObject("Transform Test");
+    GameObject* go2 = scene.AddGameObject("Transformers 2: Electric Boogaloo");
+
+    Transform* t1 = go1->AddComponent<Transform>();
+    go2->AddComponent<Transform>();
+
+    Transform* t2 = go2->GetComponent<Transform>();
+
+    t1->properties.SetProperty("x", 42.f);
+    t2->properties.SetProperty("x", t1->properties.GetProperty<float>("x"));
+    t1->properties.SetProperty("x", 35.f);
+
+    std::stringstream ss{};
+    scene.Serialize(ss);
+    Log::Debug(ss.str());
+    //Log::Debug(transform->x.ToString());
+
+    //Transform transform{};
+    //transform.x = 1;
+    //Log::Debug(transform.uuid);
+
+
     // todo: add opengl rendering
     // vertex buffer objects (VBO)
     // indices (IBO)
@@ -157,7 +189,7 @@ namespace FlexEditor
     );
 
     // setup dockspace
-    //ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+    ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
     //if (glfwGetKey(Application::Get().GetGLFWWindow(), GLFW_KEY_R))
     //{
