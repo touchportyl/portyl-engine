@@ -36,7 +36,7 @@ namespace FlexEngine
       {
         "components",
         std::make_shared<
-          FlexEngine::Property<
+          FlexEngine::PropertyReference<
             decltype(components),
             std::function<decltype(components)()>,
             std::function<void(decltype(components))>

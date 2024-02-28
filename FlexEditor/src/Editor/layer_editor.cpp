@@ -60,6 +60,7 @@ namespace FlexEditor
     t2->properties.SetProperty("x", t1->properties.GetProperty<float>("x"));
     t1->properties.SetProperty("x", 35.f);
 
+
     // maybe put this using in the actual class
     using ComponentUMap = std::unordered_map<std::type_index, std::shared_ptr<Component>>;
 
@@ -72,6 +73,7 @@ namespace FlexEditor
       Transform* t3 = dynamic_cast<Transform*>(it->second.get());
       t3->properties.SetProperty("x", 100.f);
     }
+
 
     std::stringstream ss{};
     scene.Serialize(ss);

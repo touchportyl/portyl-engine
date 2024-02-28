@@ -1,6 +1,7 @@
 #pragma once
 
 #include "property.h"
+#include "propertyreference.h"
 
 #include <unordered_map>
 
@@ -16,13 +17,17 @@ namespace FlexEngine
   {
   public:
     PropertyMap(std::initializer_list<std::pair<const std::string, std::shared_ptr<PropertyBase>>> init)
-      : properties(init) {}
+      : m_property_list(init) {}
 
+    /// <summary>
+    /// Get a copy to a property.
+    /// <para>It is read-only, use SetProperty to modify the property.</para>
+    /// </summary>
     template <typename T>
     T GetProperty(const std::string& name)
     {
-      auto it = properties.find(name);
-      if (it != properties.end())
+      auto it = m_property_list.find(name);
+      if (it != m_property_list.end())
       {
         T temp{};
         it->second->GetValueFromAny(&temp);
@@ -31,18 +36,22 @@ namespace FlexEngine
       return T();
     }
     
+    /// <summary>
+    /// Set a property.
+    /// <para>It is good practice to specify the type of the property explicitly.</para>
+    /// </summary>
     template <typename T>
-    void SetProperty(const std::string& name, T value)
+    void SetProperty(const std::string& name, const T& value)
     {
-      auto it = properties.find(name);
-      if (it != properties.end())
+      auto it = m_property_list.find(name);
+      if (it != m_property_list.end())
       {
-        it->second->SetValueFromAny(&value);
+        it->second->SetValueFromAny(value);
       }
     }
 
   private:
-    std::unordered_map<std::string, std::shared_ptr<PropertyBase>> properties;
+    std::unordered_map<std::string, std::shared_ptr<PropertyBase>> m_property_list;
   };
 
 }

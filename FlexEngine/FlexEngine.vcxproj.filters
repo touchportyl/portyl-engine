@@ -177,5 +177,11 @@
     <ClInclude Include="src\FlexEngine\Reflection\propertymap.h">
       <Filter>src\FlexEngine\Reflection</Filter>
     </ClInclude>
+    <ClInclude Include="src\FlexEngine\Reflection\propertybase.h">
+      <Filter>src\FlexEngine\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Reflection\propertyreference.h">
+      <Filter>src\FlexEngine\Reflection</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
