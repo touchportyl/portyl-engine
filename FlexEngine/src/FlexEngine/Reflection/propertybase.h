@@ -17,8 +17,12 @@ namespace FlexEngine
     /// <summary>
     /// Passthrough function to get the value of the property.
     /// </summary>
-    //virtual void GetValueFromAny(void* value) const = 0;
-    virtual void GetValueFromAny(void* value) = 0;
+    virtual void GetValueFromAny(void* value) const = 0;
+
+    /// <summary>
+    /// Passthrough function to get the reference of the property.
+    /// </summary>
+    virtual void GetReferenceFromAny(void* reference) = 0;
 
     /// <summary>
     /// Passthrough function to set the value of the property.

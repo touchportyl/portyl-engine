@@ -30,21 +30,15 @@ namespace FlexEngine
 
     std::unordered_map<std::type_index, std::shared_ptr<Component>> components;
 
+    friend class PropertyBase;
+    friend class PropertyMap;
+
   public:
     FlexEngine::PropertyMap properties =
     {
       {
         "components",
-        std::make_shared<
-          FlexEngine::PropertyReference<
-            decltype(components),
-            std::function<decltype(components)()>,
-            std::function<void(decltype(components))>
-          >
-        >(
-          [this]() { return components; },
-          [this](decltype(components) value) { components = value; }
-        )
+        std::make_shared<FlexEngine::PropertyReference<decltype(components)>>()
       }
     };
   };

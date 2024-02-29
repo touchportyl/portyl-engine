@@ -35,6 +35,20 @@ namespace FlexEngine
       }
       return T();
     }
+
+    /// <summary>
+    /// Get the reference to the property.
+    /// </summary>
+    template <typename T>
+    T* GetPropertyReference(const std::string& name)
+    {
+      auto it = m_property_list.find(name);
+      if (it != m_property_list.end())
+      {
+        return it->second->GetReferenceFromAny(temp);
+      }
+      return nullptr;
+    }
     
     /// <summary>
     /// Set a property.

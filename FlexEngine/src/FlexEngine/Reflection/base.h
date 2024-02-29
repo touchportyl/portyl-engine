@@ -44,6 +44,11 @@
   private:
 
 
+// allow access to private/protected members
+#define FLX_REFL_FRIEND \
+  friend class PropertyBase; \
+  friend class PropertyMap;
+
 
 // register a class for serialization
 

@@ -13,52 +13,41 @@ namespace FlexEngine
   /// <para>It is used to store values in a generic way, and to provide a uniform interface to access them.</para>
   /// <para>The getter and setter functions are used to access the underlying value, if they are not null.</para>
   /// </summary>
-  template <typename T, typename GetterFn, typename SetterFn>
+  template <typename T>
   class PropertyReference : public PropertyBase
   {
   public:
     /// <summary>
     /// Constructor for the PropertyReference class.
-    /// <para>The getter and setter functions are optional.</para>
+    /// <para>Pass in a pointer to the Property</para>
+    /// <para>FLX_REFL_FRIEND is required to access private/protected references</para>
     /// </summary>
-    PropertyReference(T& reference, GetterFn getter, SetterFn setter)
-      : reference(reference), getter_function(getter), setter_function(setter) {}
+    PropertyReference(T* reference)
+      : reference(reference) {}
 
     /// <summary>
     /// Get the value of the property.
     /// <para>If a getter function is provided, it is used to get the value.</para>
     /// <para>If the getter function is not provided, the last value set is returned.</para>
     /// </summary>
-    T& Get() { if (getter_function) { reference = getter_function(); } return reference; }
-    /// <summary>
-    /// Set the value of the property.
-    /// <para>If a setter function is provided, it is used to set the value.</para>
-    /// <para>If the setter function is not provided, the setter function is not called.</para>
-    /// </summary>
-    void Set(const T& new_reference)
-    { // if the property is read only, do not set the value
-      FLX_ASSERT(!is_read_only, "Property is read only.");
-      if (setter_function) { setter_function(new_reference);
-      }
-    }
+    T* Get() { return reference; }
 
     // global getter and setter
-    void GetValueFromAny(void* _value) override { *static_cast<T*>(_value) = Get(); }
-    void SetValueFromAny(const void* _value) override { Set(*static_cast<const T*>(_value)); }
+    void GetValueFromAny(void* _value) override = 0;
+    void GetReferenceFromAny(void* _reference) override { _reference = Get(); }
+    void SetValueFromAny(const void* _value) override = 0;
 
     // returns a string representation of the value
     std::string ToString() const override {}// return std::to_string(Get()); }
 
   private:
-    T& reference;
+    T* reference;
     std::string name = "PropertyReference";
     bool is_read_only = false;
-    GetterFn getter_function = nullptr;
-    SetterFn setter_function = nullptr;
   };
 
-  template <typename T, typename GetterFn, typename SetterFn>
-  std::ostream& operator<<(std::ostream& stream, const PropertyReference<T, GetterFn, SetterFn>& property) {
+  template <typename T>
+  std::ostream& operator<<(std::ostream& stream, const PropertyReference<T>& property) {
     return stream << property.Get();
   }
 

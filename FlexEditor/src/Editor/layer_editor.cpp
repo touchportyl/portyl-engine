@@ -64,8 +64,8 @@ namespace FlexEditor
     // maybe put this using in the actual class
     using ComponentUMap = std::unordered_map<std::type_index, std::shared_ptr<Component>>;
 
-    ComponentUMap map = go2->properties.GetProperty<ComponentUMap>("components");
-    
+    ComponentUMap map = go2->properties.GetPropertyReference<ComponentUMap>("components");
+
     // get the transform component by going thru the map
     auto it = map.find(typeid(Transform));
     if (it != map.end())

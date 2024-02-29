@@ -37,8 +37,8 @@ namespace FlexEngine
     void Set(const T& new_value) { value = new_value; if (setter_function) { setter_function(new_value); } }
 
     // global getter and setter
-    //void GetValueFromAny(void* _value) const override { *static_cast<T*>(_value) = Get(); }
-    void GetValueFromAny(void* _value) override { *static_cast<T*>(_value) = Get(); }
+    void GetValueFromAny(void* _value) const override { *static_cast<T*>(_value) = Get(); }
+    //void GetReferenceFromAny(void* _reference) override = delete;
     void SetValueFromAny(const void* _value) override { Set(*static_cast<const T*>(_value)); }
 
     // returns a string representation of the value
