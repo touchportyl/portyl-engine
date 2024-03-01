@@ -223,9 +223,15 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\playerprefs.h" />
     <ClInclude Include="src\FlexEngine\Reflection\base.h" />
     <ClInclude Include="src\FlexEngine\Reflection\property.h" />
-    <ClInclude Include="src\FlexEngine\Reflection\propertybase.h" />
+    <ClInclude Include="src\FlexEngine\Reflection\propertybase.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="src\FlexEngine\Reflection\propertymap.h" />
-    <ClInclude Include="src\FlexEngine\Reflection\propertyreference.h" />
+    <ClInclude Include="src\FlexEngine\Reflection\propertyreference.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="src\FlexEngine\timer.h" />
     <ClInclude Include="src\FlexEngine\uuid.h" />
     <ClInclude Include="src\pch.h" />

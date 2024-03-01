@@ -1,7 +1,6 @@
 #pragma once
 
 #include "property.h"
-#include "propertyreference.h"
 
 #include <unordered_map>
 
@@ -45,7 +44,9 @@ namespace FlexEngine
       auto it = m_property_list.find(name);
       if (it != m_property_list.end())
       {
-        return it->second->GetReferenceFromAny(temp);
+        T temp{};
+        it->second->GetReferenceFromAny(temp);
+        return temp;
       }
       return nullptr;
     }

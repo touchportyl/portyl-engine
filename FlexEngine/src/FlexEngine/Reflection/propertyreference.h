@@ -33,9 +33,9 @@ namespace FlexEngine
     T* Get() { return reference; }
 
     // global getter and setter
-    void GetValueFromAny(void* _value) override = 0;
+    void GetValueFromAny(void* _value) override {}
     void GetReferenceFromAny(void* _reference) override { _reference = Get(); }
-    void SetValueFromAny(const void* _value) override = 0;
+    void SetValueFromAny(const void* _value) override {}
 
     // returns a string representation of the value
     std::string ToString() const override {}// return std::to_string(Get()); }

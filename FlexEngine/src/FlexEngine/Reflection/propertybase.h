@@ -14,20 +14,11 @@ namespace FlexEngine
   class PropertyBase
   {
   public:
-    /// <summary>
-    /// Passthrough function to get the value of the property.
-    /// </summary>
-    virtual void GetValueFromAny(void* value) const = 0;
-
-    /// <summary>
-    /// Passthrough function to get the reference of the property.
-    /// </summary>
-    virtual void GetReferenceFromAny(void* reference) = 0;
-
-    /// <summary>
-    /// Passthrough function to set the value of the property.
-    /// </summary>
-    virtual void SetValueFromAny(const void* value) = 0;
+    template <typename T>
+    T* As()
+    {
+      return dynamic_cast<T*>(this);
+    }
 
     /// <summary>
     /// Returns a string representation of the PropertyBase UUID
