@@ -12,4 +12,7 @@ namespace FlexEngine
     virtual ~Component() = default;
   };
 
+  // Component Map (Unordered)
+  using ComponentMap = std::unordered_map<std::type_index, std::shared_ptr<Component>>;
+
 }

@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FlexCode", "FlexCode\FlexCo
 		{3E5799F5-C88A-446F-929F-98F4F73BE2F5} = {3E5799F5-C88A-446F-929F-98F4F73BE2F5}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FlexViewer", "FlexViewer\FlexViewer.vcxproj", "{036531A0-0DB0-42D8-AD21-ADC04AC6F233}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -73,6 +75,14 @@ Global
 		{68ADCB35-75FA-40BA-A597-1E9983F9E09F}.Release|x64.Build.0 = Release|x64
 		{68ADCB35-75FA-40BA-A597-1E9983F9E09F}.Release|x86.ActiveCfg = Release|Win32
 		{68ADCB35-75FA-40BA-A597-1E9983F9E09F}.Release|x86.Build.0 = Release|Win32
+		{036531A0-0DB0-42D8-AD21-ADC04AC6F233}.Debug|x64.ActiveCfg = Debug|x64
+		{036531A0-0DB0-42D8-AD21-ADC04AC6F233}.Debug|x64.Build.0 = Debug|x64
+		{036531A0-0DB0-42D8-AD21-ADC04AC6F233}.Debug|x86.ActiveCfg = Debug|Win32
+		{036531A0-0DB0-42D8-AD21-ADC04AC6F233}.Debug|x86.Build.0 = Debug|Win32
+		{036531A0-0DB0-42D8-AD21-ADC04AC6F233}.Release|x64.ActiveCfg = Release|x64
+		{036531A0-0DB0-42D8-AD21-ADC04AC6F233}.Release|x64.Build.0 = Release|x64
+		{036531A0-0DB0-42D8-AD21-ADC04AC6F233}.Release|x86.ActiveCfg = Release|Win32
+		{036531A0-0DB0-42D8-AD21-ADC04AC6F233}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

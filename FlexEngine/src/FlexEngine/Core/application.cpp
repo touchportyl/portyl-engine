@@ -7,7 +7,7 @@ namespace FlexEngine
 {
   Application* Application::s_instance = nullptr;
 
-  Application::Application()
+  Application::Application(WindowProps window_props)
   {
     FLX_FLOW_BEGINSCOPE();
 
@@ -16,7 +16,7 @@ namespace FlexEngine
     else s_instance = this;
 
     // create window
-    m_window = new Window();
+    m_window = new Window(window_props);
     FLX_NULLPTR_ASSERT(m_window, "Window object not created!");
     FreeQueue::Push([&]() { delete m_window; });
     m_glfwwindow = m_window->GetGLFWWindow(); // cache glfw window

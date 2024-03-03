@@ -3,20 +3,24 @@
 
 #include "layer_launcher.h"
 
-namespace FlexEngine
+namespace FlexLauncher
 {
-  class FlexLauncher : public Application
+  class FlexLauncher : public FlexEngine::Application
   {
   public:
     FlexLauncher()
-      : Application()
+      : Application({ "FlexLauncher", 1280, 690 })
     {
       PushLayer(new LauncherLayer());
     }
   };
-  
+
+}
+
+namespace FlexEngine
+{
   Application* CreateApplication()
   {
-    return new FlexLauncher();
+    return new FlexLauncher::FlexLauncher();
   }
 }

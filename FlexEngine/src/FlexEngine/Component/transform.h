@@ -14,10 +14,9 @@ namespace FlexEngine
   private:
     float x = 0;
 
-    FLX_REFL_REGISTER
-    {
+    FLX_REFL_REGISTER_START
       FLX_REFL_REGISTER_PROPERTY(x)
-    };
+    FLX_REFL_REGISTER_END
   };
 
 }

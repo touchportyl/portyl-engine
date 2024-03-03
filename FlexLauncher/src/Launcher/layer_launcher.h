@@ -2,10 +2,10 @@
 
 #include <FlexEngine.h>
 
-namespace FlexEngine
+namespace FlexLauncher
 {
 
-  class LauncherLayer : public Layer
+  class LauncherLayer : public FlexEngine::Layer
   {
   public:
     LauncherLayer();

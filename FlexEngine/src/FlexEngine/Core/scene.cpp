@@ -9,7 +9,7 @@ namespace FlexEngine
     for (auto& gameobject : gameobjects)
     {
       stream << "GameObject: " << gameobject.first << "\nComponents:\n";
-      gameobject.second->Serialize(stream);
+      //gameobject.second->Serialize(stream);
     }
   }
 

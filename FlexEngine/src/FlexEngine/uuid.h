@@ -18,6 +18,9 @@ namespace FlexEngine
     operator Hash() const { return m_UUID; }
     operator std::string() const { return std::to_string(m_UUID); }
     std::ostream& operator<<(std::ostream& stream) const { return stream << m_UUID; }
+
+    // == operator
+    bool operator==(const UUID& other) const { return m_UUID == other.m_UUID; }
   private:
     const Hash m_UUID;
   };

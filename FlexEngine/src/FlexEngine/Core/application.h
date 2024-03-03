@@ -12,7 +12,7 @@ namespace FlexEngine
   class Application
   {
   public:
-    Application();
+    Application(WindowProps window_props = {});
     virtual ~Application();
 
     void PushLayer(Layer* layer);

@@ -14,18 +14,35 @@ namespace FlexEngine
   class PropertyBase
   {
   public:
-    template <typename T>
-    T* As()
-    {
-      return dynamic_cast<T*>(this);
-    }
+    /// <summary>
+    /// Passthrough function to get the value of the property.
+    /// </summary>
+    virtual void GetValueFromAny(void* value) = 0;
 
     /// <summary>
-    /// Returns a string representation of the PropertyBase UUID
-    /// <para>Property overrides this function to return a string representation of the value.</para>
+    /// Passthrough function to get the reference of the property.
     /// </summary>
-    virtual std::string ToString() const { return uuid; }
+    virtual void GetReferenceFromAny(void** reference) = 0;
 
+    /// <summary>
+    /// Passthrough function to set the value of the property.
+    /// </summary>
+    virtual void SetValueFromAny(const void* value) = 0;
+
+    /// <summary>
+    /// Passthrough function to serialize the property.
+    /// </summary>
+    //virtual void Serialize(std::ostream& stream) const = 0;
+
+    /// <summary>
+    /// Passthrough function to return the string representation of the property type.
+    /// </summary>
+    virtual std::string ToString() const = 0;
+
+    /// <returns>UUID of the property.</returns>
+    UUID GetUUID() const { return uuid; }
+
+  private:
     UUID uuid;
   };
 

@@ -46,39 +46,37 @@ namespace FlexEditor
     //UUID uuid;
     //Log::Debug(uuid);
 
-    Scene scene{};
+    //Scene scene{};
 
-    GameObject* go1 = scene.AddGameObject("Transform Test");
-    GameObject* go2 = scene.AddGameObject("Transformers 2: Electric Boogaloo");
+    //GameObject* go1 = scene.AddGameObject("Transform Test");
+    //GameObject* go2 = scene.AddGameObject("Transformers 2: Electric Boogaloo");
 
-    Transform* t1 = go1->AddComponent<Transform>();
-    go2->AddComponent<Transform>();
+    //Transform* t1 = go1->AddComponent<Transform>();
+    //go2->AddComponent<Transform>();
 
-    Transform* t2 = go2->GetComponent<Transform>();
+    //Transform* t2 = go2->GetComponent<Transform>();
 
-    t1->properties.SetProperty("x", 42.f);
-    t2->properties.SetProperty("x", t1->properties.GetProperty<float>("x"));
-    t1->properties.SetProperty("x", 35.f);
+    //t1->properties.SetProperty("x", 42.f);
+    //t2->properties.SetProperty("x", t1->properties.GetProperty<float>("x"));
+    //t1->properties.SetProperty("x", 35.f);
 
 
-    // maybe put this using in the actual class
-    using ComponentUMap = std::unordered_map<std::type_index, std::shared_ptr<Component>>;
 
-    ComponentUMap* map = go2->properties.GetPropertyReference<ComponentUMap>("components");
+    //ComponentMap* go2_props = go2->properties.GetPropertyReference<ComponentMap>("components");
 
     // get the transform component by going thru the map
-    auto it = map->find(typeid(Transform));
-    if (it != map->end())
-    {
-      Transform* t3 = dynamic_cast<Transform*>(it->second.get());
-      t3->properties.SetProperty("x", 100.f);
-    }
+    //auto it = go2_props->find(typeid(Transform));
+    //if (it != go2_props->end())
+    //{
+    //  Transform* t3 = dynamic_cast<Transform*>(it->second.get());
+    //  t3->properties.SetProperty("x", 100.f);
+    //}
 
 
-    std::stringstream ss{};
-    scene.Serialize(ss);
-    Log::Debug(ss.str());
-    //Log::Debug(transform->x.ToString());
+    //std::stringstream ss{};
+    //scene.Serialize(ss);
+    //Log::Debug(ss.str());
+
 
     //Transform transform{};
     //transform.x = 1;

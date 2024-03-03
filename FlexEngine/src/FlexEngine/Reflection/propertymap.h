@@ -37,6 +37,7 @@ namespace FlexEngine
 
     /// <summary>
     /// Get the reference to the property.
+    /// <para>Returns nullptr if the property does not exist.</para>
     /// </summary>
     template <typename T>
     T* GetPropertyReference(const std::string& name)
@@ -44,13 +45,13 @@ namespace FlexEngine
       auto it = m_property_list.find(name);
       if (it != m_property_list.end())
       {
-        T temp{};
-        it->second->GetReferenceFromAny(temp);
+        T* temp{};
+        it->second->GetReferenceFromAny(reinterpret_cast<void**>(&temp));
         return temp;
       }
       return nullptr;
     }
-    
+
     /// <summary>
     /// Set a property.
     /// <para>It is good practice to specify the type of the property explicitly.</para>
@@ -61,12 +62,36 @@ namespace FlexEngine
       auto it = m_property_list.find(name);
       if (it != m_property_list.end())
       {
-        it->second->SetValueFromAny(value);
+        it->second->SetValueFromAny(std::addressof(value));
       }
     }
 
+    // iterators
+    auto Begin() const { return m_property_list.cbegin(); }
+    auto End() const { return m_property_list.cend(); }
+
+    void Serialize(std::ostream& stream) const
+    {
+      stream << name << '\n';
+      //for (const auto& [_name, _property] : m_property_list)
+      //  _property->Serialize(stream);
+    }
+
+    /// <summary>
+    /// Set the name of the PropertyMap.
+    /// </summary>
+    void SetName(const std::string& _name = "Unnamed PropertyMap") { name = _name; }
+
+    /// <returns>Name of the PropertyMap</returns>
+    std::string GetName() const { return name; }
+
+    /// <returns>UUID of the PropertyMap</returns>
+    UUID GetUUID() const { return uuid; }
+
   private:
     std::unordered_map<std::string, std::shared_ptr<PropertyBase>> m_property_list;
+    std::string name = "Unnamed PropertyMap";
+    UUID uuid;
   };
 
 }

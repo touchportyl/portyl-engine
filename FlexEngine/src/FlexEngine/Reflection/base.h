@@ -14,12 +14,53 @@
 // it is based on the UUID system and is opt-in
 
 
+namespace FlexEngine
+{
+
+  // map of property maps
+  using PropertyMapMap = std::unordered_map<UUID, std::shared_ptr<PropertyMap>>;
+
+  class ReflectionSystem
+  {
+  public:
+    /// <summary>
+    /// Tracks the class in the reflection system
+    /// </summary>
+    static void TrackClass(const std::string& name, PropertyMap& properties)
+    {
+      //properties.SetName(name);
+      //property_maps[properties.GetUUID()] = std::make_shared<PropertyMap>(properties);
+    }
+
+    /// <summary>
+    /// Removes the class from the reflection system
+    /// </summary>
+    static void UntrackClass(const std::string& name)
+    { 
+
+      for (auto it = property_maps.begin(); it != property_maps.end(); ++it)
+      {
+        if (it->second->GetName() == name)
+        {
+          //property_maps.erase(it);
+          return;
+        }
+      }
+
+    }
+
+    static PropertyMapMap property_maps;
+  };
+
+}
+
+
 // register a class for serialization
-// this is done by adding a UUID to the class
+// adds the necessary methods to serialize a class
 #define FLX_REFL_SERIALIZABLE \
-  public: \
-  FlexEngine::UUID uuid; \
   private:
+  //public: \
+  //FlexEngine::UUID uuid; \
 
 // standardized header to serialize a class
 // define the methods in the cpp file
@@ -44,26 +85,21 @@
   private:
 
 
-// allow access to private/protected members
-#define FLX_REFL_FRIEND \
-  friend class PropertyBase; \
-  friend class PropertyMap;
-
-
 // register a class for serialization
 
 // start the registration of a class
-// put this at the very bottom of the class definition
+// put this at the very bottom of the class declaration
 // this is to ensure that the properties are registered after the class is fully defined
 // 
 // example:
-// FLX_REFL_REGISTER
-// {
+// FLX_REFL_REGISTER_START
 //   FLX_REFL_REGISTER_PROPERTY(x)
-// };
-#define FLX_REFL_REGISTER \
+//   FLX_REFL_REGISTER_REFERENCE(array)
+// FLX_REFL_REGISTER_END
+#define FLX_REFL_REGISTER_START \
   public: \
-  FlexEngine::PropertyMap properties =
+  FlexEngine::PropertyMap properties = {
+
 
 // add a property to the reflection system
 #define FLX_REFL_REGISTER_PROPERTY(PROPERTY) \
@@ -80,3 +116,38 @@
       [this](decltype(PROPERTY) value) { PROPERTY = value; } \
     ) \
   }
+
+// add a reference to the reflection system
+#define FLX_REFL_REGISTER_REFERENCE(REFERENCE) \
+  { \
+  #REFERENCE, \
+  std::make_shared< \
+    FlexEngine::Property< \
+    decltype(REFERENCE), \
+    std::function<decltype(REFERENCE)()>, \
+    std::function<void(decltype(REFERENCE))> \
+    > \
+  >(&REFERENCE) \
+  }
+
+
+// end the registration of a class
+#define FLX_REFL_REGISTER_END \
+  };
+
+// end the registration of a class
+// and link the class to the reflection system
+#define FLX_REFL_REGISTER_END_AND_LINK(CLASS) \
+  }; \
+  friend class PropertyBase; \
+  friend class PropertyMap; \
+  void REFL_TrackClass() { FlexEngine::ReflectionSystem::TrackClass(#CLASS, properties); } \
+  void REFL_UntrackClass() { FlexEngine::ReflectionSystem::UntrackClass(#CLASS); }
+
+
+
+// place in the constructor to add the class's properties to the reflection system
+#define FLX_REFL_TRACK(CLASS) REFL_TrackClass();
+
+// place in the destructor to remove the class's properties from the reflection system
+#define FLX_REFL_UNTRACK(CLASS) REFL_UntrackClass();

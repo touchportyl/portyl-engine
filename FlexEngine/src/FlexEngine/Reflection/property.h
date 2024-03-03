@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PropertyBase.h"
+#include "propertybase.h"
 
 #include <iostream>
 #include <functional>
@@ -23,14 +23,20 @@ namespace FlexEngine
     /// <para>The getter and setter functions are optional.</para>
     /// </summary>
     Property(GetterFn getter, SetterFn setter) : getter_function(getter), setter_function(setter) {}
-    Property(T* reference) : reference(reference) {}
+
+    /// <summary>
+    /// Constructor for the Property class.
+    /// <para>This constructor is for references</para>
+    /// <para>The getter and setter functions are optional.</para>
+    /// </summary>
+    Property(T* reference, GetterFn getter = nullptr, SetterFn setter = nullptr) : reference(reference), getter_function(getter), setter_function(setter) {}
 
     /// <summary>
     /// Get the value of the property.
     /// <para>If a getter function is provided, it is used to get the value.</para>
     /// <para>If the getter function is not provided, the last value set is returned.</para>
     /// </summary>
-    T Get() const
+    T Get()
     {
       if (reference) value = *reference;
       else if (getter_function) value = getter_function();
@@ -41,22 +47,48 @@ namespace FlexEngine
     /// <para>If a setter function is provided, it is used to set the value.</para>
     /// <para>If the setter function is not provided, the setter function is not called.</para>
     /// </summary>
-    void Set(const T& new_value) { value = new_value; if (setter_function) { setter_function(new_value); } }
+    void Set(const T& new_value)
+    {
+      if (reference) *reference = new_value;
+      else if (setter_function) setter_function(new_value);
+      value = new_value;
+    }
     /// <summary>
     /// Gets the original reference to the value.
+    /// <para>If a reference is provided, it is returned.</para>
+    /// <para>If a reference is not provided, a reference to the Property value is returned.</para>
     /// </summary>
-    T* GetReference() { if (reference) { return reference; } }
+    T* GetReference()
+    {
+      if (reference) return reference;
+      else return nullptr;
+    }
 
-    // returns a string representation of the value
-    std::string ToString() const override { return std::to_string(Get()); }
+    // global getter and setter
+    void GetValueFromAny(void* _value) override { *static_cast<T*>(_value) = Get(); }
+    void GetReferenceFromAny(void** _reference) override { *_reference = GetReference(); }
+    void SetValueFromAny(const void* _value) override { Set(*static_cast<const T*>(_value)); }
+
+    // serialize
+    //void Serialize(std::ostream& stream) const override
+    //{
+    //  stream << Get();
+    //}
+
+    /// <returns>string representation of the property type</returns>
+    std::string ToString() const override
+    {
+      std::string str = typeid(T).name();
+      return str;
+    }
 
   private:
-    T value = 0;                        // copy of the value
-    T* reference = nullptr;             // reference to the original object (optional)
-                                        // this must be set in the constructor,
-                                        // and the original object must outlive the property
-    GetterFn getter_function = nullptr; // reference to the getter function (optional)
-    SetterFn setter_function = nullptr; // reference to the setter function (optional)
+    T value{};                            // copy of the value
+    T* reference = nullptr;               // reference to the original object (optional)
+                                          // this must be set in the constructor,
+                                          // and the original object must outlive the property
+    GetterFn getter_function = nullptr;   // reference to the getter function (optional)
+    SetterFn setter_function = nullptr;   // reference to the setter function (optional)
   };
 
   template <typename T, typename GetterFn, typename SetterFn>

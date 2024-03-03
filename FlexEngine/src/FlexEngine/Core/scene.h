@@ -12,7 +12,7 @@ namespace FlexEngine
     GameObject* AddGameObject(std::string name);
     GameObject* GetGameObject(std::string name) const;
 
-    std::unordered_map<std::string, std::shared_ptr<GameObject>> gameobjects;
+    GameObjectMap gameobjects;
   };
 
 }
