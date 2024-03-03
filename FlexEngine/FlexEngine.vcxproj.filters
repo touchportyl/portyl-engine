@@ -79,9 +79,6 @@
     <ClCompile Include="src\FlexEngine\uuid.cpp">
       <Filter>src\FlexEngine</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\Component\transform.cpp">
-      <Filter>src\FlexEngine\Component</Filter>
-    </ClCompile>
     <ClCompile Include="src\FlexEngine\Core\gameobject.cpp">
       <Filter>src\FlexEngine\Core</Filter>
     </ClCompile>

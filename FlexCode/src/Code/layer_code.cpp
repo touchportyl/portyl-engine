@@ -301,7 +301,8 @@ namespace FlexCode
       {
         // begin window
         ImGui::Begin(file.name.c_str(), &file.is_open,
-          (file.is_dirty ? ImGuiWindowFlags_UnsavedDocument : ImGuiWindowFlags_None)
+          (file.is_dirty ? ImGuiWindowFlags_UnsavedDocument : ImGuiWindowFlags_None) |
+          ImGuiWindowFlags_NoSavedSettings
         );
 
         // if to_dock flag is set, dock it to the dockspace

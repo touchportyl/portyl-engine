@@ -6,7 +6,7 @@ namespace FlexEngine
 {
 
   class Component
-  { FLX_REFL_SERIALIZABLE FLX_REFL_SERIALIZE_VIRTUAL
+  { FLX_REFL_SERIALIZABLE
 
   public:
     virtual ~Component() = default;

@@ -8,8 +8,6 @@ namespace FlexEngine
 
   class GameObject
   { FLX_REFL_SERIALIZABLE
-  //public:
-  //  void Serialize(std::ostream& stream) const { properties.Serialize(stream); }
   public:
     template <typename T>
     T* AddComponent()
@@ -32,9 +30,31 @@ namespace FlexEngine
 
     ComponentMap components;
 
-    FLX_REFL_REGISTER_START
-      FLX_REFL_REGISTER_REFERENCE(components)
-    FLX_REFL_REGISTER_END_AND_LINK(GameObject)
+    //FLX_REFL_REGISTER_START
+    //  FLX_REFL_REGISTER_REFERENCE(components)
+    //FLX_REFL_REGISTER_END_AND_LINK(GameObject)
+
+  public:
+    FlexEngine::PropertyMap properties =
+    {
+      {
+        {
+          "components",
+          std::make_shared<
+          FlexEngine::Property<
+            decltype(components),
+            std::function<decltype(components)()>,
+            std::function<void(decltype(components))>
+          >
+        >(
+          "components",
+          &components)
+        },
+      },
+      "GameObject"
+    };
+    friend class PropertyBase;
+    friend class PropertyMap;
   };
 
   // GameObject Map (Unordered)

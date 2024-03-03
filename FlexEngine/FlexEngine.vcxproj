@@ -166,7 +166,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\src\glad\glad.c" />
-    <ClCompile Include="src\FlexEngine\Component\transform.cpp" />
     <ClCompile Include="src\FlexEngine\Core\gameobject.cpp" />
     <ClCompile Include="src\FlexEngine\Core\scene.cpp" />
     <ClCompile Include="src\FlexEngine\freequeue.cpp" />

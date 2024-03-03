@@ -13,6 +13,8 @@
 // this is a simple reflection system that allows for serialization and deserialization of classes
 // it is based on the UUID system and is opt-in
 
+#pragma warning(disable: 4100) // unreferenced formal parameter
+#pragma warning(disable: 4010) // single-line comment contains line-continuation character
 
 namespace FlexEngine
 {
@@ -26,9 +28,8 @@ namespace FlexEngine
     /// <summary>
     /// Tracks the class in the reflection system
     /// </summary>
-    static void TrackClass(const std::string& name, PropertyMap& properties)
+    static void TrackClass(PropertyMap& properties)
     {
-      //properties.SetName(name);
       //property_maps[properties.GetUUID()] = std::make_shared<PropertyMap>(properties);
     }
 
@@ -98,7 +99,7 @@ namespace FlexEngine
 // FLX_REFL_REGISTER_END
 #define FLX_REFL_REGISTER_START \
   public: \
-  FlexEngine::PropertyMap properties = {
+  FlexEngine::PropertyMap properties = {{
 
 
 // add a property to the reflection system
@@ -112,35 +113,39 @@ namespace FlexEngine
       std::function<void(decltype(PROPERTY))> \
       > \
     >( \
+      #PROPERTY, \
       [this]() { return PROPERTY; }, \
       [this](decltype(PROPERTY) value) { PROPERTY = value; } \
     ) \
-  }
+  },
 
 // add a reference to the reflection system
 #define FLX_REFL_REGISTER_REFERENCE(REFERENCE) \
   { \
-  #REFERENCE, \
-  std::make_shared< \
-    FlexEngine::Property< \
-    decltype(REFERENCE), \
-    std::function<decltype(REFERENCE)()>, \
-    std::function<void(decltype(REFERENCE))> \
-    > \
-  >(&REFERENCE) \
-  }
+    #REFERENCE, \
+    std::make_shared< \
+      FlexEngine::Property< \
+      decltype(REFERENCE), \
+      std::function<decltype(REFERENCE)()>, \
+      std::function<void(decltype(REFERENCE))> \
+      > \
+    >( \
+      #REFERENCE, \
+      &REFERENCE \
+    ) \
+  },
 
 
 // end the registration of a class
 #define FLX_REFL_REGISTER_END \
-  };
+  }};
 
 // end the registration of a class
 // and link the class to the reflection system
 #define FLX_REFL_REGISTER_END_AND_LINK(CLASS) \
-  }; \
+  }, #CLASS }; \
   friend class PropertyBase; \
-  friend class PropertyMap; \
+  friend class PropertyMap; //\
   void REFL_TrackClass() { FlexEngine::ReflectionSystem::TrackClass(#CLASS, properties); } \
   void REFL_UntrackClass() { FlexEngine::ReflectionSystem::UntrackClass(#CLASS); }
 

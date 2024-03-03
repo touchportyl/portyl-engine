@@ -15,8 +15,14 @@ namespace FlexEngine
   class PropertyMap
   {
   public:
+    PropertyMap(
+      std::initializer_list<std::pair<const std::string, std::shared_ptr<PropertyBase>>> init,
+      std::string name
+    )
+      : name(name), m_property_list(init) {}
+
     PropertyMap(std::initializer_list<std::pair<const std::string, std::shared_ptr<PropertyBase>>> init)
-      : m_property_list(init) {}
+      : m_property_list(init), name("Unnamed PropertyMap") {}
 
     /// <summary>
     /// Get a copy to a property.
@@ -66,21 +72,20 @@ namespace FlexEngine
       }
     }
 
-    // iterators
-    auto Begin() const { return m_property_list.cbegin(); }
-    auto End() const { return m_property_list.cend(); }
-
     void Serialize(std::ostream& stream) const
     {
       stream << name << '\n';
-      //for (const auto& [_name, _property] : m_property_list)
-      //  _property->Serialize(stream);
+      for (const auto& [_name, _property] : m_property_list)
+      {
+        _property->Serialize(stream);
+        stream << '\n';
+      }
     }
 
     /// <summary>
     /// Set the name of the PropertyMap.
     /// </summary>
-    void SetName(const std::string& _name = "Unnamed PropertyMap") { name = _name; }
+    void SetName(const std::string& _name) { name = _name; }
 
     /// <returns>Name of the PropertyMap</returns>
     std::string GetName() const { return name; }
@@ -90,7 +95,7 @@ namespace FlexEngine
 
   private:
     std::unordered_map<std::string, std::shared_ptr<PropertyBase>> m_property_list;
-    std::string name = "Unnamed PropertyMap";
+    std::string name;
     UUID uuid;
   };
 

@@ -32,10 +32,21 @@ namespace FlexEngine
     /// <summary>
     /// Passthrough function to serialize the property.
     /// </summary>
-    //virtual void Serialize(std::ostream& stream) const = 0;
+    virtual void Serialize(std::ostream& stream) const = 0;
+
+    /// <summary>
+    /// Passthrough function to deserialize the property.
+    /// </summary>
+    //virtual void Deserialize(std::istream& stream) = 0;
 
     /// <summary>
     /// Passthrough function to return the string representation of the property type.
+    /// </summary>
+    virtual std::string GetType() const = 0;
+
+    /// <summary>
+    /// Passthrough function to return the string representation of the property value.
+    /// <para>Use GetValueFromAny to get the actual value instead.</para>
     /// </summary>
     virtual std::string ToString() const = 0;
 

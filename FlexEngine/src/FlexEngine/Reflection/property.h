@@ -1,8 +1,10 @@
 #pragma once
 
 #include "propertybase.h"
+//#include "Component/base.h"
 
 #include <iostream>
+#include <sstream>
 #include <functional>
 
 namespace FlexEngine
@@ -22,14 +24,14 @@ namespace FlexEngine
     /// <para>This constructor is for variables</para>
     /// <para>The getter and setter functions are optional.</para>
     /// </summary>
-    Property(GetterFn getter, SetterFn setter) : getter_function(getter), setter_function(setter) {}
+    Property(std::string name, GetterFn getter, SetterFn setter) : name(name), getter_function(getter), setter_function(setter) {}
 
     /// <summary>
     /// Constructor for the Property class.
     /// <para>This constructor is for references</para>
     /// <para>The getter and setter functions are optional.</para>
     /// </summary>
-    Property(T* reference, GetterFn getter = nullptr, SetterFn setter = nullptr) : reference(reference), getter_function(getter), setter_function(setter) {}
+    Property(T* reference, std::string name, GetterFn getter = nullptr, SetterFn setter = nullptr) : reference(reference), name(name), getter_function(getter), setter_function(setter) {}
 
     /// <summary>
     /// Get the value of the property.
@@ -38,8 +40,9 @@ namespace FlexEngine
     /// </summary>
     T Get()
     {
-      if (reference) value = *reference;
-      else if (getter_function) value = getter_function();
+      //if (reference) value = *reference;
+      FLX_ASSERT(reference != nullptr, "Property reference is nullptr");
+      /*else*/ if (getter_function) value = getter_function();
       return value;
     }
     /// <summary>
@@ -70,19 +73,40 @@ namespace FlexEngine
     void SetValueFromAny(const void* _value) override { Set(*static_cast<const T*>(_value)); }
 
     // serialize
-    //void Serialize(std::ostream& stream) const override
-    //{
-    //  stream << Get();
-    //}
+    void Serialize(std::ostream& stream) const override
+    {
+      stream << GetName() << " (" << GetType() << ") : " << ToString();
+    }
+
+    /// <returns>name of the property</returns>
+    std::string GetName() const { return name; }
 
     /// <returns>string representation of the property type</returns>
-    std::string ToString() const override
-    {
-      std::string str = typeid(T).name();
-      return str;
+    std::string GetType() const override { return typeid(T).name(); }
+
+    /// <returns>string representation of the property value</returns>
+    std::string ToString() const override { return ToStringImpl(value); }
+
+  private:
+    // general template for most types
+    template <typename U>
+    static std::string ToStringImpl(const U& val) {
+      return std::to_string(val);
+    }
+
+    // specialization for ComponentMap
+    static std::string ToStringImpl(const ComponentMap& map) {
+      std::stringstream ss{};
+      ss << "{ ";
+      for (const auto& pair : map) {
+        ss << ToString(pair.first) << ": " << ToString(pair.second) << ", ";
+      }
+      ss << "}";
+      return ss.str();
     }
 
   private:
+    std::string name;                     // name of the property
     T value{};                            // copy of the value
     T* reference = nullptr;               // reference to the original object (optional)
                                           // this must be set in the constructor,
@@ -90,11 +114,5 @@ namespace FlexEngine
     GetterFn getter_function = nullptr;   // reference to the getter function (optional)
     SetterFn setter_function = nullptr;   // reference to the setter function (optional)
   };
-
-  template <typename T, typename GetterFn, typename SetterFn>
-  std::ostream& operator<<(std::ostream& stream, const Property<T, GetterFn, SetterFn>& property)
-  {
-    return stream << property.Get();
-  }
 
 }

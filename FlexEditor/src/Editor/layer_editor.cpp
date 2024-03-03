@@ -46,6 +46,46 @@ namespace FlexEditor
     //UUID uuid;
     //Log::Debug(uuid);
 
+    //{ // test 1: properties in a component
+    //  Transform t1{}, t2{};
+    //  t1.properties.SetProperty("x", 10.f);
+    //  t1.properties.SetProperty("y", 200.f);
+    //  t1.properties.SetProperty<float>("z", 400);
+    //
+    //  t2.properties.SetProperty("z", t1.properties.GetProperty<float>("y"));
+    //
+    //  std::stringstream ss{};
+    //  ss << "\n";
+    //  t1.properties.Serialize(ss);
+    //  ss << "\n";
+    //  t2.properties.Serialize(ss);
+    //  Log::Debug(ss.str());
+    //}
+
+    //{ // test 2: recursive properties
+    //  GameObject go1{};// , go2{};
+    //  go1.AddComponent<Transform>();
+    //  //go2.AddComponent<Transform>();
+    //
+    //  Transform* t1 = go1.GetComponent<Transform>();
+    //  //Transform* t2 = go2.GetComponent<Transform>();
+    //
+    //  t1->properties.SetProperty("x", 1.f);
+    //  t1->properties.SetProperty("y", 2.f);
+    //  t1->properties.SetProperty("z", 3.f);
+    //
+    //  //t2->properties.SetProperty("x", t1->properties.GetProperty<float>("z"));
+    //  //t2->properties.SetProperty("y", t1->properties.GetProperty<float>("y"));
+    //  //t2->properties.SetProperty("z", t1->properties.GetProperty<float>("x"));
+    //
+    //  std::stringstream ss{};
+    //  ss << "\n";
+    //  go1.properties.Serialize(ss);
+    //  //ss << "\n";
+    //  //go2.properties.Serialize(ss);
+    //  Log::Debug(ss.str());
+    //}
+
     //Scene scene{};
 
     //GameObject* go1 = scene.AddGameObject("Transform Test");
@@ -112,6 +152,7 @@ namespace FlexEditor
     );
 
     // setup dockspace
+    #pragma warning(suppress: 4189) // unused variable
     ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
     //if (glfwGetKey(Application::Get().GetGLFWWindow(), GLFW_KEY_R))
