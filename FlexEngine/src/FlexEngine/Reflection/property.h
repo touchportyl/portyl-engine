@@ -85,20 +85,30 @@ namespace FlexEngine
     std::string GetType() const override { return typeid(T).name(); }
 
     /// <returns>string representation of the property value</returns>
-    std::string ToString() const override { return ToStringImpl(value); }
+    std::string ToString() const override// { return ToStringImpl(value); }
+    {
+      // currently supported objects:
+      // - ComponentMap
+      if (reference) return ToStringImpl(*reference);
+      return ToStringImpl(value);
+    }
 
   private:
     // general template for most types
     template <typename U>
-    static std::string ToStringImpl(const U& val) {
+    static std::string ToStringImpl(const U& val)
+    {
       return std::to_string(val);
     }
 
     // specialization for ComponentMap
-    static std::string ToStringImpl(const ComponentMap& map) {
+    template <typename K, typename V>
+    static std::string ToStringImpl(const std::unordered_map<K, V>& map)
+    {
       std::stringstream ss{};
       ss << "{ ";
-      for (const auto& pair : map) {
+      for (const auto& pair : map)
+      {
         ss << ToString(pair.first) << ": " << ToString(pair.second) << ", ";
       }
       ss << "}";
