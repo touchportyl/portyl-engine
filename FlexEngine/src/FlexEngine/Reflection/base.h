@@ -1,158 +1,207 @@
-#pragma once
-
-#include <unordered_map>
-#include <typeindex>
-#include <memory>
-#include <functional>
-
-#include "uuid.h"
-#include "propertymap.h"
-
-
-// reflection system
-// this is a simple reflection system that allows for serialization and deserialization of classes
-// it is based on the UUID system and is opt-in
-
-#pragma warning(disable: 4100) // unreferenced formal parameter
-#pragma warning(disable: 4010) // single-line comment contains line-continuation character
+#include <vector>
+#include <iostream>
+#include <string>
+#include <cstddef>
 
 namespace FlexEngine
 {
 
-  // map of property maps
-  using PropertyMapMap = std::unordered_map<UUID, std::shared_ptr<PropertyMap>>;
-
-  class ReflectionSystem
+  namespace Reflection
   {
-  public:
+
     /// <summary>
-    /// Tracks the class in the reflection system
+    /// Base class for all type descriptors.
     /// </summary>
-    static void TrackClass(PropertyMap& properties)
+    struct TypeDescriptor
     {
-      //property_maps[properties.GetUUID()] = std::make_shared<PropertyMap>(properties);
-    }
+      const char* name;
+      size_t size;
+
+      TypeDescriptor(const char* name, size_t size) : name{ name }, size{ size } {}
+      virtual ~TypeDescriptor() {}
+      virtual std::string GetFullName() const { return name; }
+      virtual void Dump(const void* obj, int indentLevel = 0) const = 0;
+    };
 
     /// <summary>
-    /// Removes the class from the reflection system
+    /// Declare the function template that handles primitive types
+    /// such as int, std::string, etc.
     /// </summary>
-    static void UntrackClass(const std::string& name)
-    { 
+    template <typename T>
+    TypeDescriptor* GetPrimitiveDescriptor();
 
-      for (auto it = property_maps.begin(); it != property_maps.end(); ++it)
+    /// <summary>
+    /// A helper class to find TypeDescriptors in different ways.
+    /// </summary>
+    struct DefaultResolver
+    {
+      // Detects if the type T has a static member named "Reflection"
+      // This is done by overloading a function with two different return types
+      // and using SFINAE to select the right one.
+      // Use as "IsReflected<T>::value"
+      template <typename T> static char func(decltype(&T::Reflection));
+      template <typename T> static int func(...);
+      template <typename T>
+      struct IsReflected {
+        enum { value = (sizeof(func<T>(nullptr)) == sizeof(char)) };
+      };
+
+      /// <summary>
+      /// This version is called if T has a static member named "Reflection"
+      /// </summary>
+      template <typename T, typename std::enable_if<IsReflected<T>::value, int>::type = 0>
+      static TypeDescriptor* Get()
       {
-        if (it->second->GetName() == name)
-        {
-          //property_maps.erase(it);
-          return;
-        }
+        return &T::Reflection;
       }
 
+      /// <summary>
+      /// This version is called if T is a primitive type
+      /// </summary>
+      template <typename T, typename std::enable_if<!IsReflected<T>::value, int>::type = 0>
+      static TypeDescriptor* Get()
+      {
+        return GetPrimitiveDescriptor<T>();
+      }
+    };
+
+    /// <summary>
+    /// This is the primary class template for finding all TypeDescriptors
+    /// </summary>
+    template <typename T>
+    struct TypeResolver
+    {
+      static TypeDescriptor* Get()
+      {
+        return DefaultResolver::Get<T>();
+      }
+    };
+
+
+
+    /// <summary>
+    /// Type descriptor for user-defined structs/classes
+    /// </summary>
+    struct TypeDescriptor_Struct : TypeDescriptor
+    {
+      struct Member
+      {
+        const char* name;
+        size_t offset;
+        TypeDescriptor* type;
+      };
+
+      std::vector<Member> members;
+
+      TypeDescriptor_Struct(void (*init)(TypeDescriptor_Struct*))
+        : TypeDescriptor{ nullptr, 0 }
+      {
+        init(this);
+      }
+
+      TypeDescriptor_Struct(const char* name, size_t size, const std::initializer_list<Member>& init)
+        : TypeDescriptor{ nullptr, 0 }, members{ init }
+      {
+      }
+
+      virtual void Dump(const void* obj, int indentLevel) const override
+      {
+        std::cout << name << " {" << std::endl;
+        for (const Member& member : members) {
+          std::cout << std::string(4 * (indentLevel + 1), ' ') << member.name << " = ";
+          member.type->Dump((char*)obj + member.offset, indentLevel + 1);
+          std::cout << std::endl;
+        }
+        std::cout << std::string(4 * indentLevel, ' ') << "}";
+      }
+    };
+
+#define FLX_REFL_SERIALIZABLE \
+    friend struct FlexEngine::Reflection::DefaultResolver; \
+    static FlexEngine::Reflection::TypeDescriptor_Struct Reflection; \
+    static void InitReflection(FlexEngine::Reflection::TypeDescriptor_Struct*);
+
+#define FLX_REFL_REGISTER_START(TYPE) \
+    FlexEngine::Reflection::TypeDescriptor_Struct TYPE::Reflection{TYPE::InitReflection}; \
+    void TYPE::InitReflection(FlexEngine::Reflection::TypeDescriptor_Struct* type_desc) { \
+        using T = TYPE; \
+        type_desc->name = #TYPE; \
+        type_desc->size = sizeof(T); \
+        type_desc->members = {
+
+#define FLX_REFL_REGISTER_PROPERTY(NAME) \
+            {#NAME, offsetof(T, NAME), FlexEngine::Reflection::TypeResolver<decltype(T::NAME)>::Get()},
+
+#define FLX_REFL_REGISTER_END \
+        }; \
     }
 
-    static PropertyMapMap property_maps;
-  };
+    //--------------------------------------------------------
+    // Type descriptors for std::vector
+    //--------------------------------------------------------
+
+    struct TypeDescriptor_StdVector : TypeDescriptor
+    {
+      TypeDescriptor* item_type;
+      size_t(*get_size)(const void*);
+      const void* (*get_item)(const void*, size_t);
+
+      template <typename ItemType>
+      TypeDescriptor_StdVector(ItemType*)
+        : TypeDescriptor{ "std::vector<>", sizeof(std::vector<ItemType>) },
+        item_type{ TypeResolver<ItemType>::Get() }
+      {
+        get_size = [](const void* vec_ptr) -> size_t {
+          const auto& vec = *(const std::vector<ItemType>*) vec_ptr;
+          return vec.size();
+        };
+        get_item = [](const void* vec_ptr, size_t index) -> const void* {
+          const auto& vec = *(const std::vector<ItemType>*) vec_ptr;
+          return &vec[index];
+        };
+      }
+
+      virtual std::string GetFullName() const override
+      {
+        return std::string("std::vector<") + item_type->GetFullName() + ">";
+      }
+
+      virtual void Dump(const void* obj, int indentLevel) const override
+      {
+        size_t num_items = get_size(obj);
+        std::cout << GetFullName();
+        if (num_items == 0)
+        {
+          std::cout << "{}";
+        }
+        else
+        {
+          std::cout << "{" << std::endl;
+          for (size_t index = 0; index < num_items; index++)
+          {
+            std::cout << std::string(4 * (indentLevel + 1), ' ') << "[" << index << "] ";
+            item_type->Dump(get_item(obj, index), indentLevel + 1);
+            std::cout << std::endl;
+          }
+          std::cout << std::string(4 * indentLevel, ' ') << "}";
+        }
+      }
+    };
+
+    /// <summary>
+    /// Partially specialize TypeResolver<> for std::vectors
+    /// </summary>
+    template <typename T>
+    class TypeResolver<std::vector<T>>
+    {
+    public:
+      static TypeDescriptor* Get()
+      {
+        static TypeDescriptor_StdVector typeDesc{ (T*) nullptr };
+        return &typeDesc;
+      }
+    };
+
+  }
 
 }
-
-
-// register a class for serialization
-// adds the necessary methods to serialize a class
-#define FLX_REFL_SERIALIZABLE \
-  private:
-  //public: \
-  //FlexEngine::UUID uuid; \
-
-// standardized header to serialize a class
-// define the methods in the cpp file
-#define FLX_REFL_SERIALIZE \
-  public: \
-  void Serialize(std::ostream& stream) const; \
-  private:
-
-// standardized virtual header to serialize a class
-// this is used for the base class of a hierarchy
-#define FLX_REFL_SERIALIZE_VIRTUAL \
-  public: \
-  virtual void Serialize(std::ostream& stream) const = 0; \
-  private:
-
-// standardized override header to serialize a class
-// this is used for the derived classes of a hierarchy
-// define the methods in the cpp file
-#define FLX_REFL_SERIALIZE_OVERRIDE \
-  public: \
-  void Serialize(std::ostream& stream) const override; \
-  private:
-
-
-// register a class for serialization
-
-// start the registration of a class
-// put this at the very bottom of the class declaration
-// this is to ensure that the properties are registered after the class is fully defined
-// 
-// example:
-// FLX_REFL_REGISTER_START
-//   FLX_REFL_REGISTER_PROPERTY(x)
-//   FLX_REFL_REGISTER_REFERENCE(array)
-// FLX_REFL_REGISTER_END
-#define FLX_REFL_REGISTER_START \
-  public: \
-  FlexEngine::PropertyMap properties = {{
-
-
-// add a property to the reflection system
-#define FLX_REFL_REGISTER_PROPERTY(PROPERTY) \
-  { \
-    #PROPERTY, \
-    std::make_shared< \
-      FlexEngine::Property< \
-      decltype(PROPERTY), \
-      std::function<decltype(PROPERTY)()>, \
-      std::function<void(decltype(PROPERTY))> \
-      > \
-    >( \
-      #PROPERTY, \
-      [this]() { return PROPERTY; }, \
-      [this](decltype(PROPERTY) value) { PROPERTY = value; } \
-    ) \
-  },
-
-// add a reference to the reflection system
-#define FLX_REFL_REGISTER_REFERENCE(REFERENCE) \
-  { \
-    #REFERENCE, \
-    std::make_shared< \
-      FlexEngine::Property< \
-      decltype(REFERENCE), \
-      std::function<decltype(REFERENCE)()>, \
-      std::function<void(decltype(REFERENCE))> \
-      > \
-    >( \
-      #REFERENCE, \
-      &REFERENCE \
-    ) \
-  },
-
-
-// end the registration of a class
-#define FLX_REFL_REGISTER_END \
-  }};
-
-// end the registration of a class
-// and link the class to the reflection system
-#define FLX_REFL_REGISTER_END_AND_LINK(CLASS) \
-  }, #CLASS }; \
-  friend class PropertyBase; \
-  friend class PropertyMap; //\
-  void REFL_TrackClass() { FlexEngine::ReflectionSystem::TrackClass(#CLASS, properties); } \
-  void REFL_UntrackClass() { FlexEngine::ReflectionSystem::UntrackClass(#CLASS); }
-
-
-
-// place in the constructor to add the class's properties to the reflection system
-#define FLX_REFL_TRACK(CLASS) REFL_TrackClass();
-
-// place in the destructor to remove the class's properties from the reflection system
-#define FLX_REFL_UNTRACK(CLASS) REFL_UntrackClass();

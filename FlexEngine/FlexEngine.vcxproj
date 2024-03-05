@@ -166,6 +166,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\src\glad\glad.c" />
+    <ClCompile Include="src\FlexEngine\Component\transform.cpp" />
     <ClCompile Include="src\FlexEngine\Core\gameobject.cpp" />
     <ClCompile Include="src\FlexEngine\Core\scene.cpp" />
     <ClCompile Include="src\FlexEngine\freequeue.cpp" />
@@ -177,6 +178,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Loader\textures.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\shaders.cpp" />
     <ClCompile Include="src\FlexEngine\playerprefs.cpp" />
+    <ClCompile Include="src\FlexEngine\Reflection\primitives.cpp" />
     <ClCompile Include="src\FlexEngine\uuid.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -221,9 +223,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\flexlogger.h" />
     <ClInclude Include="src\FlexEngine\playerprefs.h" />
     <ClInclude Include="src\FlexEngine\Reflection\base.h" />
-    <ClInclude Include="src\FlexEngine\Reflection\property.h" />
-    <ClInclude Include="src\FlexEngine\Reflection\propertybase.h" />
-    <ClInclude Include="src\FlexEngine\Reflection\propertymap.h" />
     <ClInclude Include="src\FlexEngine\timer.h" />
     <ClInclude Include="src\FlexEngine\uuid.h" />
     <ClInclude Include="src\pch.h" />

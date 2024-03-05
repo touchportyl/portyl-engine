@@ -3,15 +3,15 @@
 namespace FlexEngine
 {
 
-  void Scene::Serialize(std::ostream& stream) const
-  {
-    stream << "\n=====\nScene\n=====\n";
-    for (auto& gameobject : gameobjects)
-    {
-      stream << "GameObject: " << gameobject.first << "\nComponents:\n";
-      //gameobject.second->Serialize(stream);
-    }
-  }
+  //void Scene::Serialize(std::ostream& stream) const
+  //{
+  //  stream << "\n=====\nScene\n=====\n";
+  //  for (auto& gameobject : gameobjects)
+  //  {
+  //    stream << "GameObject: " << gameobject.first << "\nComponents:\n";
+  //    //gameobject.second->Serialize(stream);
+  //  }
+  //}
 
   GameObject* Scene::AddGameObject(std::string name)
   {

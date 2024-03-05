@@ -2,6 +2,9 @@
 
 #include "Reflection/base.h"
 
+#include <unordered_map>
+#include <typeindex>
+
 namespace FlexEngine
 {
 

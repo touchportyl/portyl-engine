@@ -24,7 +24,7 @@
       <UniqueIdentifier>{056a8a36-4ac8-4d06-acb5-bd1ac0bc8b49}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\FlexEngine\Reflection">
-      <UniqueIdentifier>{d2d4ae95-2e5f-4107-bf03-f3b530bff88d}</UniqueIdentifier>
+      <UniqueIdentifier>{e9041521-9d51-46c9-8a4b-f92edb080361}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +84,12 @@
     </ClCompile>
     <ClCompile Include="src\FlexEngine\Core\scene.cpp">
       <Filter>src\FlexEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Reflection\primitives.cpp">
+      <Filter>src\FlexEngine\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Component\transform.cpp">
+      <Filter>src\FlexEngine\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -153,9 +159,6 @@
     <ClInclude Include="src\FlexEngine\Component\transform.h">
       <Filter>src\FlexEngine\Component</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Reflection\base.h">
-      <Filter>src\FlexEngine\Reflection</Filter>
-    </ClInclude>
     <ClInclude Include="src\FlexEngine\uuid.h">
       <Filter>src\FlexEngine</Filter>
     </ClInclude>
@@ -168,13 +171,7 @@
     <ClInclude Include="src\FlexEngine\Core\scene.h">
       <Filter>src\FlexEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Reflection\property.h">
-      <Filter>src\FlexEngine\Reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\Reflection\propertymap.h">
-      <Filter>src\FlexEngine\Reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\Reflection\propertybase.h">
+    <ClInclude Include="src\FlexEngine\Reflection\base.h">
       <Filter>src\FlexEngine\Reflection</Filter>
     </ClInclude>
   </ItemGroup>
