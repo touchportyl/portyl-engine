@@ -11,6 +11,8 @@ namespace FlexEngine
     Transform() = default;
     ~Transform() = default;
 
+    Transform(float x, float y, float z) : x(x), y(y), z(z) {}
+
   private:
     float x = 0;
     float y = 0;

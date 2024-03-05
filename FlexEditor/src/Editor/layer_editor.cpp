@@ -46,6 +46,12 @@ namespace FlexEditor
     //UUID uuid;
     //Log::Debug(uuid);
 
+    { // test 1: 
+      Transform t1{1, 2, 3};
+      FlexEngine::Reflection::TypeDescriptor* type_desc = FlexEngine::Reflection::TypeResolver<Transform>::Get();
+      type_desc->Dump(&t1);
+    }
+
     //{ // test 1: properties in a component
     //  Transform t1{}, t2{};
     //  t1.properties.SetProperty("x", 10.f);
