@@ -91,6 +91,9 @@
     <ClCompile Include="src\FlexEngine\Component\transform.cpp">
       <Filter>src\FlexEngine\Component</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\flexformatter.cpp">
+      <Filter>src\FlexEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -173,6 +176,9 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Reflection\base.h">
       <Filter>src\FlexEngine\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\flexformatter.h">
+      <Filter>src\FlexEngine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

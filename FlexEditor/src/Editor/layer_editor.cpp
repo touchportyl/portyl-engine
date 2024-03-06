@@ -46,10 +46,49 @@ namespace FlexEditor
     //UUID uuid;
     //Log::Debug(uuid);
 
-    { // test 1: 
-      Transform t1{1, 2, 3};
-      FlexEngine::Reflection::TypeDescriptor* type_desc = FlexEngine::Reflection::TypeResolver<Transform>::Get();
+    { // test 1a: dump to console (default to std::cout)
+      Log::Debug("test 1a");
+      Transform t1{ 1, 2, 3 };
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
       type_desc->Dump(&t1);
+    }
+
+    { // test 1b: dump to console (logged)
+      Log::Debug("test 1b");
+      Transform t1{ 10, 20, 30 };
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
+      std::stringstream ss{};
+      type_desc->Dump(&t1, 0, ss);
+      Log::Debug(ss.str());
+    }
+
+    { // test 1c: dump a vector (default)
+      Log::Debug("test 1c");
+      std::vector<Transform> list;
+      Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
+      list.push_back(t1); list.push_back(t2);
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
+      type_desc->Dump(&list);
+    }
+
+    { // test 2a: serialize and log
+      Log::Debug("test 2a");
+      Transform t1{ 7, 8, 9 };
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
+      std::stringstream ss{};
+      type_desc->Serialize(&t1, ss);
+      Log::Debug(ss.str());
+    }
+
+    { // test 2b: serialize a std::vector of custom structs
+      Log::Debug("test 2b");
+      std::vector<Transform> list;
+      Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
+      list.push_back(t1); list.push_back(t2);
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
+      std::stringstream ss{};
+      type_desc->Serialize(&list, ss);
+      Log::Debug(ss.str());
     }
 
     //{ // test 1: properties in a component

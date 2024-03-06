@@ -8,9 +8,13 @@
   struct TypeDescriptor_##NAME : TypeDescriptor \
   { \
     TypeDescriptor_##NAME() : TypeDescriptor{ #TYPE, sizeof(TYPE) } {} \
-    virtual void Dump(const void* obj, int) const override \
+    virtual void Dump(const void* obj, int, std::ostream& os) const override \
     { \
-      std::cout << #TYPE << "{" << *(const TYPE*)obj << "}"; \
+      os << #TYPE << "{" << *(const TYPE*)obj << "}"; \
+    } \
+    virtual void Serialize(const void* obj, std::ostream& os) const override \
+    { \
+      os << #TYPE << "{" << *(const TYPE*)obj << "}"; \
     } \
   }; \
   template <> TypeDescriptor* GetPrimitiveDescriptor<TYPE>() \

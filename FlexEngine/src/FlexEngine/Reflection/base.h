@@ -87,13 +87,13 @@ namespace FlexEngine
       /// <summary>
       /// Dumps the contents of an object to the console.
       /// </summary>
-      virtual void Dump(const void* obj, int indentLevel = 0) const = 0;
+      virtual void Dump(const void* obj, int indentLevel = 0, std::ostream& os = std::cout) const = 0;
 
       /// <summary>
       /// Serializes an object to a stream.
       /// <para>This uses a special format that can be read back in by Deserialize.</para>
       /// </summary>
-      //virtual void Serialize(const void* obj, std::ostream& out) const = 0;
+      virtual void Serialize(const void* obj, std::ostream& out) const = 0;
     };
 
     /// <summary>
@@ -178,15 +178,26 @@ namespace FlexEngine
       {
       }
 
-      virtual void Dump(const void* obj, int indentLevel) const override
+      virtual void Dump(const void* obj, int indentLevel, std::ostream& os) const override
       {
-        std::cout << name << "\n{\n";
-        for (const Member& member : members) {
-          std::cout << std::string(4 * (indentLevel + 1), ' ') << member.name << " = ";
-          member.type->Dump((char*)obj + member.offset, indentLevel + 1);
-          std::cout << "\n";
+        os << name << "\n" << std::string(4 * indentLevel, ' ') << "{\n";
+        for (const Member& member : members)
+        {
+          os << std::string(4 * (indentLevel + 1), ' ') << member.name << " = ";
+          member.type->Dump((char*)obj + member.offset, indentLevel + 1, os);
+          os << "\n";
         }
-        std::cout << std::string(4 * indentLevel, ' ') << "}" << std::endl;
+        os << std::string(4 * indentLevel, ' ') << "}\n";
+      }
+
+      virtual void Serialize(const void* obj, std::ostream& os) const override
+      {
+        os << name << "{";
+        for (const Member& member : members)
+        {
+          member.type->Serialize((char*)obj + member.offset, os);
+        }
+        os << "}";
       }
     };
 
@@ -222,26 +233,47 @@ namespace FlexEngine
         return std::string("std::vector<") + item_type->ToString() + ">";
       }
 
-      virtual void Dump(const void* obj, int indentLevel) const override
+      virtual void Dump(const void* obj, int indentLevel, std::ostream& os) const override
       {
         size_t num_items = get_size(obj);
-        std::cout << ToString();
+        os << "\n" << ToString();
         if (num_items == 0)
         {
-          std::cout << "{}";
+          os << "{}";
         }
         else
         {
-          std::cout << "\n{\n";
+          os << "\n" << std::string(4 * indentLevel, ' ') << "{\n";
           for (size_t index = 0; index < num_items; index++)
           {
-            std::cout << std::string(4 * (indentLevel + 1), ' ') << "[" << index << "] ";
-            item_type->Dump(get_item(obj, index), indentLevel + 1);
-            std::cout << "\n";
+            os << std::string(4 * (indentLevel + 1), ' ') << "[" << index << "]\n"
+              << std::string(4 * (indentLevel + 1), ' ');
+            item_type->Dump(get_item(obj, index), indentLevel + 1, os);
+            os << "\n";
           }
-          std::cout << std::string(4 * indentLevel, ' ') << "}" << std::endl;
+          os << std::string(4 * indentLevel, ' ') << "}\n";
         }
       }
+
+      virtual void Serialize(const void* obj, std::ostream& os) const override
+      {
+        size_t num_items = get_size(obj);
+        os << ToString();
+        if (num_items == 0)
+        {
+          os << "{}";
+        }
+        else
+        {
+          os << "{";
+          for (size_t index = 0; index < num_items; index++)
+          {
+            item_type->Serialize(get_item(obj, index), os);
+          }
+          os << "}";
+        }
+      }
+
     };
 
     /// <summary>
