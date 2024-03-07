@@ -2,7 +2,7 @@
 
 #include <Windows.h> // SetFileAttributes
 
-#include "date.h"
+#include "datetime.h"
 
 #include "Core/application.h"
 
@@ -60,7 +60,7 @@ namespace FlexEngine
     std::stringstream ss;
 
     // print time
-    ss << "[" << Date::GetFormattedDate() << "] ";
+    ss << "[" << DateTime::GetFormattedDateTime() << "] ";
 
     // append warning level
     switch (level)
@@ -124,7 +124,7 @@ namespace FlexEngine
 
     // get filename
     std::stringstream filename{};
-    filename << GetFormattedTime("%Y-%m-%d") << ".log";
+    filename << DateTime::GetFormattedDateTime("%Y-%m-%d") << ".log";
     std::filesystem::path save_path = log_base_path / filename.str();
 
     // save log file
