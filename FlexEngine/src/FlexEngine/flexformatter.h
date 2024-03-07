@@ -1,12 +1,11 @@
 #pragma once
 
-#include <iostream>
+//#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <chrono>
-#include <iomanip> // for put_time
-#include <ctime> // for localtime_s
+
+#include "date.h" // includes iostream
 
 namespace FlexEngine
 {
@@ -23,15 +22,6 @@ namespace FlexEngine
     struct SubNode
     {
     };
-
-    std::string GetCurrentDate()
-    {
-      auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-      std::tm tm{}; localtime_s(&tm, &now);
-      std::stringstream ss;
-      ss << std::put_time(&tm, "%Y %m %d");
-      return ss.str();
-    }
     
   private:
     static std::string format;

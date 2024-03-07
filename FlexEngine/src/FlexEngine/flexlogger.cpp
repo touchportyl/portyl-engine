@@ -2,7 +2,7 @@
 
 #include <Windows.h> // SetFileAttributes
 
-#include <chrono>
+#include "date.h"
 
 #include "Core/application.h"
 
@@ -54,32 +54,13 @@ namespace FlexEngine
     FLX_INTERNAL_ASSERT(std::filesystem::remove(log_file_path), "Error removing temporary log file.");
   }
 
-  std::tm Log::GetTime(void)
-  {
-    auto const now = std::chrono::system_clock::now();
-    auto const time = std::chrono::system_clock::to_time_t(now);
-    std::tm local_time{};
-    localtime_s(&local_time, &time);
-    return local_time;
-  }
-
-  std::string Log::GetFormattedTime(const char* fmt = "%Y-%m-%d %X")
-  {
-    auto time = Log::GetTime();
-
-    // Convert time to a local time string
-    char buffer[2048]{ 0 };
-    std::strftime(buffer, sizeof(buffer), fmt, &time);
-    return buffer;
-  }
-
   void Log::Logger(WarningLevel level, const char* message)
   {
     // create string stream
     std::stringstream ss;
 
     // print time
-    ss << "[" << GetFormattedTime() << "] ";
+    ss << "[" << Date::GetFormattedDate() << "] ";
 
     // append warning level
     switch (level)

@@ -180,5 +180,8 @@
     <ClInclude Include="src\FlexEngine\flexformatter.h">
       <Filter>src\FlexEngine</Filter>
     </ClInclude>
+    <ClInclude Include="src\FlexEngine\date.h">
+      <Filter>src\FlexEngine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
