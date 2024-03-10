@@ -94,6 +94,9 @@
     <ClCompile Include="src\FlexEngine\flexformatter.cpp">
       <Filter>src\FlexEngine</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\datetime.cpp">
+      <Filter>src\FlexEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">

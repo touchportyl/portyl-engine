@@ -1,0 +1,29 @@
+{
+  "format": "flxfmt",
+  "format_version": 1,
+  "created": "2024-03-02",
+  "last_edited": "2024-03-06",
+  "save_version": 1,
+  "data": {
+    "type": "vector<Transform>",
+    "data": [
+      {
+        "type": "Transform",
+        "data": [
+          {
+            "type": "float",
+            "data": 1
+          },
+          {
+            "type": "float",
+            "data": 2
+          },
+          {
+            "type": "float",
+            "data": 3
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,9 +1,40 @@
 #include "layer_editor.h"
 
+#include "flexformatter.h"
+
 #include <imgui.h>
 #include <imgui_internal.h>
 
 #include <sstream>
+
+void printJsonNodes(const rapidjson::Value& value, int depth = 0) {
+  if (value.IsObject()) {
+    std::cout << std::string(depth, ' ') << "Object:" << std::endl;
+    for (auto& member : value.GetObject()) {
+      std::cout << std::string(depth + 2, ' ') << "Key: " << member.name.GetString() << std::endl;
+      printJsonNodes(member.value, depth + 4);
+    }
+  }
+  else if (value.IsArray()) {
+    std::cout << std::string(depth, ' ') << "Array:" << std::endl;
+    for (rapidjson::SizeType i = 0; i < value.Size(); ++i) {
+      std::cout << std::string(depth + 2, ' ') << "Index " << i << ":" << std::endl;
+      printJsonNodes(value[i], depth + 4);
+    }
+  }
+  else if (value.IsString()) {
+    std::cout << std::string(depth, ' ') << "String: " << value.GetString() << std::endl;
+  }
+  else if (value.IsNumber()) {
+    std::cout << std::string(depth, ' ') << "Number: " << value.GetDouble() << std::endl;
+  }
+  else if (value.IsBool()) {
+    std::cout << std::string(depth, ' ') << "Boolean: " << (value.GetBool() ? "true" : "false") << std::endl;
+  }
+  else if (value.IsNull()) {
+    std::cout << std::string(depth, ' ') << "Null" << std::endl;
+  }
+}
 
 using namespace FlexEngine;
 
@@ -46,127 +77,113 @@ namespace FlexEditor
     //UUID uuid;
     //Log::Debug(uuid);
 
-    { // test 1a: dump to console (default to std::cout)
-      Log::Debug("test 1a");
-      Transform t1{ 1, 2, 3 };
-      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
-      type_desc->Dump(&t1);
-    }
+    //{ // test 1a: dump to console (default to std::cout)
+    //  Log::Debug("test 1a");
+    //  Transform t1{ 1, 2, 3 };
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
+    //  type_desc->Dump(&t1);
+    //}
 
-    { // test 1b: dump to console (logged)
-      Log::Debug("test 1b");
-      Transform t1{ 10, 20, 30 };
-      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
-      std::stringstream ss{};
-      type_desc->Dump(&t1, 0, ss);
-      Log::Debug(ss.str());
-    }
+    //{ // test 1b: dump to console (logged)
+    //  Log::Debug("test 1b");
+    //  Transform t1{ 10, 20, 30 };
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
+    //  std::stringstream ss{};
+    //  type_desc->Dump(&t1, ss);
+    //  Log::Debug(ss.str());
+    //}
 
-    { // test 1c: dump a vector (default)
-      Log::Debug("test 1c");
-      std::vector<Transform> list;
-      Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
-      list.push_back(t1); list.push_back(t2);
-      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
-      type_desc->Dump(&list);
-    }
+    //{ // test 1c: dump a vector (default)
+    //  Log::Debug("test 1c");
+    //  std::vector<Transform> list;
+    //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
+    //  list.push_back(t1); list.push_back(t2);
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
+    //  type_desc->Dump(&list);
+    //}
 
-    { // test 2a: serialize and log
-      Log::Debug("test 2a");
-      Transform t1{ 7, 8, 9 };
-      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
-      std::stringstream ss{};
-      type_desc->Serialize(&t1, ss);
-      Log::Debug(ss.str());
-    }
+    //{ // test 2a: serialize and log
+    //  Log::Debug("test 2a");
+    //  Transform t1{ 7, 8, 9 };
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
+    //  std::stringstream ss{};
+    //  type_desc->Serialize(&t1, ss);
+    //  Log::Debug(ss.str());
+    //}
 
-    { // test 2b: serialize a std::vector of custom structs
-      Log::Debug("test 2b");
+    //{ // test 2b: dump a std::vector of custom structs
+    //  Log::Debug("test 2b");
+    //  std::vector<Transform> list;
+    //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
+    //  list.push_back(t1); list.push_back(t2);
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
+    //  std::stringstream ss{};
+    //  type_desc->Dump(&list, ss);
+    //  Log::Debug(ss.str());
+    //}
+
+    //{ // test 2c: serialize a std::vector of custom structs
+    //  Log::Debug("test 2c");
+    //  std::vector<Transform> list;
+    //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
+    //  list.push_back(t1); list.push_back(t2);
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
+    //  std::stringstream ss{};
+    //  type_desc->Serialize(&list, ss);
+    //  Log::Debug(ss.str());
+    //}
+
+    { // test 3: writing to .flx file
+      Log::Debug("test 3");
+
+      // scene
       std::vector<Transform> list;
       Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
       list.push_back(t1); list.push_back(t2);
       Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
       std::stringstream ss{};
       type_desc->Serialize(&list, ss);
-      Log::Debug(ss.str());
+
+      std::string file_path = "scene.flx";
+      std::ofstream file(file_path);
+
+      if (file.is_open())
+      {
+        FlexFormatter::Format(file, ss.str());
+        Log::Debug("Wrote to file: " + file_path);
+      }
+      else
+      {
+        Log::Error("Failed to open file: " + file_path);
+      }
+
     }
 
-    //{ // test 1: properties in a component
-    //  Transform t1{}, t2{};
-    //  t1.properties.SetProperty("x", 10.f);
-    //  t1.properties.SetProperty("y", 200.f);
-    //  t1.properties.SetProperty<float>("z", 400);
+    //{ // test 4: parsing .flx file
+    //  Log::Debug("test 4");
+    //  std::string file_path = "scene.flx";
+    //  std::ifstream file(file_path);
     //
-    //  t2.properties.SetProperty("z", t1.properties.GetProperty<float>("y"));
+    //  if (file.is_open())
+    //  {
+    //    // parse the file
+    //    Document document;
+    //    IStreamWrapper isw(file);
+    //    document.ParseStream(isw);
     //
-    //  std::stringstream ss{};
-    //  ss << "\n";
-    //  t1.properties.Serialize(ss);
-    //  ss << "\n";
-    //  t2.properties.Serialize(ss);
-    //  Log::Debug(ss.str());
+    //    // print the document
+    //    if (!document.HasParseError()) {
+    //      printJsonNodes(document);
+    //    }
+    //    else {
+    //      std::cerr << "Failed to parse JSON." << std::endl;
+    //    }
+    //  }
+    //  else
+    //  {
+    //    Log::Error("Failed to open file: " + file_path);
+    //  }
     //}
-
-    //{ // test 2: recursive properties
-    //  GameObject go1{};// , go2{};
-    //  go1.AddComponent<Transform>();
-    //  //go2.AddComponent<Transform>();
-    //
-    //  Transform* t1 = go1.GetComponent<Transform>();
-    //  //Transform* t2 = go2.GetComponent<Transform>();
-    //
-    //  t1->properties.SetProperty("x", 1.f);
-    //  t1->properties.SetProperty("y", 2.f);
-    //  t1->properties.SetProperty("z", 3.f);
-    //
-    //  //t2->properties.SetProperty("x", t1->properties.GetProperty<float>("z"));
-    //  //t2->properties.SetProperty("y", t1->properties.GetProperty<float>("y"));
-    //  //t2->properties.SetProperty("z", t1->properties.GetProperty<float>("x"));
-    //
-    //  std::stringstream ss{};
-    //  ss << "\n";
-    //  go1.properties.Serialize(ss);
-    //  //ss << "\n";
-    //  //go2.properties.Serialize(ss);
-    //  Log::Debug(ss.str());
-    //}
-
-    //Scene scene{};
-
-    //GameObject* go1 = scene.AddGameObject("Transform Test");
-    //GameObject* go2 = scene.AddGameObject("Transformers 2: Electric Boogaloo");
-
-    //Transform* t1 = go1->AddComponent<Transform>();
-    //go2->AddComponent<Transform>();
-
-    //Transform* t2 = go2->GetComponent<Transform>();
-
-    //t1->properties.SetProperty("x", 42.f);
-    //t2->properties.SetProperty("x", t1->properties.GetProperty<float>("x"));
-    //t1->properties.SetProperty("x", 35.f);
-
-
-
-    //ComponentMap* go2_props = go2->properties.GetPropertyReference<ComponentMap>("components");
-
-    // get the transform component by going thru the map
-    //auto it = go2_props->find(typeid(Transform));
-    //if (it != go2_props->end())
-    //{
-    //  Transform* t3 = dynamic_cast<Transform*>(it->second.get());
-    //  t3->properties.SetProperty("x", 100.f);
-    //}
-
-
-    //std::stringstream ss{};
-    //scene.Serialize(ss);
-    //Log::Debug(ss.str());
-
-
-    //Transform transform{};
-    //transform.x = 1;
-    //Log::Debug(transform.uuid);
-
 
     // todo: add opengl rendering
     // vertex buffer objects (VBO)

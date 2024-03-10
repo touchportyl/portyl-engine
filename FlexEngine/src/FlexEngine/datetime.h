@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <string>
 
 
 namespace FlexEngine
@@ -14,31 +15,56 @@ namespace FlexEngine
   class DateTime
   {
   public:
+    /// <summary>
+    /// Date structure that holds the year, month, and day.
+    /// </summary>
+    struct Date
+    {
+      int year;
+      int month;
+      int day;
+
+      /// <summary>
+      /// Default constructor that initializes the date with the current date.
+      /// </summary>
+      Date();
+
+      /// <summary>
+      /// Parameterized constructor that initializes the date with the given year, month, and day.
+      /// </summary>
+      Date(int year, int month, int day);
+
+      /// <returns>Converts the date to a string in the format: %Y-%m-%d</returns>
+      std::string ToString() const;
+
+      // comparison operators
+
+      bool operator==(const Date& other) const;
+      bool operator!=(const Date& other) const;
+      bool operator<(const Date& other) const;
+      bool operator<=(const Date& other) const;
+      bool operator>(const Date& other) const;
+      bool operator>=(const Date& other) const;
+    };
+
+  public:
     // remove constructor
     DateTime() = delete;
 
     /// <summary>
     /// Gets the date in std::tm format.
     /// </summary>
-    static std::tm GetDateTime()
-    {
-      auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-      std::tm tm{}; localtime_s(&tm, &now);
-      return tm;
-    }
+    static std::tm GetDateTime();
 
     /// <summary>
     /// Gets the formatted date in the string.
     /// </summary>
-    static std::string GetFormattedDateTime(const char* fmt = "%Y-%m-%d %X")
-    {
-      auto time = GetDateTime();
+    static std::string GetFormattedDateTime(const char* fmt = "%Y-%m-%d %X");
 
-      // convert time to a local time string
-      char buffer[512]{ 0 };
-      std::strftime(buffer, sizeof(buffer), fmt, &time);
-      return buffer;
-    }
+    /// <summary>
+    /// Gets the date in the Date structure.
+    /// </summary>
+    static Date GetDate();
 
   };
 
