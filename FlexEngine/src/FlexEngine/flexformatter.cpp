@@ -24,6 +24,15 @@ namespace FlexEngine
     IStreamWrapper isw(is);
     document.ParseStream(isw);
 
+    // check for parse errors
+    // if there is an error, return an empty document
+    if (document.HasParseError())
+    {
+      Log::Error("FlexFormatter::Load: Parse error: " + document.GetParseError());
+      Document empty;
+      return empty;
+    }
+
     // save header data
     header.format = document["format"].GetString();
     header.format_version = document["format_version"].GetInt();

@@ -133,57 +133,66 @@ namespace FlexEditor
     //  Log::Debug(ss.str());
     //}
 
-    { // test 3: writing to .flx file
-      Log::Debug("test 3");
-
-      // scene
-      std::vector<Transform> list;
-      Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
-      list.push_back(t1); list.push_back(t2);
-      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
-      std::stringstream ss{};
-      type_desc->Serialize(&list, ss);
-
-      std::string file_path = "scene.flx";
-      std::ofstream file(file_path);
-
-      if (file.is_open())
-      {
-        FlexFormatter::Format(file, ss.str());
-        Log::Debug("Wrote to file: " + file_path);
-      }
-      else
-      {
-        Log::Error("Failed to open file: " + file_path);
-      }
-
-    }
-
-    //{ // test 4: parsing .flx file
-    //  Log::Debug("test 4");
+    //{ // test 3: writing to .flx file
+    //  Log::Debug("test 3");
+    //
+    //  // scene
+    //  std::vector<Transform> list;
+    //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
+    //  list.push_back(t1); list.push_back(t2);
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
+    //  std::stringstream ss{};
+    //  type_desc->Serialize(&list, ss);
+    //
     //  std::string file_path = "scene.flx";
-    //  std::ifstream file(file_path);
+    //  std::ofstream file(file_path);
     //
     //  if (file.is_open())
     //  {
-    //    // parse the file
-    //    Document document;
-    //    IStreamWrapper isw(file);
-    //    document.ParseStream(isw);
-    //
-    //    // print the document
-    //    if (!document.HasParseError()) {
-    //      printJsonNodes(document);
-    //    }
-    //    else {
-    //      std::cerr << "Failed to parse JSON." << std::endl;
-    //    }
+    //    FlexFormatter::Format(file, ss.str());
+    //    Log::Debug("Wrote to file: " + file_path);
     //  }
     //  else
     //  {
     //    Log::Error("Failed to open file: " + file_path);
     //  }
+    //
     //}
+
+    { // test 4: parsing .flx file
+      Log::Debug("test 4");
+      std::string file_path = "scene.flx";
+      std::ifstream file(file_path);
+    
+      if (file.is_open())
+      {
+        // parse the file
+        Document document = FlexFormatter::Load(file);
+    
+        // dump the document
+        //printJsonNodes(document);
+
+        // get the data
+        for (auto& element : document["data"].GetArray())
+        {
+          // deserialize the data
+          // get the type of the element
+          std::string type = element["type"].GetString();
+
+          // based on the type, get the type descriptor
+          if (type == "std::vector<Transform>")
+          {
+            // get the data
+
+          }
+
+        }
+      }
+      else
+      {
+        Log::Error("Failed to open file: " + file_path);
+      }
+    }
 
     // todo: add opengl rendering
     // vertex buffer objects (VBO)

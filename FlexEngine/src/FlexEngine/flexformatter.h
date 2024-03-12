@@ -37,6 +37,7 @@ namespace FlexEngine
   public:
     /// <summary>
     /// Loads the header information and parses the data using RapidJSON.
+    /// <para>If there is a parse error, an empty document is returned.</para>
     /// <para>Currently does not support reading multiple files.</para>
     /// </summary>
     static Document Load(std::istream& is);

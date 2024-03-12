@@ -91,9 +91,15 @@ namespace FlexEngine
 
       /// <summary>
       /// Serializes an object to a stream.
-      /// <para>This uses a special format that can be read back in by Deserialize.</para>
+      /// <para>This serializes it to the json format.</para>
       /// </summary>
       virtual void Serialize(const void* obj, std::ostream& out) const = 0;
+
+      /// <summary>
+      /// Deserializes an object from a string.
+      /// <para>This deserializes it from the json format.</para>
+      /// </summary>
+      //virtual void Deserialize(void* obj, const std::string& data) const = 0;
     };
 
     /// <summary>
@@ -274,13 +280,14 @@ namespace FlexEngine
 
     };
 
+
+
     /// <summary>
     /// Partially specialize TypeResolver<> for std::vectors
     /// </summary>
     template <typename T>
-    class TypeResolver<std::vector<T>>
+    struct TypeResolver<std::vector<T>>
     {
-    public:
       static TypeDescriptor* Get()
       {
         static TypeDescriptor_StdVector typeDesc{ (T*) nullptr };
