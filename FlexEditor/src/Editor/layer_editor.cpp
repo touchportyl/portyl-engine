@@ -176,15 +176,6 @@ namespace FlexEditor
         for (auto& element : document["data"].GetArray())
         {
           // deserialize the data
-          // get the type of the element
-          std::string type = element["type"].GetString();
-
-          // based on the type, get the type descriptor
-          if (type == "std::vector<Transform>")
-          {
-            // get the data
-
-          }
 
         }
       }

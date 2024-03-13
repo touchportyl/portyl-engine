@@ -16,6 +16,10 @@
     { \
       os << R"({"type":")" << #TYPE << R"(","data":)" << *(const TYPE*)obj << "}"; \
     } \
+    virtual void Deserialize(void* obj, const std::string& data) const override \
+    { \
+      *(TYPE*)obj = ParseAs<TYPE>(data);\
+    } \
   }; \
   template <> TypeDescriptor* GetPrimitiveDescriptor<TYPE>() \
   { \

@@ -96,7 +96,7 @@ namespace FlexEngine
       virtual void Serialize(const void* obj, std::ostream& out) const = 0;
 
       /// <summary>
-      /// Deserializes an object from a string.
+      /// Deserializes an object from a json document.
       /// <para>This deserializes it from the json format.</para>
       /// </summary>
       //virtual void Deserialize(void* obj, const std::string& data) const = 0;
@@ -283,7 +283,7 @@ namespace FlexEngine
 
 
     /// <summary>
-    /// Partially specialize TypeResolver<> for std::vectors
+    /// Partially specialize TypeResolver for std::vectors
     /// </summary>
     template <typename T>
     struct TypeResolver<std::vector<T>>
