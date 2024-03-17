@@ -2,6 +2,7 @@
 
 /// <summary>
 /// TypeDescriptor for primitive types
+/// <para>Supports the same types that rapidjson supports except const char*</para>
 /// <para>Abstracted for easy editing</para>
 /// </summary>
 #define TYPE_DESC(NAME, TYPE) \
@@ -16,9 +17,10 @@
     { \
       os << R"({"type":")" << #TYPE << R"(","data":)" << *(const TYPE*)obj << "}"; \
     } \
-    virtual void Deserialize(void* obj, const std::string& data) const override \
+    virtual void Deserialize(void* obj, const json& value) const override \
     { \
-      *(TYPE*)obj = ParseAs<TYPE>(data);\
+      TYPE data = value["data"].Get<TYPE>(); \
+      *(TYPE*)obj = data; \
     } \
   }; \
   template <> TypeDescriptor* GetPrimitiveDescriptor<TYPE>() \
@@ -26,18 +28,22 @@
     static TypeDescriptor_##NAME type_desc; return &type_desc; \
   }
 
+
+
 namespace FlexEngine
 {
 
   namespace Reflection
   {
-    // todo: add all primitive types
-
+    TYPE_DESC(Bool, bool)
     TYPE_DESC(Int, int)
-    TYPE_DESC(Float, float)
+    TYPE_DESC(Unsigned, unsigned)
+    TYPE_DESC(LongLong, int64_t) // long long
+    TYPE_DESC(UnsignedLongLong, uint64_t) // unsigned long long
     TYPE_DESC(Double, double)
+    TYPE_DESC(Float, float)
+    // no support for const char*, just use std::string
     TYPE_DESC(StdString, std::string)
-
   }
 
 }

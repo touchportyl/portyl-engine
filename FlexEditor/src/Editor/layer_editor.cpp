@@ -5,8 +5,6 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
-#include <sstream>
-
 void printJsonNodes(const rapidjson::Value& value, int depth = 0) {
   if (value.IsObject()) {
     std::cout << std::string(depth, ' ') << "Object:" << std::endl;
@@ -159,31 +157,139 @@ namespace FlexEditor
     //
     //}
 
-    { // test 4: parsing .flx file
-      Log::Debug("test 4");
-      std::string file_path = "scene.flx";
-      std::ifstream file(file_path);
-    
-      if (file.is_open())
-      {
-        // parse the file
-        Document document = FlexFormatter::Load(file);
-    
-        // dump the document
-        //printJsonNodes(document);
+    //{ // test 4a: basic deserialization
+    //  Log::Debug("test 4a");
+    //  std::string json = R"(
+    //    {
+    //      "type": "Transform",
+    //      "data": [
+    //        {
+    //          "type": "float",
+    //          "data": 11
+    //        },
+    //        {
+    //          "type": "float",
+    //          "data": 22
+    //        },
+    //        {
+    //          "type": "float",
+    //          "data": 33
+    //        }
+    //      ]
+    //    }
+    //  )";
+    //  rapidjson::Document document;
+    //  document.Parse(json.c_str());
+    //
+    //  Transform t;
+    //
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
+    //
+    //  type_desc->Deserialize(&t, document);
+    //
+    //  std::stringstream ss{};
+    //  type_desc->Serialize(&t, ss);
+    //  Log::Debug(ss.str());
+    //}
 
-        // get the data
-        for (auto& element : document["data"].GetArray())
-        {
-          // deserialize the data
+    //{ // test 4b: deserialization of a std::vector of custom structs
+    //  Log::Debug("test 4b");
+    //  #pragma region R-string
+    //  std::string json = R"(
+    //    {
+    //      "type": "std::vector<Transform>",
+    //      "data": [
+    //        {
+    //          "type": "Transform",
+    //          "data": [
+    //            {
+    //              "type": "float",
+    //              "data": 11
+    //            },
+    //            {
+    //              "type": "float",
+    //              "data": 22
+    //            },
+    //            {
+    //              "type": "float",
+    //              "data": 33
+    //            }
+    //          ]
+    //        },
+    //        {
+    //          "type": "Transform",
+    //          "data": [
+    //            {
+    //              "type": "float",
+    //              "data": 55
+    //            },
+    //            {
+    //              "type": "float",
+    //              "data": 66
+    //            },
+    //            {
+    //              "type": "float",
+    //              "data": 77
+    //            }
+    //          ]
+    //        }
+    //      ]
+    //    }
+    //  )";
+    //  #pragma endregion
+    //  
+    //  rapidjson::Document document;
+    //  document.Parse(json.c_str());
+    //
+    //  std::vector<Transform> list;
+    //
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
+    //
+    //  type_desc->Deserialize(&list, document);
+    //
+    //  std::stringstream ss{};
+    //  type_desc->Serialize(&list, ss);
+    //  Log::Debug(ss.str());
+    //}
 
-        }
-      }
-      else
-      {
-        Log::Error("Failed to open file: " + file_path);
-      }
-    }
+    //{ // test 4c: parsing .flx file
+    //  Log::Debug("test 4c");
+    //  std::string file_path = "scene.flx";
+    //  std::ifstream file(file_path);
+    //
+    //  if (file.is_open())
+    //  {
+    //    // parse the file
+    //    Document document = FlexFormatter::Load(file);
+    //
+    //    // dump the document
+    //    //printJsonNodes(document);
+    //    //printJsonNodes(document["data"][0]);
+    //
+    //    // deserialize
+    //    std::vector<Transform> list;
+    //    
+    //    Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
+    //    
+    //    type_desc->Deserialize(&list, document["data"][0]);
+    //    
+    //    std::stringstream ss{};
+    //    type_desc->Serialize(&list, ss);
+    //    Log::Debug(ss.str());
+    //  }
+    //  else
+    //  {
+    //    Log::Error("Failed to open file: " + file_path);
+    //  }
+    //}
+
+    //{ // test 5a: gameobject serialization
+    //  Log::Debug("test 5a");
+    //
+    //  GameObject go;
+    //  go.AddComponent<Transform>();
+    //
+    //}
 
     // todo: add opengl rendering
     // vertex buffer objects (VBO)

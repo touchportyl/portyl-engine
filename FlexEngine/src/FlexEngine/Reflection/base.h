@@ -3,8 +3,16 @@
 #include <cstddef>
 #include <iostream>
 #include <vector>
-#include <string>
+//#include <string>
+//#include <sstream>
+#include <map>
+#include <functional>
 
+#include "flexformatter.h"
+#include <flexassert.h>
+
+#pragma warning(push)
+#pragma warning(disable: 4267) // "conversion from 'size_t' to 'rapidjson::SizeType', possible loss of data"
 
 /* Reflection system for C++
  * 
@@ -73,6 +81,8 @@ namespace FlexEngine
     /// </summary>
     struct TypeDescriptor
     {
+      using json = rapidjson::Value;
+
       const char* name;
       size_t size;
 
@@ -99,7 +109,7 @@ namespace FlexEngine
       /// Deserializes an object from a json document.
       /// <para>This deserializes it from the json format.</para>
       /// </summary>
-      //virtual void Deserialize(void* obj, const std::string& data) const = 0;
+      virtual void Deserialize(void* obj, const json& value) const = 0;
     };
 
     /// <summary>
@@ -178,8 +188,7 @@ namespace FlexEngine
         init(this);
       }
 
-      #pragma warning(suppress: 4100) // "unused parameter"
-      TypeDescriptor_Struct(const char* name, size_t size, const std::initializer_list<Member>& init)
+      TypeDescriptor_Struct(const char*, size_t, const std::initializer_list<Member>& init)
         : TypeDescriptor{ nullptr, 0 }, members{ init }
       {
       }
@@ -207,6 +216,23 @@ namespace FlexEngine
         }
         os << "]}";
       }
+
+      virtual void Deserialize(void* obj, const json& value) const override
+      {
+        const auto& arr = value["data"].GetArray();
+
+        // guard against array size mismatch
+        FLX_INTERNAL_ASSERT(arr.Size() != members.size(),
+          "Array size mismatch while deserializing struct\nThis is most likely caused by a corrupted .flx file"
+        );
+
+        // deserialize each member
+        for (size_t i = 0; i < members.size(); i++)
+        {
+          members[i].type->Deserialize((char*)obj + members[i].offset, arr[i]);
+        }
+      }
+
     };
 
 
@@ -220,6 +246,7 @@ namespace FlexEngine
       TypeDescriptor* item_type;
       size_t(*get_size)(const void*);
       const void* (*get_item)(const void*, size_t);
+      void* (*set_item)(void*, size_t);
 
       template <typename ItemType>
       TypeDescriptor_StdVector(ItemType*)
@@ -234,11 +261,17 @@ namespace FlexEngine
           const auto& vec = *(const std::vector<ItemType>*) vec_ptr;
           return &vec[index];
         };
+        set_item = [](void* vec_ptr, size_t index) -> void* {
+          auto& vec = *(std::vector<ItemType>*) vec_ptr;
+          if (index >= vec.size()) vec.resize(index + 1);
+          return &vec[index];
+        };
       }
 
       virtual std::string ToString() const override
       {
         return std::string("std::vector<") + item_type->ToString() + ">";
+        //return std::string("std::vector<>");
       }
 
       virtual void Dump(const void* obj, std::ostream& os, int indentLevel) const override
@@ -278,6 +311,16 @@ namespace FlexEngine
         }
       }
 
+      virtual void Deserialize(void* obj, const json& value) const override
+      {
+        const auto& arr = value["data"].GetArray();
+
+        for (SizeType i = 0; i < arr.Size(); i++)
+        {
+          item_type->Deserialize(set_item(obj, i), arr[i]);
+        }
+      }
+
     };
 
 
@@ -295,6 +338,9 @@ namespace FlexEngine
       }
     };
 
+
   }
 
 }
+
+#pragma warning(pop)

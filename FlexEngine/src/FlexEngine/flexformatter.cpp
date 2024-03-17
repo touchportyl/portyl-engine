@@ -25,12 +25,11 @@ namespace FlexEngine
     document.ParseStream(isw);
 
     // check for parse errors
-    // if there is an error, return an empty document
+    // if there is an error, return an empty rapidjson::Document
     if (document.HasParseError())
     {
       Log::Error("FlexFormatter::Load: Parse error: " + document.GetParseError());
-      Document empty;
-      return empty;
+      return Document();
     }
 
     // save header data
