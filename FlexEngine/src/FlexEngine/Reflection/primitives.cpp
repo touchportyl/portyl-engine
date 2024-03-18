@@ -35,6 +35,7 @@ namespace FlexEngine
 
   namespace Reflection
   {
+    // Primitive type registration
     TYPE_DESC(Bool, bool)
     TYPE_DESC(Int, int)
     TYPE_DESC(Unsigned, unsigned)

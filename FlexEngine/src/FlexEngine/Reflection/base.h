@@ -11,34 +11,32 @@
 #include "flexformatter.h"
 #include <flexassert.h>
 
-#pragma warning(push)
-#pragma warning(disable: 4267) // "conversion from 'size_t' to 'rapidjson::SizeType', possible loss of data"
-
-/* Reflection system for C++
- * 
- * A reflection system (also called a property system)
- * is a coding methodology or language feature which allows
- * exposing certain information about your code to other systems
- * at runtime.
- * This is often used in serialization, GUIs, and other systems.
- * 
- * References:
- *  A Complete Example for C++ Reflection
- *    https://yingnanwang.com/coding/2020-10-05-c-reflection/
- *  A Flexible Reflection System in C++: Part 1
- *    https://preshing.com/20180116/a-primitive-reflection-system-in-cpp-part-1/
- *  Unreal Engine Implementation
- *    https://www.unrealengine.com/en-US/blog/unreal-property-system-reflection
- *  properties by LIONant
- *    https://gitlab.com/LIONant/properties/blob/master/docs/Documentation.md
- *  RTTR (Run Time Type Reflection)
- *    https://www.rttr.org/doc/rttr-0-9-6/five_minute_tutorial_page.html
- */
+// Reflection system for C++
+// 
+// A reflection system (also called a property system) is a coding
+// methodology or language feature which allows exposing certain
+// information about your code to other systems at runtime.
+// This is often used in serialization, GUIs, and other systems.
+// 
+// I use some of the tricks from the following articles to implement this.
+// However, I have rewritten most of the code to fit my own needs.
+// 
+// References:
+//  A Complete Example for C++ Reflection
+//    https://yingnanwang.com/coding/2020-10-05-c-reflection/
+//  A Flexible Reflection System in C++: Part 1
+//    https://preshing.com/20180116/a-primitive-reflection-system-in-cpp-part-1/
+//  Unreal Engine Implementation
+//    https://www.unrealengine.com/en-US/blog/unreal-property-system-reflection
+//  properties by LIONant
+//    https://gitlab.com/LIONant/properties/blob/master/docs/Documentation.md
+//  RTTR (Run Time Type Reflection)
+//    https://www.rttr.org/doc/rttr-0-9-6/five_minute_tutorial_page.html
 
 
 /// <summary>
 /// Enables reflection for a custom type (struct/class)
-/// <para>Place at the top of the class definition</para>
+/// <para>Place at the top of the class definition in the .h file</para>
 /// </summary>
 #define FLX_REFL_SERIALIZABLE \
   friend struct FlexEngine::Reflection::DefaultResolver; \
@@ -47,6 +45,7 @@
 
 /// <summary>
 /// Starts the registration of member variables for reflection
+/// <para>Remember to end with FLX_REFL_REGISTER_END</para>
 /// <para>Place inside any .cpp file that includes the declaration of the custom type</para>
 /// </summary>
 #define FLX_REFL_REGISTER_START(TYPE) \
@@ -59,12 +58,16 @@
 
 /// <summary>
 /// Registers a member variable for reflection
+/// <para>Place inside the FLX_REFL_REGISTER_START block</para>
+/// <para>Use the name of the member variable as the argument</para>
+/// <para>It's best practice to indent the block for readability</para>
 /// </summary>
-#define FLX_REFL_REGISTER_PROPERTY(NAME) \
-      {#NAME, offsetof(T, NAME), FlexEngine::Reflection::TypeResolver<decltype(T::NAME)>::Get()},
+#define FLX_REFL_REGISTER_PROPERTY(VARIABLE) \
+      {#VARIABLE, offsetof(T, VARIABLE), FlexEngine::Reflection::TypeResolver<decltype(T::VARIABLE)>::Get()},
 
 /// <summary>
 /// Ends the reflection registration
+/// <para>Pair this with FLX_REFL_REGISTER_START</para>
 /// </summary>
 #define FLX_REFL_REGISTER_END \
     }; \
@@ -78,6 +81,8 @@ namespace FlexEngine
 
     /// <summary>
     /// Base class for all type descriptors.
+    /// <para>A type descriptor is a class that describes a type,
+    /// including its name, size, and how to serialize/deserialize it.</para>
     /// </summary>
     struct TypeDescriptor
     {
@@ -96,18 +101,20 @@ namespace FlexEngine
 
       /// <summary>
       /// Dumps the contents of an object to the console.
+      /// <para>Defaults to using std::cout.</para>
       /// </summary>
       virtual void Dump(const void* obj, std::ostream& os = std::cout, int indentLevel = 0) const = 0;
 
       /// <summary>
       /// Serializes an object to a stream.
-      /// <para>This serializes it to the json format.</para>
+      /// <para>This recursively serializes the object into the json format.</para>
       /// </summary>
       virtual void Serialize(const void* obj, std::ostream& out) const = 0;
 
       /// <summary>
       /// Deserializes an object from a json document.
-      /// <para>This deserializes it from the json format.</para>
+      /// <para>This recursively deserializes the object from the json format.</para>
+      /// <para>The deserializer uses the rapidjson library.</para>
       /// </summary>
       virtual void Deserialize(void* obj, const json& value) const = 0;
     };
@@ -155,7 +162,7 @@ namespace FlexEngine
     };
 
     /// <summary>
-    /// This is the primary class template for finding all TypeDescriptors
+    /// This is the primary class template for finding all TypeDescriptors.
     /// </summary>
     template <typename T>
     struct TypeResolver
@@ -169,7 +176,8 @@ namespace FlexEngine
 
 
     /// <summary>
-    /// Type descriptor for user-defined structs/classes
+    /// Type descriptor for user-defined structs/classes.
+    /// <para>Specialized for structs/classes.</para>
     /// </summary>
     struct TypeDescriptor_Struct : TypeDescriptor
     {
@@ -227,7 +235,7 @@ namespace FlexEngine
         );
 
         // deserialize each member
-        for (size_t i = 0; i < members.size(); i++)
+        for (SizeType i = 0; i < members.size(); i++)
         {
           members[i].type->Deserialize((char*)obj + members[i].offset, arr[i]);
         }
@@ -238,8 +246,8 @@ namespace FlexEngine
 
 
     /// <summary>
-    /// TypeDescriptor for std::vector
-    /// <para>Specialized for std::vector</para>
+    /// TypeDescriptor for std::vector.
+    /// <para>Specialized for std::vector.</para>
     /// </summary>
     struct TypeDescriptor_StdVector : TypeDescriptor
     {
@@ -326,7 +334,7 @@ namespace FlexEngine
 
 
     /// <summary>
-    /// Partially specialize TypeResolver for std::vectors
+    /// Partially specialize TypeResolver for std::vectors.
     /// </summary>
     template <typename T>
     struct TypeResolver<std::vector<T>>
@@ -342,5 +350,3 @@ namespace FlexEngine
   }
 
 }
-
-#pragma warning(pop)

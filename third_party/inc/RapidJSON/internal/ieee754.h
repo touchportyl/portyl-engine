@@ -17,6 +17,9 @@
 
 #include "../rapidjson.h"
 
+#pragma warning(push)
+#pragma warning(disable : 26495) // Variable 'member' is uninitialized. Always initialize a member variable (type.6).
+
 RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {
 
@@ -74,5 +77,7 @@ private:
 
 } // namespace internal
 RAPIDJSON_NAMESPACE_END
+
+#pragma warning(pop)
 
 #endif // RAPIDJSON_IEEE754_
