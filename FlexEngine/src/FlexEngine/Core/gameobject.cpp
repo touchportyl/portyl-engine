@@ -3,13 +3,8 @@
 namespace FlexEngine
 {
 
-  //void GameObject::Serialize(std::ostream& stream) const
-  //{
-  //  for (auto& component : components)
-  //  {
-  //    stream << component.first.name() << '\n';
-  //    component.second->Serialize(stream);
-  //  }
-  //}
+  //FLX_REFL_REGISTER_START(GameObject)
+  //  FLX_REFL_REGISTER_PROPERTY(components)
+  //FLX_REFL_REGISTER_END
 
 }

@@ -5,19 +5,19 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
-void printJsonNodes(const rapidjson::Value& value, int depth = 0) {
+void DumpJsonNodes(const rapidjson::Value& value, int depth = 0) {
   if (value.IsObject()) {
     std::cout << std::string(depth, ' ') << "Object:" << std::endl;
     for (auto& member : value.GetObject()) {
       std::cout << std::string(depth + 2, ' ') << "Key: " << member.name.GetString() << std::endl;
-      printJsonNodes(member.value, depth + 4);
+      DumpJsonNodes(member.value, depth + 4);
     }
   }
   else if (value.IsArray()) {
     std::cout << std::string(depth, ' ') << "Array:" << std::endl;
     for (rapidjson::SizeType i = 0; i < value.Size(); ++i) {
       std::cout << std::string(depth + 2, ' ') << "Index " << i << ":" << std::endl;
-      printJsonNodes(value[i], depth + 4);
+      DumpJsonNodes(value[i], depth + 4);
     }
   }
   else if (value.IsString()) {
@@ -283,11 +283,67 @@ namespace FlexEditor
     //  }
     //}
 
-    //{ // test 5a: gameobject serialization
+    //{ // test 5a: shared_ptr serialization and deserialization
     //  Log::Debug("test 5a");
+    //
+    //  std::shared_ptr<float> value = std::make_shared<float>();
+    //  *value = 3.14f;
+    //
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::shared_ptr<float>>::Get();
+    //  //type_desc->Dump(&value);
+    //
+    //  std::stringstream ss{};
+    //
+    //  type_desc->Serialize(&value, ss);
+    //  Log::Debug(ss.str());
+    //
+    //  std::shared_ptr<float> deserialized_value;
+    //  Document document;
+    //  document.Parse(ss.str().c_str());
+    //  type_desc->Deserialize(&deserialized_value, document);
+    //
+    //  Log::Debug(std::to_string(*deserialized_value));
+    //}
+
+    //{ // test 5b: unordered_map serialization and deserialization
+    //  Log::Debug("test 5b");
+    //
+    //  std::unordered_map<std::string, bool> umap;
+    //
+    //  umap["a"] = true;
+    //  umap["b"] = false;
+    //  umap["c"] = true;
+    //
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::unordered_map<std::string, bool>>::Get();
+    //  //type_desc->Dump(&umap);
+    //
+    //  std::stringstream ss{};
+    //
+    //  type_desc->Serialize(&umap, ss);
+    //  Log::Debug(ss.str());
+    //
+    //  std::unordered_map<std::string, bool> deserialized_umap;
+    //  Document document;
+    //  document.Parse(ss.str().c_str());
+    //  //DumpJsonNodes(document.GetObject());
+    //  type_desc->Deserialize(&deserialized_umap, document);
+    //  
+    //  for (auto& [key, value] : deserialized_umap)
+    //  {
+    //    Log::Debug(key + " = " + (value ? "true" : "false"));
+    //  }
+    //}
+
+    //{ // test 5c: gameobject serialization
+    //  Log::Debug("test 5c");
     //
     //  GameObject go;
     //  go.AddComponent<Transform>();
+    //
+    //}
+
+    //{ // test 5d: scene serialization
+    //  Log::Debug("test 5d");
     //
     //}
 

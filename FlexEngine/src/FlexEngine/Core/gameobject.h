@@ -22,17 +22,14 @@ namespace FlexEngine
     {
       auto type = std::type_index(typeid(T));
       auto it = components.find(type);
-      if (it != components.end()) {
+      if (it != components.end())
+      {
         return dynamic_cast<T*>(it->second.get());
       }
       return nullptr;
     }
 
     ComponentMap components;
-
-    //FLX_REFL_REGISTER_START
-    //  FLX_REFL_REGISTER_REFERENCE(components)
-    //FLX_REFL_REGISTER_END_AND_LINK(GameObject)
   };
 
   // GameObject Map (Unordered)

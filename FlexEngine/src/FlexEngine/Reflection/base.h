@@ -63,7 +63,11 @@
 /// <para>It's best practice to indent the block for readability</para>
 /// </summary>
 #define FLX_REFL_REGISTER_PROPERTY(VARIABLE) \
-      {#VARIABLE, offsetof(T, VARIABLE), FlexEngine::Reflection::TypeResolver<decltype(T::VARIABLE)>::Get()},
+      { \
+        #VARIABLE, \
+        offsetof(T, VARIABLE), \
+        FlexEngine::Reflection::TypeResolver<decltype(T::VARIABLE)>::Get() \
+      },
 
 /// <summary>
 /// Ends the reflection registration
@@ -103,7 +107,7 @@ namespace FlexEngine
       /// Dumps the contents of an object to the console.
       /// <para>Defaults to using std::cout.</para>
       /// </summary>
-      virtual void Dump(const void* obj, std::ostream& os = std::cout, int indentLevel = 0) const = 0;
+      virtual void Dump(const void* obj, std::ostream& os = std::cout, int indent_level = 0) const = 0;
 
       /// <summary>
       /// Serializes an object to a stream.
@@ -175,6 +179,53 @@ namespace FlexEngine
 
 
 
+    // Specializations for C++ containers
+    // 
+    // These are used to handle containers and wrappers such as
+    // std::vector and std::shared_ptr which are not primitive types,
+    // but are still commonly used.
+    // 
+    // Writing a new TypeDescriptor for each container type is a bit tedious,
+    // but it's necessary because each container type has different behavior.
+    // ChatGPT can easily help write these specializations.
+    // 
+    // Here is a list of all the specializations in this file.
+    // Referenced from https://en.cppreference.com/w/cpp/container
+    // Use CTRL+F to find the one you're looking for.
+    // 
+    // unique_ptr, shared_ptr, and weak_ptr are supported. (C++11)
+    // auto_ptr is not supported. (deprecated in C++11, removed in C++17)
+    // 
+    // span (C++20) and md_span (C++23) are not supported.
+    // flat_set, flat_map, flat_multiset, and flat_multimap are not supported. (C++23)
+    // 
+    // A completed specialization is marked with [X]
+    // Incomplete specializations are marked with [ ]
+    // 
+    //  [X] TypeDescriptor_Struct
+    //  [ ] TypeDescriptor_StdArray (C++11)
+    //  [X] TypeDescriptor_StdVector
+    //  [ ] TypeDescriptor_StdDeque
+    //  [ ] TypeDescriptor_StdForwardList (C++11)
+    //  [ ] TypeDescriptor_StdList
+    //  [ ] TypeDescriptor_StdSet
+    //  [ ] TypeDescriptor_StdMap
+    //  [ ] TypeDescriptor_StdMultiSet
+    //  [ ] TypeDescriptor_StdMultiMap
+    //  [ ] TypeDescriptor_StdUnorderedSet (C++11)
+    //  [X] TypeDescriptor_StdUnorderedMap (C++11)
+    //  [ ] TypeDescriptor_StdUnorderedMultiSet (C++11)
+    //  [ ] TypeDescriptor_StdUnorderedMultiMap (C++11)
+    //  [ ] TypeDescriptor_StdStack
+    //  [ ] TypeDescriptor_StdQueue
+    //  [ ] TypeDescriptor_StdPriorityQueue
+    //  [ ] TypeDescriptor_StdUniquePtr (C++11)
+    //  [X] TypeDescriptor_StdSharedPtr (C++11)
+    //  [ ] TypeDescriptor_StdWeakPtr (C++11)
+    // 
+
+
+
     /// <summary>
     /// Type descriptor for user-defined structs/classes.
     /// <para>Specialized for structs/classes.</para>
@@ -201,16 +252,16 @@ namespace FlexEngine
       {
       }
 
-      virtual void Dump(const void* obj, std::ostream& os, int indentLevel) const override
+      virtual void Dump(const void* obj, std::ostream& os, int indent_level) const override
       {
-        os << name << "\n" << std::string(4 * indentLevel, ' ') << "{\n";
+        os << name << "\n" << std::string(4 * indent_level, ' ') << "{\n";
         for (const Member& member : members)
         {
-          os << std::string(4 * (indentLevel + 1), ' ') << member.name << " = ";
-          member.type->Dump((char*)obj + member.offset, os, indentLevel + 1);
+          os << std::string(4 * (indent_level + 1), ' ') << member.name << " = ";
+          member.type->Dump((char*)obj + member.offset, os, indent_level + 1);
           os << "\n";
         }
-        os << std::string(4 * indentLevel, ' ') << "}\n";
+        os << std::string(4 * indent_level, ' ') << "}\n";
       }
 
       virtual void Serialize(const void* obj, std::ostream& os) const override
@@ -258,8 +309,8 @@ namespace FlexEngine
 
       template <typename ItemType>
       TypeDescriptor_StdVector(ItemType*)
-        : TypeDescriptor{ "std::vector<>", sizeof(std::vector<ItemType>) },
-        item_type{ TypeResolver<ItemType>::Get() }
+        : TypeDescriptor{ "std::vector<>", sizeof(std::vector<ItemType>) }
+        , item_type{ TypeResolver<ItemType>::Get() }
       {
         get_size = [](const void* vec_ptr) -> size_t {
           const auto& vec = *(const std::vector<ItemType>*) vec_ptr;
@@ -279,28 +330,27 @@ namespace FlexEngine
       virtual std::string ToString() const override
       {
         return std::string("std::vector<") + item_type->ToString() + ">";
-        //return std::string("std::vector<>");
       }
 
-      virtual void Dump(const void* obj, std::ostream& os, int indentLevel) const override
+      virtual void Dump(const void* obj, std::ostream& os, int indent_level) const override
       {
         size_t num_items = get_size(obj);
         os << "\n" << ToString();
         if (num_items == 0)
         {
-          os << "{}";
+          os << "{}\n";
         }
         else
         {
-          os << "\n" << std::string(4 * indentLevel, ' ') << "{\n";
+          os << "\n" << std::string(4 * indent_level, ' ') << "{\n";
           for (size_t index = 0; index < num_items; index++)
           {
-            os << std::string(4 * (indentLevel + 1), ' ') << "[" << index << "]\n"
-              << std::string(4 * (indentLevel + 1), ' ');
-            item_type->Dump(get_item(obj, index), os, indentLevel + 1);
+            os << std::string(4 * (indent_level + 1), ' ') << "[" << index << "]\n"
+              << std::string(4 * (indent_level + 1), ' ');
+            item_type->Dump(get_item(obj, index), os, indent_level + 1);
             os << "\n";
           }
-          os << std::string(4 * indentLevel, ' ') << "}\n";
+          os << std::string(4 * indent_level, ' ') << "}\n";
         }
       }
 
@@ -331,8 +381,6 @@ namespace FlexEngine
 
     };
 
-
-
     /// <summary>
     /// Partially specialize TypeResolver for std::vectors.
     /// </summary>
@@ -345,6 +393,178 @@ namespace FlexEngine
         return &typeDesc;
       }
     };
+
+
+
+    /// <summary>
+    /// TypeDescriptor for std::shared_ptr.
+    /// <para>Specialized for std::shared_ptr.</para>
+    /// </summary>
+    template <typename T>
+    struct TypeDescriptor_StdSharedPtr : TypeDescriptor
+    {
+      TypeDescriptor* item_type;
+
+      TypeDescriptor_StdSharedPtr(T*)
+        : TypeDescriptor{ "std::shared_ptr<>", sizeof(std::shared_ptr<T>) }
+        , item_type{ TypeResolver<T>::Get() }
+      {
+      }
+
+      virtual std::string ToString() const override
+      {
+        return "std::shared_ptr<" + item_type->ToString() + ">";
+      }
+
+      virtual void Dump(const void* obj, std::ostream& os, int indent_level) const override
+      {
+        const auto& shared_ptr = *reinterpret_cast<const std::shared_ptr<T>*>(obj);
+        if (shared_ptr)
+        {
+          os << "\n" << ToString() << "\n"
+            << std::string(4 * indent_level, ' ') << "{\n"
+            << std::string(4 * (indent_level + 1), ' ');
+          item_type->Dump(shared_ptr.get(), os, indent_level + 1);
+          os << "\n" << std::string(4 * indent_level, ' ') << "}\n";
+        }
+        else
+        {
+          os << "null";
+        }
+      }
+
+      virtual void Serialize(const void* obj, std::ostream& os) const override
+      {
+        const auto& shared_ptr = *reinterpret_cast<const std::shared_ptr<T>*>(obj);
+        if (shared_ptr)
+        {
+          item_type->Serialize(shared_ptr.get(), os);
+        }
+        else
+        {
+          os << "null";
+        }
+      }
+
+      virtual void Deserialize(void* obj, const json& value) const override
+      {
+        if (value.IsNull())
+        {
+          // Set the shared_ptr to null
+          *reinterpret_cast<std::shared_ptr<T>*>(obj) = nullptr;
+        }
+        else
+        {
+          // Deserialize the object and store it in the shared_ptr
+          std::shared_ptr<T> shared_ptr = std::make_shared<T>();
+          item_type->Deserialize(shared_ptr.get(), value);
+          *reinterpret_cast<std::shared_ptr<T>*>(obj) = shared_ptr;
+        }
+      }
+
+    };
+
+    /// <summary>
+    /// Partially specialize TypeResolver for std::shared_ptrs.
+    /// </summary>
+    template <typename T>
+    struct TypeResolver<std::shared_ptr<T>>
+    {
+      static TypeDescriptor* Get()
+      {
+        static TypeDescriptor_StdSharedPtr typeDesc{ (T*) nullptr };
+        return &typeDesc;
+      }
+    };
+
+
+
+    /// <summary>
+    /// TypeDescriptor for std::unordered_map.
+    /// <para>Specialized for std::unordered_map.</para>
+    /// </summary>
+    template <typename KeyType, typename ValueType>
+    struct TypeDescriptor_StdUnorderedMap : TypeDescriptor
+    {
+      TypeDescriptor* key_type;
+      TypeDescriptor* value_type;
+
+      TypeDescriptor_StdUnorderedMap(std::unordered_map<KeyType, ValueType>*)
+        : TypeDescriptor{ "std::unordered_map<>", sizeof(std::unordered_map<KeyType, ValueType>) }
+        , key_type{ TypeResolver<KeyType>::Get() }
+        , value_type{ TypeResolver<ValueType>::Get() }
+      {
+      }
+
+      virtual std::string ToString() const override
+      {
+        return std::string("std::unordered_map<") + key_type->ToString() + ", " + value_type->ToString() + ">";
+      }
+
+      virtual void Dump(const void* obj, std::ostream& os, int indent_level) const override
+      {
+        const auto& map = *(const std::unordered_map<KeyType, ValueType>*)obj;
+        os << "\n" << ToString() << "\n"
+          << std::string(4 * indent_level, ' ') << "{\n";
+        for (const auto& pair : map)
+        {
+          os << std::string(4 * (indent_level + 1), ' ');
+          key_type->Dump(&pair.first, os, indent_level);
+          os << ": ";
+          value_type->Dump(&pair.second, os); // no indent_level
+          os << "\n";
+        }
+        os << std::string(4 * indent_level, ' ') << "}\n";
+      }
+
+      virtual void Serialize(const void* obj, std::ostream& os) const override
+      {
+        const auto& map = *(const std::unordered_map<KeyType, ValueType>*)obj;
+        os << R"({"type":")" << ToString() << R"(","data":[)";
+        bool first = true;
+        for (const auto& pair : map)
+        {
+          if (!first) os << ",";
+          first = false;
+          os << "[";
+          key_type->Serialize(&pair.first, os);
+          os << ",";
+          value_type->Serialize(&pair.second, os);
+          os << "]";
+        }
+        os << "]}";
+      }
+
+      virtual void Deserialize(void* obj, const rapidjson::Value& value) const override
+      {
+        std::unordered_map<KeyType, ValueType>& map = *(std::unordered_map<KeyType, ValueType>*)obj;
+
+        const auto& arr = value["data"].GetArray();
+
+        for (SizeType i = 0; i < arr.Size(); i++)
+        {
+          KeyType key;
+          ValueType val;
+          key_type->Deserialize(&key, arr[i][0]);
+          value_type->Deserialize(&val, arr[i][1]);
+          map[key] = val;
+        }
+      }
+    };
+
+    /// <summary>
+    /// Partially specialize TypeResolver for std::unordered_maps.
+    /// </summary>
+    template <typename KeyType, typename ValueType>
+    struct TypeResolver<std::unordered_map<KeyType, ValueType>>
+    {
+      static TypeDescriptor* Get()
+      {
+        static TypeDescriptor_StdUnorderedMap<KeyType, ValueType> typeDesc{ (std::unordered_map<KeyType, ValueType>*)nullptr };
+        return &typeDesc;
+      }
+    };
+
 
 
   }
