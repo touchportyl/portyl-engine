@@ -3,7 +3,6 @@
 #include "Reflection/base.h"
 
 #include <unordered_map>
-#include <typeindex>
 
 namespace FlexEngine
 {
@@ -15,6 +14,6 @@ namespace FlexEngine
   };
 
   // Component Map (Unordered)
-  using ComponentMap = std::unordered_map<std::type_index, std::shared_ptr<Component>>;
+  using ComponentMap = std::unordered_map<std::string, std::shared_ptr<Component>>;
 
 }
