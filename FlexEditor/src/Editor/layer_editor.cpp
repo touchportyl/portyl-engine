@@ -341,8 +341,8 @@ namespace FlexEditor
       go.Internal_AddComponent<Transform>();
       //go.AddComponent.Invoke<Transform>();
 
-      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<GameObject>::Get();
-      type_desc->Dump(&go);
+      //Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<GameObject>::Get();
+      //type_desc->Dump(&go);
 
       //std::stringstream ss{};
       //type_desc->Serialize(&go, ss);
