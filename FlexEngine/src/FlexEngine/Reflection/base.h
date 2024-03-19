@@ -504,14 +504,15 @@ namespace FlexEngine
       virtual void Dump(const void* obj, std::ostream& os, int indent_level) const override
       {
         const auto& map = *(const std::unordered_map<KeyType, ValueType>*)obj;
-        os << "\n" << ToString() << "\n"
+        os << "\n"
+          << std::string(4 * indent_level, ' ') << ToString() << "\n"
           << std::string(4 * indent_level, ' ') << "{\n";
         for (const auto& pair : map)
         {
           os << std::string(4 * (indent_level + 1), ' ');
-          key_type->Dump(&pair.first, os, indent_level);
+          key_type->Dump(&pair.first, os, indent_level + 1);
           os << ": ";
-          value_type->Dump(&pair.second, os); // no indent_level
+          value_type->Dump(&pair.second, os, indent_level + 1);
           os << "\n";
         }
         os << std::string(4 * indent_level, ' ') << "}\n";

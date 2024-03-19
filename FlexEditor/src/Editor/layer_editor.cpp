@@ -334,13 +334,20 @@ namespace FlexEditor
     //  }
     //}
 
-    //{ // test 5c: gameobject serialization
-    //  Log::Debug("test 5c");
-    //
-    //  GameObject go;
-    //  go.AddComponent<Transform>();
-    //
-    //}
+    { // test 5c: gameobject serialization
+      Log::Debug("test 5c");
+    
+      GameObject go;
+      go.Internal_AddComponent<Transform>();
+      //go.AddComponent.Invoke<Transform>();
+
+      //Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<GameObject>::Get();
+      //type_desc->Dump(&go);
+
+      //std::stringstream ss{};
+      //type_desc->Serialize(&go, ss);
+      //Log::Debug(ss.str());
+    }
 
     //{ // test 5d: scene serialization
     //  Log::Debug("test 5d");

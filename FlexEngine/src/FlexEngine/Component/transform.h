@@ -8,7 +8,11 @@ namespace FlexEngine
   class Transform : public Component
   { FLX_REFL_SERIALIZABLE
   public:
-    Transform() = default;
+    Transform()
+    {
+      derived = std::make_shared<this>;
+    }
+
     ~Transform() = default;
 
     Transform(float x, float y, float z) : x(x), y(y), z(z) {}
