@@ -11,7 +11,7 @@ namespace FlexEngine
   { //FLX_REFL_SERIALIZABLE
   public:
     virtual ~Component() = default;
-    std::shared_ptr<Component> derived = nullptr;
+    Component* derived;
   };
 
   // Component Map (Unordered)

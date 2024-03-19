@@ -10,7 +10,7 @@ namespace FlexEngine
   public:
     Transform()
     {
-      derived = std::make_shared<this>;
+      derived = this;
     }
 
     ~Transform() = default;
