@@ -389,8 +389,8 @@ namespace FlexEngine
     {
       static TypeDescriptor* Get()
       {
-        static TypeDescriptor_StdVector typeDesc{ (T*) nullptr };
-        return &typeDesc;
+        static TypeDescriptor_StdVector type_desc{ (T*) nullptr };
+        return &type_desc;
       }
     };
 
@@ -472,8 +472,8 @@ namespace FlexEngine
     {
       static TypeDescriptor* Get()
       {
-        static TypeDescriptor_StdSharedPtr typeDesc{ (T*) nullptr };
-        return &typeDesc;
+        static TypeDescriptor_StdSharedPtr type_desc{ (T*) nullptr };
+        return &type_desc;
       }
     };
 
@@ -561,8 +561,8 @@ namespace FlexEngine
     {
       static TypeDescriptor* Get()
       {
-        static TypeDescriptor_StdUnorderedMap<KeyType, ValueType> typeDesc{ (std::unordered_map<KeyType, ValueType>*)nullptr };
-        return &typeDesc;
+        static TypeDescriptor_StdUnorderedMap<KeyType, ValueType> type_desc{ (std::unordered_map<KeyType, ValueType>*)nullptr };
+        return &type_desc;
       }
     };
 

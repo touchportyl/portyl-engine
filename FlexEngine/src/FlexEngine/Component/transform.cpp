@@ -6,6 +6,7 @@ namespace FlexEngine
 {
 
   //FLX_REFL_REGISTER_START(Component)
+  //  FLX_REFL_REGISTER_PROPERTY(derived)
   //FLX_REFL_REGISTER_END
 
   FLX_REFL_REGISTER_START(Transform)
