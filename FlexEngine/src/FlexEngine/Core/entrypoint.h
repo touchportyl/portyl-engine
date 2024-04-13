@@ -6,36 +6,33 @@
 #include <crtdbg.h>
 #endif
 
-#include "application.h"
-#include "../flexlogger.h"
-#include "../freequeue.h"
+#include <memory>
 
-/// <summary>
-/// Create an application through the chain of inheritance.
-/// <para>Use it by creating a new class that inherits from FlexEngine::Application and override the CreateApplication function.</para>
-/// </summary>
-/// <returns>The application to run</returns>
+#include "flexlogger.h"
+#include "application.h"
+#include "freequeue.h"
+
+// Create an application.
+// Use it by creating a new class that inherits from FlexEngine::Application and override the CreateApplication function.
 extern FlexEngine::Application* FlexEngine::CreateApplication();
 
-#pragma warning(suppress : 4100) // unused parameters
-int main(int argc, char** argv)
+int main(int, char**)
 {
   // Enable run-time memory check for debug builds.
 #ifdef _DEBUG
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-  // Create the logger
-  auto log = new FlexEngine::Log();
-
   // Ensure that the FreeQueue is run at the end of the program
   std::atexit(FlexEngine::FreeQueue::Free);
+
+  // Create the logger
+  auto log = new FlexEngine::Log();
+  FlexEngine::FreeQueue::Push([log]() { delete log; });
   
   // Create the application
   auto app = FlexEngine::CreateApplication();
-
-  // Ensure that the application and logger are deleted at the end of the program
-  FlexEngine::FreeQueue::Push([&]() { delete app; delete log; });
+  FlexEngine::FreeQueue::Push([app]() { delete app; });
 
   // Run the application
   app->Run();

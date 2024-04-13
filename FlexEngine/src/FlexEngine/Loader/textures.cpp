@@ -61,9 +61,7 @@ namespace FlexEngine
     unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
     if (image_data == NULL)
     {
-      std::stringstream warning;
-      warning << "Could not load texture file " << filename;
-      Log::Warning(warning.str());
+      Log::Warning(std::string("Could not load texture file ") + filename);
       return false;
     }
 
@@ -103,13 +101,13 @@ namespace FlexEngine
       Unload();
     }
 
-    inline void Texture::Bind(unsigned int slot) const
+    void Texture::Bind(unsigned int slot) const
     {
       glActiveTexture(GL_TEXTURE0 + slot);
       glBindTexture(GL_TEXTURE_2D, m_texture);
     }
 
-    inline void Texture::Unbind() const
+    void Texture::Unbind() const
     {
       glBindTexture(GL_TEXTURE_2D, 0);
     }

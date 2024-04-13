@@ -1,7 +1,7 @@
 #include <FlexEngine.h>
 #include <FlexEngine/Core/EntryPoint.h>
 
-#include "layer_editor.h"
+#include "States.h"
 
 namespace FlexEditor
 {
@@ -9,9 +9,8 @@ namespace FlexEditor
   {
   public:
     FlexApplication()
-      : Application()
     {
-      PushLayer(new EditorLayer());
+      FlexEngine::ApplicationStateManager::SetState<SplashState>();
     }
   };
 

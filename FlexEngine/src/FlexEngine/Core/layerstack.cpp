@@ -2,62 +2,162 @@
 
 #include "layerstack.h"
 
-namespace FlexEngine {
+namespace FlexEngine
+{
 
   LayerStack::LayerStack()
   {
-    FLX_FLOW_BEGINSCOPE();
+    //FLX_FLOW_BEGINSCOPE();
   }
 
   LayerStack::~LayerStack()
   {
-    for (Layer* layer : m_layers)
-    {
-      layer->OnDetach();
-      delete layer;
-    }
-
-    FLX_FLOW_ENDSCOPE();
-  }
-
-  void LayerStack::PushLayer(Layer* layer)
-  {
-    FLX_FLOW_FUNCTION();
-
-    m_layers.emplace(m_layers.begin() + m_layers_insert_index, layer);
-    m_layers_insert_index++;
-  }
-
-  void LayerStack::PushOverlay(Layer* overlay)
-  {
-    FLX_FLOW_FUNCTION();
-
-    m_layers.emplace_back(overlay);
-  }
-
-  void LayerStack::PopLayer(Layer* layer)
-  {
-    FLX_FLOW_FUNCTION();
-
-    auto it = std::find(m_layers.begin(), m_layers.begin() + m_layers_insert_index, layer);
-    if (it != m_layers.begin() + m_layers_insert_index)
-    {
-      layer->OnDetach();
-      m_layers.erase(it);
-      m_layers_insert_index--;
-    }
-  }
-
-  void LayerStack::PopOverlay(Layer* overlay)
-  {
-    FLX_FLOW_FUNCTION();
-
-    auto it = std::find(m_layers.begin() + m_layers_insert_index, m_layers.end(), overlay);
-    if (it != m_layers.end())
+    for (auto& overlay : m_overlays)
     {
       overlay->OnDetach();
-      m_layers.erase(it);
+      overlay.reset();
     }
+
+    for (auto& layer : m_layers)
+    {
+      layer->OnDetach();
+      layer.reset();
+    }
+
+    //FLX_FLOW_ENDSCOPE();
   }
+
+  void LayerStack::PushLayer(std::shared_ptr<Layer> layer)
+  {
+    FLX_FLOW_FUNCTION();
+
+    m_layers.push_back(layer);
+    m_layers.back()->OnAttach();
+  }
+
+  void LayerStack::PushOverlay(std::shared_ptr<Layer> overlay)
+  {
+    FLX_FLOW_FUNCTION();
+
+    m_overlays.push_back(overlay);
+    m_overlays.back()->OnAttach();
+  }
+
+  void LayerStack::PopLayer()
+  {
+    FLX_FLOW_FUNCTION();
+
+    // guard
+    if (m_layers.size() == 1)
+    {
+      Log::Error("Cannot pop last layer");
+      return;
+    }
+
+    m_layers.back()->OnDetach();
+    m_layers.pop_back();
+  }
+
+  void LayerStack::PopOverlay()
+  {
+    FLX_FLOW_FUNCTION();
+
+    // guard
+    if (m_overlays.size() == 0)
+    {
+      Log::Error("No more overlays to pop.");
+      return;
+    }
+
+    m_overlays.back()->OnDetach();
+    m_overlays.pop_back();
+  }
+
+  void LayerStack::InsertLayer(std::shared_ptr<Layer> layer, size_t index)
+  {
+    FLX_FLOW_FUNCTION();
+
+    // guard
+    if (index > m_layers.size())
+    {
+      Log::Error("Index out of bounds.");
+      return;
+    }
+
+    m_layers.insert(m_layers.begin() + index, layer);
+    m_layers[index]->OnAttach();
+  }
+
+  void LayerStack::InsertOverlay(std::shared_ptr<Layer> overlay, size_t index)
+  {
+    FLX_FLOW_FUNCTION();
+
+    // guard
+    if (index > m_overlays.size())
+    {
+      Log::Error("Index out of bounds.");
+      return;
+    }
+
+    m_overlays.insert(m_overlays.begin() + index, overlay);
+    m_overlays[index]->OnAttach();
+  }
+
+  void LayerStack::RemoveLayer(size_t index)
+  {
+    FLX_FLOW_FUNCTION();
+
+    // guard
+    if (index >= m_layers.size())
+    {
+      Log::Error("Index out of bounds.");
+      return;
+    }
+
+    m_layers[index]->OnDetach();
+    m_layers.erase(m_layers.begin() + index);
+  }
+
+  void LayerStack::RemoveOverlay(size_t index)
+  {
+    FLX_FLOW_FUNCTION();
+
+    // guard
+    if (index >= m_overlays.size())
+    {
+      Log::Error("Index out of bounds.");
+      return;
+    }
+
+    m_overlays[index]->OnDetach();
+    m_overlays.erase(m_overlays.begin() + index);
+  }
+
+  void LayerStack::Update()
+  {
+    for (auto& overlay : m_overlays) overlay->Update();
+    for (auto& layer : m_layers) layer->Update();
+  }
+
+#ifdef _DEBUG
+  void LayerStack::Dump()
+  {
+    Log::Debug(__FUNCTION__);
+
+    Log::Debug("Overlays (" + std::to_string(m_overlays.size()) + ")");
+    for (auto& overlay : m_overlays)
+    {
+      Log::Debug(std::string(2, ' ') + overlay->GetName().c_str());
+    }
+
+    Log::Debug("Layers (" + std::to_string(m_layers.size()) + ")");
+    for (auto& layer : m_layers)
+    {
+      Log::Debug(std::string(2, ' ') + layer->GetName().c_str());
+    }
+
+    Log::Debug("End of dump.");
+  }
+#endif
 
 }

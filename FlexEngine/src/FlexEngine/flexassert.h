@@ -1,9 +1,6 @@
 #pragma once
 
-#include <iostream>
-
 #include "flexlogger.h"
-#include "freequeue.h"
 
 // asserts before the application is functional
 #define FLX_INTERNAL_ASSERT(EXPRESSION, MESSAGE) {                                   \

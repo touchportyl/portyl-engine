@@ -10,7 +10,7 @@ namespace FlexEngine
 {
   std::filesystem::path Log::log_base_path{ std::filesystem::current_path() / ".log" };
   std::filesystem::path Log::log_file_path{ log_base_path / "~$flexapp.log" };
-  File Log::log_stream{};
+  std::fstream Log::log_stream;
   bool Log::is_fatal = false;
   int Log::flow_scope = 0;
 
@@ -25,7 +25,7 @@ namespace FlexEngine
     SetFileAttributes(log_base_path.c_str(), FILE_ATTRIBUTE_HIDDEN);
 
     // open log file
-    log_stream.open(log_file_path.string(), std::ios::out | std::ios::app); // can't use std::ios::trunc
+    log_stream.open(log_file_path, std::ios::out | std::ios::app); // can't use std::ios::trunc
     FLX_INTERNAL_ASSERT(log_stream.is_open(), "Could not open log file.");
     
     // hide temporary log file
@@ -62,7 +62,7 @@ namespace FlexEngine
     // print time
     ss << "[" << DateTime::GetFormattedDateTime() << "] ";
 
-    // append warning level
+    // prepend warning level
     switch (level)
     {
     case WarningLevel::_Debug:   ss << "Debug -> ";   break;

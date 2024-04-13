@@ -13,9 +13,7 @@
 // Inherit from FlexEngine::Layer to create a new layer.
 // Layers are used to separate different parts of the application.
 // Layers can be pushed and popped from the layer stack.
-// An exception to take note of is the ImGuiLayer which is a special layer
-// that is used to render ImGui.
-// The ImGuiLayer is automatically pushed to the top of the layer stack.
+// Layers are updated and rendered in the order they are pushed.
 #include "FlexEngine/Core/layer.h"
 
 // Contains the scene class.
@@ -38,28 +36,6 @@
 /* |---------- Tools ----------| */
 /* |---------------------------| */
 
-// Assertion wrapper for handling fatal errors.
-// These are used to check for destructive errors like memory leaks.
-// The application will be terminated if an assertion fails.
-// 
-// Use FLX_INTERNAL_ASSERT for assertions before the application is functional.
-// Use FLX_CORE_ASSERT for assertions for the application core.
-// Use FLX_ASSERT in place of regular assertions.
-// Use FLX_NULLPTR_ASSERT for checking pointers.
-#include "FlexEngine/flexassert.h"
-
-// UUID class for generating unique identifiers.
-// Objects will be automatically assigned a unique identifier upon creation.
-// Get the UUID of an object by casting it to a hash, string, or by
-// using the << operator.
-#include "FlexEngine/uuid.h"
-
-// Scoped timer to measure time taken by functions.
-// Call the constructor at the start of the scope to start the timer.
-// Call the destructor at the end to end the timer and print the
-// time taken to the log.
-#include "FlexEngine/timer.h"
-
 // Logger for logging messages to a file
 // 
 // Use Log::Debug for debugging information. (only logged in debug mode)
@@ -75,6 +51,38 @@
 // Use FLX_FLOW_BEGINSCOPE() to log the start of a system scope flow.
 // Use FLX_FLOW_ENDSCOPE() to log the end of a system scope flow.
 #include "FlexEngine/flexlogger.h"
+
+// Assertion wrapper for handling fatal errors.
+// These are used to check for destructive errors like memory leaks.
+// The application will be terminated if an assertion fails.
+// This hooks to the logger to log the error before terminating.
+// 
+// Use FLX_INTERNAL_ASSERT for assertions before the application is functional.
+// Use FLX_CORE_ASSERT for assertions for the application core.
+// Use FLX_ASSERT in place of regular assertions.
+// Use FLX_NULLPTR_ASSERT for checking pointers.
+#include "FlexEngine/flexassert.h"
+
+// UUID class for generating unique identifiers.
+// Get the UUID by casting it to a hash, string, or by
+// using the << operator.
+// Hash is an unsigned 64-bit integer. (unsigned long long)
+#include "FlexEngine/uuid.h"
+
+// Scoped timer to measure time taken by functions.
+// Call the constructor at the start of the scope to start the timer.
+// Call the destructor at the end to end the timer and print the
+// time taken to the log.
+#include "FlexEngine/timer.h"
+
+// Math functions and constants.
+// Implements Vector2, Vector3, Vector4.
+#include "FlexEngine/Math/flexmath.h"
+
+// Used to manage states.
+// Make your own states by inheriting from FlexEngine::State.
+// Macros are provided to make the state management easier.
+#include "FlexEngine/StateManager/statemanager.h"
 
 // Implementation of Unity's PlayerPrefs.
 // Used to store and retrieve data from the playerprefs.json config file.
@@ -97,6 +105,10 @@
 /* |-----------------------------| */
 /* |---------- Loaders ----------| */
 /* |-----------------------------| */
+
+// File handling.
+// Read and write files.
+#include "FlexEngine/Loader/files.h"
 
 // OpenGL shaders handling.
 // Load and compile shaders from files.

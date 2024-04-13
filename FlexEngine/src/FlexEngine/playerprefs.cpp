@@ -116,7 +116,7 @@ namespace FlexEngine
     m_document.RemoveMember(key.c_str());
   }
 
-  inline bool PlayerPrefs::HasKey(std::string const& key)
+  bool PlayerPrefs::HasKey(std::string const& key)
   {
     return m_document.HasMember(key.c_str());
   }

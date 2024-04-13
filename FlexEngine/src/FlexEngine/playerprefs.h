@@ -34,7 +34,7 @@ namespace FlexEngine
     /// </summary>
     /// <param name="key: ">The key to check.</param>
     /// <returns>Returns true if key exists in the preferences.</returns>
-    static inline bool HasKey(std::string const& key);
+    static bool HasKey(std::string const& key);
 
     /// <summary>
     /// Sets the value of the preference identified by key.

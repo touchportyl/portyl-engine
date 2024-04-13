@@ -1,4 +1,4 @@
-#include "layer_editor.h"
+#include "Layers/editorui.h"
 
 #include "flexformatter.h"
 
@@ -48,12 +48,9 @@ namespace FlexEditor
   //};
 
 
-  Shader shader_color;
+  Asset::Shader shader_color;
 
   Asset::Texture test_image;
-
-  EditorLayer::EditorLayer()
-    : Layer("Flex Editor") {}
 
   void EditorLayer::OnAttach()
   {
@@ -334,20 +331,20 @@ namespace FlexEditor
     //  }
     //}
 
-    { // test 5c: gameobject serialization
-      Log::Debug("test 5c");
-    
-      GameObject go;
-      go.Internal_AddComponent<Transform>();
-      //go.AddComponent.Invoke<Transform>();
-
-      //Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<GameObject>::Get();
-      //type_desc->Dump(&go);
-
-      //std::stringstream ss{};
-      //type_desc->Serialize(&go, ss);
-      //Log::Debug(ss.str());
-    }
+    //{ // test 5c: gameobject serialization
+    //  Log::Debug("test 5c");
+    //
+    //  GameObject go;
+    //  go.Internal_AddComponent<Transform>();
+    //  //go.AddComponent.Invoke<Transform>();
+    //
+    //  //Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<GameObject>::Get();
+    //  //type_desc->Dump(&go);
+    //
+    //  //std::stringstream ss{};
+    //  //type_desc->Serialize(&go, ss);
+    //  //Log::Debug(ss.str());
+    //}
 
     //{ // test 5d: scene serialization
     //  Log::Debug("test 5d");
@@ -367,11 +364,7 @@ namespace FlexEditor
     FLX_FLOW_ENDSCOPE();
   }
 
-  void EditorLayer::OnUpdate()
-  {
-  }
-
-  void EditorLayer::OnImGuiRender()
+  void EditorLayer::Update()
   {
     // https://github.com/ocornut/imgui/blob/docking/imgui_demo.cpp
 
@@ -419,7 +412,7 @@ namespace FlexEditor
         if (ImGui::MenuItem("Open", "Ctrl+O")) {}
         if (ImGui::MenuItem("Save", "Ctrl+S")) {}
         if (ImGui::MenuItem("Save As", "Ctrl+Shift+S")) {}
-        if (ImGui::MenuItem("Exit", "Ctrl+Q")) { Application::Get().Close(); }
+        if (ImGui::MenuItem("Exit", "Ctrl+Q")) { Application::Close(); }
         ImGui::EndMenu();
       }
 

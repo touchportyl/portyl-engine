@@ -168,6 +168,8 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="..\third_party\src\glad\glad.c" />
     <ClCompile Include="src\FlexEngine\Component\transform.cpp" />
     <ClCompile Include="src\FlexEngine\Core\gameobject.cpp" />
+    <ClCompile Include="src\FlexEngine\Core\imguiwrapper.cpp" />
+    <ClCompile Include="src\FlexEngine\Core\layerstack.cpp" />
     <ClCompile Include="src\FlexEngine\Core\scene.cpp" />
     <ClCompile Include="src\FlexEngine\datetime.cpp" />
     <ClCompile Include="src\FlexEngine\flexformatter.cpp" />
@@ -175,30 +177,21 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\functionqueue.cpp" />
     <ClCompile Include="src\FlexEngine\input.cpp" />
     <ClCompile Include="src\FlexEngine\flexlogger.cpp" />
-    <ClCompile Include="src\FlexEngine\Loader\files.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\fmodstudio.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\textures.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\shaders.cpp" />
+    <ClCompile Include="src\FlexEngine\Math\vector2.cpp" />
+    <ClCompile Include="src\FlexEngine\Math\vector3.cpp" />
+    <ClCompile Include="src\FlexEngine\Math\vector4.cpp" />
     <ClCompile Include="src\FlexEngine\playerprefs.cpp" />
     <ClCompile Include="src\FlexEngine\Reflection\primitives.cpp" />
+    <ClCompile Include="src\FlexEngine\StateManager\statemanager.cpp" />
     <ClCompile Include="src\FlexEngine\uuid.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\FlexEngine\Core\application.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\Core\layer.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\Core\layerstack.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\Core\layer_imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
@@ -212,6 +205,9 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Component\transform.h" />
     <ClInclude Include="src\FlexEngine\Core\components.h" />
     <ClInclude Include="src\FlexEngine\Core\gameobject.h" />
+    <ClInclude Include="src\FlexEngine\Core\imguiwrapper.h" />
+    <ClInclude Include="src\FlexEngine\Core\layer.h" />
+    <ClInclude Include="src\FlexEngine\Core\layerstack.h" />
     <ClInclude Include="src\FlexEngine\Core\scene.h" />
     <ClInclude Include="src\FlexEngine\datetime.h" />
     <ClInclude Include="src\FlexEngine\flexassert.h" />
@@ -225,17 +221,21 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Loader\textures.h" />
     <ClInclude Include="src\FlexEngine\Loader\shaders.h" />
     <ClInclude Include="src\FlexEngine\flexlogger.h" />
+    <ClInclude Include="src\FlexEngine\Math\flexmath.h" />
+    <ClInclude Include="src\FlexEngine\Math\values.h" />
+    <ClInclude Include="src\FlexEngine\Math\vector2.h" />
+    <ClInclude Include="src\FlexEngine\Math\vector3.h" />
+    <ClInclude Include="src\FlexEngine\Math\vector4.h" />
     <ClInclude Include="src\FlexEngine\playerprefs.h" />
     <ClInclude Include="src\FlexEngine\Reflection\base.h" />
+    <ClInclude Include="src\FlexEngine\StateManager\state.h" />
+    <ClInclude Include="src\FlexEngine\StateManager\statemanager.h" />
     <ClInclude Include="src\FlexEngine\timer.h" />
     <ClInclude Include="src\FlexEngine\uuid.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\FlexEngine.h" />
     <ClInclude Include="src\FlexEngine\Core\application.h" />
     <ClInclude Include="src\FlexEngine\Core\entrypoint.h" />
-    <ClInclude Include="src\FlexEngine\Core\layer.h" />
-    <ClInclude Include="src\FlexEngine\Core\layerstack.h" />
-    <ClInclude Include="src\FlexEngine\Core\layer_imgui.h" />
     <ClInclude Include="src\FlexEngine\Core\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

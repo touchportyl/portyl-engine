@@ -26,6 +26,12 @@
     <Filter Include="src\FlexEngine\Reflection">
       <UniqueIdentifier>{e9041521-9d51-46c9-8a4b-f92edb080361}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\FlexEngine\Math">
+      <UniqueIdentifier>{074c64d3-93c6-4963-a353-8f4f11343c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\FlexEngine\StateManager">
+      <UniqueIdentifier>{fe3d65a9-3fdd-4ca6-9717-b72a808fbf2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -35,15 +41,6 @@
       <Filter>src\FlexEngine\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\FlexEngine\Core\application.cpp">
-      <Filter>src\FlexEngine\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\Core\layer.cpp">
-      <Filter>src\FlexEngine\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\Core\layer_imgui.cpp">
-      <Filter>src\FlexEngine\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\Core\layerstack.cpp">
       <Filter>src\FlexEngine\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\src\glad\glad.c">
@@ -57,9 +54,6 @@
     </ClCompile>
     <ClCompile Include="src\FlexEngine\flexlogger.cpp">
       <Filter>src\FlexEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\Loader\files.cpp">
-      <Filter>src\FlexEngine\Loader</Filter>
     </ClCompile>
     <ClCompile Include="src\FlexEngine\Loader\shaders.cpp">
       <Filter>src\FlexEngine\Loader</Filter>
@@ -97,6 +91,24 @@
     <ClCompile Include="src\FlexEngine\datetime.cpp">
       <Filter>src\FlexEngine</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\Core\imguiwrapper.cpp">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\StateManager\statemanager.cpp">
+      <Filter>src\FlexEngine\StateManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Core\layerstack.cpp">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Math\vector2.cpp">
+      <Filter>src\FlexEngine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Math\vector3.cpp">
+      <Filter>src\FlexEngine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Math\vector4.cpp">
+      <Filter>src\FlexEngine\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -112,15 +124,6 @@
       <Filter>src\FlexEngine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Core\entrypoint.h">
-      <Filter>src\FlexEngine\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\Core\layer.h">
-      <Filter>src\FlexEngine\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\Core\layer_imgui.h">
-      <Filter>src\FlexEngine\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\Core\layerstack.h">
       <Filter>src\FlexEngine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Loader\shaders.h">
@@ -185,6 +188,36 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\datetime.h">
       <Filter>src\FlexEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Math\vector2.h">
+      <Filter>src\FlexEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Math\vector3.h">
+      <Filter>src\FlexEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Math\vector4.h">
+      <Filter>src\FlexEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Math\values.h">
+      <Filter>src\FlexEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Math\flexmath.h">
+      <Filter>src\FlexEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Core\imguiwrapper.h">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\StateManager\state.h">
+      <Filter>src\FlexEngine\StateManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\StateManager\statemanager.h">
+      <Filter>src\FlexEngine\StateManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Core\layer.h">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Core\layerstack.h">
+      <Filter>src\FlexEngine\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

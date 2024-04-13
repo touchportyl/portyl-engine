@@ -1,8 +1,8 @@
 #pragma once
 
 #include <filesystem>
-
-#include "Loader/files.h" // includes <fstream> and <string>
+#include <fstream>
+#include <string>
 
 #define FLX_FLOW_FUNCTION()   FlexEngine::Log::Flow(__FUNCTION__)
 #define FLX_FLOW_BEGINSCOPE() FLX_FLOW_FUNCTION(); FlexEngine::Log::UpdateFlowScope(1)
@@ -15,13 +15,13 @@ namespace FlexEngine
   public:
     enum WarningLevel
     {
-      _Debug   = 0,
+      _Debug = 0,
       _Flow,
       _Info,
       _Warning,
       _Error,
       _Fatal,
-      Last    = _Fatal
+      Last = _Fatal
     };
 
     Log();
@@ -78,17 +78,12 @@ namespace FlexEngine
     /// </summary>
     static void UpdateFlowScope(int indent) { flow_scope += indent; }
 
-  protected:
-    static std::tm GetTime(void);
-
   private:
-    static std::string GetFormattedTime(const char* fmt);
-
     static void Logger(WarningLevel level, const char* message);
 
     static std::filesystem::path log_base_path;
     static std::filesystem::path log_file_path;
-    static File log_stream;
+    static std::fstream log_stream;
     static bool is_fatal;
     static int flow_scope;
   };

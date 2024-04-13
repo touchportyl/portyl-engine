@@ -7,13 +7,13 @@ namespace FlexEngine
   std::array<bool, GLFW_KEY_LAST>           Input::m_key_down{};
   std::array<bool, GLFW_KEY_LAST>           Input::m_key_up{};
   std::array<bool, GLFW_KEY_LAST>           Input::m_key{};
-  glm::vec2                                 Input::m_cursor_position{};
-  glm::vec2                                 Input::m_last_cursor_position{};
-  glm::vec2                                 Input::m_cursor_position_delta{};
+  Vector2                                   Input::m_cursor_position{};
+  Vector2                                   Input::m_last_cursor_position{};
+  Vector2                                   Input::m_cursor_position_delta{};
   std::array<bool, GLFW_MOUSE_BUTTON_LAST>  Input::m_mouse_button_down{};
   std::array<bool, GLFW_MOUSE_BUTTON_LAST>  Input::m_mouse_button_up{};
   std::array<bool, GLFW_MOUSE_BUTTON_LAST>  Input::m_mouse_button{};
-  glm::vec2                                 Input::m_scroll_offset{};
+  Vector2                                   Input::m_scroll_offset{};
 
   #pragma endregion
 
@@ -43,7 +43,7 @@ namespace FlexEngine
   void Input::CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
   {
     m_last_cursor_position = m_cursor_position;
-    m_cursor_position = glm::vec2(xpos, ypos);
+    m_cursor_position = { static_cast<float>(xpos), static_cast<float>(ypos) };
     m_cursor_position_delta = m_cursor_position - m_last_cursor_position;
   }
 
@@ -69,7 +69,7 @@ namespace FlexEngine
 
   void Input::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
   {
-    m_scroll_offset = glm::vec2(xoffset, yoffset);
+    m_scroll_offset = { static_cast<float>(xoffset), static_cast<float>(yoffset) };
   }
 
   #pragma warning(pop) // C4100 unused parameters

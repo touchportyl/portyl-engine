@@ -307,6 +307,7 @@ bool    ImGui_ImplOpenGL3_Init(const char* glsl_version)
     {
         // Query GL_VERSION in desktop GL 2.x, the string will start with "<major>.<minor>"
         const char* gl_version = (const char*)glGetString(GL_VERSION);
+        #pragma warning(suppress: 6031) // Return value ignored: 'sscanf'
         sscanf(gl_version, "%d.%d", &major, &minor);
     }
     bd->GlVersion = (GLuint)(major * 100 + minor * 10);
@@ -765,6 +766,7 @@ bool    ImGui_ImplOpenGL3_CreateDeviceObjects()
 
     // Parse GLSL version string
     int glsl_version = 130;
+    #pragma warning(suppress: 6031) // Return value ignored: 'sscanf'
     sscanf(bd->GlslVersionString, "#version %d", &glsl_version);
 
     const GLchar* vertex_shader_glsl_120 =

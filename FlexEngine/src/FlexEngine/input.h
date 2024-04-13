@@ -5,7 +5,8 @@
 
 #include <GLFW/glfw3.h>
 
-#include "glm.hpp"
+//#include "glm.hpp"
+#include "Math/flexmath.h"
 
 // GLFW key codes
 // https://www.glfw.org/docs/3.3/group__keys.html
@@ -23,12 +24,12 @@ namespace FlexEngine
     static bool AnyKeyUp()                      { return std::any_of(m_key_up.begin(), m_key_up.end(), [](bool b) { return b; }); }
     static bool AnyKey()                        { return std::any_of(m_key.begin(), m_key.end(), [](bool b) { return b; }); }
 
-    static glm::vec2 GetCursorPosition()        { return m_cursor_position; }
-    static glm::vec2 GetCursorPositionDelta()   { return m_cursor_position_delta; }
+    static Vector2 GetCursorPosition()          { return m_cursor_position; }
+    static Vector2 GetCursorPositionDelta()     { return m_cursor_position_delta; }
 
     // renaming for convenience
-    static glm::vec2 GetMousePosition()         { return GetCursorPosition(); }
-    static glm::vec2 GetMousePositionDelta()    { return GetCursorPositionDelta(); }
+    static Vector2 GetMousePosition()           { return GetCursorPosition(); }
+    static Vector2 GetMousePositionDelta()      { return GetCursorPositionDelta(); }
 
     static bool GetMouseButtonDown(int button)  { return m_mouse_button_down[button]; }
     static bool GetMouseButtonUp(int button)    { return m_mouse_button_up[button]; }
@@ -43,15 +44,15 @@ namespace FlexEngine
     static std::array<bool, GLFW_KEY_LAST>          m_key_up;
     static std::array<bool, GLFW_KEY_LAST>          m_key;
 
-    static glm::vec2                                m_cursor_position;
-    static glm::vec2                                m_last_cursor_position;
-    static glm::vec2                                m_cursor_position_delta;
+    static Vector2                                  m_cursor_position;
+    static Vector2                                  m_last_cursor_position;
+    static Vector2                                  m_cursor_position_delta;
 
     static std::array<bool, GLFW_MOUSE_BUTTON_LAST> m_mouse_button_down;
     static std::array<bool, GLFW_MOUSE_BUTTON_LAST> m_mouse_button_up;
     static std::array<bool, GLFW_MOUSE_BUTTON_LAST> m_mouse_button;
 
-    static glm::vec2                                m_scroll_offset;
+    static Vector2                                  m_scroll_offset;
 
   // callback functions for glfw
   public:

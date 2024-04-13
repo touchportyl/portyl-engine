@@ -1,52 +1,48 @@
 #pragma once
 
-#include <fstream>
+#include <iostream>
 #include <string>
+#include <filesystem>
 
 namespace FlexEngine
 {
-  class File
+
+  // Structure to represent a file
+  // Files are defined by their name and path
+  // There can never be two files with the same path
+  struct File
   {
-  public:
-    File() = default;
+    std::string name;
+    std::filesystem::path path;
 
-    // Constructor to directly open the file
-    File(const std::string& filename, int flags)
+    File(const std::string& name, const std::filesystem::path& path)
+      : name(name), path(path)
     {
-      open(filename, flags);
     }
 
-    // Destructor closes the file
-    ~File()
+    // prevent copying and moving
+    File() = delete;
+    File(File&) = delete;
+    File(File&&) = delete;
+    File(const File&) = delete;
+    File& operator=(File&) = delete;
+    File& operator=(const File&) = delete;
+
+    std::string ToString() const
     {
-      close();
+      return " [ " + name + " ] " + path.string() + "\n";
     }
 
-    /// <summary>
-    /// Open a file
-    /// </summary>
-    /// <param name="filename"></param>
-    /// <param name="flags">std::ios flags</param>
-    void open(const std::string& filename, int flags);
+    friend std::ostream& operator<<(std::ostream& os, const File& file)
+    {
+      return os << file.path.filename().string() << "\n";
+    }
 
-    /// <summary>
-    /// Explicitly close the file
-    /// <para>Passing through fstream functionality</para>
-    /// </summary>
-    void close();
-
-    /// <summary>
-    /// Check if the file is open
-    /// <para>Passing through fstream functionality</para>
-    /// </summary>
-    bool is_open() const { return file.is_open(); }
-
-    // Operator overloads to read and write from the file
-    File& operator>>(std::string& data);
-    File& operator<<(const char* data);
-    File& operator<<(std::string const& data) { return operator<<(data.c_str()); }
-
-  private:
-    std::fstream file{};
+    // comparison operator for sorting
+    friend bool operator<(const File& lhs, const File& rhs) { return lhs.path < rhs.path; }
   };
+
+  // todo: implement a file loader
+  // read from a directory and load all files
+
 }

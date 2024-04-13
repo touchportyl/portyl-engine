@@ -18,7 +18,7 @@ using namespace rapidjson;
 /// The current version of the Flex Formatter.
 /// <para>Do not change this value!</para>
 /// </summary>
-const int FLXFMT_VERSION = 1;
+constexpr int FLXFMT_VERSION = 1;
 
 namespace FlexEngine
 {

@@ -5,6 +5,7 @@
 //#include <cassert>                    // Conditionally compiled macro that compares its argument to zero
 
 //#include <iostream>                   // Several standard stream objects
+#include <fstream>                    // Input/output stream class to operate on files
 //#include <string>                     // std::basic_string class template
 #include <sstream>                    // std::basic_stringstream, std::basic_istringstream, std::basic_ostringstream class templates and several typedefs
 

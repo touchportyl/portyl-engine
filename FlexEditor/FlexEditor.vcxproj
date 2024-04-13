@@ -19,15 +19,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Editor\layer_editor.cpp" />
+    <ClCompile Include="src\Layers\editorui.cpp" />
+    <ClCompile Include="src\Layers\splashscreen.cpp" />
     <ClCompile Include="src\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Editor\layer_editor.h" />
+    <ClCompile Include="src\States\editor.cpp" />
+    <ClCompile Include="src\States\splash.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\color.frag" />
     <None Include="assets\shaders\color.vert" />
+    <None Include="assets\shaders\texture.frag" />
+    <None Include="assets\shaders\texture.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Layers.h" />
+    <ClInclude Include="src\Layers\editorui.h" />
+    <ClInclude Include="src\Layers\splashscreen.h" />
+    <ClInclude Include="src\States.h" />
+    <ClInclude Include="src\States\editor.h" />
+    <ClInclude Include="src\States\splash.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

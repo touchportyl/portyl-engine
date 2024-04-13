@@ -1,56 +1,52 @@
 #pragma once
 
+#include <memory>
+
 #include "window.h"
 #include "layerstack.h"
 #include "layer.h"
-#include "layer_imgui.h"
+#include "imgui.h"
 
-int main(int argc, char** argv);
+int main(int, char**);
 
 namespace FlexEngine
 {
+
+  // the architecture of the engine is designed to have only one application instance
   class Application
   {
   public:
-    Application(WindowProps window_props = {});
+    Application();
     virtual ~Application();
 
-    void PushLayer(Layer* layer);
-    void PushOverlay(Layer* layer);
-    void PopLayer(Layer* layer);
-    void PopOverlay(Layer* layer);
+    // Closes the application and all windows
+    // Sets the glfwSetWindowShouldClose flag
+    static void Close();
 
-    /// <summary>
-    /// Closes the application.
-    /// <para>Sets the glfwSetWindowShouldClose flag</para>
-    /// </summary>
-    void Close();
+    // Window handling
 
-    ImGuiLayer* GetImGuiLayer() { return m_imguilayer; }
+    static std::shared_ptr<Window> OpenWindow(const WindowProps& props = {});
 
-    /// <returns>The instance of the application</returns>
-    static Application& Get() { return *s_instance; }
+    static void CloseWindow(std::string& window_title);
+    static void CloseWindow(std::shared_ptr<Window> window);
 
-    /// <returns>The window</returns>
-    Window& GetWindow() { return *m_window; }
+    // checks
 
-    /// <returns>The glfw window</returns>
-    GLFWwindow* GetGLFWWindow() { return m_glfwwindow; }
+    static bool IsRunning() { return m_is_running; }
+    static bool IsMinimized() { return m_is_minimized; }
+
+    // Returns all the windows
+    static const std::vector<std::shared_ptr<Window>>& GetWindows() { return m_windows; }
 
   private:
-    void Run();
+    static void Run();
 
-    bool m_is_running = true;
-    bool m_is_minimized = false;
+    static bool m_is_running;
+    static bool m_is_minimized;
 
-    LayerStack m_layerstack;
-    ImGuiLayer* m_imguilayer;
+    static std::vector<std::shared_ptr<Window>> m_windows;
 
-    static Application* s_instance;
-    Window* m_window;
-    GLFWwindow* m_glfwwindow;
-
-    friend int ::main(int argc, char** argv);
+    friend int ::main(int, char**);
   };
 
   Application* CreateApplication();
