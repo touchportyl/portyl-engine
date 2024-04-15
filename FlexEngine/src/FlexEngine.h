@@ -20,16 +20,16 @@
 // Scenes are used to manage entities and systems.
 // Scenes are used to load and unload levels.
 // Scenes are used to update and render entities.
-#include "FlexEngine/Core/scene.h"
+//#include "FlexEngine/Core/scene.h"
 
 // Contains the gameobject class.
 // GameObjects are used to represent objects in the game world.
 // Components can be attached to GameObjects.
 // GameObjects are managed by the scene class.
-#include "FlexEngine/Core/gameobject.h"
+//#include "FlexEngine/Core/gameobject.h"
 
 // Contains all the components that can be attached to game objects.
-#include "FlexEngine/Core/components.h"
+//#include "FlexEngine/Core/components.h"
 
 
 /* |---------------------------| */
@@ -76,8 +76,9 @@
 #include "FlexEngine/timer.h"
 
 // Math functions and constants.
+// Contains constants like PI and EPSILON.
 // Implements Vector2, Vector3, Vector4.
-#include "FlexEngine/Math/flexmath.h"
+#include "FlexEngine/FlexMath/vector4.h"
 
 // Used to manage states.
 // Make your own states by inheriting from FlexEngine::State.

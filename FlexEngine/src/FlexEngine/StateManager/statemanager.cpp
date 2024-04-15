@@ -3,6 +3,6 @@
 namespace FlexEngine
 {
     
-  FLX_REGISTER_STATEMANAGER_IMPL(Application);
+  FLX_STATEMANAGER_REGISTER_IMPL(Application);
 
 }

@@ -2,12 +2,8 @@
 
 #include <string>
 
-/// <summary>
-/// Helper macro to display a texture for ImGui
-/// using the ImGui::Image function
-/// <para>Example:</para>
-/// <para>ImGui::Image(IMGUI_IMAGE(texture_variable));</para>
-/// </summary>
+// Helper macro to display a texture for ImGui using the ImGui::Image function
+// Example usage: ImGui::Image(IMGUI_IMAGE(texture_variable));
 #define IMGUI_IMAGE(TEXTURE) TEXTURE.GetTextureImGui(), ImVec2(TEXTURE.GetWidthF(), TEXTURE.GetHeightF())
 
 namespace FlexEngine
@@ -15,6 +11,10 @@ namespace FlexEngine
   namespace Asset
   {
 
+    // Texture class to load and unload textures
+    // Wraps around OpenGL texture functions and uses stb_image.h to load images
+    // Can be used to load textures from files or create textures from memory
+    // Can be used to bind and unbind textures for OpenGL
     class Texture
     {
     public:

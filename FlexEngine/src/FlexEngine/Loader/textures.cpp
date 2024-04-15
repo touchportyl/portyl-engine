@@ -10,10 +10,8 @@
 namespace FlexEngine
 {
   
-  /// <summary>
-  /// Create a default texture
-  /// <para>This is the legendary Valve purple and black checkered texture</para>
-  /// </summary>
+  // Create a default texture
+  // This is the legendary Valve purple and black checkered texture
   static void CreateDefaultTexture(GLubyte* data, int width, int height)
   {
     for (int y = 0; y < height; ++y)

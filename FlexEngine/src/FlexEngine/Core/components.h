@@ -2,4 +2,4 @@
 
 // Include this file to include all components
 
-#include "Component/transform.h"
+//#include "Component/transform.h"

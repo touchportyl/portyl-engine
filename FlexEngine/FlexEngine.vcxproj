@@ -166,13 +166,14 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\src\glad\glad.c" />
-    <ClCompile Include="src\FlexEngine\Component\transform.cpp" />
-    <ClCompile Include="src\FlexEngine\Core\gameobject.cpp" />
     <ClCompile Include="src\FlexEngine\Core\imguiwrapper.cpp" />
     <ClCompile Include="src\FlexEngine\Core\layerstack.cpp" />
-    <ClCompile Include="src\FlexEngine\Core\scene.cpp" />
     <ClCompile Include="src\FlexEngine\datetime.cpp" />
+    <ClCompile Include="src\FlexEngine\ECS\registry.cpp" />
     <ClCompile Include="src\FlexEngine\flexformatter.cpp" />
+    <ClCompile Include="src\FlexEngine\FlexMath\vector2.cpp" />
+    <ClCompile Include="src\FlexEngine\FlexMath\vector3.cpp" />
+    <ClCompile Include="src\FlexEngine\FlexMath\vector4.cpp" />
     <ClCompile Include="src\FlexEngine\freequeue.cpp" />
     <ClCompile Include="src\FlexEngine\functionqueue.cpp" />
     <ClCompile Include="src\FlexEngine\input.cpp" />
@@ -180,11 +181,11 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Loader\fmodstudio.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\textures.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\shaders.cpp" />
-    <ClCompile Include="src\FlexEngine\Math\vector2.cpp" />
-    <ClCompile Include="src\FlexEngine\Math\vector3.cpp" />
-    <ClCompile Include="src\FlexEngine\Math\vector4.cpp" />
     <ClCompile Include="src\FlexEngine\playerprefs.cpp" />
-    <ClCompile Include="src\FlexEngine\Reflection\primitives.cpp" />
+    <ClCompile Include="src\FlexEngine\Reflection\primitives.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\FlexEngine\StateManager\statemanager.cpp" />
     <ClCompile Include="src\FlexEngine\uuid.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -201,17 +202,19 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\FlexEngine\Component\base.h" />
-    <ClInclude Include="src\FlexEngine\Component\transform.h" />
     <ClInclude Include="src\FlexEngine\Core\components.h" />
-    <ClInclude Include="src\FlexEngine\Core\gameobject.h" />
     <ClInclude Include="src\FlexEngine\Core\imguiwrapper.h" />
     <ClInclude Include="src\FlexEngine\Core\layer.h" />
     <ClInclude Include="src\FlexEngine\Core\layerstack.h" />
-    <ClInclude Include="src\FlexEngine\Core\scene.h" />
     <ClInclude Include="src\FlexEngine\datetime.h" />
+    <ClInclude Include="src\FlexEngine\ECS\registry.h" />
+    <ClInclude Include="src\FlexEngine\ECS\transform.h" />
     <ClInclude Include="src\FlexEngine\flexassert.h" />
     <ClInclude Include="src\FlexEngine\flexformatter.h" />
+    <ClInclude Include="src\FlexEngine\FlexMath\values.h" />
+    <ClInclude Include="src\FlexEngine\FlexMath\vector2.h" />
+    <ClInclude Include="src\FlexEngine\FlexMath\vector3.h" />
+    <ClInclude Include="src\FlexEngine\FlexMath\vector4.h" />
     <ClInclude Include="src\FlexEngine\freequeue.h" />
     <ClInclude Include="src\FlexEngine\functionqueue.h" />
     <ClInclude Include="src\FlexEngine\input.h" />
@@ -221,13 +224,11 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Loader\textures.h" />
     <ClInclude Include="src\FlexEngine\Loader\shaders.h" />
     <ClInclude Include="src\FlexEngine\flexlogger.h" />
-    <ClInclude Include="src\FlexEngine\Math\flexmath.h" />
-    <ClInclude Include="src\FlexEngine\Math\values.h" />
-    <ClInclude Include="src\FlexEngine\Math\vector2.h" />
-    <ClInclude Include="src\FlexEngine\Math\vector3.h" />
-    <ClInclude Include="src\FlexEngine\Math\vector4.h" />
     <ClInclude Include="src\FlexEngine\playerprefs.h" />
-    <ClInclude Include="src\FlexEngine\Reflection\base.h" />
+    <ClInclude Include="src\FlexEngine\Reflection\base.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="src\FlexEngine\StateManager\state.h" />
     <ClInclude Include="src\FlexEngine\StateManager\statemanager.h" />
     <ClInclude Include="src\FlexEngine\timer.h" />

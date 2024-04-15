@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 
 //#include "glm.hpp"
-#include "Math/flexmath.h"
+#include "FlexMath/vector2.h"
 
 // GLFW key codes
 // https://www.glfw.org/docs/3.3/group__keys.html

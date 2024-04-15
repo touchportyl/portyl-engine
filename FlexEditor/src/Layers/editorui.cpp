@@ -5,6 +5,9 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include "ECS/registry.h"
+#include "ECS/transform.h"
+
 void DumpJsonNodes(const rapidjson::Value& value, int depth = 0) {
   if (value.IsObject()) {
     std::cout << std::string(depth, ' ') << "Object:" << std::endl;
@@ -34,22 +37,10 @@ void DumpJsonNodes(const rapidjson::Value& value, int depth = 0) {
   }
 }
 
-using namespace FlexEngine;
-
 namespace FlexEditor
 {
 
-  //struct IndirectDrawCommand {
-  //  unsigned int count;         // Draw Count: The number of draw calls to execute.
-  //  unsigned int instanceCount; // Instance Count: The number of instances to render.
-  //  unsigned int firstIndex;    // First Index: The starting index within an index buffer.
-  //  unsigned int baseVertex;    // Base Vertex: A constant offset to add to each index before fetching the vertex data.
-  //  unsigned int baseInstance;  // Base Instance: A constant offset to add to each instance ID before fetching per-instance data.
-  //};
-
-
   Asset::Shader shader_color;
-
   Asset::Texture test_image;
 
   void EditorLayer::OnAttach()
@@ -68,288 +59,38 @@ namespace FlexEditor
 
 
     // todo: remove debug code
+    #pragma region Regression Testing
 
-    //UUID uuid;
-    //Log::Debug(uuid);
+    { // test 1: entity + transform component
+      ECS ecs;
 
-    //{ // test 1a: dump to console (default to std::cout)
-    //  Log::Debug("test 1a");
-    //  Transform t1{ 1, 2, 3 };
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
-    //  type_desc->Dump(&t1);
-    //}
+      // entity creation
+      ECS::Entity e1 = ecs.CreateEntity("Test Entity 1");
+      Log::Debug(e1.second + " [" + std::to_string(e1.first) + "]");
+      ECS::Entity e2 = ecs.CreateEntity("Test Entity 2");
 
-    //{ // test 1b: dump to console (logged)
-    //  Log::Debug("test 1b");
-    //  Transform t1{ 10, 20, 30 };
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
-    //  std::stringstream ss{};
-    //  type_desc->Dump(&t1, ss);
-    //  Log::Debug(ss.str());
-    //}
+      // component creation
+      ecs.AddComponent(e1, Transform());
+      //ecs.AddComponent<Transform>(e1, { { 1.0f, 2.0f, 3.0f }, 5.0f, { 7.0f, 8.0f, 9.0f } });
+      //auto component = ecs.GetComponent<Transform>(e1).first.lock();
+      //Log::Debug(std::to_string(component->position.x));
+      //Log::Debug(std::to_string(component->position.y));
+      //Log::Debug(std::to_string(component->position.z));
 
-    //{ // test 1c: dump a vector (default)
-    //  Log::Debug("test 1c");
-    //  std::vector<Transform> list;
-    //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
-    //  list.push_back(t1); list.push_back(t2);
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
-    //  type_desc->Dump(&list);
-    //}
+      // find entity by name
+      auto e3 = ecs.FindEntityByName("Test Entity 2");
+      Log::Debug(e3.second + " [" + std::to_string(e3.first) + "]");
 
-    //{ // test 2a: serialize and log
-    //  Log::Debug("test 2a");
-    //  Transform t1{ 7, 8, 9 };
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
-    //  std::stringstream ss{};
-    //  type_desc->Serialize(&t1, ss);
-    //  Log::Debug(ss.str());
-    //}
+      // find entities by component
+      //auto e_list = ecs.FindEntitiesByComponent<Transform>();
+      //for (auto& e : e_list)
+      //{
+      //  Log::Debug(e.second + " [" + std::to_string(e.first) + "]");
+      //}
+    }
 
-    //{ // test 2b: dump a std::vector of custom structs
-    //  Log::Debug("test 2b");
-    //  std::vector<Transform> list;
-    //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
-    //  list.push_back(t1); list.push_back(t2);
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
-    //  std::stringstream ss{};
-    //  type_desc->Dump(&list, ss);
-    //  Log::Debug(ss.str());
-    //}
+    #pragma endregion
 
-    //{ // test 2c: serialize a std::vector of custom structs
-    //  Log::Debug("test 2c");
-    //  std::vector<Transform> list;
-    //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
-    //  list.push_back(t1); list.push_back(t2);
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
-    //  std::stringstream ss{};
-    //  type_desc->Serialize(&list, ss);
-    //  Log::Debug(ss.str());
-    //}
-
-    //{ // test 3: writing to .flx file
-    //  Log::Debug("test 3");
-    //
-    //  // scene
-    //  std::vector<Transform> list;
-    //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
-    //  list.push_back(t1); list.push_back(t2);
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
-    //  std::stringstream ss{};
-    //  type_desc->Serialize(&list, ss);
-    //
-    //  std::string file_path = "scene.flx";
-    //  std::ofstream file(file_path);
-    //
-    //  if (file.is_open())
-    //  {
-    //    FlexFormatter::Format(file, ss.str());
-    //    Log::Debug("Wrote to file: " + file_path);
-    //  }
-    //  else
-    //  {
-    //    Log::Error("Failed to open file: " + file_path);
-    //  }
-    //
-    //}
-
-    //{ // test 4a: basic deserialization
-    //  Log::Debug("test 4a");
-    //  std::string json = R"(
-    //    {
-    //      "type": "Transform",
-    //      "data": [
-    //        {
-    //          "type": "float",
-    //          "data": 11
-    //        },
-    //        {
-    //          "type": "float",
-    //          "data": 22
-    //        },
-    //        {
-    //          "type": "float",
-    //          "data": 33
-    //        }
-    //      ]
-    //    }
-    //  )";
-    //  rapidjson::Document document;
-    //  document.Parse(json.c_str());
-    //
-    //  Transform t;
-    //
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
-    //
-    //  type_desc->Deserialize(&t, document);
-    //
-    //  std::stringstream ss{};
-    //  type_desc->Serialize(&t, ss);
-    //  Log::Debug(ss.str());
-    //}
-
-    //{ // test 4b: deserialization of a std::vector of custom structs
-    //  Log::Debug("test 4b");
-    //  #pragma region R-string
-    //  std::string json = R"(
-    //    {
-    //      "type": "std::vector<Transform>",
-    //      "data": [
-    //        {
-    //          "type": "Transform",
-    //          "data": [
-    //            {
-    //              "type": "float",
-    //              "data": 11
-    //            },
-    //            {
-    //              "type": "float",
-    //              "data": 22
-    //            },
-    //            {
-    //              "type": "float",
-    //              "data": 33
-    //            }
-    //          ]
-    //        },
-    //        {
-    //          "type": "Transform",
-    //          "data": [
-    //            {
-    //              "type": "float",
-    //              "data": 55
-    //            },
-    //            {
-    //              "type": "float",
-    //              "data": 66
-    //            },
-    //            {
-    //              "type": "float",
-    //              "data": 77
-    //            }
-    //          ]
-    //        }
-    //      ]
-    //    }
-    //  )";
-    //  #pragma endregion
-    //  
-    //  rapidjson::Document document;
-    //  document.Parse(json.c_str());
-    //
-    //  std::vector<Transform> list;
-    //
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
-    //
-    //  type_desc->Deserialize(&list, document);
-    //
-    //  std::stringstream ss{};
-    //  type_desc->Serialize(&list, ss);
-    //  Log::Debug(ss.str());
-    //}
-
-    //{ // test 4c: parsing .flx file
-    //  Log::Debug("test 4c");
-    //  std::string file_path = "scene.flx";
-    //  std::ifstream file(file_path);
-    //
-    //  if (file.is_open())
-    //  {
-    //    // parse the file
-    //    Document document = FlexFormatter::Load(file);
-    //
-    //    // dump the document
-    //    //printJsonNodes(document);
-    //    //printJsonNodes(document["data"][0]);
-    //
-    //    // deserialize
-    //    std::vector<Transform> list;
-    //    
-    //    Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<Transform>>::Get();
-    //    
-    //    type_desc->Deserialize(&list, document["data"][0]);
-    //    
-    //    std::stringstream ss{};
-    //    type_desc->Serialize(&list, ss);
-    //    Log::Debug(ss.str());
-    //  }
-    //  else
-    //  {
-    //    Log::Error("Failed to open file: " + file_path);
-    //  }
-    //}
-
-    //{ // test 5a: shared_ptr serialization and deserialization
-    //  Log::Debug("test 5a");
-    //
-    //  std::shared_ptr<float> value = std::make_shared<float>();
-    //  *value = 3.14f;
-    //
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::shared_ptr<float>>::Get();
-    //  //type_desc->Dump(&value);
-    //
-    //  std::stringstream ss{};
-    //
-    //  type_desc->Serialize(&value, ss);
-    //  Log::Debug(ss.str());
-    //
-    //  std::shared_ptr<float> deserialized_value;
-    //  Document document;
-    //  document.Parse(ss.str().c_str());
-    //  type_desc->Deserialize(&deserialized_value, document);
-    //
-    //  Log::Debug(std::to_string(*deserialized_value));
-    //}
-
-    //{ // test 5b: unordered_map serialization and deserialization
-    //  Log::Debug("test 5b");
-    //
-    //  std::unordered_map<std::string, bool> umap;
-    //
-    //  umap["a"] = true;
-    //  umap["b"] = false;
-    //  umap["c"] = true;
-    //
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::unordered_map<std::string, bool>>::Get();
-    //  //type_desc->Dump(&umap);
-    //
-    //  std::stringstream ss{};
-    //
-    //  type_desc->Serialize(&umap, ss);
-    //  Log::Debug(ss.str());
-    //
-    //  std::unordered_map<std::string, bool> deserialized_umap;
-    //  Document document;
-    //  document.Parse(ss.str().c_str());
-    //  //DumpJsonNodes(document.GetObject());
-    //  type_desc->Deserialize(&deserialized_umap, document);
-    //  
-    //  for (auto& [key, value] : deserialized_umap)
-    //  {
-    //    Log::Debug(key + " = " + (value ? "true" : "false"));
-    //  }
-    //}
-
-    //{ // test 5c: gameobject serialization
-    //  Log::Debug("test 5c");
-    //
-    //  GameObject go;
-    //  go.Internal_AddComponent<Transform>();
-    //  //go.AddComponent.Invoke<Transform>();
-    //
-    //  //Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<GameObject>::Get();
-    //  //type_desc->Dump(&go);
-    //
-    //  //std::stringstream ss{};
-    //  //type_desc->Serialize(&go, ss);
-    //  //Log::Debug(ss.str());
-    //}
-
-    //{ // test 5d: scene serialization
-    //  Log::Debug("test 5d");
-    //
-    //}
 
     // todo: add opengl rendering
     // vertex buffer objects (VBO)

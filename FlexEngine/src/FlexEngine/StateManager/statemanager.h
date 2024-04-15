@@ -10,10 +10,10 @@
 
 #pragma region Declaration
 // Creates a StateManager class with the given name.
-// Usage example: FLX_REGISTER_STATEMANAGER_DECL(Application);
+// Usage example: FLX_STATEMANAGER_REGISTER_DECL(Application);
 // This will create a class called ApplicationStateManager.
-// Remember to run the FLX_REGISTER_STATEMANAGER_IMPL macro in a cpp file.
-#define FLX_REGISTER_STATEMANAGER_DECL(NAME)                                     \
+// Remember to run the FLX_STATEMANAGER_REGISTER_IMPL macro in a cpp file.
+#define FLX_STATEMANAGER_REGISTER_DECL(NAME)                                     \
 class NAME##StateManager                                                         \
 {                                                                                \
   static std::unique_ptr<State> m_state_current;                                 \
@@ -36,11 +36,11 @@ public:                                                                         
 
 #pragma region Implementation
 // Implementation of the StateManager class.
-// Usage example: FLX_REGISTER_STATEMANAGER_IMPL(Application);
+// Usage example: FLX_STATEMANAGER_REGISTER_IMPL(Application);
 // This will create the implementation of the ApplicationStateManager class.
 // This implementation keeps everything in scope, do not rely on restart to fully reset the state.
 // That is the responsibility of the state itself
-#define FLX_REGISTER_STATEMANAGER_IMPL(NAME)                          \
+#define FLX_STATEMANAGER_REGISTER_IMPL(NAME)                          \
 void NAME##StateManager::SetState(std::unique_ptr<State> state)       \
 {                                                                     \
   /* no state */                                                      \
@@ -92,6 +92,6 @@ std::unique_ptr<State> NAME##StateManager::m_state_current = nullptr
 namespace FlexEngine
 {
 
-  FLX_REGISTER_STATEMANAGER_DECL(Application);
+  FLX_STATEMANAGER_REGISTER_DECL(Application);
 
 }
