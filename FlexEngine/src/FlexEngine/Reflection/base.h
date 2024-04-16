@@ -34,34 +34,76 @@
 //    https://www.rttr.org/doc/rttr-0-9-6/five_minute_tutorial_page.html
 
 
-/// <summary>
-/// Enables reflection for a custom type (struct/class)
-/// <para>Place at the top of the class definition in the .h file</para>
-/// </summary>
+// Enables reflection for a custom type (struct/class)
+// Place at the top of the class definition in the .h file
 #define FLX_REFL_SERIALIZABLE \
   friend struct FlexEngine::Reflection::DefaultResolver; \
   static FlexEngine::Reflection::TypeDescriptor_Struct Reflection; \
   static void InitReflection(FlexEngine::Reflection::TypeDescriptor_Struct*);
 
-/// <summary>
-/// Starts the registration of member variables for reflection
-/// <para>Remember to end with FLX_REFL_REGISTER_END</para>
-/// <para>Place inside any .cpp file that includes the declaration of the custom type</para>
-/// </summary>
+
+#pragma region FLX_REFL_ECS_REGISTER_COMPONENT
+
+// Boilerplate for a new component
+// The ECS is closely tied to the reflection system, so FLX_REFL_SERIALIZABLE is included
+#define FLX_REFL_ECS_REGISTER(TYPE) \
+  FLX_REFL_SERIALIZABLE \
+    static ECS::ComponentBucket s_bucket; \
+  public: \
+    static std::shared_ptr<TYPE> AddComponent(UUID& entity); \
+    static std::shared_ptr<TYPE> GetComponent(UUID& entity); \
+    static void RemoveComponent(UUID& entity); \
+  private:
+
+
+// Extends the reflection registration for a component
+#define FLX_REFL_ECS_REGISTER_COMPONENT(TYPE) \
+  /* static member initialization */ \
+  ECS::ComponentBucket TYPE::s_bucket; \
+  /* component management */ \
+  std::shared_ptr<TYPE> TYPE::AddComponent(UUID& entity) \
+  { \
+    std::shared_ptr<TYPE> ptr = std::make_shared<TYPE>(); \
+    s_bucket[entity] = std::reinterpret_pointer_cast<void>(ptr); \
+    return ptr; \
+  } \
+  std::shared_ptr<TYPE> TYPE::GetComponent(UUID& entity) \
+  { \
+    return std::reinterpret_pointer_cast<TYPE>(s_bucket[entity]); \
+  } \
+  void TYPE::RemoveComponent(UUID& entity) \
+  { \
+    s_bucket.erase(entity); \
+  } \
+  /* specialization for automatic ECS registry */ \
+  template <> \
+  void ECS::Internal_RegisterComponent<TYPE>(ComponentBucket* bucket) \
+  { \
+    s_buckets[typeid(TYPE)] = bucket; \
+  }
+
+#pragma endregion
+
+
+#pragma region FLX_REFL_REGISTER
+
+// Starts the registration of member variables for reflection
+// Remember to end with FLX_REFL_REGISTER_END
+// Place inside any .cpp file that includes the declaration of the custom type
 #define FLX_REFL_REGISTER_START(TYPE) \
   FlexEngine::Reflection::TypeDescriptor_Struct TYPE::Reflection{TYPE::InitReflection}; \
-  void TYPE::InitReflection(FlexEngine::Reflection::TypeDescriptor_Struct* type_desc) { \
+  void TYPE::InitReflection(FlexEngine::Reflection::TypeDescriptor_Struct* type_desc) \
+  { \
+    FlexEngine::ECS::Internal_RegisterComponent<TYPE>(&s_bucket); \
     using T = TYPE; \
     type_desc->name = #TYPE; \
     type_desc->size = sizeof(T); \
     type_desc->members = {
 
-/// <summary>
-/// Registers a member variable for reflection
-/// <para>Place inside the FLX_REFL_REGISTER_START block</para>
-/// <para>Use the name of the member variable as the argument</para>
-/// <para>It's best practice to indent the block for readability</para>
-/// </summary>
+// Registers a member variable for reflection
+// Place inside the FLX_REFL_REGISTER_START block
+// Use the name of the member variable as the argument
+// It's best practice to indent the block for readability
 #define FLX_REFL_REGISTER_PROPERTY(VARIABLE) \
       { \
         #VARIABLE, \
@@ -69,13 +111,13 @@
         FlexEngine::Reflection::TypeResolver<decltype(T::VARIABLE)>::Get() \
       },
 
-/// <summary>
-/// Ends the reflection registration
-/// <para>Pair this with FLX_REFL_REGISTER_START</para>
-/// </summary>
+// Ends the reflection registration
+// Pair this with FLX_REFL_REGISTER_START
 #define FLX_REFL_REGISTER_END \
     }; \
   }
+
+#pragma endregion
 
 namespace FlexEngine
 {
@@ -83,11 +125,9 @@ namespace FlexEngine
   namespace Reflection
   {
 
-    /// <summary>
-    /// Base class for all type descriptors.
-    /// <para>A type descriptor is a class that describes a type,
-    /// including its name, size, and how to serialize/deserialize it.</para>
-    /// </summary>
+    // Base class for all type descriptors.
+    // A type descriptor is a class that describes a type,
+    // including its name, size, and how to serialize/deserialize it.
     struct TypeDescriptor
     {
       using json = rapidjson::Value;
@@ -98,28 +138,30 @@ namespace FlexEngine
       TypeDescriptor(const char* name, size_t size) : name{ name }, size{ size } {}
       virtual ~TypeDescriptor() {}
 
-      /// <summary>
-      /// Get the full name of the type, including any template parameters.
-      /// </summary>
+      // Get the full name of the type, including any template parameters.
       virtual std::string ToString() const { return name; }
 
-      /// <summary>
-      /// Dumps the contents of an object to the console.
-      /// <para>Defaults to using std::cout.</para>
-      /// </summary>
+      // Dumps the contents of an object to the console.
+      // Defaults to using std::cout.
       virtual void Dump(const void* obj, std::ostream& os = std::cout, int indent_level = 0) const = 0;
 
-      /// <summary>
-      /// Serializes an object to a stream.
-      /// <para>This recursively serializes the object into the json format.</para>
-      /// </summary>
+      // Serializes an object to a stream.
+      // This recursively serializes the object into the json format.
       virtual void Serialize(const void* obj, std::ostream& out) const = 0;
 
-      /// <summary>
-      /// Deserializes an object from a json document.
-      /// <para>This recursively deserializes the object from the json format.</para>
-      /// <para>The deserializer uses the rapidjson library.</para>
-      /// </summary>
+      // Serializes an object to a rapidjson document.
+      // This recursively serializes the object into the json format.
+      // It is an extension of Serialize() that uses rapidjson.
+      virtual void SerializeJson(const void* obj, rapidjson::Document& out) const
+      {
+        std::stringstream ss;
+        Serialize(obj, ss);
+        out.Parse(ss.str().c_str());
+      }
+
+      // Deserializes an object from a json document.
+      // This recursively deserializes the object from the json format
+      // The deserializer uses the rapidjson library.
       virtual void Deserialize(void* obj, const json& value) const = 0;
     };
 
@@ -282,7 +324,8 @@ namespace FlexEngine
 
         // guard against array size mismatch
         FLX_INTERNAL_ASSERT(arr.Size() != members.size(),
-          "Array size mismatch while deserializing struct\nThis is most likely caused by a corrupted .flx file"
+          "Array size mismatch while deserializing struct\n"
+          "This is most likely caused by a corrupted .flx file"
         );
 
         // deserialize each member

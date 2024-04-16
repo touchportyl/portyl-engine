@@ -32,6 +32,9 @@ namespace FlexEngine
     bool operator<(const UUID& other) const;
     bool operator>(const UUID& other) const;
 
+    // Null UUID
+    static UUID Null;
+
     static UUID Generate();
   };
 

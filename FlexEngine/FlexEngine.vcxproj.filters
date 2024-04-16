@@ -26,11 +26,11 @@
     <Filter Include="src\FlexEngine\StateManager">
       <UniqueIdentifier>{fe3d65a9-3fdd-4ca6-9717-b72a808fbf2a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\FlexEngine\ECS">
-      <UniqueIdentifier>{056a8a36-4ac8-4d06-acb5-bd1ac0bc8b49}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\FlexEngine\FlexMath">
       <UniqueIdentifier>{074c64d3-93c6-4963-a353-8f4f11343c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\FlexEngine\Component">
+      <UniqueIdentifier>{056a8a36-4ac8-4d06-acb5-bd1ac0bc8b49}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -91,9 +91,6 @@
     <ClCompile Include="src\FlexEngine\Core\layerstack.cpp">
       <Filter>src\FlexEngine\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\ECS\registry.cpp">
-      <Filter>src\FlexEngine\ECS</Filter>
-    </ClCompile>
     <ClCompile Include="src\FlexEngine\FlexMath\vector2.cpp">
       <Filter>src\FlexEngine\FlexMath</Filter>
     </ClCompile>
@@ -102,6 +99,15 @@
     </ClCompile>
     <ClCompile Include="src\FlexEngine\FlexMath\vector4.cpp">
       <Filter>src\FlexEngine\FlexMath</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Component\transform.cpp">
+      <Filter>src\FlexEngine\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Core\ecs.cpp">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Core\entity.cpp">
+      <Filter>src\FlexEngine\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -186,9 +192,6 @@
     <ClInclude Include="src\FlexEngine\Core\layerstack.h">
       <Filter>src\FlexEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\ECS\registry.h">
-      <Filter>src\FlexEngine\ECS</Filter>
-    </ClInclude>
     <ClInclude Include="src\FlexEngine\FlexMath\values.h">
       <Filter>src\FlexEngine\FlexMath</Filter>
     </ClInclude>
@@ -201,8 +204,17 @@
     <ClInclude Include="src\FlexEngine\FlexMath\vector4.h">
       <Filter>src\FlexEngine\FlexMath</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\ECS\transform.h">
-      <Filter>src\FlexEngine\ECS</Filter>
+    <ClInclude Include="src\FlexEngine\Component\transform.h">
+      <Filter>src\FlexEngine\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Core\ecs.h">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\ansi_color.h">
+      <Filter>src\FlexEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Core\entity.h">
+      <Filter>src\FlexEngine\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

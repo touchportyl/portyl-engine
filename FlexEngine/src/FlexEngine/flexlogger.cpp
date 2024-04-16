@@ -2,20 +2,47 @@
 
 #include <Windows.h> // SetFileAttributes
 
+#include "ansi_color.h"
 #include "datetime.h"
 
 #include "Core/application.h"
 
+// Helper macros for colorizing console output
+#pragma region Colors
+
+#define TAG_COLOR_DEBUG     ANSI_COLOR(ANSI_FG_BRIGHT_WHITE ";" ANSI_BG_MAGENTA)
+#define TAG_COLOR_FLOW      ANSI_COLOR(ANSI_FG_BRIGHT_WHITE ";" ANSI_BG_BLUE)
+#define TAG_COLOR_INFO      ANSI_COLOR(ANSI_FG_BLACK ";" ANSI_BG_BRIGHT_WHITE)
+#define TAG_COLOR_WARNING   ANSI_COLOR(ANSI_FG_BLACK ";" ANSI_BG_YELLOW)
+#define TAG_COLOR_ERROR     ANSI_COLOR(ANSI_FG_BLACK ";" ANSI_BG_BRIGHT_RED)
+#define TAG_COLOR_FATAL     ANSI_COLOR(ANSI_FG_BRIGHT_WHITE ";" ANSI_BG_RED ";" ANSI_UNDERLINE_ON)
+#define TAG_COLOR_DEFAULT   ANSI_RESET
+
+#define TEXT_COLOR_DEBUG    ANSI_COLOR(ANSI_FG_BRIGHT_MAGENTA)
+#define TEXT_COLOR_FLOW     ANSI_COLOR(ANSI_FG_BRIGHT_BLUE)
+#define TEXT_COLOR_INFO     ANSI_COLOR(ANSI_FG_BRIGHT_WHITE)
+#define TEXT_COLOR_WARNING  ANSI_COLOR(ANSI_FG_BRIGHT_YELLOW)
+#define TEXT_COLOR_ERROR    ANSI_COLOR(ANSI_FG_BRIGHT_RED)
+#define TEXT_COLOR_FATAL    TAG_COLOR_FATAL
+#define TEXT_COLOR_DEFAULT  ANSI_RESET
+
+#pragma endregion
+
 namespace FlexEngine
 {
-  std::filesystem::path Log::log_base_path{ std::filesystem::current_path() / ".log" };
-  std::filesystem::path Log::log_file_path{ log_base_path / "~$flexapp.log" };
+
+  // static member initialization
+  std::filesystem::path Log::log_base_path{ std::filesystem::current_path() / ".log" }; // same path as executable
+  std::filesystem::path Log::log_file_path{ log_base_path / "~$flex.log" };
   std::fstream Log::log_stream;
   bool Log::is_fatal = false;
   int Log::flow_scope = 0;
+  bool Log::is_initialized = false;
 
   Log::Log()
   {
+    is_initialized = true;
+
     // create logs directory
     if (!std::filesystem::exists(log_base_path))
     {
@@ -42,49 +69,68 @@ namespace FlexEngine
   {
     FLX_FLOW_ENDSCOPE();
 
+    // close log file to save logs
+    log_stream.close();
+
 #ifdef _DEBUG
     // dump logs if debugging
     Log::DumpLogs();
 #endif
 
-    // close log file
-    log_stream.close();
-
     // remove temporary log file
     FLX_INTERNAL_ASSERT(std::filesystem::remove(log_file_path), "Error removing temporary log file.");
+
+    is_initialized = false;
   }
 
   void Log::Logger(WarningLevel level, const char* message)
   {
+    // default passthrough to std::cout if not initialized
+    if (!is_initialized)
+    {
+      std::cout << "The FlexLogger is not initialized. Message: " << message << std::endl;
+      return;
+    }
+
     // create string stream
     std::stringstream ss;
 
     // print time
     ss << "[" << DateTime::GetFormattedDateTime() << "] ";
 
-    // prepend warning level
+    // prepend warning level and set color
     switch (level)
     {
-    case WarningLevel::_Debug:   ss << "Debug -> ";   break;
-    case WarningLevel::_Flow:    ss << "Flow -> ";    break;
-    case WarningLevel::_Info:    ss << "Info -> ";    break;
-    case WarningLevel::_Warning: ss << "Warning -> "; break;
-    case WarningLevel::_Error:   ss << "Error -> ";   break;
-    case WarningLevel::_Fatal:   ss << "Fatal -> ";   break;
-    default:                     ss << "Unknown -> "; break;
+    case WarningLevel::_Debug:   ss << TAG_COLOR_DEBUG   << " Debug"   " " << ANSI_RESET << " -> " << TEXT_COLOR_DEBUG   ; break;
+    case WarningLevel::_Flow:    ss << TAG_COLOR_FLOW    << " Flow"    " " << ANSI_RESET << " -> " << TEXT_COLOR_FLOW    ; break;
+    case WarningLevel::_Info:    ss << TAG_COLOR_INFO    << " Info"    " " << ANSI_RESET << " -> " << TEXT_COLOR_INFO    ; break;
+    case WarningLevel::_Warning: ss << TAG_COLOR_WARNING << " Warning" " " << ANSI_RESET << " -> " << TEXT_COLOR_WARNING ; break;
+    case WarningLevel::_Error:   ss << TAG_COLOR_ERROR   << " Error"   " " << ANSI_RESET << " -> " << TEXT_COLOR_ERROR   ; break;
+    case WarningLevel::_Fatal:   ss << TAG_COLOR_FATAL   << " Fatal"   " " << ANSI_RESET << " -> " << TEXT_COLOR_FATAL   ; break;
+    default:                     ss << TAG_COLOR_DEFAULT << " Unknown" " " << ANSI_RESET << " -> " << TEXT_COLOR_DEFAULT ; break;
     }
 
     // append flow scope
     if (level == WarningLevel::_Flow)
     {
-      for (int i = 0; i < flow_scope; i++)
-      {
-        ss << "| ";
-      }
+      ss << ANSI_RESET;
+      for (int i = 0; i < flow_scope; i++) ss << "| ";
+      ss << TEXT_COLOR_FLOW;
     }
 
-    // append message
-    ss << message << "\n";
+    // append message and reset color
+    ss << message << ANSI_RESET << "\n";
+
+    // clean the stream of ANSI color codes for file logging
+    std::string log_string = ss.str();
+    size_t pos = 0;
+    while ((pos = log_string.find("\033[")) != std::string::npos)
+    {
+      // find m
+      size_t end = log_string.find("m", pos);
+      log_string.erase(pos, end - pos + 1);
+    }
+
 
     // log to console and file based on warning level
 #ifdef _DEBUG
@@ -92,7 +138,7 @@ namespace FlexEngine
 
     // file will be opened and updated frequently in debug mode
     log_stream.open(log_file_path.string(), std::ios::out | std::ios::app);
-    log_stream << ss.str();
+    log_stream << log_string;
     log_stream.close();
 #else
     // log everything except debug messages to console
@@ -119,9 +165,6 @@ namespace FlexEngine
   
   void Log::DumpLogs(void)
   {
-    // close temporary file to save contents
-    log_stream.close();
-
     // get filename
     std::stringstream filename{};
     filename << DateTime::GetFormattedDateTime("%Y-%m-%d") << ".log";

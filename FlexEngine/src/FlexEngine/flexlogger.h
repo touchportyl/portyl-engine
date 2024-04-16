@@ -4,6 +4,11 @@
 #include <fstream>
 #include <string>
 
+// These macros are used to track the flow of the application
+// Putting these into the code will make it easier to see if the application is behaving as expected
+// The FLX_FLOW_BEGINSCOPE() and FLX_FLOW_ENDSCOPE() macros will add indentations to the flow
+// if you expect them to be called in pairs
+
 #define FLX_FLOW_FUNCTION()   FlexEngine::Log::Flow(__FUNCTION__)
 #define FLX_FLOW_BEGINSCOPE() FLX_FLOW_FUNCTION(); FlexEngine::Log::UpdateFlowScope(1)
 #define FLX_FLOW_ENDSCOPE()   FlexEngine::Log::UpdateFlowScope(-1); FLX_FLOW_FUNCTION()
@@ -27,55 +32,42 @@ namespace FlexEngine
     Log();
     ~Log();
 
-    /// <summary>
-    /// User-defined debug messages
-    /// </summary>
+    // User-defined debug messages
     static void Debug(const char* message)   { Logger(_Debug, message); }
     static void Debug(std::string message)   { Debug(message.c_str()); }
-    /// <summary>
-    /// Messages for debugging the flow of the application
-    /// <para>Use the FLX_FLOW_FUNCTION() macro</para>
-    /// <para>This is not meant to be used directly</para>
-    /// </summary>
-    static void Flow (const char* message)   { Logger(_Flow, message); }
-    static void Flow (std::string message)   { Flow(message.c_str()); }
-    /// <summary>
-    /// Informational messages
-    /// </summary>
-    static void Info (const char* message)   { Logger(_Info, message); }
-    static void Info (std::string message)   { Info(message.c_str()); }
-    /// <summary>
-    /// Warn if it could cause issues when not addressed
-    /// </summary>
+
+    // Messages for debugging the flow of the application
+    // Use the FLX_FLOW_FUNCTION() macro
+    // This is not meant to be used directly
+    static void Flow(const char* message)    { Logger(_Flow, message); }
+    static void Flow(std::string message)    { Flow(message.c_str()); }
+
+    // Informational messages
+    static void Info(const char* message)    { Logger(_Info, message); }
+    static void Info(std::string message)    { Info(message.c_str()); }
+
+    // Warn if it could cause issues when not addressed
     static void Warning(const char* message) { Logger(_Warning, message); }
     static void Warning(std::string message) { Warning(message.c_str()); }
-    /// <summary>
-    /// Warn about potentially damaging errors, systems can recover if dealt with
-    /// </summary>
+
+    // Warn about potentially damaging errors, systems can recover if dealt with
     static void Error(const char* message)   { Logger(_Error, message); }
     static void Error(std::string message)   { Error(message.c_str()); }
-    /// <summary>
-    /// Kills the application asap to prevent it from damaging the system
-    /// </summary>
+
+    // Kills the application asap to prevent it from damaging the system
     static void Fatal(const char* message)   { Logger(_Fatal, message); }
     static void Fatal(std::string message)   { Fatal(message.c_str()); }
 
-    /// <summary>
-    /// Dumps the logs to a file
-    /// </summary>
+    // Dumps the logs to a file
     static void DumpLogs(void);
 
-    /// <summary>
-    /// This flag is set to true when a fatal error is logged
-    /// <para>It is used to determine if the application should dump logs when closing</para>
-    /// </summary>
+    // This flag is set to true when a fatal error is logged
+    // It is used to determine if the application should dump logs when closing
     static bool IsFatal(void) { return is_fatal; }
 
-    /// <summary>
-    /// Adds indentations to the flow to make it easier to read
-    /// <para>Use the FLX_FLOW_BEGINSCOPE() and FLX_FLOW_ENDSCOPE() macros</para>
-    /// <para>This is not meant to be used directly</para>
-    /// </summary>
+    // Adds indentations to the flow to make it easier to read
+    // Use the FLX_FLOW_BEGINSCOPE() and FLX_FLOW_ENDSCOPE() macros
+    // This is not meant to be used directly
     static void UpdateFlowScope(int indent) { flow_scope += indent; }
 
   private:
@@ -86,5 +78,6 @@ namespace FlexEngine
     static std::fstream log_stream;
     static bool is_fatal;
     static int flow_scope;
+    static bool is_initialized;
   };
 }

@@ -9,6 +9,9 @@ namespace FlexEngine
   static std::mt19937_64 s_Engine(s_RandomDevice());
   static std::uniform_int_distribution<unsigned long long> s_UniformDistribution;
 
+  // static member initialization
+  UUID UUID::Null = 0;
+
   UUID UUID::Generate()
   {
     return s_UniformDistribution(s_Engine);
