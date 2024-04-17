@@ -70,9 +70,40 @@ namespace FlexEngine
 
     // This is a temporary version of a system view
     // System views are for querying entities with specific components
-    template <typename T>
-    static ECS::ComponentBucket GetComponentBucket();
+    //template <typename... Ts>
+    //static std::vector<Entity> FindEntitiesByComponent();
 
+    // Alternate method for querying entities with specific components
+
+    #define FLX_ECS_SYSTEM_VIEW_START(ENTITY_LIST) \
+      std::vector<Entity> ENTITY_LIST; \
+      for (auto& [uuid, name] : ECS::Internal_GetEntities()) \
+      { \
+
+    #define FLX_ECS_SYSTEM_VIEW_QUERY(TYPE) \
+        if (ECS::Internal_GetComponentBucket<TYPE>().find(uuid) == ECS::Internal_GetComponentBucket<TYPE>().end()) \
+        { \
+          continue; \
+        }
+
+    #define FLX_ECS_SYSTEM_VIEW_END(ENTITY_LIST) \
+        ENTITY_LIST.push_back({ name, uuid }); \
+      }
+
+    // INTERNAL FUNCTION
+    // Get component bucket by type
+    // This exposes the component bucket to the public
+    // Do not use this function unless you know what you are doing
+    template <typename T>
+    static ECS::ComponentBucket& Internal_GetComponentBucket();
+
+    // INTERNAL FUNCTION
+    // Get the entity list
+    // This exposes the entity list to the public
+    // Do not use this function unless you know what you are doing
+    static std::unordered_map<UUID, std::string>& Internal_GetEntities();
+
+    // INTERNAL FUNCTION
     // Registers a component type with the ECS
     // This is done automatically by the component at startup
     // Do not call this function manually

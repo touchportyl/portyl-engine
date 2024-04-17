@@ -3,9 +3,46 @@
 namespace FlexEngine
 {
 
+#pragma region Reflection
+
+  FLX_REFL_REGISTER_START(Vector3)
+    FLX_REFL_REGISTER_PROPERTY(x)
+    FLX_REFL_REGISTER_PROPERTY(y)
+    FLX_REFL_REGISTER_PROPERTY(z)
+  FLX_REFL_REGISTER_END;
+
+#pragma endregion
+  
+#pragma region Standard Functions
+
+  const Vector3 Vector3::Zero     = {  0,  0,  0 };
+  const Vector3 Vector3::One      = {  1,  1,  1 };
+  const Vector3 Vector3::Up       = {  0,  1,  0 };
+  const Vector3 Vector3::Down     = {  0, -1,  0 };
+  const Vector3 Vector3::Left     = {  1,  0,  0 };
+  const Vector3 Vector3::Right    = { -1,  0,  0 };
+  const Vector3 Vector3::Forward  = {  0,  0,  1 };
+  const Vector3 Vector3::Back     = {  0,  0, -1 };
+
+  Vector3::operator bool() const { return XYZ() != Zero; }
+
+  Vector3::operator Vector2() const { return XY(); }
+
+  std::string Vector3::ToString() const
+  {
+    return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+  }
+  Vector3::operator std::string() const { return ToString(); }
+
+#ifdef _DEBUG
+  void Vector3::Dump() const { Log::Debug(ToString()); }
+#endif
+
+#pragma endregion
+
 #pragma region Constructors
 
-  Vector3::Vector3(float _x, float _y, float _z)
+  Vector3::Vector3(value_type _x, value_type _y, value_type _z)
   {
     x = _x;
     y = _y;
@@ -19,14 +56,14 @@ namespace FlexEngine
     z = other.z;
   }
 
-  Vector3::Vector3(const Vector2& xy, float _z)
+  Vector3::Vector3(const Vector2& xy, value_type _z)
   {
     x = xy.x;
     y = xy.y;
     z = _z;
   }
 
-  Vector3::Vector3(float _x, const Vector2& yz)
+  Vector3::Vector3(value_type _x, const Vector2& yz)
   {
     x = _x;
     y = yz.x;
@@ -83,7 +120,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector3& Vector3::operator+=(const float value)
+  Vector3& Vector3::operator+=(const_value_type value)
   {
     this->x += value;
     this->y += value;
@@ -99,7 +136,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector3& Vector3::operator-=(const float value)
+  Vector3& Vector3::operator-=(const_value_type value)
   {
     this->x -= value;
     this->y -= value;
@@ -115,7 +152,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector3& Vector3::operator*=(const float value)
+  Vector3& Vector3::operator*=(const_value_type value)
   {
     this->x *= value;
     this->y *= value;
@@ -132,7 +169,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector3& Vector3::operator/=(const float value)
+  Vector3& Vector3::operator/=(const_value_type value)
   {
     if (value == 0) return *this;
     this->x /= value;
@@ -151,27 +188,50 @@ namespace FlexEngine
     return !(x - other.x < EPSILON_f && y - other.y < EPSILON_f && z - other.z < EPSILON_f);
   }
 
-  float Vector3::Magnitude() const
+  Vector3::value_type Vector3::Magnitude() const
   {
     return std::sqrt(x * x + y * y + z * z);
   }
 
-  float Vector3::Length() const
+  Vector3::value_type Vector3::Length() const
   {
     return Magnitude();
   }
 
-  float Vector3::LengthSqr() const
+  Vector3::value_type Vector3::LengthSqr() const
   {
     return x * x + y * y + z * z;
   }
 
   Vector3 Vector3::Normalize() const
   {
-    float length = Magnitude();
+    value_type length = Magnitude();
     if (length == 0) return { 0, 0, 0 };
     return { x / length, y / length, z / length };
   }
+
+#pragma endregion
+
+#pragma region Passthrough Functions
+
+  Vector3::value_type Vector3::at(const Vector3::size_type index) const { return data[index]; }
+  Vector3::value_type Vector3::operator[](const Vector3::size_type index) { return at(index); }
+  Vector3::const_value_type Vector3::operator[](const Vector3::size_type index) const { return at(index); }
+
+  Vector3::iterator                 Vector3::begin() { return data; }
+  Vector3::const_iterator           Vector3::begin() const { return data; }
+  Vector3::const_iterator           Vector3::cbegin() const { return data; }
+  Vector3::iterator                 Vector3::end() { return data + size(); }
+  Vector3::const_iterator           Vector3::end() const { return data + size(); }
+  Vector3::const_iterator           Vector3::cend() const { return data + size(); }
+  //Vector3::reverse_iterator         Vector3::rbegin()         { return data + size() - 1; }
+  //Vector3::const_reverse_iterator   Vector3::rbegin() const   { return data + size() - 1; }
+  //Vector3::const_reverse_iterator   Vector3::crbegin() const  { return data + size() - 1; }
+  //Vector3::reverse_iterator         Vector3::rend()           { return data - 1; }
+  //Vector3::const_reverse_iterator   Vector3::rend() const     { return data - 1; }
+  //Vector3::const_reverse_iterator   Vector3::crend() const    { return data - 1; }
+
+  Vector3::size_type Vector3::size() const { return 3; }
 
 #pragma endregion
 
@@ -182,12 +242,12 @@ namespace FlexEngine
     return { point_a.x + point_b.x, point_a.y + point_b.y, point_a.z + point_b.z };
   }
 
-  Vector3 operator+(const float value, const Vector3& point)
+  Vector3 operator+(Vector3::const_value_type value, const Vector3& point)
   {
     return { point.x + value, point.y + value, point.z + value };
   }
 
-  Vector3 operator+(const Vector3& point, const float value)
+  Vector3 operator+(const Vector3& point, Vector3::const_value_type value)
   {
     return { point.x + value, point.y + value, point.z + value };
   }
@@ -197,12 +257,12 @@ namespace FlexEngine
     return { point_a.x - point_b.x, point_a.y - point_b.y, point_a.z - point_b.z };
   }
 
-  Vector3 operator-(const float value, const Vector3& point)
+  Vector3 operator-(Vector3::const_value_type value, const Vector3& point)
   {
     return { point.x - value, point.y - value, point.z - value };
   }
 
-  Vector3 operator-(const Vector3& point, const float value)
+  Vector3 operator-(const Vector3& point, Vector3::const_value_type value)
   {
     return { point.x - value, point.y - value, point.z - value };
   }
@@ -212,33 +272,33 @@ namespace FlexEngine
   //  return { point_a.x * point_b.x, point_a.y * point_b.y, point_a.z * point_b.z };
   //}
 
-  float Dot(const Vector3& point_a, const Vector3& point_b)
+  Vector3::value_type Dot(const Vector3& point_a, const Vector3& point_b)
   {
     return point_a.x * point_b.x + point_a.y * point_b.y + point_a.z * point_b.z;
   }
 
-  Vector3 operator*(const float value, const Vector3& point)
+  Vector3 operator*(Vector3::const_value_type value, const Vector3& point)
   {
     return { point.x * value, point.y * value, point.z * value };
   }
 
-  Vector3 operator*(const Vector3& point, const float value)
+  Vector3 operator*(const Vector3& point, Vector3::const_value_type value)
   {
     return { point.x * value, point.y * value, point.z * value };
   }
 
-  //Vector3 operator/(const Vector3& point, const float value)
+  //Vector3 operator/(const Vector3& point, const_value_type value)
   //{
   //  return { point.x / value, point.y / value, point.z / value };
   //}
 
-  Vector3 operator/(const float value, const Vector3& point)
+  Vector3 operator/(Vector3::const_value_type value, const Vector3& point)
   {
     if (point.x == 0 || point.y == 0 || point.z == 0) return { 0, 0, 0 };
     return { value / point.x, value / point.y, value / point.z };
   }
 
-  Vector3 operator/(const Vector3& point, const float value)
+  Vector3 operator/(const Vector3& point, Vector3::const_value_type value)
   {
     if (value == 0) return { 0, 0, 0 };
     return { point.x / value, point.y / value, point.z / value };

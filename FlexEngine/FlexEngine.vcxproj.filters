@@ -100,7 +100,7 @@
     <ClCompile Include="src\FlexEngine\FlexMath\vector4.cpp">
       <Filter>src\FlexEngine\FlexMath</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\Component\transform.cpp">
+    <ClCompile Include="src\FlexEngine\Component\Transform2D.cpp">
       <Filter>src\FlexEngine\Component</Filter>
     </ClCompile>
     <ClCompile Include="src\FlexEngine\Core\ecs.cpp">
@@ -204,7 +204,7 @@
     <ClInclude Include="src\FlexEngine\FlexMath\vector4.h">
       <Filter>src\FlexEngine\FlexMath</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Component\transform.h">
+    <ClInclude Include="src\FlexEngine\Component\Transform2D.h">
       <Filter>src\FlexEngine\Component</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Core\ecs.h">

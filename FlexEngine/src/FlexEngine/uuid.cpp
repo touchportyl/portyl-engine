@@ -10,7 +10,7 @@ namespace FlexEngine
   static std::uniform_int_distribution<unsigned long long> s_UniformDistribution;
 
   // static member initialization
-  UUID UUID::Null = 0;
+  const UUID UUID::Null = 0;
 
   UUID UUID::Generate()
   {
@@ -18,7 +18,7 @@ namespace FlexEngine
   }
 
   UUID::UUID()
-    : m_value(0)
+    : m_value(Null)
   {
   }
 
@@ -31,6 +31,9 @@ namespace FlexEngine
     : m_value(other.m_value)
   {
   }
+
+  std::string UUID::ToString() const { return std::to_string(m_value); }
+  UUID::operator std::string() const { return ToString(); }
 
   UUID& UUID::operator=(const UUID& other)
   {

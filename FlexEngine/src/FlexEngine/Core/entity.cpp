@@ -8,12 +8,21 @@ namespace FlexEngine
 {
 
   // static member initialization
-  Entity Entity::Null = { UUID::Null, "Null" };
+  const Entity Entity::Null = { "Null", UUID::Null };
 
-  Entity::Entity(UUID uuid, const std::string& name)
+  Entity::Entity()
+    : uuid(UUID::Null), name("Null")
+  {
+  }
+
+  Entity::Entity(const std::string& name, UUID uuid)
     : uuid(uuid), name(name)
   {
   }
+
+  Entity::operator bool() const { return uuid != UUID::Null; }
+  Entity::operator UUID() const { return uuid; }
+  Entity::operator std::string() const { return name; }
 
   std::string Entity::ToString() const
   {
@@ -21,7 +30,7 @@ namespace FlexEngine
   }
 
 #ifdef _DEBUG
-  void Entity::Dump()
+  void Entity::Dump() const
   {
     Log::Debug(ToString());
   }

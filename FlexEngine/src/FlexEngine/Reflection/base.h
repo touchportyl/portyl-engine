@@ -34,58 +34,32 @@
 //    https://www.rttr.org/doc/rttr-0-9-6/five_minute_tutorial_page.html
 
 
+// These macros are the heart and soul of the reflection system.
+// They allow you to easily register custom types and member variables
+// from anywhere in your code.
+// 
+// For basic serialization support, you only need to use the following macros:
+//  - FLX_REFL_SERIALIZABLE
+//  - FLX_REFL_REGISTER_START
+//  - FLX_REFL_REGISTER_PROPERTY
+//  - FLX_REFL_REGISTER_END
+// 
+// For ECS support, you need to use the following macros:
+//  - FLX_REFL_ECS_REGISTER
+//  - FLX_REFL_ECS_REGISTER_START
+//  - FLX_REFL_ECS_REGISTER_PROPERTY
+//  - FLX_REFL_ECS_REGISTER_END
+#pragma region Macros
+
+
+#pragma region FLX_REFL_SERIALIZABLE / FLX_REFL_REGISTER_START / FLX_REFL_REGISTER_PROPERTY / FLX_REFL_REGISTER_END
+
 // Enables reflection for a custom type (struct/class)
 // Place at the top of the class definition in the .h file
 #define FLX_REFL_SERIALIZABLE \
   friend struct FlexEngine::Reflection::DefaultResolver; \
   static FlexEngine::Reflection::TypeDescriptor_Struct Reflection; \
   static void InitReflection(FlexEngine::Reflection::TypeDescriptor_Struct*);
-
-
-#pragma region FLX_REFL_ECS_REGISTER_COMPONENT
-
-// Boilerplate for a new component
-// The ECS is closely tied to the reflection system, so FLX_REFL_SERIALIZABLE is included
-#define FLX_REFL_ECS_REGISTER(TYPE) \
-  FLX_REFL_SERIALIZABLE \
-    static ECS::ComponentBucket s_bucket; \
-  public: \
-    static std::shared_ptr<TYPE> AddComponent(UUID& entity); \
-    static std::shared_ptr<TYPE> GetComponent(UUID& entity); \
-    static void RemoveComponent(UUID& entity); \
-  private:
-
-
-// Extends the reflection registration for a component
-#define FLX_REFL_ECS_REGISTER_COMPONENT(TYPE) \
-  /* static member initialization */ \
-  ECS::ComponentBucket TYPE::s_bucket; \
-  /* component management */ \
-  std::shared_ptr<TYPE> TYPE::AddComponent(UUID& entity) \
-  { \
-    std::shared_ptr<TYPE> ptr = std::make_shared<TYPE>(); \
-    s_bucket[entity] = std::reinterpret_pointer_cast<void>(ptr); \
-    return ptr; \
-  } \
-  std::shared_ptr<TYPE> TYPE::GetComponent(UUID& entity) \
-  { \
-    return std::reinterpret_pointer_cast<TYPE>(s_bucket[entity]); \
-  } \
-  void TYPE::RemoveComponent(UUID& entity) \
-  { \
-    s_bucket.erase(entity); \
-  } \
-  /* specialization for automatic ECS registry */ \
-  template <> \
-  void ECS::Internal_RegisterComponent<TYPE>(ComponentBucket* bucket) \
-  { \
-    s_buckets[typeid(TYPE)] = bucket; \
-  }
-
-#pragma endregion
-
-
-#pragma region FLX_REFL_REGISTER
 
 // Starts the registration of member variables for reflection
 // Remember to end with FLX_REFL_REGISTER_END
@@ -94,7 +68,6 @@
   FlexEngine::Reflection::TypeDescriptor_Struct TYPE::Reflection{TYPE::InitReflection}; \
   void TYPE::InitReflection(FlexEngine::Reflection::TypeDescriptor_Struct* type_desc) \
   { \
-    FlexEngine::ECS::Internal_RegisterComponent<TYPE>(&s_bucket); \
     using T = TYPE; \
     type_desc->name = #TYPE; \
     type_desc->size = sizeof(T); \
@@ -118,6 +91,77 @@
   }
 
 #pragma endregion
+
+
+#pragma region FLX_REFL_ECS_REGISTER / FLX_REFL_ECS_REGISTER_START / FLX_REFL_ECS_REGISTER_PROPERTY / FLX_REFL_ECS_REGISTER_END
+
+// Boilerplate for a new component
+// The ECS is an extension of the reflection system, so FLX_REFL_SERIALIZABLE is included
+// Enables reflection for a custom type (struct/class)
+// Place at the top of the class definition in the .h file
+#define FLX_REFL_ECS_REGISTER(TYPE) \
+  FLX_REFL_SERIALIZABLE \
+    static ECS::ComponentBucket s_bucket; \
+  public: \
+    static std::shared_ptr<TYPE> AddComponent(UUID entity); \
+    static std::shared_ptr<TYPE> GetComponent(UUID entity); \
+    static void RemoveComponent(UUID entity); \
+  private:
+
+// Starts the registration of member variables for reflection
+// Extends the reflection registration for a component
+// Remember to end with FLX_REFL_ECS_REGISTER_END
+// Place inside any .cpp file that includes the declaration of the custom type
+#define FLX_REFL_ECS_REGISTER_START(TYPE) \
+  /* static member initialization */ \
+  ECS::ComponentBucket TYPE::s_bucket; \
+  /* component management */ \
+  std::shared_ptr<TYPE> TYPE::AddComponent(UUID entity) \
+  { \
+    std::shared_ptr<TYPE> ptr = std::make_shared<TYPE>(); \
+    s_bucket[entity] = std::reinterpret_pointer_cast<void>(ptr); \
+    return ptr; \
+  } \
+  std::shared_ptr<TYPE> TYPE::GetComponent(UUID entity) \
+  { \
+    return std::reinterpret_pointer_cast<TYPE>(s_bucket[entity]); \
+  } \
+  void TYPE::RemoveComponent(UUID entity) \
+  { \
+    s_bucket.erase(entity); \
+  } \
+  /* specialization for automatic ECS registry */ \
+  template <> \
+  void ECS::Internal_RegisterComponent<TYPE>(ComponentBucket* bucket) \
+  { \
+    s_buckets[typeid(TYPE)] = bucket; \
+  } \
+  /* FLX_REFL_REGISTER_START */ \
+  FlexEngine::Reflection::TypeDescriptor_Struct TYPE::Reflection{TYPE::InitReflection}; \
+  void TYPE::InitReflection(FlexEngine::Reflection::TypeDescriptor_Struct* type_desc) \
+  { \
+    /* automatically register component */ \
+    FlexEngine::ECS::Internal_RegisterComponent<TYPE>(&s_bucket); \
+    using T = TYPE; \
+    type_desc->name = #TYPE; \
+    type_desc->size = sizeof(T); \
+    type_desc->members = {
+
+// Registers a member variable for reflection
+// Place inside the FLX_REFL_ECS_REGISTER_START block
+// Use the name of the member variable as the argument
+// It's best practice to indent the block for readability
+#define FLX_REFL_ECS_REGISTER_PROPERTY(VARIABLE) FLX_REFL_REGISTER_PROPERTY(VARIABLE)
+
+// Ends the reflection registration
+// Pair this with FLX_REFL_ECS_REGISTER_START
+#define FLX_REFL_ECS_REGISTER_END FLX_REFL_REGISTER_END
+
+#pragma endregion
+
+
+#pragma endregion
+
 
 namespace FlexEngine
 {

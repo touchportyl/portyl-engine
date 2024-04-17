@@ -2,10 +2,42 @@
 
 namespace FlexEngine
 {
+
+#pragma region Reflection
+
+  FLX_REFL_REGISTER_START(Vector4)
+    FLX_REFL_REGISTER_PROPERTY(x)
+    FLX_REFL_REGISTER_PROPERTY(y)
+    FLX_REFL_REGISTER_PROPERTY(z)
+    FLX_REFL_REGISTER_PROPERTY(w)
+  FLX_REFL_REGISTER_END;
+
+#pragma endregion
+  
+#pragma region Standard Functions
+
+  const Vector4 Vector4::Zero = { 0, 0, 0, 0 };
+  const Vector4 Vector4::One  = { 1, 1, 1, 1 };
+
+  Vector4::operator bool() const { return XYZW() != Zero; }
+  Vector4::operator Vector2() const { return XY(); }
+  Vector4::operator Vector3() const { return XYZ(); }
+
+  std::string Vector4::ToString() const
+  {
+    return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ", " + std::to_string(w) + ")";
+  }
+  Vector4::operator std::string() const { return ToString(); }
+
+#ifdef _DEBUG
+  void Vector4::Dump() const { Log::Debug(ToString()); }
+#endif
+
+#pragma endregion
   
 #pragma region Constructors
 
-  Vector4::Vector4(float _x, float _y, float _z, float _w)
+  Vector4::Vector4(value_type _x, value_type _y, value_type _z, value_type _w)
   {
     x = _x;
     y = _y;
@@ -21,7 +53,7 @@ namespace FlexEngine
     w = other.w;
   }
 
-  Vector4::Vector4(const Vector3& xyz, float _w)
+  Vector4::Vector4(const Vector3& xyz, value_type _w)
   {
     x = xyz.x;
     y = xyz.y;
@@ -29,7 +61,7 @@ namespace FlexEngine
     w = _w;
   }
 
-  Vector4::Vector4(const Vector2& xy, float _z, float _w)
+  Vector4::Vector4(const Vector2& xy, value_type _z, value_type _w)
   {
     x = xy.x;
     y = xy.y;
@@ -149,7 +181,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector4& Vector4::operator+=(const float value)
+  Vector4& Vector4::operator+=(const_value_type value)
   {
     this->x += value;
     this->y += value;
@@ -167,7 +199,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector4& Vector4::operator-=(const float value)
+  Vector4& Vector4::operator-=(const_value_type value)
   {
     this->x -= value;
     this->y -= value;
@@ -185,7 +217,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector4& Vector4::operator*=(const float& value)
+  Vector4& Vector4::operator*=(const_value_type& value)
   {
     this->x *= value;
     this->y *= value;
@@ -204,7 +236,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector4& Vector4::operator/=(const float value)
+  Vector4& Vector4::operator/=(const_value_type value)
   {
     if (value == 0) return *this;
     this->x /= value;
@@ -225,19 +257,19 @@ namespace FlexEngine
   }
 
   // Note: Returns the magnitude of the xyz component
-  float Vector4::Magnitude() const
+  Vector4::value_type Vector4::Magnitude() const
   {
     return std::sqrt(x * x + y * y + z * z);
   }
 
   // Note: Returns the length of the xyz component
-  float Vector4::Length() const
+  Vector4::value_type Vector4::Length() const
   {
     return Magnitude();
   }
 
   // Note: Returns the length of the xyz component
-  float Vector4::LengthSqr() const
+  Vector4::value_type Vector4::LengthSqr() const
   {
     return x * x + y * y + z * z;
   }
@@ -245,10 +277,33 @@ namespace FlexEngine
   // Note: Returns the normalized xyz component
   Vector4 Vector4::Normalize() const
   {
-    float length = Magnitude();
+    value_type length = Magnitude();
     if (length == 0) return { 0, 0, 0, 0 };
     return { x / length, y / length, z / length, w / length };
   }
+
+#pragma endregion
+
+#pragma region Passthrough Functions
+
+  Vector4::value_type Vector4::at(const Vector4::size_type index) const { return data[index]; }
+  Vector4::value_type Vector4::operator[](const Vector4::size_type index) { return at(index); }
+  Vector4::const_value_type Vector4::operator[](const Vector4::size_type index) const { return at(index); }
+
+  Vector4::iterator                 Vector4::begin() { return data; }
+  Vector4::const_iterator           Vector4::begin() const { return data; }
+  Vector4::const_iterator           Vector4::cbegin() const { return data; }
+  Vector4::iterator                 Vector4::end() { return data + size(); }
+  Vector4::const_iterator           Vector4::end() const { return data + size(); }
+  Vector4::const_iterator           Vector4::cend() const { return data + size(); }
+  //Vector4::reverse_iterator         Vector4::rbegin()         { return data + size() - 1; }
+  //Vector4::const_reverse_iterator   Vector4::rbegin() const   { return data + size() - 1; }
+  //Vector4::const_reverse_iterator   Vector4::crbegin() const  { return data + size() - 1; }
+  //Vector4::reverse_iterator         Vector4::rend()           { return data - 1; }
+  //Vector4::const_reverse_iterator   Vector4::rend() const     { return data - 1; }
+  //Vector4::const_reverse_iterator   Vector4::crend() const    { return data - 1; }
+
+  Vector4::size_type Vector4::size() const { return 3; }
 
 #pragma endregion
 
@@ -259,12 +314,12 @@ namespace FlexEngine
     return { point_a.x + point_b.x, point_a.y + point_b.y, point_a.z + point_b.z, point_a.w + point_b.w };
   }
 
-  Vector4 operator+(const float value, const Vector4& point)
+  Vector4 operator+(Vector4::const_value_type value, const Vector4& point)
   {
     return { point.x + value, point.y + value, point.z + value, point.w + value };
   }
 
-  Vector4 operator+(const Vector4& point, const float value)
+  Vector4 operator+(const Vector4& point, Vector4::const_value_type value)
   {
     return { point.x + value, point.y + value, point.z + value, point.w + value };
   }
@@ -274,12 +329,12 @@ namespace FlexEngine
     return { point_a.x - point_b.x, point_a.y - point_b.y, point_a.z - point_b.z, point_a.w - point_b.w };
   }
 
-  Vector4 operator-(const float value, const Vector4& point)
+  Vector4 operator-(Vector4::const_value_type value, const Vector4& point)
   {
     return { point.x - value, point.y - value, point.z - value, point.w - value };
   }
 
-  Vector4 operator-(const Vector4& point, const float value)
+  Vector4 operator-(const Vector4& point, Vector4::const_value_type value)
   {
     return { point.x - value, point.y - value, point.z - value, point.w - value };
   }
@@ -289,12 +344,12 @@ namespace FlexEngine
   //  return { point_a.x * point_b.x, point_a.y * point_b.y, point_a.z * point_b.z, point_a.w * point_b.w };
   //}
 
-  Vector4 operator*(const float value, const Vector4& point)
+  Vector4 operator*(Vector4::const_value_type value, const Vector4& point)
   {
     return { point.x * value, point.y * value, point.z * value, point.w * value };
   }
 
-  Vector4 operator*(const Vector4& point, const float value)
+  Vector4 operator*(const Vector4& point, Vector4::const_value_type value)
   {
     return { point.x * value, point.y * value, point.z * value, point.w * value };
   }
@@ -304,13 +359,13 @@ namespace FlexEngine
   //  return { point_a.x / point_b.x, point_a.y / point_b.y, point_a.z / point_b.z, point_a.w / point_b.w };
   //}
 
-  Vector4 operator/(const float value, const Vector4& point)
+  Vector4 operator/(Vector4::const_value_type value, const Vector4& point)
   {
     if (point.x == 0 || point.y == 0 || point.z == 0 || point.w == 0) return { 0, 0, 0, 0 };
     return { value / point.x, value / point.y, value / point.z, value / point.w };
   }
 
-  Vector4 operator/(const Vector4& point, const float value)
+  Vector4 operator/(const Vector4& point, Vector4::const_value_type value)
   {
     if (value == 0) return { 0, 0, 0, 0 };
     return { point.x / value, point.y / value, point.z / value, point.w / value };

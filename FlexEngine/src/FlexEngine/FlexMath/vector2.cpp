@@ -3,9 +3,41 @@
 namespace FlexEngine
 {
 
+#pragma region Reflection
+
+  FLX_REFL_REGISTER_START(Vector2)
+    FLX_REFL_REGISTER_PROPERTY(x)
+    FLX_REFL_REGISTER_PROPERTY(y)
+  FLX_REFL_REGISTER_END;
+
+#pragma endregion
+  
+#pragma region Standard Functions
+
+  const Vector2 Vector2::Zero   = {  0,  0 };
+  const Vector2 Vector2::One    = {  1,  1 };
+  const Vector2 Vector2::Up     = {  0,  1 };
+  const Vector2 Vector2::Down   = {  0, -1 };
+  const Vector2 Vector2::Left   = {  1,  0 };
+  const Vector2 Vector2::Right  = { -1,  0 };
+
+  Vector2::operator bool() const { return XY() != Zero; }
+
+  std::string Vector2::ToString() const
+  {
+    return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+  }
+  Vector2::operator std::string() const { return ToString(); }
+
+#ifdef _DEBUG
+  void Vector2::Dump() const { Log::Debug(ToString()); }
+#endif
+
+#pragma endregion
+
 #pragma region Constructors
 
-  Vector2::Vector2(float _x, float _y)
+  Vector2::Vector2(value_type _x, value_type _y)
   {
     x = _x;
     y = _y;
@@ -54,7 +86,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector2& Vector2::operator+=(const float value)
+  Vector2& Vector2::operator+=(const_value_type value)
   {
     this->x += value;
     this->y += value;
@@ -68,7 +100,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector2& Vector2::operator-=(const float value)
+  Vector2& Vector2::operator-=(const_value_type value)
   {
     this->x -= value;
     this->y -= value;
@@ -82,7 +114,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector2& Vector2::operator*=(const float value)
+  Vector2& Vector2::operator*=(const_value_type value)
   {
     this->x *= value;
     this->y *= value;
@@ -97,7 +129,7 @@ namespace FlexEngine
     return *this;
   }
 
-  Vector2& Vector2::operator/=(const float& value)
+  Vector2& Vector2::operator/=(const_reference& value)
   {
     if (value == 0) return *this;
     this->x /= value;
@@ -115,40 +147,63 @@ namespace FlexEngine
     return !(x - other.x < EPSILON_f && y - other.y < EPSILON_f);
   }
 
-  Vector2 Vector2::RotateRad(const float radians) const
+  Vector2 Vector2::RotateRad(const_value_type radians) const
   {
-    const float cos = std::cos(radians);
-    const float sin = std::sin(radians);
+    const_value_type cos = std::cos(radians);
+    const_value_type sin = std::sin(radians);
     return { x * cos - y * sin, x * sin + y * cos };
   }
 
-  Vector2 Vector2::RotateDeg(const float degrees) const
+  Vector2 Vector2::RotateDeg(const_value_type degrees) const
   {
-    const float radians = degrees * PI_f / 180.0f;
+    const_value_type radians = degrees * PI_f / 180.0f;
     return RotateRad(radians);
   }
 
-  float Vector2::Magnitude() const
+  Vector2::value_type Vector2::Magnitude() const
   {
     return std::sqrt(x * x + y * y);
   }
 
-  float Vector2::Length() const
+  Vector2::value_type Vector2::Length() const
   {
     return Magnitude();
   }
 
-  float Vector2::LengthSqr() const
+  Vector2::value_type Vector2::LengthSqr() const
   {
     return x * x + y * y;
   }
 
   Vector2 Vector2::Normalize() const
     {
-      const float mag = Magnitude();
+      const_value_type mag = Magnitude();
       if (mag == 0) return { 0, 0 };
       return { x / mag, y / mag };
     }
+
+#pragma endregion
+
+#pragma region Passthrough Functions
+
+  Vector2::value_type Vector2::at(const Vector2::size_type index) const { return data[index]; }
+  Vector2::value_type Vector2::operator[](const Vector2::size_type index) { return at(index); }
+  Vector2::const_value_type Vector2::operator[](const Vector2::size_type index) const { return at(index); }
+
+  Vector2::iterator                 Vector2::begin()          { return data; }
+  Vector2::const_iterator           Vector2::begin() const    { return data; }
+  Vector2::const_iterator           Vector2::cbegin() const   { return data; }
+  Vector2::iterator                 Vector2::end()            { return data + size(); }
+  Vector2::const_iterator           Vector2::end() const      { return data + size(); }
+  Vector2::const_iterator           Vector2::cend() const     { return data + size(); }
+  //Vector2::reverse_iterator         Vector2::rbegin()         { return data + size() - 1; }
+  //Vector2::const_reverse_iterator   Vector2::rbegin() const   { return data + size() - 1; }
+  //Vector2::const_reverse_iterator   Vector2::crbegin() const  { return data + size() - 1; }
+  //Vector2::reverse_iterator         Vector2::rend()           { return data - 1; }
+  //Vector2::const_reverse_iterator   Vector2::rend() const     { return data - 1; }
+  //Vector2::const_reverse_iterator   Vector2::crend() const    { return data - 1; }
+
+  Vector2::size_type Vector2::size() const { return 2; }
 
 #pragma endregion
 
@@ -159,12 +214,12 @@ namespace FlexEngine
     return { point_a.x + point_b.x, point_a.y + point_b.y };
   }
 
-  Vector2 operator+(const float value, const Vector2& point)
+  Vector2 operator+(Vector2::const_value_type value, const Vector2& point)
   {
     return { point.x + value, point.y + value };
   }
 
-  Vector2 operator+(const Vector2& point, const float value)
+  Vector2 operator+(const Vector2& point, Vector2::const_value_type value)
   {
     return { point.x + value, point.y + value };
   }
@@ -174,12 +229,12 @@ namespace FlexEngine
     return { point_a.x - point_b.x, point_a.y - point_b.y };
   }
 
-  Vector2 operator-(const float value, const Vector2& point)
+  Vector2 operator-(Vector2::const_value_type value, const Vector2& point)
   {
     return { point.x - value, point.y - value };
   }
 
-  Vector2 operator-(const Vector2& point, const float value)
+  Vector2 operator-(const Vector2& point, Vector2::const_value_type value)
   {
     return { point.x - value, point.y - value };
   }
@@ -190,17 +245,17 @@ namespace FlexEngine
   //}
 
   // Dot product of two vectors
-  float Dot(const Vector2& a, const Vector2& b)
+  Vector2::value_type Dot(const Vector2& a, const Vector2& b)
   {
     return a.x * b.x + a.y * b.y;
   }
 
-  Vector2 operator*(const Vector2& point, const float value)
+  Vector2 operator*(const Vector2& point, Vector2::const_value_type value)
   {
     return { point.x * value, point.y * value };
   }
 
-  Vector2 operator*(const float value, const Vector2& point)
+  Vector2 operator*(Vector2::const_value_type value, const Vector2& point)
   {
     return { point.x * value, point.y * value };
   }
@@ -210,13 +265,13 @@ namespace FlexEngine
   //  return { point_a.x / point_b.x, point_a.y / point_b.y };
   //}
 
-  Vector2 operator/(const float value, const Vector2& point)
+  Vector2 operator/(Vector2::const_value_type value, const Vector2& point)
   {
     if (point.x == 0 || point.y == 0) return { 0, 0 };
     return { value / point.x, value / point.y };
   }
 
-  Vector2 operator/(const Vector2& point, const float value)
+  Vector2 operator/(const Vector2& point, Vector2::const_value_type value)
   {
     if (value == 0) return { 0, 0 };
     return { point.x / value, point.y / value };
@@ -224,24 +279,24 @@ namespace FlexEngine
 
   // Cross product of two vectors
   // Two crossed vectors return a scalar
-  float Cross(const Vector2& a, const Vector2& b)
+  Vector2::value_type Cross(const Vector2& a, const Vector2& b)
   {
     return a.x * b.y - a.y * b.x;
   }
 
   // Cross product of a vector with a scalar
   // with a vector v and scalar a, both returning a vector
-  Vector2 Cross(const Vector2& v, float a)
+  Vector2 Cross(const Vector2& v, Vector2::value_type a)
   {
     return { a * v.y, -a * v.x };
   }
 
-  Vector2 Cross(float a, const Vector2& v)
+  Vector2 Cross(Vector2::value_type a, const Vector2& v)
   {
     return { -a * v.y, a * v.x };
   }
 
-  float Distance(const Vector2& a, const Vector2& b)
+  Vector2::value_type Distance(const Vector2& a, const Vector2& b)
   {
     return (a - b).Magnitude();
   }

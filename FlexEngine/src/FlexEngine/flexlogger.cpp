@@ -18,7 +18,7 @@
 #define TAG_COLOR_FATAL     ANSI_COLOR(ANSI_FG_BRIGHT_WHITE ";" ANSI_BG_RED ";" ANSI_UNDERLINE_ON)
 #define TAG_COLOR_DEFAULT   ANSI_RESET
 
-#define TEXT_COLOR_DEBUG    ANSI_COLOR(ANSI_FG_BRIGHT_MAGENTA)
+#define TEXT_COLOR_DEBUG    ANSI_COLOR(ANSI_FG_WHITE)
 #define TEXT_COLOR_FLOW     ANSI_COLOR(ANSI_FG_BRIGHT_BLUE)
 #define TEXT_COLOR_INFO     ANSI_COLOR(ANSI_FG_BRIGHT_WHITE)
 #define TEXT_COLOR_WARNING  ANSI_COLOR(ANSI_FG_BRIGHT_YELLOW)
@@ -119,7 +119,12 @@ namespace FlexEngine
     }
 
     // append message and reset color
-    ss << message << ANSI_RESET << "\n";
+    // extra space for fatal messages
+    ss
+      << std::string((level == WarningLevel::_Fatal), ' ')
+      << message
+      << std::string((level == WarningLevel::_Fatal), ' ')
+      << ANSI_RESET<< "\n";
 
     // clean the stream of ANSI color codes for file logging
     std::string log_string = ss.str();
@@ -176,7 +181,7 @@ namespace FlexEngine
     if (success)
     {
       SetFileAttributes(save_path.c_str(), FILE_ATTRIBUTE_NORMAL);
-      Debug("Log file saved to " + save_path.string());
+      Info("Log file saved to " + save_path.string());
     }
     else
     {

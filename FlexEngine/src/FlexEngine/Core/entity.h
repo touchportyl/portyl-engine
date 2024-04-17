@@ -14,14 +14,22 @@ namespace FlexEngine
     UUID uuid;
     std::string name;
 
-    Entity(UUID uuid = UUID::Generate(), const std::string& name = "New Entity");
+    Entity();
+    Entity(const std::string& name = "New Entity", UUID uuid = UUID::Generate());
+
+    // Null entity, used to represent an entity that does not exist.
+    static const Entity Null;
+
+    // Conversion operators
+
+    operator bool() const;
+    operator UUID() const;
+    operator std::string() const;
 
     std::string ToString() const;
 
-    static Entity Null;
-
 #ifdef _DEBUG
-    void Dump();
+    void Dump() const;
 #endif
   };
 

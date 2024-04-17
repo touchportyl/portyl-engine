@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional> // std::hash
+#include <string>     // std::string
 
 namespace FlexEngine
 {
@@ -14,6 +15,11 @@ namespace FlexEngine
     UUID(unsigned long long value);
     UUID(const UUID& other);
     UUID& operator=(const UUID& other);
+
+    // Stringify
+
+    std::string ToString() const;
+    operator std::string() const;
 
     // Conversion operators
 
@@ -32,8 +38,8 @@ namespace FlexEngine
     bool operator<(const UUID& other) const;
     bool operator>(const UUID& other) const;
 
-    // Null UUID
-    static UUID Null;
+    // Null UUID, used to represent an invalid or uninitialized UUID
+    static const UUID Null;
 
     static UUID Generate();
   };

@@ -6,7 +6,7 @@
 #include <imgui_internal.h>
 
 // temporary
-#include "Component/transform.h"
+#include "Component/Transform2D.h"
 
 void DumpJsonNodes(const rapidjson::Value& value, int depth = 0)
 {
@@ -355,24 +355,35 @@ namespace FlexEditor
     //  ECS::Dump();
     //}
 
-    // test 6b: ECS component serialization
+    // test 6b: ECS components
     {
       Log::Debug("test 6b");
-      
-      //UUID e1 = UUID::Generate();
-      //UUID e2 = UUID::Generate();
-      //UUID e3 = UUID::Generate();
+
       Entity e1 = ECS::CreateEntity("Entity 1");
       Entity e2 = ECS::CreateEntity("En-two-ty");
       Entity e3 = ECS::CreateEntity("E3");
 
-      Transform::AddComponent(e1.uuid);
-      Transform::AddComponent(e2.uuid);
-      Transform::AddComponent(e3.uuid);
+      Transform::AddComponent(e1);
+      //Transform::AddComponent(e2);
+      Transform::AddComponent(e3);
 
-      Transform::GetComponent(e1.uuid)->SetX(10.35f);
-      Transform::GetComponent(e2.uuid)->SetY(20.35f);
-      Transform::GetComponent(e3.uuid)->SetZ(30.35f);
+      Transform::GetComponent(e1)->SetPosition( Vector3(1.0f, 2.0f, 3.0f) );
+      //Transform::GetComponent(e2)->SetPosition( Vector3(4.0f, 5.0f, 6.0f) );
+      Transform::GetComponent(e3)->SetPosition( Vector3(7.0f, 8.0f, 9.0f) );
+
+      //for (auto& data : Transform::GetComponent(e1.uuid)->GetPosition())
+      //{
+      //  Log::Debug(std::to_string(data));
+      //}
+
+      FLX_ECS_SYSTEM_VIEW_START(view)
+        FLX_ECS_SYSTEM_VIEW_QUERY(Transform)
+      FLX_ECS_SYSTEM_VIEW_END(view);
+
+      for (auto& entity : view)
+      {
+        Log::Debug(entity.ToString());
+      }
 
       ECS::Dump();
     }

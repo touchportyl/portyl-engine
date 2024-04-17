@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "ecs.h"
-#include "Component/transform.h"
+#include "Component/Transform2D.h"
 
 namespace FlexEngine
 {
@@ -15,12 +15,12 @@ namespace FlexEngine
   {
     UUID uuid = UUID::Generate();
     s_entities[uuid] = entity_name;
-    return { uuid, entity_name };
+    return { entity_name, uuid };
   }
 
   Entity ECS::GetEntity(const UUID& entity_uuid)
   {
-    return { entity_uuid, s_entities[entity_uuid] };
+    return { s_entities[entity_uuid], entity_uuid };
   }
 
   Entity ECS::GetEntity(const std::string& entity_name)
@@ -29,7 +29,7 @@ namespace FlexEngine
     {
       if (name == entity_name)
       {
-        return { uuid, name };
+        return { name, uuid };
       }
     }
     return Entity::Null;
@@ -54,11 +54,31 @@ namespace FlexEngine
 
   #pragma endregion
 
+
+  //template <typename... Ts>
+  //std::vector<Entity> ECS::FindEntitiesByComponent()
+  //{
+  //  std::vector<Entity> entities;
+  //  for (auto& [uuid, name] : s_entities)
+  //  {
+  //    if (((Internal_GetComponentBucket<Ts>().find(uuid) != Internal_GetComponentBucket<Ts>().end()) && ...))
+  //    {
+  //      entities.push_back({ name, uuid });
+  //    }
+  //  }
+  //  return entities;
+  //}
+  // TODO: Make this a python script that generates the template instantiations
+  // WHY MUST THIS BE HARDCODED
+  //template std::vector<Entity> ECS::FindEntitiesByComponent<Transform>();
+
   template <typename T>
-  ECS::ComponentBucket ECS::GetComponentBucket()
+  ECS::ComponentBucket& ECS::Internal_GetComponentBucket()
   {
     return *s_buckets[typeid(T)];
   }
+
+  std::unordered_map<UUID, std::string>& ECS::Internal_GetEntities() { return s_entities; }
 
   template <typename T>
   void ECS::Internal_RegisterComponent(ComponentBucket* bucket)
@@ -73,7 +93,7 @@ namespace FlexEngine
   #define DUMP_COMPONENT(TYPE) \
     if (bucket.first == typeid(TYPE)) \
     { \
-      for (auto& [entity, component] : GetComponentBucket<TYPE>()) \
+      for (auto& [entity, component] : Internal_GetComponentBucket<TYPE>()) \
       { \
         Log::Debug(std::string("Entity: ") + ECS::GetEntity(entity).ToString()); \
         Log::Debug(std::string("Component: ") + std::reinterpret_pointer_cast<TYPE>(component)->ToString()); \
@@ -89,7 +109,7 @@ namespace FlexEngine
     Log::Debug("Entities:");
     for (auto& [uuid, name] : s_entities)
     {
-      Log::Debug(Entity(uuid, name).ToString());
+      Log::Debug(Entity(name, uuid).ToString());
     }
 
     // Dump components
