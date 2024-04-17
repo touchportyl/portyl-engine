@@ -378,8 +378,6 @@ namespace FlexEditor
       //  Log::Debug(std::to_string(data));
       //}
 
-      selected_entity = e3;
-
       FLX_ECS_SYSTEM_VIEW_START(view)
         FLX_ECS_SYSTEM_VIEW_QUERY(Transform)
       FLX_ECS_SYSTEM_VIEW_END(view);
@@ -406,6 +404,18 @@ namespace FlexEditor
     //  Log::Warning("Warning message");
     //  Log::Error("Error message");
     //  Log::Fatal("Fatal message");
+    //}
+
+    #pragma endregion
+
+
+    #pragma region Vector Swizzle Test
+
+    //{
+    //  Vector2 vec2{ 1.0f, 2.0f };
+    //  Log::Debug(vec2.Swizzle("yx").ToString()); // Expected log: (2, 1), vec2 is still (1, 2)
+    //  Vector2::Swizzle(vec2, "11");
+    //  Log::Debug(vec2.ToString()); // Expected log: (2, 2)
     //}
 
     #pragma endregion

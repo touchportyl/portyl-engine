@@ -24,9 +24,30 @@ namespace FlexEngine
   const Vector3 Vector3::Forward  = {  0,  0,  1 };
   const Vector3 Vector3::Back     = {  0,  0, -1 };
 
-  Vector3::operator bool() const { return XYZ() != Zero; }
+  Vector3::operator bool() const { return *this != Zero; }
+  Vector3::operator Vector2() const { return { x, y }; }
 
-  Vector3::operator Vector2() const { return XY(); }
+  Vector3 Vector3::Swizzle(const std::string& swizzle) const
+  {
+    // build new vector based on swizzle
+    Vector3 new_vector;
+    for (size_type i = 0; i < size(); ++i)
+    {
+      switch (swizzle[i])
+      {
+      case '0': case 'x': case 'r': case 's': new_vector[i] = x; break;
+      case '1': case 'y': case 'g': case 't': new_vector[i] = y; break;
+      case '2': case 'z': case 'b': case 'p': new_vector[i] = z; break;
+      default: new_vector[i] = data[i]; break;
+      }
+    }
+    return new_vector;
+  }
+
+  void Vector3::Swizzle(Vector3& other, const std::string& swizzle)
+  {
+    other = other.Swizzle(swizzle);
+  }
 
   std::string Vector3::ToString() const
   {
@@ -69,26 +90,6 @@ namespace FlexEngine
     y = yz.x;
     z = yz.y;
   }
-
-#pragma endregion
-
-#pragma region Getters
-
-  // Getters for the different combinations of the vector
-
-  Vector2 Vector3::XY() const { return { x, y }; }
-  Vector2 Vector3::YX() const { return { y, x }; }
-  Vector2 Vector3::XZ() const { return { x, z }; }
-  Vector2 Vector3::ZX() const { return { z, x }; }
-  Vector2 Vector3::YZ() const { return { y, z }; }
-  Vector2 Vector3::ZY() const { return { z, y }; }
-
-  Vector3 Vector3::XYZ() const { return { x, y, z }; }
-  Vector3 Vector3::XZY() const { return { x, z, y }; }
-  Vector3 Vector3::YXZ() const { return { y, x, z }; }
-  Vector3 Vector3::YZX() const { return { y, z, x }; }
-  Vector3 Vector3::ZXY() const { return { z, x, y }; }
-  Vector3 Vector3::ZYX() const { return { z, y, x }; }
 
 #pragma endregion
 
@@ -214,9 +215,10 @@ namespace FlexEngine
 
 #pragma region Passthrough Functions
 
-  Vector3::value_type Vector3::at(const Vector3::size_type index) const { return data[index]; }
-  Vector3::value_type Vector3::operator[](const Vector3::size_type index) { return at(index); }
-  Vector3::const_value_type Vector3::operator[](const Vector3::size_type index) const { return at(index); }
+  Vector3::reference Vector3::at(const Vector3::size_type index) { return data[index]; }
+  Vector3::const_reference Vector3::at(const Vector3::size_type index) const { return data[index]; }
+  Vector3::reference Vector3::operator[](const Vector3::size_type index) { return at(index); }
+  Vector3::const_reference Vector3::operator[](const Vector3::size_type index) const { return at(index); }
 
   Vector3::iterator                 Vector3::begin() { return data; }
   Vector3::const_iterator           Vector3::begin() const { return data; }
@@ -231,7 +233,7 @@ namespace FlexEngine
   //Vector3::const_reverse_iterator   Vector3::rend() const     { return data - 1; }
   //Vector3::const_reverse_iterator   Vector3::crend() const    { return data - 1; }
 
-  Vector3::size_type Vector3::size() const { return 3; }
+  constexpr Vector3::size_type Vector3::size() const { return 3; }
 
 #pragma endregion
 

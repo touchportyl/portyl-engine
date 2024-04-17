@@ -21,7 +21,28 @@ namespace FlexEngine
   const Vector2 Vector2::Left   = {  1,  0 };
   const Vector2 Vector2::Right  = { -1,  0 };
 
-  Vector2::operator bool() const { return XY() != Zero; }
+  Vector2::operator bool() const { return *this != Zero; }
+
+  Vector2 Vector2::Swizzle(const std::string& swizzle) const
+  {
+    // build new vector based on swizzle
+    Vector2 new_vector;
+    for (size_type i = 0; i < size(); ++i)
+    {
+      switch (swizzle[i])
+      {
+      case '0': case 'x': case 'r': case 's': new_vector[i] = x; break;
+      case '1': case 'y': case 'g': case 't': new_vector[i] = y; break;
+      default: new_vector[i] = data[i]; break;
+      }
+    }
+    return new_vector;
+  }
+
+  void Vector2::Swizzle(Vector2& other, const std::string& swizzle)
+  {
+    other = other.Swizzle(swizzle);
+  }
 
   std::string Vector2::ToString() const
   {
@@ -48,15 +69,6 @@ namespace FlexEngine
       x = other.x;
       y = other.y;
     }
-
-#pragma endregion
-
-#pragma region Getters
-
-  // Getters for the different combinations of the vector
-
-  Vector2 Vector2::XY() const { return { x, y }; }
-  Vector2 Vector2::YX() const { return { y, x }; }
 
 #pragma endregion
 
@@ -186,9 +198,10 @@ namespace FlexEngine
 
 #pragma region Passthrough Functions
 
-  Vector2::value_type Vector2::at(const Vector2::size_type index) const { return data[index]; }
-  Vector2::value_type Vector2::operator[](const Vector2::size_type index) { return at(index); }
-  Vector2::const_value_type Vector2::operator[](const Vector2::size_type index) const { return at(index); }
+  Vector2::reference Vector2::at(const Vector2::size_type index) { return data[index]; }
+  Vector2::const_reference Vector2::at(const Vector2::size_type index) const { return data[index]; }
+  Vector2::reference Vector2::operator[](const Vector2::size_type index) { return at(index); }
+  Vector2::const_reference Vector2::operator[](const Vector2::size_type index) const { return at(index); }
 
   Vector2::iterator                 Vector2::begin()          { return data; }
   Vector2::const_iterator           Vector2::begin() const    { return data; }
@@ -203,7 +216,7 @@ namespace FlexEngine
   //Vector2::const_reverse_iterator   Vector2::rend() const     { return data - 1; }
   //Vector2::const_reverse_iterator   Vector2::crend() const    { return data - 1; }
 
-  Vector2::size_type Vector2::size() const { return 2; }
+  constexpr Vector2::size_type Vector2::size() const { return 2; }
 
 #pragma endregion
 

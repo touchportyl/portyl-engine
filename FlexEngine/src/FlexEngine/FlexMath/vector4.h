@@ -49,6 +49,11 @@ namespace FlexEngine
     operator Vector2() const;
     operator Vector3() const;
 
+    // Swizzle support
+
+    Vector4 Swizzle(const std::string& swizzle = "xyz") const;
+    static void Swizzle(Vector4& other, const std::string& swizzle = "xyz");
+
     // Stringify the vector
 
     std::string ToString() const;
@@ -66,86 +71,6 @@ namespace FlexEngine
     Vector4(const Vector4& other);
     Vector4(const Vector3& xyz, value_type _w = 0.0f);
     Vector4(const Vector2& xy, value_type _z = 0.0f, value_type _w = 0.0f);
-
-#pragma endregion
-
-#pragma region Getters
-
-    // Getters for the different combinations of the vector
-
-    Vector2 XY() const;
-    Vector2 XZ() const;
-    Vector2 XW() const;
-
-    Vector2 YX() const;
-    Vector2 YZ() const;
-    Vector2 YW() const;
-
-    Vector2 ZX() const;
-    Vector2 ZY() const;
-    Vector2 ZW() const;
-
-    Vector2 WX() const;
-    Vector2 WY() const;
-    Vector2 WZ() const;
-
-
-    Vector3 XYZ() const;
-    Vector3 XYW() const;
-    Vector3 XZY() const;
-    Vector3 XZW() const;
-    Vector3 XWY() const;
-    Vector3 XWZ() const;
-
-    Vector3 YXZ() const;
-    Vector3 YXW() const;
-    Vector3 YZX() const;
-    Vector3 YZW() const;
-    Vector3 YWX() const;
-    Vector3 YWZ() const;
-
-    Vector3 ZXY() const;
-    Vector3 ZXW() const;
-    Vector3 ZYX() const;
-    Vector3 ZYW() const;
-    Vector3 ZWX() const;
-    Vector3 ZWY() const;
-
-    Vector3 WXY() const;
-    Vector3 WXZ() const;
-    Vector3 WYX() const;
-    Vector3 WYZ() const;
-    Vector3 WZX() const;
-    Vector3 WZY() const;
-
-
-    Vector4 XYZW() const;
-    Vector4 XYWZ() const;
-    Vector4 XZYW() const;
-    Vector4 XZWY() const;
-    Vector4 XWYZ() const;
-    Vector4 XWZY() const;
-
-    Vector4 YXZW() const;
-    Vector4 YXWZ() const;
-    Vector4 YZXW() const;
-    Vector4 YZWX() const;
-    Vector4 YWZX() const;
-    Vector4 YWXZ() const;
-
-    Vector4 ZXYW() const;
-    Vector4 ZXWY() const;
-    Vector4 ZYXW() const;
-    Vector4 ZYWX() const;
-    Vector4 ZWXY() const;
-    Vector4 ZWYX() const;
-
-    Vector4 WXYZ() const;
-    Vector4 WXZY() const;
-    Vector4 WYXZ() const;
-    Vector4 WYZX() const;
-    Vector4 WZXY() const;
-    Vector4 WZYX() const;
 
 #pragma endregion
 
@@ -193,9 +118,10 @@ namespace FlexEngine
 
     // Accessors
 
-    value_type at(const size_type index) const;
-    value_type operator[](const size_type index);
-    const_value_type operator[](const size_type index) const;
+    reference at(const size_type index);
+    const_reference at(const size_type index) const;
+    reference operator[](const size_type index);
+    const_reference operator[](const size_type index) const;
 
     // Iterators
 
@@ -214,7 +140,7 @@ namespace FlexEngine
 
     // Capacity
 
-    size_type size() const;
+    constexpr size_type size() const;
 
 #pragma endregion
 

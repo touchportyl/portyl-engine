@@ -55,6 +55,11 @@ namespace FlexEngine
 
     operator bool() const;
 
+    // Swizzle support
+
+    Vector2 Swizzle(const std::string& swizzle = "xy") const;
+    static void Swizzle(Vector2& other, const std::string& swizzle = "xy");
+
     // Stringify the vector
 
     std::string ToString() const;
@@ -70,15 +75,6 @@ namespace FlexEngine
 
     Vector2(value_type _x = 0.0f, value_type _y = 0.0f);
     Vector2(const Vector2& other);
-
-#pragma endregion
-
-#pragma region Getters
-
-    // Getters for the different combinations of the vector
-
-    Vector2 XY() const;
-    Vector2 YX() const;
 
 #pragma endregion
 
@@ -122,9 +118,10 @@ namespace FlexEngine
 
     // Accessors
 
-    value_type at(const size_type index) const;
-    value_type operator[](const size_type index);
-    const_value_type operator[](const size_type index) const;
+    reference at(const size_type index);
+    const_reference at(const size_type index) const;
+    reference operator[](const size_type index);
+    const_reference operator[](const size_type index) const;
 
     // Iterators
 
@@ -143,7 +140,7 @@ namespace FlexEngine
 
     // Capacity
 
-    size_type size() const;
+    constexpr size_type size() const;
 
 #pragma endregion
 
