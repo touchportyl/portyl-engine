@@ -79,15 +79,16 @@ namespace FlexEngine
       std::vector<Entity> ENTITY_LIST; \
       for (auto& [uuid, name] : ECS::Internal_GetEntities()) \
       { \
+        if (
 
     #define FLX_ECS_SYSTEM_VIEW_QUERY(TYPE) \
-        if (ECS::Internal_GetComponentBucket<TYPE>().find(uuid) == ECS::Internal_GetComponentBucket<TYPE>().end()) \
-        { \
-          continue; \
-        }
+          ECS::Internal_GetComponentBucket<TYPE>().find(uuid) != ECS::Internal_GetComponentBucket<TYPE>().end() &&
 
     #define FLX_ECS_SYSTEM_VIEW_END(ENTITY_LIST) \
-        ENTITY_LIST.push_back({ name, uuid }); \
+        true ) \
+        { \
+          ENTITY_LIST.push_back({ name, uuid }); \
+        } \
       }
 
     // INTERNAL FUNCTION

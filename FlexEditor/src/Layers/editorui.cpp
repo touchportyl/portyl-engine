@@ -44,6 +44,8 @@ namespace FlexEditor
   Asset::Shader shader_color;
   Asset::Texture test_image;
 
+  Entity selected_entity;
+
   void EditorLayer::OnAttach()
   {
     FLX_FLOW_BEGINSCOPE();
@@ -376,6 +378,8 @@ namespace FlexEditor
       //  Log::Debug(std::to_string(data));
       //}
 
+      selected_entity = e3;
+
       FLX_ECS_SYSTEM_VIEW_START(view)
         FLX_ECS_SYSTEM_VIEW_QUERY(Transform)
       FLX_ECS_SYSTEM_VIEW_END(view);
@@ -434,6 +438,110 @@ namespace FlexEditor
     // setup dockspace
     #pragma warning(suppress: 4189) // unused variable
     ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+
+    #pragma region Entity Testing Panel
+
+    // this panel will be used to test the ECS system
+    // it allows the user to create entities and select them for the properties panel
+    ImGui::Begin("Entity Testing");
+
+    // create a new entity
+    if (ImGui::Button("Create Entity"))
+    {
+      ImGui::OpenPopup("Create Entity");
+    }
+    
+    // popup to set the entity name
+    if (ImGui::BeginPopupModal("Create Entity"))
+    {
+      static char name[128] = "New Entity";
+      ImGui::InputText("Name", name, sizeof(name));
+
+      if (ImGui::Button("Create"))
+      {
+        selected_entity = ECS::CreateEntity(name);
+        ImGui::CloseCurrentPopup();
+      }
+
+      ImGui::EndPopup();
+    }
+
+    ImGui::SeparatorText("Entities");
+
+    // get all entities
+    FLX_ECS_SYSTEM_VIEW_START(view_all_entities)
+    FLX_ECS_SYSTEM_VIEW_END(view_all_entities);
+
+    // list all entities with a button to select them
+    for (auto& [uuid, name] : view_all_entities)
+    {
+      std::string buffer;
+
+      buffer = "Select " + name;
+      if (ImGui::Button(buffer.c_str()))
+      {
+        selected_entity = { name, uuid };
+      }
+
+      ImGui::SameLine();
+
+      buffer = "Destroy " + name;
+      if (ImGui::Button(buffer.c_str()))
+      {
+        ECS::DestroyEntity(uuid);
+      }
+    }
+
+    ImGui::End();
+
+    #pragma endregion
+
+
+    #pragma region Properties Panel
+
+    ImGui::Begin("Properties");
+
+    // display the selected entity
+    if (selected_entity)
+    {
+      ImGui::Text(selected_entity.name.c_str());
+    }
+    else
+    {
+      ImGui::Text("No entity selected");
+    }
+
+    // loop through every single registered component
+    // if the entity is found, display the component
+    if (Transform::GetComponent(selected_entity))
+    {
+      // display the component
+      // this will be specifically designed for each component
+      if (ImGui::CollapsingHeader("Transform"))
+      {
+        // TODO: cache this so we don't have to call GetComponent() every frame
+        Vector2 vec2 = Transform::GetComponent(selected_entity)->GetPosition();
+        ImGui::DragFloat2("Position", vec2.begin(), 0.1f, -std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+
+        if (ImGui::IsItemEdited())
+        {
+          // update the transform component
+          Transform::GetComponent(selected_entity)->SetPosition(vec2);
+        }
+      }
+    }
+
+    if (ImGui::Button("Dump"))
+    {
+      ECS::Dump();
+    }
+
+    ImGui::End();
+
+    #pragma endregion
+
+
+    #pragma region Old Code
 
     //if (glfwGetKey(Application::Get().GetGLFWWindow(), GLFW_KEY_R))
     //{
@@ -494,7 +602,6 @@ namespace FlexEditor
 
     #pragma endregion
 
-
     // create imgui windows
     #pragma region Content Browser
 
@@ -550,7 +657,7 @@ namespace FlexEditor
     ImGui::Image(IMGUI_IMAGE(test_image));
     ImGui::End();
 
-    ImGui::ShowDemoWindow();
+    #pragma endregion
   }
 
 }

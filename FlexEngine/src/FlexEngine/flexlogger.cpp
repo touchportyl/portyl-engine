@@ -83,7 +83,7 @@ namespace FlexEngine
     is_initialized = false;
   }
 
-  void Log::Logger(WarningLevel level, const char* message)
+  void Log::Internal_Logger(WarningLevel level, const char* message)
   {
     // default passthrough to std::cout if not initialized
     if (!is_initialized)

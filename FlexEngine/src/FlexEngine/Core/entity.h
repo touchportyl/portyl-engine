@@ -15,7 +15,7 @@ namespace FlexEngine
     std::string name;
 
     Entity();
-    Entity(const std::string& name = "New Entity", UUID uuid = UUID::Generate());
+    Entity(const std::string& name, UUID uuid = UUID::Generate());
 
     // Null entity, used to represent an entity that does not exist.
     static const Entity Null;

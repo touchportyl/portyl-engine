@@ -33,29 +33,29 @@ namespace FlexEngine
     ~Log();
 
     // User-defined debug messages
-    static void Debug(const char* message)   { Logger(_Debug, message); }
+    static void Debug(const char* message)   { Internal_Logger(_Debug, message); }
     static void Debug(std::string message)   { Debug(message.c_str()); }
 
     // Messages for debugging the flow of the application
     // Use the FLX_FLOW_FUNCTION() macro
     // This is not meant to be used directly
-    static void Flow(const char* message)    { Logger(_Flow, message); }
+    static void Flow(const char* message)    { Internal_Logger(_Flow, message); }
     static void Flow(std::string message)    { Flow(message.c_str()); }
 
     // Informational messages
-    static void Info(const char* message)    { Logger(_Info, message); }
+    static void Info(const char* message)    { Internal_Logger(_Info, message); }
     static void Info(std::string message)    { Info(message.c_str()); }
 
     // Warn if it could cause issues when not addressed
-    static void Warning(const char* message) { Logger(_Warning, message); }
+    static void Warning(const char* message) { Internal_Logger(_Warning, message); }
     static void Warning(std::string message) { Warning(message.c_str()); }
 
     // Warn about potentially damaging errors, systems can recover if dealt with
-    static void Error(const char* message)   { Logger(_Error, message); }
+    static void Error(const char* message)   { Internal_Logger(_Error, message); }
     static void Error(std::string message)   { Error(message.c_str()); }
 
     // Kills the application asap to prevent it from damaging the system
-    static void Fatal(const char* message)   { Logger(_Fatal, message); }
+    static void Fatal(const char* message)   { Internal_Logger(_Fatal, message); }
     static void Fatal(std::string message)   { Fatal(message.c_str()); }
 
     // Dumps the logs to a file
@@ -71,7 +71,7 @@ namespace FlexEngine
     static void UpdateFlowScope(int indent) { flow_scope += indent; }
 
   private:
-    static void Logger(WarningLevel level, const char* message);
+    static void Internal_Logger(WarningLevel level, const char* message);
 
     static std::filesystem::path log_base_path;
     static std::filesystem::path log_file_path;
