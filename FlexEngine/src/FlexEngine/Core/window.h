@@ -51,11 +51,10 @@ namespace FlexEngine
 
     // delete default, copy and move constructors, and assign operators
     Window() = delete;
-    Window(Window&) = delete;
-    Window(Window&&) = delete;
     Window(const Window&) = delete;
-    Window& operator=(Window&) = delete;
+    Window(Window&&) = delete;
     Window& operator=(const Window&) = delete;
+    Window& operator=(Window&&) = delete;
 
     // getters
 

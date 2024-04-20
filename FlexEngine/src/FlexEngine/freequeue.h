@@ -15,11 +15,10 @@ namespace FlexEngine
     // static class
     FreeQueue() = delete;
     ~FreeQueue() = delete;
-    FreeQueue(FreeQueue&) = delete;
+    FreeQueue(const FreeQueue&) = delete;
     FreeQueue(FreeQueue&&) = delete;
-    FreeQueue& operator=(FreeQueue&) = delete;
+    FreeQueue& operator=(const FreeQueue&) = delete;
     FreeQueue& operator=(FreeQueue&&) = delete;
-    const FreeQueue& operator=(const FreeQueue&) = delete;
 
     // Push a function to the queue
     // Push a freeing function to the queue when the object is created

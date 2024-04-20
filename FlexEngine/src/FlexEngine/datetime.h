@@ -50,6 +50,10 @@ namespace FlexEngine
   public:
     // remove constructor
     DateTime() = delete;
+    DateTime(const DateTime&) = delete;
+    DateTime(DateTime&&) = delete;
+    DateTime& operator=(const DateTime&) = delete;
+    DateTime& operator=(DateTime&&) = delete;
 
     /// <summary>
     /// Gets the date in std::tm format.
