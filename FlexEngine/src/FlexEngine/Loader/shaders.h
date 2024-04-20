@@ -12,7 +12,7 @@ namespace FlexEngine
     /// <summary>
     /// Helper class for building and compiling shaders using glad
     /// </summary>
-    class Shader
+    class __FLX_API Shader
     {
     public:
       Shader() = default;

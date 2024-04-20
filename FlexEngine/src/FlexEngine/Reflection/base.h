@@ -1,5 +1,7 @@
 #pragma once
 
+#include "flx_api.h"
+
 #include <cstddef>
 #include <iostream>
 #include <vector>
@@ -8,8 +10,8 @@
 #include <map>
 #include <functional>
 
+#include "flexassert.h"
 #include "flexformatter.h"
-#include <flexassert.h>
 
 // Reflection system for C++
 // 
@@ -172,7 +174,7 @@ namespace FlexEngine
     // Base class for all type descriptors.
     // A type descriptor is a class that describes a type,
     // including its name, size, and how to serialize/deserialize it.
-    struct TypeDescriptor
+    struct __FLX_API TypeDescriptor
     {
       using json = rapidjson::Value;
 
@@ -228,7 +230,8 @@ namespace FlexEngine
       template <typename T> static char func(decltype(&T::Reflection));
       template <typename T> static int func(...);
       template <typename T>
-      struct IsReflected {
+      struct IsReflected
+      {
         enum { value = (sizeof(func<T>(nullptr)) == sizeof(char)) };
       };
 
@@ -316,7 +319,7 @@ namespace FlexEngine
     /// Type descriptor for user-defined structs/classes.
     /// <para>Specialized for structs/classes.</para>
     /// </summary>
-    struct TypeDescriptor_Struct : TypeDescriptor
+    struct __FLX_API TypeDescriptor_Struct : TypeDescriptor
     {
       struct Member
       {
@@ -325,6 +328,7 @@ namespace FlexEngine
         TypeDescriptor* type;
       };
 
+      #pragma warning(suppress: 4251) // needs to have dll-interface to be used by clients of class
       std::vector<Member> members;
 
       TypeDescriptor_Struct(void (*init)(TypeDescriptor_Struct*))
@@ -390,7 +394,7 @@ namespace FlexEngine
     struct TypeDescriptor_StdVector : TypeDescriptor
     {
       TypeDescriptor* item_type;
-      size_t(*get_size)(const void*);
+      size_t (*get_size)(const void*);
       const void* (*get_item)(const void*, size_t);
       void* (*set_item)(void*, size_t);
 

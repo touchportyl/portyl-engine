@@ -20,17 +20,12 @@ namespace FlexEngine
 
     // initialize glfw
     FLX_CORE_ASSERT(glfwInit(), "Failed to initialize GLFW!");
-    FreeQueue::Push([]() { glfwMakeContextCurrent(NULL); });
-    FreeQueue::Push([]() { glfwTerminate(); });
-
-    // initialize imgui
-    //ImGuiWrapper::InitBackend();
   }
 
   Application::~Application()
   {
-    // shutdown imgui
-    //ImGuiWrapper::ShutdownBackend();
+    glfwMakeContextCurrent(NULL);
+    glfwTerminate();
 
     FLX_FLOW_ENDSCOPE();
   }
@@ -61,14 +56,13 @@ namespace FlexEngine
 
   void Application::CloseWindow(std::string& window_title)
   {
-    for (auto& window : m_windows)
-    {
-      if (window->GetTitle() == window_title)
-      {
-        CloseWindow(window);
-        break;
-      }
-    }
+    // find the window with the given title and close it
+    CloseWindow(
+      *(std::find_if(
+        m_windows.begin(), m_windows.end(),
+        [&window_title](std::shared_ptr<Window> window) { return window->GetTitle() == window_title; }
+      ))
+    );
   }
 
   void Application::CloseWindow(std::shared_ptr<Window> window)
@@ -83,14 +77,11 @@ namespace FlexEngine
   {
     while (m_is_running)
     {
-      // quit application
-      if (Input::GetKey(GLFW_KEY_LEFT_CONTROL) && Input::GetKeyDown(GLFW_KEY_Q)) Application::Close();
-
-      // run every window
-      //for (auto& window : m_windows) window->Run();
-
       // run the application state
       ApplicationStateManager::Update();
+
+      // quit application
+      if (Input::GetKey(GLFW_KEY_LEFT_CONTROL) && Input::GetKeyDown(GLFW_KEY_Q)) Application::Close();
 
       // poll IO events (keys pressed/released, mouse moved etc.)
       glfwPollEvents();

@@ -17,6 +17,8 @@ namespace FlexEngine
     LayerStack();
     ~LayerStack();
 
+    void Clear();
+
     void PushLayer(std::shared_ptr<Layer> layer);
     void PopLayer();
 

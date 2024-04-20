@@ -50,10 +50,7 @@ namespace FlexEngine
     glfwMakeContextCurrent(m_glfwwindow);
 
     // load all OpenGL function pointers (glad)
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-      Log::Fatal("Failed to initialize GLAD!");
-    }
+    FLX_CORE_ASSERT(gladLoadGL(), "Failed to initialize GLAD!");
 
     // set callbacks
     glfwSetKeyCallback(m_glfwwindow, Input::KeyCallback);
@@ -68,6 +65,8 @@ namespace FlexEngine
     //glfwSetDropCallback(m_glfwwindow, DropCallback);
 
     // initialize imgui
+    // this must be done after the window is created because imgui needs the OpenGL context
+    // the shutdown is done in the window close function
     m_imguicontext = ImGuiWrapper::Init(this);
 
     // always move the window to the center of the screen
@@ -77,9 +76,6 @@ namespace FlexEngine
 
   Window::~Window()
   {
-    // shutdown imgui
-    ImGuiWrapper::Shutdown(m_imguicontext);
-
     glfwDestroyWindow(m_glfwwindow);
   }
 
@@ -106,6 +102,14 @@ namespace FlexEngine
 
   void Window::Close()
   {
+    // remove all layers from the layer stack
+    m_layerstack.Clear();
+
+    // shutdown imgui
+    // the imgui initialization is done in the window constructor
+    ImGuiWrapper::Shutdown(m_imguicontext);
+
+    // set the window to close
     glfwSetWindowShouldClose(m_glfwwindow, true);
   }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "flx_api.h"
+
 #include <memory>
 
 #include "window.h"
@@ -13,7 +15,7 @@ namespace FlexEngine
 {
 
   // the architecture of the engine is designed to have only one application instance
-  class Application
+  class __FLX_API Application
   {
   public:
     Application();

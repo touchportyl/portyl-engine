@@ -723,6 +723,7 @@ public:
             kNumberAnyFlag
         };
         RAPIDJSON_NOEXCEPT_ASSERT(type >= kNullType && type <= kNumberType);
+        #pragma warning(suppress: 33010) // Unchecked lower bound for enum type used as index..
         data_.f.flags = defaultFlags[type];
 
         // Use ShortString to store empty string.

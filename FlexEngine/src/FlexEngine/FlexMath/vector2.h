@@ -1,5 +1,7 @@
 #pragma once
 
+#include "flx_api.h"
+
 #include "values.h"
 
 #include "Reflection/base.h"
@@ -10,7 +12,7 @@
 namespace FlexEngine
 {
 
-  struct Vector2
+  struct __FLX_API Vector2
   { FLX_REFL_SERIALIZABLE
 
     // Using directives
@@ -28,8 +30,8 @@ namespace FlexEngine
     using const_reverse_iterator = const_iterator;
 
     // Data members
-
-    union
+    
+    union __FLX_ALIGN_AS(8)
     {
     #pragma warning(push)
     #pragma warning(disable: 4201) // nonstandard extension used: nameless struct/union

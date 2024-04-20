@@ -1,9 +1,9 @@
 #include "pch.h"
 
-#include "imguiwrapper.h"
+#include "imguiwrapper.h" // <imgui.h> <imgui_internal.h>
 
-#include <imgui.h>
-#include <imgui_internal.h>
+//#include <imgui.h>
+//#include <imgui_internal.h>
 
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -159,87 +159,84 @@ namespace
 
 namespace FlexEngine
 {
-  namespace ImGuiWrapper
+
+  ImGuiContext* ImGuiWrapper::Init(Window* window)
   {
+    FLX_FLOW_FUNCTION();
 
-    ImGuiContext* Init(Window* window)
-    {
-      FLX_FLOW_FUNCTION();
+    IMGUI_CHECKVERSION();
 
-      IMGUI_CHECKVERSION();
+    ImGuiContext* imgui_context = ImGui::CreateContext();
+    // always remember to set the current context before running imgui functions
+    ImGui::SetCurrentContext(imgui_context);
 
-      ImGuiContext* imgui_context = ImGui::CreateContext();
-      // always remember to set the current context before running imgui functions
-      ImGui::SetCurrentContext(imgui_context);
+    ImGuiIO& io = ImGui::GetIO();
 
-      ImGuiIO& io = ImGui::GetIO();
+    // set config flags
+    // todo: refactor this to window props
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-      // set config flags
-      // todo: refactor this to window props
-      io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-      io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
-      io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-      io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    // set style
+    //ImGui::StyleColorsDark();
+    CustomImguiStyle();
 
-      // set style
-      //ImGui::StyleColorsDark();
-      CustomImguiStyle();
+    // load font
+    io.Fonts->AddFontFromFileTTF("..\\FlexEngine\\assets\\fonts\\Noto_Sans\\static\\NotoSans-Regular.ttf", 21.f);
 
-      // load font
-      io.Fonts->AddFontFromFileTTF("..\\FlexEngine\\assets\\fonts\\Noto_Sans\\static\\NotoSans-Regular.ttf", 21.f);
+    // setup platform/renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(window->GetGLFWWindow(), true);
+    ImGui_ImplOpenGL3_Init(window->Props().opengl_version_text);
 
-      // setup platform/renderer bindings
-      ImGui_ImplGlfw_InitForOpenGL(window->GetGLFWWindow(), true);
-      ImGui_ImplOpenGL3_Init(window->Props().opengl_version_text);
-
-      return imgui_context;
-    }
-
-    void Shutdown(ImGuiContext* imgui_context)
-    {
-      FLX_FLOW_FUNCTION();
-
-      // always remember to set the current context before running imgui functions
-      ImGui::SetCurrentContext(imgui_context);
-
-      ImGui_ImplOpenGL3_Shutdown();
-      ImGui_ImplGlfw_Shutdown();
-      ImGui::DestroyContext(imgui_context);
-    }
-
-    void BeginFrame()
-    {
-      ImGui_ImplOpenGL3_NewFrame();
-      ImGui_ImplGlfw_NewFrame();
-      ImGui::NewFrame();
-    }
-
-    void EndFrame()
-    {
-      ImGuiIO& io = ImGui::GetIO();
-      int width, height;
-      glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
-      io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
-
-      ImGui::Render();
-      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-      // Update and Render additional Platform Windows
-      // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-      // For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
-      if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-      {
-        GLFWwindow* backup_current_context = glfwGetCurrentContext();
-        ImGui::UpdatePlatformWindows();
-        ImGui::RenderPlatformWindowsDefault();
-        glfwMakeContextCurrent(backup_current_context);
-      }
-    }
-
-    unsigned int GetActiveWidgetID()
-    {
-      return GImGui->ActiveId;
-    }
-
+    return imgui_context;
   }
+
+  void ImGuiWrapper::Shutdown(ImGuiContext* imgui_context)
+  {
+    FLX_FLOW_FUNCTION();
+
+    // always remember to set the current context before running imgui functions
+    ImGui::SetCurrentContext(imgui_context);
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext(imgui_context);
+  }
+
+  void ImGuiWrapper::BeginFrame()
+  {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+  }
+
+  void ImGuiWrapper::EndFrame()
+  {
+    ImGuiIO& io = ImGui::GetIO();
+    int width, height;
+    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
+    io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    // Update and Render additional Platform Windows
+    // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
+    // For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+      GLFWwindow* backup_current_context = glfwGetCurrentContext();
+      ImGui::UpdatePlatformWindows();
+      ImGui::RenderPlatformWindowsDefault();
+      glfwMakeContextCurrent(backup_current_context);
+    }
+  }
+
+  unsigned int ImGuiWrapper::GetActiveWidgetID()
+  {
+    return GImGui->ActiveId;
+  }
+
 }

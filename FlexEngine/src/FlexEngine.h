@@ -1,6 +1,7 @@
 #pragma once
 
 
+
 /* |--------------------------| */
 /* |---------- Core ----------| */
 /* |--------------------------| */
@@ -15,6 +16,10 @@
 // Layers can be pushed and popped from the layer stack.
 // Layers are updated and rendered in the order they are pushed.
 #include "FlexEngine/Core/layer.h"
+
+// Wraps the ImGui library for easier use.
+// Includes the ImGui library.
+#include "FlexEngine/Core/imguiwrapper.h"
 
 // Contains the scene class.
 // Scenes are used to manage entities and systems.
@@ -78,6 +83,8 @@
 // Math functions and constants.
 // Contains constants like PI and EPSILON.
 // Implements Vector2, Vector3, Vector4.
+#include "FlexEngine/FlexMath/vector2.h"
+#include "FlexEngine/FlexMath/vector3.h"
 #include "FlexEngine/FlexMath/vector4.h"
 
 // Used to manage states.

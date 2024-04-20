@@ -23,7 +23,9 @@ int main(int, char**)
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-  // Ensure that the FreeQueue is run at the end of the program
+  // Ensure that the FreeQueue is run at the end of the program.
+  // This is necessary to ensure that any std::exit calls can be properly handled
+  // by the application and logger before the program exits.
   std::atexit(FlexEngine::FreeQueue::Free);
 
   // Create the logger

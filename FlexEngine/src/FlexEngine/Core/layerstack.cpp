@@ -12,19 +12,25 @@ namespace FlexEngine
 
   LayerStack::~LayerStack()
   {
+    Clear();
+    //FLX_FLOW_ENDSCOPE();
+  }
+
+  void LayerStack::Clear()
+  {
     for (auto& overlay : m_overlays)
     {
       overlay->OnDetach();
       overlay.reset();
     }
+    m_overlays.clear();
 
     for (auto& layer : m_layers)
     {
       layer->OnDetach();
       layer.reset();
     }
-
-    //FLX_FLOW_ENDSCOPE();
+    m_layers.clear();
   }
 
   void LayerStack::PushLayer(std::shared_ptr<Layer> layer)

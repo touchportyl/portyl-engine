@@ -1,5 +1,7 @@
 #pragma once
 
+#include "flx_api.h"
+
 #include <string>
 
 // Helper macro to display a texture for ImGui using the ImGui::Image function
@@ -15,7 +17,7 @@ namespace FlexEngine
     // Wraps around OpenGL texture functions and uses stb_image.h to load images
     // Can be used to load textures from files or create textures from memory
     // Can be used to bind and unbind textures for OpenGL
-    class Texture
+    class __FLX_API Texture
     {
     public:
       Texture() = default;

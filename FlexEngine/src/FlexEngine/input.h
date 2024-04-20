@@ -13,7 +13,8 @@
 
 namespace FlexEngine
 {
-  class Input
+
+  class __FLX_API Input
   {
   // public functions
   public:
@@ -66,4 +67,5 @@ namespace FlexEngine
     Input() = delete;
     ~Input() = delete;
   };
+
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+// FlexEngine: Standard Library Header File
 // https://en.cppreference.com/w/cpp/header
 
 //#include <cassert>                    // Conditionally compiled macro that compares its argument to zero

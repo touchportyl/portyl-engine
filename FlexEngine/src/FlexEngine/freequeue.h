@@ -7,7 +7,7 @@ namespace FlexEngine
 
   // Specialization of FunctionQueue
   // Queues functions for freeing anything that needs to be freed
-  class FreeQueue
+  class __FLX_API FreeQueue
   {
     static FunctionQueue m_queue;
 

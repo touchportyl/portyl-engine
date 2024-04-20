@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "flx_api.h"
+
 #include "state.h"
 
 #include <memory>
@@ -14,14 +16,17 @@
 // This will create a class called ApplicationStateManager.
 // Remember to run the FLX_STATEMANAGER_REGISTER_IMPL macro in a cpp file.
 #define FLX_STATEMANAGER_REGISTER_DECL(NAME)                                     \
-class NAME##StateManager                                                         \
+class __FLX_API NAME##StateManager                                               \
 {                                                                                \
   static std::unique_ptr<State> m_state_current;                                 \
                                                                                  \
 public:                                                                          \
   /* Usage example : NAME##StateManager::SetState<GameState>(); */               \
   template <typename T>                                                          \
-  static void SetState() { SetState(std::make_unique<T>()); }                    \
+  static void SetState()                                                         \
+  {                                                                              \
+    SetState(std::make_unique<T>());                                             \
+  }                                                                              \
                                                                                  \
   /* For best practice, use the SetState template method instead                 \
    * Usage example: NAME##StateManager::SetState(std::make_unique<GameState>()); \

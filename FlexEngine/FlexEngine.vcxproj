@@ -40,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(SolutionDir)third_party\lib\ImGui;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\fastgltf;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)third_party\lib\fastgltf;$(SolutionDir)third_party\lib\fmod\core;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\ImGui;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)FlexEngine\src;$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)third_party\ImGui\src;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\stb;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>$(SolutionDir)third_party\lib\ImGui;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\fastgltf;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)third_party\lib\fastgltf;$(SolutionDir)third_party\lib\fmod\core;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\ImGui;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)FlexEngine\src;$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)third_party\ImGui\src;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\stb;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -110,11 +110,10 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;FLX_BUILD_DLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FlexEngine\src;$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)third_party\ImGui\src;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\stb</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -123,13 +122,13 @@
       </EntryPointSymbol>
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrt.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)extern\lib\GLFW\glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;ImGuid.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
       <AdditionalDependencies>glfw3.lib;fastgltf.lib;fastgltf_simdjson.lib;ImGuid.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)third_party\lib\fmod\core\fmod.dll" "$(OutDir)" /s /r /y /q
+      <Command>xcopy "$(SolutionDir)third_party\lib\fmod\core\fmodL.dll" "$(OutDir)" /s /r /y /q
 xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudioL.dll" "$(OutDir)" /s /r /y /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -139,18 +138,17 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudioL.dll" "$(OutDir)" /s
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;FLX_BUILD_DLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FlexEngine\src;$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)third_party\ImGui\src;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\stb</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)extern\lib\GLFW\glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;ImGui.lib;fmodstudio_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
       <SubSystem>Console</SubSystem>
@@ -166,12 +164,15 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\src\glad\glad.c" />
-    <ClCompile Include="src\FlexEngine\Component\Transform2D.cpp" />
-    <ClCompile Include="src\FlexEngine\Core\ecs.cpp" />
-    <ClCompile Include="src\FlexEngine\Core\entity.cpp" />
+    <ClCompile Include="src\FlexEngine\Component\Transform2D.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\FlexEngine\Core\imguiwrapper.cpp" />
     <ClCompile Include="src\FlexEngine\Core\layerstack.cpp" />
     <ClCompile Include="src\FlexEngine\datetime.cpp" />
+    <ClCompile Include="src\FlexEngine\FlexECS\entity.cpp" />
+    <ClCompile Include="src\FlexEngine\FlexECS\scene.cpp" />
     <ClCompile Include="src\FlexEngine\flexformatter.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\vector2.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\vector3.cpp" />
@@ -202,15 +203,17 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\FlexEngine\ansi_color.h" />
-    <ClInclude Include="src\FlexEngine\Component\Transform2D.h" />
+    <ClInclude Include="src\FlexEngine\Component\Transform2D.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="src\FlexEngine\Core\components.h" />
-    <ClInclude Include="src\FlexEngine\Core\ecs.h" />
-    <ClInclude Include="src\FlexEngine\Core\entity.h" />
     <ClInclude Include="src\FlexEngine\Core\imguiwrapper.h" />
     <ClInclude Include="src\FlexEngine\Core\layer.h" />
     <ClInclude Include="src\FlexEngine\Core\layerstack.h" />
     <ClInclude Include="src\FlexEngine\datetime.h" />
     <ClInclude Include="src\FlexEngine\flexassert.h" />
+    <ClInclude Include="src\FlexEngine\FlexECS\datastructures.h" />
     <ClInclude Include="src\FlexEngine\flexformatter.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\values.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\vector2.h" />
@@ -231,11 +234,15 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\StateManager\statemanager.h" />
     <ClInclude Include="src\FlexEngine\timer.h" />
     <ClInclude Include="src\FlexEngine\uuid.h" />
+    <ClInclude Include="src\flx_api.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\FlexEngine.h" />
     <ClInclude Include="src\FlexEngine\Core\application.h" />
     <ClInclude Include="src\FlexEngine\Core\entrypoint.h" />
     <ClInclude Include="src\FlexEngine\Core\window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\FlexEngine\FlexECS\entity.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

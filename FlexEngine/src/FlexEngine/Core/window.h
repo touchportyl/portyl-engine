@@ -1,5 +1,7 @@
 #pragma once
 
+#include "flx_api.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h> // put glad before glfw
 
@@ -41,7 +43,7 @@ namespace FlexEngine
     }
   };
 
-  class Window
+  class __FLX_API Window
   {
   public:
     Window(const WindowProps& props);

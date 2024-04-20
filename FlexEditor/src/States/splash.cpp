@@ -25,12 +25,14 @@ namespace FlexEditor
         }
       }
     );
+    AlignImGuiContext(window);
     window->PushLayer(std::make_shared<SplashScreenLayer>());
   }
 
   void SplashState::OnExit()
   {
     Application::CloseWindow(window);
+    window.reset();
   }
 
   void SplashState::Update()

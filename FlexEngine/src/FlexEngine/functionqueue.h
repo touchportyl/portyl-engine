@@ -1,5 +1,7 @@
 #pragma once
 
+#include "flx_api.h"
+
 #include <functional>
 #include <vector>
 #include <algorithm>
@@ -36,7 +38,7 @@ namespace FlexEngine
     bool operator<(const FunctorQueueData& rhs) const { return m_priority < rhs.m_priority; }
   };
 
-  class FunctionQueue
+  class __FLX_API FunctionQueue
   {
     static std::vector<FunctorQueueData> m_queue;
 

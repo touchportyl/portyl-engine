@@ -24,7 +24,9 @@ namespace FlexEngine
 
     // Data members
 
-    union
+    #pragma warning(push)
+    #pragma warning(disable: 4324) // structure was padded due to alignment specifier
+    union __FLX_ALIGN_AS(16)
     {
     #pragma warning(push)
     #pragma warning(disable: 4201) // nonstandard extension used: nameless struct/union
@@ -35,6 +37,7 @@ namespace FlexEngine
     #pragma warning(pop)
       value_type data[3];
     };
+    #pragma warning(pop)
 
 #pragma region Standard Functions
 

@@ -16,12 +16,14 @@ namespace FlexEditor
         1280, 720
       }
     );
+    AlignImGuiContext(window);
     window->PushLayer(std::make_shared<EditorLayer>());
   }
 
   void EditorState::OnExit()
   {
     Application::CloseWindow(window);
+    window.reset();
   }
 
   void EditorState::Update()

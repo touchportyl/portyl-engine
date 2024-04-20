@@ -1,12 +1,8 @@
 #include "Layers/editorui.h"
 
-#include "flexformatter.h"
-
-#include <imgui.h>
-#include <imgui_internal.h>
-
 // temporary
-#include "Component/Transform2D.h"
+#include <FlexEngine/flexformatter.h>
+#include <FlexEngine/FlexECS/datastructures.h>
 
 void DumpJsonNodes(const rapidjson::Value& value, int depth = 0)
 {
@@ -44,7 +40,7 @@ namespace FlexEditor
   Asset::Shader shader_color;
   Asset::Texture test_image;
 
-  Entity selected_entity;
+  //Entity selected_entity;
 
   void EditorLayer::OnAttach()
   {
@@ -64,14 +60,20 @@ namespace FlexEditor
     // todo: remove debug code
     #pragma region Regression Testing
 
-    //{ // test 1a: dump to console (default to std::cout)
+    #pragma region Test 1 - Reflection Dumping
+
+    // test 1a: dump to console (default to std::cout)
+
+    //{
     //  Log::Debug("test 1a");
     //  Transform t1{ 1, 2, 3 };
     //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
     //  type_desc->Dump(&t1);
     //}
 
-    //{ // test 1b: dump to console (logged)
+    // test 1b: dump to console (logged)
+
+    //{
     //  Log::Debug("test 1b");
     //  Transform t1{ 10, 20, 30 };
     //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
@@ -79,8 +81,10 @@ namespace FlexEditor
     //  type_desc->Dump(&t1, ss);
     //  Log::Debug(ss.str());
     //}
-
-    //{ // test 1c: dump a vector (default)
+    
+    // test 1c: dump a vector (default)
+    
+    //{ 
     //  Log::Debug("test 1c");
     //  std::vector<Transform> list;
     //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
@@ -89,17 +93,10 @@ namespace FlexEditor
     //  type_desc->Dump(&list);
     //}
 
-    //{ // test 2a: serialize and log
-    //  Log::Debug("test 2a");
-    //  Transform t1{ 7, 8, 9 };
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
-    //  std::stringstream ss{};
-    //  type_desc->Serialize(&t1, ss);
-    //  Log::Debug(ss.str());
-    //}
+    // test 1d: dump a std::vector of custom structs (logged)
 
-    //{ // test 2b: dump a std::vector of custom structs
-    //  Log::Debug("test 2b");
+    //{
+    //  Log::Debug("test 1d");
     //  std::vector<Transform> list;
     //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
     //  list.push_back(t1); list.push_back(t2);
@@ -109,8 +106,25 @@ namespace FlexEditor
     //  Log::Debug(ss.str());
     //}
 
-    //{ // test 2c: serialize a std::vector of custom structs
-    //  Log::Debug("test 2c");
+    #pragma endregion
+
+    #pragma region Test 2 - Reflection Serialization
+
+    // test 2a: serialize and log
+
+    //{
+    //  Log::Debug("test 2a");
+    //  Transform t1{ 7, 8, 9 };
+    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
+    //  std::stringstream ss{};
+    //  type_desc->Serialize(&t1, ss);
+    //  Log::Debug(ss.str());
+    //}
+
+    // test 2b: serialize a std::vector of custom structs
+
+    //{
+    //  Log::Debug("test 2b");
     //  std::vector<Transform> list;
     //  Transform t1{ 11, 22, 33 }, t2{ 55, 66, 77 };
     //  list.push_back(t1); list.push_back(t2);
@@ -120,7 +134,13 @@ namespace FlexEditor
     //  Log::Debug(ss.str());
     //}
 
-    //{ // test 3: writing to .flx file
+    #pragma endregion
+
+    #pragma region Test 3 - FlexFormatter write to file
+
+    // test 3: writing to .flx file
+    
+    //{
     //  Log::Debug("test 3");
     //
     //  // scene
@@ -145,6 +165,10 @@ namespace FlexEditor
     //  }
     //
     //}
+
+    #pragma endregion
+
+    #pragma region Test 4 - Reflection Deserialization
 
     //{ // test 4a: basic deserialization
     //  Log::Debug("test 4a");
@@ -181,7 +205,9 @@ namespace FlexEditor
     //  Log::Debug(ss.str());
     //}
 
-    //{ // test 4b: deserialization of a std::vector of custom structs
+    // test 4b: deserialization of a std::vector of custom structs
+
+    //{
     //  Log::Debug("test 4b");
     //  #pragma region R-string
     //  std::string json = R"(
@@ -241,8 +267,14 @@ namespace FlexEditor
     //  Log::Debug(ss.str());
     //}
 
-    //{ // test 4c: parsing .flx file
-    //  Log::Debug("test 4c");
+    #pragma endregion
+    
+    #pragma region Test 5 - FlexFormatter read and deserialize from file
+
+    // test 5: parsing .flx file
+
+    //{
+    //  Log::Debug("test 5");
     //  std::string file_path = "scene.flx";
     //  std::ifstream file(file_path);
     //
@@ -272,8 +304,14 @@ namespace FlexEditor
     //  }
     //}
 
-    //{ // test 5a: shared_ptr serialization and deserialization
-    //  Log::Debug("test 5a");
+    #pragma endregion
+
+    #pragma region Test 6 - Reflection for complex data structures
+
+    // test 6a: shared_ptr serialization and deserialization
+
+    //{
+    //  Log::Debug("test 6a");
     //
     //  std::shared_ptr<float> value = std::make_shared<float>();
     //  *value = 3.14f;
@@ -294,8 +332,10 @@ namespace FlexEditor
     //  Log::Debug(std::to_string(*deserialized_value));
     //}
 
-    //{ // test 5b: unordered_map serialization and deserialization
-    //  Log::Debug("test 5b");
+    // test 6b: unordered_map serialization and deserialization
+
+    //{
+    //  Log::Debug("test 6b");
     //
     //  std::unordered_map<std::string, bool> umap;
     //
@@ -323,11 +363,14 @@ namespace FlexEditor
     //  }
     //}
 
-    #pragma region Test 6: ECS
+    #pragma endregion
 
-    // test 6a: ECS component serialization
+    #pragma region Test 7 - ECS 1.0
+
+    // test 7a: ECS component serialization
+    
     //{
-    //  Log::Debug("test 6a");
+    //  Log::Debug("test 7a");
     //
     //  Log::Debug("Create new entity");
     //  UUID entity = UUID::Generate();
@@ -357,40 +400,156 @@ namespace FlexEditor
     //  ECS::Dump();
     //}
 
-    // test 6b: ECS components
+    // test 7b: ECS components
+    
+    //{
+    //  Log::Debug("test 7b");
+    //
+    //  Entity e1 = ECS::CreateEntity("Entity 1");
+    //  Entity e2 = ECS::CreateEntity("En-two-ty");
+    //  Entity e3 = ECS::CreateEntity("E3");
+    //
+    //  Transform::AddComponent(e1);
+    //  //Transform::AddComponent(e2);
+    //  Transform::AddComponent(e3);
+    //
+    //  Transform::GetComponent(e1)->SetPosition( Vector3(1.0f, 2.0f, 3.0f) );
+    //  //Transform::GetComponent(e2)->SetPosition( Vector3(4.0f, 5.0f, 6.0f) );
+    //  Transform::GetComponent(e3)->SetPosition( Vector3(7.0f, 8.0f, 9.0f) );
+    //
+    //  //for (auto& data : Transform::GetComponent(e1.uuid)->GetPosition())
+    //  //{
+    //  //  Log::Debug(std::to_string(data));
+    //  //}
+    //
+    //  FLX_ECS_SYSTEM_VIEW_START(view)
+    //    FLX_ECS_SYSTEM_VIEW_QUERY(Transform)
+    //  FLX_ECS_SYSTEM_VIEW_END(view);
+    //
+    //  for (auto& entity : view)
+    //  {
+    //    Log::Debug(entity.ToString());
+    //  }
+    //
+    //  ECS::Dump();
+    //}
+
+    #pragma endregion
+
+    #pragma region Test 8 - FlexECS
+
+    // test 8: basic ECS commands
+
     {
-      Log::Debug("test 6b");
+      Log::Debug("test 8");
 
-      Entity e1 = ECS::CreateEntity("Entity 1");
-      Entity e2 = ECS::CreateEntity("En-two-ty");
-      Entity e3 = ECS::CreateEntity("E3");
+      FlexECS::Scene scene;
+      FlexECS::Scene::SetActiveScene(scene);
 
-      Transform::AddComponent(e1);
-      //Transform::AddComponent(e2);
-      Transform::AddComponent(e3);
+      // component
+      struct Amount { int value; };
+      struct Health { float value; };
 
-      Transform::GetComponent(e1)->SetPosition( Vector3(1.0f, 2.0f, 3.0f) );
-      //Transform::GetComponent(e2)->SetPosition( Vector3(4.0f, 5.0f, 6.0f) );
-      Transform::GetComponent(e3)->SetPosition( Vector3(7.0f, 8.0f, 9.0f) );
 
-      //for (auto& data : Transform::GetComponent(e1.uuid)->GetPosition())
-      //{
-      //  Log::Debug(std::to_string(data));
-      //}
+      Log::Debug("Create entity");
+      FlexECS::Entity entity1 = scene.CreateEntity("Entity 1");
+      Log::Debug("Created entity1");
+      FlexECS::Entity entity2 = scene.CreateEntity("Entity 2");
+      Log::Debug("Created entity2");
 
-      FLX_ECS_SYSTEM_VIEW_START(view)
-        FLX_ECS_SYSTEM_VIEW_QUERY(Transform)
-      FLX_ECS_SYSTEM_VIEW_END(view);
 
-      for (auto& entity : view)
-      {
-        Log::Debug(entity.ToString());
-      }
+      Log::Debug("Add component");
+      entity1.AddComponent<Amount>({ 35 });
+      Log::Debug("Added Amount component to entity1 with the value: 35");
+      entity2.AddComponent<Health>({ 0.7f });
+      Log::Debug("Added Health component to entity2 with the value: 0.7f");
 
-      ECS::Dump();
+
+      Log::Debug("Has component");
+      Log::Debug("entity1 " + std::string(entity1.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
+      Log::Debug("entity2 " + std::string(entity2.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
+      Log::Debug("entity1 " + std::string(entity1.HasComponent<Health>() ? "has" : "does not have") + " the Health component");
+      Log::Debug("entity2 " + std::string(entity2.HasComponent<Health>() ? "has" : "does not have") + " the Health component");
+
+
+      Log::Debug("Get component");
+      Log::Debug("entity1 Amount:" + std::to_string(entity1.GetComponent<Amount>()->value));
+
+
+      Log::Debug("TryGet component");
+      std::shared_ptr<Amount> amount2;
+      if (entity2.TryGetComponent<Amount>(amount2)) Log::Debug("entity2 Amount:" + std::to_string(amount2->value));
+      else Log::Warning("Amount component not found");
+
+      std::shared_ptr<Health> health2;
+      if (entity2.TryGetComponent<Health>(health2)) Log::Debug("entity2 Health:" + std::to_string(health2->value));
+      else Log::Warning("Health component not found");
+
+
+      Log::Debug("Remove component");
+      Log::Debug("entity1 " + std::string(entity1.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
+      entity1.RemoveComponent<Amount>();
+      Log::Debug("entity1 " + std::string(entity1.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
+
+
+      // dump the entire ecs data structure to the console
+      scene.Dump();
     }
 
     #pragma endregion
+
+    #pragma endregion
+
+
+    #pragma region Reflection Tests
+
+    // Testing reflection
+    //{
+    //  Log::Debug("Reflection Tests");
+    //
+    //  // data
+    //  Vector2 a{ 1.0f, 2.0f };
+    //  Vector2 b{ 3.0f, 4.0f };
+    //  Vector2 c{ 5.0f, 6.0f };
+    //  Vector2 d{ 7.0f, 8.0f };
+    //
+    //  // component
+    //
+    //
+    //  std::vector<Vector2> component_vec2_a;
+    //  std::vector<Vector2> component_vec2_b;
+    //
+    //  // archetype
+    //  std::vector<std::vector<Vector2>> component_vec2;
+    //
+    //  // component creation
+    //  component_vec2_a.push_back({ 1.0f, 2.0f });
+    //  component_vec2_a.push_back({ 3.0f, 4.0f });
+    //  component_vec2_a.push_back({ 5.0f, 6.0f });
+    //  component_vec2.push_back(component_vec2_a);
+    //
+    //  component_vec2_b.push_back({ 10.0f, 20.0f });
+    //  component_vec2_b.push_back({ 30.0f, 40.0f });
+    //  component_vec2_b.push_back({ 50.0f, 60.0f });
+    //  component_vec2.push_back(component_vec2_b);
+    //
+    //  // reflection
+    //  Reflection::TypeDescriptor_StdVector* archetype_desc = (Reflection::TypeDescriptor_StdVector*)Reflection::TypeResolver<std::vector<std::vector<Vector2>>>::Get();
+    //  Reflection::TypeDescriptor_StdVector* type_desc = (Reflection::TypeDescriptor_StdVector*)Reflection::TypeResolver<std::vector<Vector2>>::Get();
+    //
+    //  // system
+    //  // uses reflection to access the data
+    //  // Important thing to note:
+    //  // - The system only takes in the archetype vector
+    //  // - Does it need to know the type of the component?
+    //  for (auto& component : component_vec2)
+    //  {
+    //    for (int i = 0; i < type_desc->get_size(&component); ++i)
+    //    {
+    //      Log::Debug(((Vector2*)type_desc->get_item(&component, i))->ToString());
+    //    }
+    //  };
+    //}
 
     #pragma endregion
 
@@ -454,54 +613,54 @@ namespace FlexEditor
     // this panel will be used to test the ECS system
     // it allows the user to create entities and select them for the properties panel
     ImGui::Begin("Entity Testing");
-
-    // create a new entity
-    if (ImGui::Button("Create Entity"))
-    {
-      ImGui::OpenPopup("Create Entity");
-    }
     
-    // popup to set the entity name
-    if (ImGui::BeginPopupModal("Create Entity"))
-    {
-      static char name[128] = "New Entity";
-      ImGui::InputText("Name", name, sizeof(name));
-
-      if (ImGui::Button("Create"))
-      {
-        selected_entity = ECS::CreateEntity(name);
-        ImGui::CloseCurrentPopup();
-      }
-
-      ImGui::EndPopup();
-    }
-
-    ImGui::SeparatorText("Entities");
-
-    // get all entities
-    FLX_ECS_SYSTEM_VIEW_START(view_all_entities)
-    FLX_ECS_SYSTEM_VIEW_END(view_all_entities);
-
-    // list all entities with a button to select them
-    for (auto& [uuid, name] : view_all_entities)
-    {
-      std::string buffer;
-
-      buffer = "Select " + name;
-      if (ImGui::Button(buffer.c_str()))
-      {
-        selected_entity = { name, uuid };
-      }
-
-      ImGui::SameLine();
-
-      buffer = "Destroy " + name;
-      if (ImGui::Button(buffer.c_str()))
-      {
-        ECS::DestroyEntity(uuid);
-      }
-    }
-
+    //// create a new entity
+    //if (ImGui::Button("Create Entity"))
+    //{
+    //  ImGui::OpenPopup("Create Entity");
+    //}
+    //
+    //// popup to set the entity name
+    //if (ImGui::BeginPopupModal("Create Entity"))
+    //{
+    //  static char name[128] = "New Entity";
+    //  ImGui::InputText("Name", name, sizeof(name));
+    //
+    //  if (ImGui::Button("Create"))
+    //  {
+    //    selected_entity = ECS::CreateEntity(name);
+    //    ImGui::CloseCurrentPopup();
+    //  }
+    //
+    //  ImGui::EndPopup();
+    //}
+    //
+    //ImGui::SeparatorText("Entities");
+    //
+    //// get all entities
+    //FLX_ECS_SYSTEM_VIEW_START(view_all_entities)
+    //FLX_ECS_SYSTEM_VIEW_END(view_all_entities);
+    //
+    //// list all entities with a button to select them
+    //for (auto& [uuid, name] : view_all_entities)
+    //{
+    //  std::string buffer;
+    //
+    //  buffer = "Select " + name;
+    //  if (ImGui::Button(buffer.c_str()))
+    //  {
+    //    selected_entity = { name, uuid };
+    //  }
+    //
+    //  ImGui::SameLine();
+    //
+    //  buffer = "Destroy " + name;
+    //  if (ImGui::Button(buffer.c_str()))
+    //  {
+    //    ECS::DestroyEntity(uuid);
+    //  }
+    //}
+    
     ImGui::End();
 
     #pragma endregion
@@ -510,42 +669,56 @@ namespace FlexEditor
     #pragma region Properties Panel
 
     ImGui::Begin("Properties");
-
-    // display the selected entity
-    if (selected_entity)
-    {
-      ImGui::Text(selected_entity.name.c_str());
-    }
-    else
-    {
-      ImGui::Text("No entity selected");
-    }
-
-    // loop through every single registered component
-    // if the entity is found, display the component
-    if (Transform::GetComponent(selected_entity))
-    {
-      // display the component
-      // this will be specifically designed for each component
-      if (ImGui::CollapsingHeader("Transform"))
-      {
-        // TODO: cache this so we don't have to call GetComponent() every frame
-        Vector2 vec2 = Transform::GetComponent(selected_entity)->GetPosition();
-        ImGui::DragFloat2("Position", vec2.begin(), 0.1f, -std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
-
-        if (ImGui::IsItemEdited())
-        {
-          // update the transform component
-          Transform::GetComponent(selected_entity)->SetPosition(vec2);
-        }
-      }
-    }
-
-    if (ImGui::Button("Dump"))
-    {
-      ECS::Dump();
-    }
-
+    
+    //// display the selected entity
+    //if (selected_entity)
+    //{
+    //  ImGui::Text(selected_entity.name.c_str());
+    //}
+    //else
+    //{
+    //  ImGui::Text("No entity selected");
+    //}
+    //
+    //
+    //// loop through every single registered component
+    //// if the entity is found, display the component
+    //if (Transform::GetComponent(selected_entity))
+    //{
+    //  // display the component
+    //  // each data field is automatically generated based on the type
+    //  if (ImGui::CollapsingHeader("Transform"))
+    //  {
+    //    // TODO: cache this so we don't have to call GetComponent() every frame
+    //    Vector2 vec2 = Transform::GetComponent(selected_entity)->GetPosition();
+    //    ImGui::DragFloat2("Position", vec2.begin(), 0.1f, -std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+    //
+    //    if (ImGui::IsItemEdited())
+    //    {
+    //      // update the transform component
+    //      Transform::GetComponent(selected_entity)->SetPosition(vec2);
+    //    }
+    //  }
+    //}
+    //
+    //// loop through every single registered component
+    ////for (auto& bucket : ECS::Internal_GetComponentBuckets())
+    ////{
+    ////  // if the entity is found, display the component
+    ////  if (bucket.second->find(selected_entity) != bucket.second->end())
+    ////  {
+    ////    // serialize the data to json
+    ////
+    ////    // display field depending on json type
+    ////  }
+    ////}
+    //
+    //
+    //if (ImGui::Button("Dump"))
+    //{
+    //  ECS::Dump();
+    //}
+    
     ImGui::End();
 
     #pragma endregion
