@@ -953,6 +953,9 @@ CODE
 
 */
 
+#pragma warning(push)
+#pragma warning(disable: 6011) // Dereferencing NULL pointer.
+
 //-------------------------------------------------------------------------
 // [SECTION] INCLUDES
 //-------------------------------------------------------------------------
@@ -8739,6 +8742,7 @@ ImGuiKeyData* ImGui::GetKeyData(ImGuiContext* ctx, ImGuiKey key)
 
 #ifndef IMGUI_DISABLE_OBSOLETE_KEYIO
     IM_ASSERT(key >= ImGuiKey_LegacyNativeKey_BEGIN && key < ImGuiKey_NamedKey_END);
+    #pragma warning(suppress: 33011) // Unchecked upper bound for enum key used as index..
     if (IsLegacyKey(key) && g.IO.KeyMap[key] != -1)
         key = (ImGuiKey)g.IO.KeyMap[key];  // Remap native->imgui or imgui->native
 #else
@@ -9770,12 +9774,14 @@ static const char* GetInputSourceName(ImGuiInputSource source)
 {
     const char* input_source_names[] = { "None", "Mouse", "Keyboard", "Gamepad", "Clipboard" };
     IM_ASSERT(IM_ARRAYSIZE(input_source_names) == ImGuiInputSource_COUNT && source >= 0 && source < ImGuiInputSource_COUNT);
+    #pragma warning(suppress: 33010) // Unchecked lower bound for enum source used as index..
     return input_source_names[source];
 }
 static const char* GetMouseSourceName(ImGuiMouseSource source)
 {
     const char* mouse_source_names[] = { "Mouse", "TouchScreen", "Pen" };
     IM_ASSERT(IM_ARRAYSIZE(mouse_source_names) == ImGuiMouseSource_COUNT && source >= 0 && source < ImGuiMouseSource_COUNT);
+    #pragma warning(suppress: 33010) // Unchecked lower bound for enum source used as index..
     return mouse_source_names[source];
 }
 static void DebugPrintInputEvent(const char* prefix, const ImGuiInputEvent* e)
@@ -16570,6 +16576,7 @@ static void DockNodeFindInfo(ImGuiDockNode* node, ImGuiDockNodeTreeInfo* info)
     }
     if (info->CountNodesWithWindows > 1 && info->CentralNode != NULL)
         return;
+    #pragma warning(suppress: 28182) // Dereferencing NULL pointer.
     if (node->ChildNodes[0])
         DockNodeFindInfo(node->ChildNodes[0], info);
     if (node->ChildNodes[1])
@@ -19008,6 +19015,7 @@ void ImGui::BeginDocked(ImGuiWindow* window, bool* p_open)
         *p_open = false;
 
     // Update ChildId to allow returning from Child to Parent with Escape
+    #pragma warning(suppress: 28182) // Dereferencing NULL pointer.
     ImGuiWindow* parent_window = window->DockNode->HostWindow;
     window->ChildId = parent_window->GetID(window->Name);
 }
@@ -21447,3 +21455,5 @@ void ImGui::DebugHookIdInfo(ImGuiID, ImGuiDataType, const void*, const void*) {}
 //-----------------------------------------------------------------------------
 
 #endif // #ifndef IMGUI_DISABLE
+
+#pragma warning(pop) // disable: 6011
