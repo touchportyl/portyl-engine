@@ -190,21 +190,20 @@ namespace FlexEngine
 
       static Scene Null;
 
+      static std::shared_ptr<Scene> CreateScene();
       static std::shared_ptr<Scene> GetActiveScene();
       static void SetActiveScene(Scene scene);
       static void SetActiveScene(std::shared_ptr<Scene> scene);
 
       // Creates a new entity and gives it the default archetype which is for storing the entity's name.
       // Entities are registered this way. They are not stored in the scene, but in the actual ECS.
-      Entity CreateEntity(const std::string& name = "New Entity");
+      static Entity CreateEntity(const std::string& name = "New Entity");
 
 #ifdef _DEBUG
-    public:
       void Dump() const;
       void DumpArchetypeIndex() const;
       void DumpEntityIndex() const;
       void DumpComponentIndex() const;
-    private:
 #endif
     };
 

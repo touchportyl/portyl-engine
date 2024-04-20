@@ -9,12 +9,24 @@ namespace FlexEngine
     std::shared_ptr<Scene> Scene::s_active_scene = nullptr;
     Scene Scene::Null = Scene();
 
+    std::shared_ptr<Scene> Scene::CreateScene()
+    {
+      FLX_FLOW_FUNCTION();
+
+      // set itself as the active scene unless there is already an active scene
+      if (s_active_scene == nullptr)
+      {
+        s_active_scene = std::make_shared<Scene>();
+      }
+      return s_active_scene;
+    }
+
     std::shared_ptr<Scene> Scene::GetActiveScene()
     {
       // create a new scene if there isn't one
       if (s_active_scene == nullptr)
       {
-        SetActiveScene(Scene::Null);
+        CreateScene();
       }
       return s_active_scene;
     }
@@ -25,6 +37,8 @@ namespace FlexEngine
     }
     void Scene::SetActiveScene(std::shared_ptr<Scene> scene)
     {
+      FLX_FLOW_FUNCTION();
+
       // guard
       if (scene == nullptr)
       {
@@ -56,11 +70,11 @@ namespace FlexEngine
 
       // update entity vector
       Archetype& archetype = ARCHETYPE_INDEX[type];
-      archetype.entities.push_back(next_entity_id);
+      archetype.entities.push_back(Scene::GetActiveScene()->next_entity_id);
 
       // update entity records
       EntityRecord entity_record = { &archetype, archetype.entities.size() - 1 };
-      ENTITY_INDEX[next_entity_id] = entity_record;
+      ENTITY_INDEX[Scene::GetActiveScene()->next_entity_id] = entity_record;
 
       // store the component data in the archetype
       //ArchetypeMap& archetype_map = COMPONENT_INDEX[component];
@@ -68,7 +82,7 @@ namespace FlexEngine
       //archetype.archetype_table[archetype_record.column].push_back(data_ptr);
       archetype.archetype_table[0].push_back(data_ptr); // there is only one component in this archetype
 
-      return next_entity_id++;
+      return Scene::GetActiveScene()->next_entity_id++;
     }
 
 

@@ -443,8 +443,9 @@ namespace FlexEditor
     {
       Log::Debug("test 8");
 
-      FlexECS::Scene scene;
-      FlexECS::Scene::SetActiveScene(scene);
+      Log::Debug("Create scene");
+      auto scene = FlexECS::Scene::CreateScene();
+      FlexECS::Scene::SetActiveScene(scene); // done automatically when creating a scene
 
       // component
       struct Amount { int value; };
@@ -452,9 +453,9 @@ namespace FlexEditor
 
 
       Log::Debug("Create entity");
-      FlexECS::Entity entity1 = scene.CreateEntity("Entity 1");
+      FlexECS::Entity entity1 = FlexECS::Scene::CreateEntity("Entity 1");
       Log::Debug("Created entity1");
-      FlexECS::Entity entity2 = scene.CreateEntity("Entity 2");
+      FlexECS::Entity entity2 = FlexECS::Scene::CreateEntity("Entity 2");
       Log::Debug("Created entity2");
 
 
@@ -493,7 +494,7 @@ namespace FlexEditor
 
 
       // dump the entire ecs data structure to the console
-      scene.Dump();
+      FlexECS::Scene::GetActiveScene()->Dump();
     }
 
     #pragma endregion
