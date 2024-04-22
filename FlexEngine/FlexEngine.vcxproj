@@ -164,13 +164,10 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\src\glad\glad.c" />
-    <ClCompile Include="src\FlexEngine\Component\Transform2D.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="src\FlexEngine\Core\imguiwrapper.cpp" />
     <ClCompile Include="src\FlexEngine\Core\layerstack.cpp" />
     <ClCompile Include="src\FlexEngine\datetime.cpp" />
+    <ClCompile Include="src\FlexEngine\FlexECS\datastructures.cpp" />
     <ClCompile Include="src\FlexEngine\FlexECS\entity.cpp" />
     <ClCompile Include="src\FlexEngine\FlexECS\scene.cpp" />
     <ClCompile Include="src\FlexEngine\flexformatter.cpp" />
@@ -203,10 +200,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\FlexEngine\ansi_color.h" />
-    <ClInclude Include="src\FlexEngine\Component\Transform2D.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="src\FlexEngine\Core\components.h" />
     <ClInclude Include="src\FlexEngine\Core\imguiwrapper.h" />
     <ClInclude Include="src\FlexEngine\Core\layer.h" />

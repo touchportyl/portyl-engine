@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\DemoComponents.cpp" />
     <ClCompile Include="src\Layers\editorui.cpp" />
     <ClCompile Include="src\Layers\splashscreen.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -32,6 +33,7 @@
     <None Include="assets\shaders\texture.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\DemoComponents.h" />
     <ClInclude Include="src\Layers.h" />
     <ClInclude Include="src\Layers\editorui.h" />
     <ClInclude Include="src\Layers\splashscreen.h" />

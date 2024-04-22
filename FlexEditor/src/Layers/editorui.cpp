@@ -1,8 +1,10 @@
 #include "Layers/editorui.h"
 
+
 // temporary
 #include <FlexEngine/flexformatter.h>
 #include <FlexEngine/FlexECS/datastructures.h>
+#include "Components/DemoComponents.h"
 
 void DumpJsonNodes(const rapidjson::Value& value, int depth = 0)
 {
@@ -170,40 +172,42 @@ namespace FlexEditor
 
     #pragma region Test 4 - Reflection Deserialization
 
-    //{ // test 4a: basic deserialization
-    //  Log::Debug("test 4a");
-    //  std::string json = R"(
-    //    {
-    //      "type": "Transform",
-    //      "data": [
-    //        {
-    //          "type": "float",
-    //          "data": 11
-    //        },
-    //        {
-    //          "type": "float",
-    //          "data": 22
-    //        },
-    //        {
-    //          "type": "float",
-    //          "data": 33
-    //        }
-    //      ]
-    //    }
-    //  )";
-    //  rapidjson::Document document;
-    //  document.Parse(json.c_str());
-    //
-    //  Transform t;
-    //
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
-    //
-    //  type_desc->Deserialize(&t, document);
-    //
-    //  std::stringstream ss{};
-    //  type_desc->Serialize(&t, ss);
-    //  Log::Debug(ss.str());
-    //}
+#if 0
+    { // test 4a: basic deserialization
+      Log::Debug("test 4a");
+      std::string json = R"(
+        {
+          "type": "Transform",
+          "data": [
+            {
+              "type": "float",
+              "data": 11
+            },
+            {
+              "type": "float",
+              "data": 22
+            },
+            {
+              "type": "float",
+              "data": 33
+            }
+          ]
+        }
+      )";
+      rapidjson::Document document;
+      document.Parse(json.c_str());
+    
+      Transform t;
+    
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<Transform>::Get();
+    
+      type_desc->Deserialize(&t, document);
+    
+      std::stringstream ss{};
+      type_desc->Serialize(&t, ss);
+      Log::Debug(ss.str());
+    }
+#endif
 
     // test 4b: deserialization of a std::vector of custom structs
 
@@ -310,58 +314,90 @@ namespace FlexEditor
 
     // test 6a: shared_ptr serialization and deserialization
 
-    //{
-    //  Log::Debug("test 6a");
-    //
-    //  std::shared_ptr<float> value = std::make_shared<float>();
-    //  *value = 3.14f;
-    //
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::shared_ptr<float>>::Get();
-    //  //type_desc->Dump(&value);
-    //
-    //  std::stringstream ss{};
-    //
-    //  type_desc->Serialize(&value, ss);
-    //  Log::Debug(ss.str());
-    //
-    //  std::shared_ptr<float> deserialized_value;
-    //  Document document;
-    //  document.Parse(ss.str().c_str());
-    //  type_desc->Deserialize(&deserialized_value, document);
-    //
-    //  Log::Debug(std::to_string(*deserialized_value));
-    //}
+#if 0
+    {
+      Log::Debug("test 6a");
+    
+      std::shared_ptr<float> value = std::make_shared<float>();
+      *value = 3.14f;
+    
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::shared_ptr<float>>::Get();
+      //type_desc->Dump(&value);
+    
+      std::stringstream ss{};
+    
+      type_desc->Serialize(&value, ss);
+      Log::Debug(ss.str());
+    
+      std::shared_ptr<float> deserialized_value;
+      Document document;
+      document.Parse(ss.str().c_str());
+      type_desc->Deserialize(&deserialized_value, document);
+    
+      Log::Debug(std::to_string(*deserialized_value));
+    }
+#endif
 
     // test 6b: unordered_map serialization and deserialization
 
-    //{
-    //  Log::Debug("test 6b");
-    //
-    //  std::unordered_map<std::string, bool> umap;
-    //
-    //  umap["a"] = true;
-    //  umap["b"] = false;
-    //  umap["c"] = true;
-    //
-    //  Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::unordered_map<std::string, bool>>::Get();
-    //  //type_desc->Dump(&umap);
-    //
-    //  std::stringstream ss{};
-    //
-    //  type_desc->Serialize(&umap, ss);
-    //  Log::Debug(ss.str());
-    //
-    //  std::unordered_map<std::string, bool> deserialized_umap;
-    //  Document document;
-    //  document.Parse(ss.str().c_str());
-    //  //DumpJsonNodes(document.GetObject());
-    //  type_desc->Deserialize(&deserialized_umap, document);
-    //  
-    //  for (auto& [key, value] : deserialized_umap)
-    //  {
-    //    Log::Debug(key + " = " + (value ? "true" : "false"));
-    //  }
-    //}
+#if 0
+    {
+      Log::Debug("test 6b");
+    
+      std::unordered_map<std::string, bool> umap;
+      std::unordered_map<std::size_t, std::unordered_map<std::string, bool>> umap2;
+    
+      umap["a"] = true;
+      umap["b"] = false;
+      umap["c"] = true;
+    
+      umap2[1] = umap;
+    
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::unordered_map<std::size_t, std::unordered_map<std::string, bool>>>::Get();
+      //type_desc->Dump(&umap);
+    
+      std::stringstream ss{};
+    
+      type_desc->Serialize(&umap2, ss);
+      Log::Debug(ss.str());
+    
+      std::unordered_map<std::size_t, std::unordered_map<std::string, bool>> deserialized_umap;
+      Document document;
+      document.Parse(ss.str().c_str());
+      //DumpJsonNodes(document.GetObject());
+      type_desc->Deserialize(&deserialized_umap, document);
+      
+      for (auto& [key, value] : deserialized_umap)
+      {
+        Log::Debug(std::to_string(key));
+        for (auto& [key2, value2] : value)
+        {
+          Log::Debug(key2 + " = " + (value2 ? "true" : "false"));
+        }
+      }
+    }
+#endif
+
+    // test 6c: vector in vector serialization and deserialization
+
+#if 0
+    {
+      Log::Debug("test 6c");
+
+      std::vector<std::vector<int>> vec2d;
+      std::vector<int> vec1{ 1, 2, 3, 4, 5 };
+      std::vector<int> vec2{ 6, 7, 8, 9, 10 };
+      vec2d.push_back(vec1);
+      vec2d.push_back(vec2);
+
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<std::vector<std::vector<int>>>::Get();
+      //type_desc->Dump(&vec2d);
+
+      std::stringstream ss{};
+      type_desc->Serialize(&vec2d, ss);
+      Log::Debug(ss.str());
+    }
+#endif
 
     #pragma endregion
 
@@ -438,66 +474,130 @@ namespace FlexEditor
 
     #pragma region Test 8 - FlexECS
 
-    // test 8: basic ECS commands
+    // test 8a: basic ECS commands
 
-    {
-      Log::Debug("test 8");
-
-      Log::Debug("Create scene");
-      auto scene = FlexECS::Scene::CreateScene();
-      FlexECS::Scene::SetActiveScene(scene); // done automatically when creating a scene
-
-      // component
-      struct Amount { int value; };
-      struct Health { float value; };
-
-
-      Log::Debug("Create entity");
-      FlexECS::Entity entity1 = FlexECS::Scene::CreateEntity("Entity 1");
-      Log::Debug("Created entity1");
-      FlexECS::Entity entity2 = FlexECS::Scene::CreateEntity("Entity 2");
-      Log::Debug("Created entity2");
-
-
-      Log::Debug("Add component");
-      entity1.AddComponent<Amount>({ 35 });
-      Log::Debug("Added Amount component to entity1 with the value: 35");
-      entity2.AddComponent<Health>({ 0.7f });
-      Log::Debug("Added Health component to entity2 with the value: 0.7f");
-
-
-      Log::Debug("Has component");
-      Log::Debug("entity1 " + std::string(entity1.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
-      Log::Debug("entity2 " + std::string(entity2.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
-      Log::Debug("entity1 " + std::string(entity1.HasComponent<Health>() ? "has" : "does not have") + " the Health component");
-      Log::Debug("entity2 " + std::string(entity2.HasComponent<Health>() ? "has" : "does not have") + " the Health component");
-
-
-      Log::Debug("Get component");
-      Log::Debug("entity1 Amount:" + std::to_string(entity1.GetComponent<Amount>()->value));
-
-
-      Log::Debug("TryGet component");
-      std::shared_ptr<Amount> amount2;
-      if (entity2.TryGetComponent<Amount>(amount2)) Log::Debug("entity2 Amount:" + std::to_string(amount2->value));
-      else Log::Warning("Amount component not found");
-
-      std::shared_ptr<Health> health2;
-      if (entity2.TryGetComponent<Health>(health2)) Log::Debug("entity2 Health:" + std::to_string(health2->value));
-      else Log::Warning("Health component not found");
-
-
-      Log::Debug("Remove component");
-      Log::Debug("entity1 " + std::string(entity1.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
-      entity1.RemoveComponent<Amount>();
-      Log::Debug("entity1 " + std::string(entity1.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
-
-
-      // dump the entire ecs data structure to the console
-      FlexECS::Scene::GetActiveScene()->Dump();
-    }
+    //{
+    //  Log::Debug("test 8a");
+    //
+    //  Log::Debug("Create scene");
+    //  auto scene = FlexECS::Scene::CreateScene();
+    //  FlexECS::Scene::SetActiveScene(scene); // done automatically when creating a scene
+    //
+    //  // component
+    //  // Moved to the IsAlive.h file
+    //  //struct Amount { int value; };
+    //  //struct Health { float value; };
+    //
+    //
+    //  Log::Debug("Create entity");
+    //  FlexECS::Entity entity1 = FlexECS::Scene::CreateEntity("Entity 1");
+    //  Log::Debug("Created entity1");
+    //  FlexECS::Entity entity2 = FlexECS::Scene::CreateEntity("Entity 2");
+    //  Log::Debug("Created entity2");
+    //
+    //
+    //  Log::Debug("Add component");
+    //  entity1.AddComponent<Amount>({ 35 });
+    //  Log::Debug("Added Amount component to entity1 with the value: 35");
+    //  entity2.AddComponent<Health>({ 0.7f });
+    //  Log::Debug("Added Health component to entity2 with the value: 0.7f");
+    //
+    //
+    //  Log::Debug("Has component");
+    //  Log::Debug("entity1 " + std::string(entity1.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
+    //  Log::Debug("entity2 " + std::string(entity2.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
+    //  Log::Debug("entity1 " + std::string(entity1.HasComponent<Health>() ? "has" : "does not have") + " the Health component");
+    //  Log::Debug("entity2 " + std::string(entity2.HasComponent<Health>() ? "has" : "does not have") + " the Health component");
+    //
+    //
+    //  Log::Debug("Get component");
+    //  Log::Debug("entity1 Amount:" + std::to_string(entity1.GetComponent<Amount>()->value));
+    //
+    //
+    //  Log::Debug("TryGet component");
+    //  std::shared_ptr<Amount> amount2;
+    //  if (entity2.TryGetComponent<Amount>(amount2)) Log::Debug("entity2 Amount:" + std::to_string(amount2->value));
+    //  else Log::Warning("Amount component not found");
+    //
+    //  std::shared_ptr<Health> health2;
+    //  if (entity2.TryGetComponent<Health>(health2)) Log::Debug("entity2 Health:" + std::to_string(health2->value));
+    //  else Log::Warning("Health component not found");
+    //
+    //
+    //  Log::Debug("Remove component");
+    //  Log::Debug("entity1 " + std::string(entity1.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
+    //  entity1.RemoveComponent<Amount>();
+    //  Log::Debug("entity1 " + std::string(entity1.HasComponent<Amount>() ? "has" : "does not have") + " the Amount component");
+    //
+    //
+    //  // dump the entire ecs data structure to the console
+    //  FlexECS::Scene::GetActiveScene()->Dump();
+    //}
+    
+    // test 8b: TypeDescriptor uniqueness
+    
+    //{
+    //  Log::Debug("test 8b");
+    //  // this test is for replacing ComponentID with TypeDescriptor
+    //
+    //  std::vector<Reflection::TypeDescriptor*> type_descs1 = {
+    //    Reflection::TypeResolver<Amount>::Get(),
+    //    Reflection::TypeResolver<Health>::Get(),
+    //    Reflection::TypeResolver<IsAlive>::Get()
+    //  };
+    //  std::vector<Reflection::TypeDescriptor*> type_descs2 = {
+    //    Reflection::TypeResolver<IsAlive>::Get(),
+    //    Reflection::TypeResolver<Health>::Get(),
+    //    Reflection::TypeResolver<Amount>::Get()
+    //  };
+    //
+    //  std::sort(type_descs1.begin(), type_descs1.end());
+    //  std::sort(type_descs2.begin(), type_descs2.end());
+    //
+    //  FLX_ASSERT(type_descs1 != type_descs2, "TypeDescriptor vectors should be the same");
+    //}
 
     #pragma endregion
+
+    #pragma region Test 9 - FlexECS Reflection
+
+    // test 9: basic ECS commands
+
+#if 1
+    {
+      Log::Debug("test 9");
+    
+      auto scene = FlexECS::Scene::CreateScene();
+      
+      auto entity1 = FlexECS::Scene::CreateEntity("Player");
+      entity1.AddComponent<Vector2>({ 1.0f, 2.0f });
+      entity1.AddComponent<IsAlive>({ true });
+      entity1.AddComponent<Health>({ 0.9f });
+      
+      auto entity2 = FlexECS::Scene::CreateEntity("Item");
+      entity2.AddComponent<Vector2>({ 35.0f, 42.0f });
+      entity2.AddComponent<Amount>({ 3 });
+      
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<FlexECS::Scene>::Get();
+      //type_desc->Dump(scene.get());
+      
+      std::stringstream ss{};
+      type_desc->Serialize(scene.get(), ss);
+      Log::Debug(ss.str());
+
+      // deserialize
+      FlexECS::Scene deserialized_scene;
+      Document document;
+      document.Parse(ss.str().c_str());
+      type_desc->Deserialize(&deserialized_scene, document);
+
+      // relink entity archetype pointers
+      deserialized_scene.Internal_RelinkEntityArchetypePointers();
+
+      // dump the scene
+      deserialized_scene.Dump();
+    }
+#endif
 
     #pragma endregion
 
@@ -505,78 +605,85 @@ namespace FlexEditor
     #pragma region Reflection Tests
 
     // Testing reflection
-    //{
-    //  Log::Debug("Reflection Tests");
-    //
-    //  // data
-    //  Vector2 a{ 1.0f, 2.0f };
-    //  Vector2 b{ 3.0f, 4.0f };
-    //  Vector2 c{ 5.0f, 6.0f };
-    //  Vector2 d{ 7.0f, 8.0f };
-    //
-    //  // component
-    //
-    //
-    //  std::vector<Vector2> component_vec2_a;
-    //  std::vector<Vector2> component_vec2_b;
-    //
-    //  // archetype
-    //  std::vector<std::vector<Vector2>> component_vec2;
-    //
-    //  // component creation
-    //  component_vec2_a.push_back({ 1.0f, 2.0f });
-    //  component_vec2_a.push_back({ 3.0f, 4.0f });
-    //  component_vec2_a.push_back({ 5.0f, 6.0f });
-    //  component_vec2.push_back(component_vec2_a);
-    //
-    //  component_vec2_b.push_back({ 10.0f, 20.0f });
-    //  component_vec2_b.push_back({ 30.0f, 40.0f });
-    //  component_vec2_b.push_back({ 50.0f, 60.0f });
-    //  component_vec2.push_back(component_vec2_b);
-    //
-    //  // reflection
-    //  Reflection::TypeDescriptor_StdVector* archetype_desc = (Reflection::TypeDescriptor_StdVector*)Reflection::TypeResolver<std::vector<std::vector<Vector2>>>::Get();
-    //  Reflection::TypeDescriptor_StdVector* type_desc = (Reflection::TypeDescriptor_StdVector*)Reflection::TypeResolver<std::vector<Vector2>>::Get();
-    //
-    //  // system
-    //  // uses reflection to access the data
-    //  // Important thing to note:
-    //  // - The system only takes in the archetype vector
-    //  // - Does it need to know the type of the component?
-    //  for (auto& component : component_vec2)
-    //  {
-    //    for (int i = 0; i < type_desc->get_size(&component); ++i)
-    //    {
-    //      Log::Debug(((Vector2*)type_desc->get_item(&component, i))->ToString());
-    //    }
-    //  };
-    //}
+    
+#if 0
+    {
+      Log::Debug("Reflection Tests");
+    
+      // data
+      Vector2 a{ 1.0f, 2.0f };
+      Vector2 b{ 3.0f, 4.0f };
+      Vector2 c{ 5.0f, 6.0f };
+      Vector2 d{ 7.0f, 8.0f };
+    
+      // component
+    
+    
+      std::vector<Vector2> component_vec2_a;
+      std::vector<Vector2> component_vec2_b;
+    
+      // archetype
+      std::vector<std::vector<Vector2>> component_vec2;
+    
+      // component creation
+      component_vec2_a.push_back({ 1.0f, 2.0f });
+      component_vec2_a.push_back({ 3.0f, 4.0f });
+      component_vec2_a.push_back({ 5.0f, 6.0f });
+      component_vec2.push_back(component_vec2_a);
+    
+      component_vec2_b.push_back({ 10.0f, 20.0f });
+      component_vec2_b.push_back({ 30.0f, 40.0f });
+      component_vec2_b.push_back({ 50.0f, 60.0f });
+      component_vec2.push_back(component_vec2_b);
+    
+      // reflection
+      Reflection::TypeDescriptor_StdVector* archetype_desc = (Reflection::TypeDescriptor_StdVector*)Reflection::TypeResolver<std::vector<std::vector<Vector2>>>::Get();
+      Reflection::TypeDescriptor_StdVector* type_desc = (Reflection::TypeDescriptor_StdVector*)Reflection::TypeResolver<std::vector<Vector2>>::Get();
+    
+      // system
+      // uses reflection to access the data
+      // Important thing to note:
+      // - The system only takes in the archetype vector
+      // - Does it need to know the type of the component?
+      for (auto& component : component_vec2)
+      {
+        for (int i = 0; i < type_desc->get_size(&component); ++i)
+        {
+          Log::Debug(((Vector2*)type_desc->get_item(&component, i))->ToString());
+        }
+      };
+    }
+#endif
 
     #pragma endregion
 
 
     #pragma region Logging Tests
 
-    //{
-    //  Log::Debug("Debug message");
-    //  Log::Flow("Flow message");
-    //  Log::Info("Info message");
-    //  Log::Warning("Warning message");
-    //  Log::Error("Error message");
-    //  Log::Fatal("Fatal message");
-    //}
+#if 0
+    {
+      Log::Debug("Debug message");
+      Log::Flow("Flow message");
+      Log::Info("Info message");
+      Log::Warning("Warning message");
+      Log::Error("Error message");
+      Log::Fatal("Fatal message");
+    }
+#endif
 
     #pragma endregion
 
 
     #pragma region Vector Swizzle Test
 
-    //{
-    //  Vector2 vec2{ 1.0f, 2.0f };
-    //  Log::Debug(vec2.Swizzle("yx").ToString()); // Expected log: (2, 1), vec2 is still (1, 2)
-    //  Vector2::Swizzle(vec2, "11");
-    //  Log::Debug(vec2.ToString()); // Expected log: (2, 2)
-    //}
+#if 0
+    {
+      Vector2 vec2{ 1.0f, 2.0f };
+      Log::Debug(vec2.Swizzle("yx").ToString()); // Expected log: (2, 1), vec2 is still (1, 2)
+      Vector2::Swizzle(vec2, "11");
+      Log::Debug(vec2.ToString()); // Expected log: (2, 2)
+    }
+#endif
 
     #pragma endregion
 

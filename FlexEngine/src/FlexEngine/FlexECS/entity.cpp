@@ -122,6 +122,7 @@ namespace FlexEngine
 
       // 3. Update entity_index to reflect the entity's new archetype and row
       ENTITY_INDEX[entity].archetype = &to;
+      ENTITY_INDEX[entity].archetype_id = to.id;
       ENTITY_INDEX[entity].row = to.entities.size() - 1;
     }
 

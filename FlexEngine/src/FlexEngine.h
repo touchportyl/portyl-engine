@@ -21,20 +21,8 @@
 // Includes the ImGui library.
 #include "FlexEngine/Core/imguiwrapper.h"
 
-// Contains the scene class.
-// Scenes are used to manage entities and systems.
-// Scenes are used to load and unload levels.
-// Scenes are used to update and render entities.
+// Contains the FlexECS system.
 //#include "FlexEngine/Core/scene.h"
-
-// Contains the gameobject class.
-// GameObjects are used to represent objects in the game world.
-// Components can be attached to GameObjects.
-// GameObjects are managed by the scene class.
-//#include "FlexEngine/Core/gameobject.h"
-
-// Contains all the components that can be attached to game objects.
-//#include "FlexEngine/Core/components.h"
 
 
 /* |---------------------------| */

@@ -4,8 +4,9 @@
 
 #include "uuid.h" // <functional> <string>
 #include "flexlogger.h" // <filesystem> <fstream> <string>
+#include "Reflection/base.h" // <cstddef> <iostream> <vector> <map> <functional> "flexassert.h" "flexformatter.h"
 
-#include <vector>
+//#include <vector>
 #include <unordered_map>
 #include <algorithm> // std::sort
 #include <typeindex> // std::type_index
@@ -27,21 +28,24 @@ namespace FlexEngine
     // https://www.youtube.com/watch?v=71RSWVyOMEY
 
 
-    #pragma region Data Structures
-
     // Forward declarations
 
+    class State;
     class Scene;
     class Entity;
     struct ArchetypeEdge;
 
+
+    #pragma region Data Structures
 
     // Unique identifiers for entities, components, and archetypes
     // Incremented each time a new entity, component, or archetype is created
     // TODO: Implement loaded entity ids to store lifetime, flags, and functionality to reuse ids
 
     using EntityID = std::size_t;
-    using ComponentID = std::type_index;
+    //using ComponentID = std::type_index;
+    //using ComponentID = Reflection::TypeDescriptor*;
+    using ComponentID = std::string; // Use TYPE_DESCRIPTOR_LOOKUP to get the TypeDescriptor
     using ArchetypeID = std::size_t;
 
 
@@ -106,8 +110,8 @@ namespace FlexEngine
 
     // Type used to store each unique component list only once
     // This is the main data structure used to store entities and components
-    struct Archetype
-    {
+    struct __FLX_API Archetype
+    { FLX_REFL_SERIALIZABLE
       ArchetypeID id{};
       ComponentIDList type;
       ArchetypeTable archetype_table; // This is where the components are stored
@@ -133,9 +137,10 @@ namespace FlexEngine
     // Record in entity_index with archetype and row
     // NOTE: It is trusted that the Archetype* is valid
     // The Archetype ptr is owned by archetype_index which is managed in the stack
-    struct EntityRecord
-    {
+    struct __FLX_API EntityRecord
+    { FLX_REFL_SERIALIZABLE
       Archetype* archetype;
+      ArchetypeID archetype_id; // used during deserialization to reconnect the archetype ptr
       std::size_t row;
     };
 
@@ -147,8 +152,8 @@ namespace FlexEngine
 
 
     // Record in component_index with component column for archetype
-    struct ArchetypeRecord
-    {
+    struct __FLX_API ArchetypeRecord
+    { FLX_REFL_SERIALIZABLE
       std::size_t column;
     };
 
@@ -172,7 +177,7 @@ namespace FlexEngine
 
     // The scene holds all the entities and components.
     class __FLX_API Scene
-    {
+    { FLX_REFL_SERIALIZABLE
       // ecs data structures
       std::unordered_map<ComponentIDList, Archetype> archetype_index;
       std::unordered_map<EntityID, EntityRecord> entity_index;
@@ -183,23 +188,42 @@ namespace FlexEngine
 
       static std::shared_ptr<Scene> s_active_scene;
 
-      // allow the entity class to access internal ecs data structures
+      // allow access internal ecs data structures
       friend class Entity;
 
     public:
 
       static Scene Null;
 
+      // Scene management functions
+
       static std::shared_ptr<Scene> CreateScene();
       static std::shared_ptr<Scene> GetActiveScene();
       static void SetActiveScene(Scene scene);
       static void SetActiveScene(std::shared_ptr<Scene> scene);
 
+      // Entity management functions
+
       // Creates a new entity and gives it the default archetype which is for storing the entity's name.
       // Entities are registered this way. They are not stored in the scene, but in the actual ECS.
       static Entity CreateEntity(const std::string& name = "New Entity");
 
+      // Scene serialization functions
+      // This is the interface for the reflection system to serialize and deserialize
+      // the ECS data structures. Use this interface to save and load scenes.
+
+      void Save();
+      void Load();
+      static void SaveActiveScene();
+
+    private:
+      // INTERNAL FUNCTION
+      // After reconstructing the ECS from a saved state, the archetype pointers in the entity_index
+      // need to be reconnected to the archetype_index
+      void Internal_RelinkEntityArchetypePointers();
+
 #ifdef _DEBUG
+    public:
       void Dump() const;
       void DumpArchetypeIndex() const;
       void DumpEntityIndex() const;

@@ -7,7 +7,7 @@ bool FlexEngine::FlexECS::Entity::HasComponent()
   EntityID entity = entity_id;
 
   // get the component id
-  ComponentID component = typeid(T);
+  ComponentID component = Reflection::TypeResolver<T>::Get()->name;
 
   // guard: check if the component is in the index
   // provides an early exit because if it's not in the index, it's not in any archetype
@@ -34,7 +34,7 @@ std::shared_ptr<T> FlexEngine::FlexECS::Entity::GetComponent()
   EntityID entity = entity_id;
 
   // get the component id
-  ComponentID component = typeid(T);
+  ComponentID component = Reflection::TypeResolver<T>::Get()->name;
 
   // guard: HasComponent
   // This has some repeated lookups, so it can be further optimized by copying the HasComponent code here
@@ -86,7 +86,7 @@ void FlexEngine::FlexECS::Entity::AddComponent(const T& data)
   EntityID entity = entity_id;
 
   // get component id
-  ComponentID component = typeid(T);
+  ComponentID component = Reflection::TypeResolver<T>::Get()->name;
 
   // type erasure
   ComponentData<void> data_ptr = std::make_shared<T>(data);
@@ -182,7 +182,7 @@ void FlexEngine::FlexECS::Entity::RemoveComponent()
   EntityID entity = entity_id;
 
   // get component id
-  ComponentID component = typeid(T);
+  ComponentID component = Reflection::TypeResolver<T>::Get()->name;
 
   // figure out the current archetype for the entity
   EntityRecord& entity_record = ENTITY_INDEX[entity];

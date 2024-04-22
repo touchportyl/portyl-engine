@@ -17,6 +17,9 @@
     <Filter Include="src\States">
       <UniqueIdentifier>{b19e1266-ff24-41fd-8b87-14aa6a839d28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Components">
+      <UniqueIdentifier>{cc9d015f-ea08-4f22-a35d-6dd6a5c5255d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -33,6 +36,9 @@
     </ClCompile>
     <ClCompile Include="src\States\editor.cpp">
       <Filter>src\States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\DemoComponents.cpp">
+      <Filter>src\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="src\States.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\DemoComponents.h">
+      <Filter>src\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

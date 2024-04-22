@@ -5,8 +5,7 @@
 #include <cstddef>
 #include <iostream>
 #include <vector>
-//#include <string>
-//#include <sstream>
+#include <unordered_map>
 #include <map>
 #include <functional>
 
@@ -46,13 +45,14 @@
 //  - FLX_REFL_REGISTER_PROPERTY
 //  - FLX_REFL_REGISTER_END
 // 
+// [DEPRECATED]
 // For ECS support, you need to use the following macros:
 //  - FLX_REFL_ECS_REGISTER
 //  - FLX_REFL_ECS_REGISTER_START
 //  - FLX_REFL_ECS_REGISTER_PROPERTY
 //  - FLX_REFL_ECS_REGISTER_END
-#pragma region Macros
 
+#pragma region Macros
 
 #pragma region FLX_REFL_SERIALIZABLE / FLX_REFL_REGISTER_START / FLX_REFL_REGISTER_PROPERTY / FLX_REFL_REGISTER_END
 
@@ -90,6 +90,8 @@
 // Pair this with FLX_REFL_REGISTER_START
 #define FLX_REFL_REGISTER_END \
     }; \
+    /* Register custom type to the TypeDescriptor lookup */ \
+    TYPE_DESCRIPTOR_LOOKUP[type_desc->name] = type_desc; \
   }
 
 #pragma endregion
@@ -97,70 +99,69 @@
 
 #pragma region FLX_REFL_ECS_REGISTER / FLX_REFL_ECS_REGISTER_START / FLX_REFL_ECS_REGISTER_PROPERTY / FLX_REFL_ECS_REGISTER_END
 
-// Boilerplate for a new component
-// The ECS is an extension of the reflection system, so FLX_REFL_SERIALIZABLE is included
-// Enables reflection for a custom type (struct/class)
-// Place at the top of the class definition in the .h file
-#define FLX_REFL_ECS_REGISTER(TYPE) \
-  FLX_REFL_SERIALIZABLE \
-    static ECS::ComponentBucket s_bucket; \
-  public: \
-    static std::shared_ptr<TYPE> AddComponent(UUID entity); \
-    static std::shared_ptr<TYPE> GetComponent(UUID entity); \
-    static void RemoveComponent(UUID entity); \
-  private:
-
-// Starts the registration of member variables for reflection
-// Extends the reflection registration for a component
-// Remember to end with FLX_REFL_ECS_REGISTER_END
-// Place inside any .cpp file that includes the declaration of the custom type
-#define FLX_REFL_ECS_REGISTER_START(TYPE) \
-  /* static member initialization */ \
-  ECS::ComponentBucket TYPE::s_bucket; \
-  /* component management */ \
-  std::shared_ptr<TYPE> TYPE::AddComponent(UUID entity) \
-  { \
-    std::shared_ptr<TYPE> ptr = std::make_shared<TYPE>(); \
-    s_bucket[entity] = std::reinterpret_pointer_cast<void>(ptr); \
-    return ptr; \
-  } \
-  std::shared_ptr<TYPE> TYPE::GetComponent(UUID entity) \
-  { \
-    return std::reinterpret_pointer_cast<TYPE>(s_bucket[entity]); \
-  } \
-  void TYPE::RemoveComponent(UUID entity) \
-  { \
-    s_bucket.erase(entity); \
-  } \
-  /* specialization for automatic ECS registry */ \
-  template <> \
-  void ECS::Internal_RegisterComponent<TYPE>(ComponentBucket* bucket) \
-  { \
-    s_buckets[typeid(TYPE)] = bucket; \
-  } \
-  /* FLX_REFL_REGISTER_START */ \
-  FlexEngine::Reflection::TypeDescriptor_Struct TYPE::Reflection{TYPE::InitReflection}; \
-  void TYPE::InitReflection(FlexEngine::Reflection::TypeDescriptor_Struct* type_desc) \
-  { \
-    /* automatically register component */ \
-    FlexEngine::ECS::Internal_RegisterComponent<TYPE>(&s_bucket); \
-    using T = TYPE; \
-    type_desc->name = #TYPE; \
-    type_desc->size = sizeof(T); \
-    type_desc->members = {
-
-// Registers a member variable for reflection
-// Place inside the FLX_REFL_ECS_REGISTER_START block
-// Use the name of the member variable as the argument
-// It's best practice to indent the block for readability
-#define FLX_REFL_ECS_REGISTER_PROPERTY(VARIABLE) FLX_REFL_REGISTER_PROPERTY(VARIABLE)
-
-// Ends the reflection registration
-// Pair this with FLX_REFL_ECS_REGISTER_START
-#define FLX_REFL_ECS_REGISTER_END FLX_REFL_REGISTER_END
+//// Boilerplate for a new component
+//// The ECS is an extension of the reflection system, so FLX_REFL_SERIALIZABLE is included
+//// Enables reflection for a custom type (struct/class)
+//// Place at the top of the class definition in the .h file
+//#define FLX_REFL_ECS_REGISTER(TYPE) \
+//  FLX_REFL_SERIALIZABLE \
+//    static ECS::ComponentBucket s_bucket; \
+//  public: \
+//    static std::shared_ptr<TYPE> AddComponent(UUID entity); \
+//    static std::shared_ptr<TYPE> GetComponent(UUID entity); \
+//    static void RemoveComponent(UUID entity); \
+//  private:
+//
+//// Starts the registration of member variables for reflection
+//// Extends the reflection registration for a component
+//// Remember to end with FLX_REFL_ECS_REGISTER_END
+//// Place inside any .cpp file that includes the declaration of the custom type
+//#define FLX_REFL_ECS_REGISTER_START(TYPE) \
+//  /* static member initialization */ \
+//  ECS::ComponentBucket TYPE::s_bucket; \
+//  /* component management */ \
+//  std::shared_ptr<TYPE> TYPE::AddComponent(UUID entity) \
+//  { \
+//    std::shared_ptr<TYPE> ptr = std::make_shared<TYPE>(); \
+//    s_bucket[entity] = std::reinterpret_pointer_cast<void>(ptr); \
+//    return ptr; \
+//  } \
+//  std::shared_ptr<TYPE> TYPE::GetComponent(UUID entity) \
+//  { \
+//    return std::reinterpret_pointer_cast<TYPE>(s_bucket[entity]); \
+//  } \
+//  void TYPE::RemoveComponent(UUID entity) \
+//  { \
+//    s_bucket.erase(entity); \
+//  } \
+//  /* specialization for automatic ECS registry */ \
+//  template <> \
+//  void ECS::Internal_RegisterComponent<TYPE>(ComponentBucket* bucket) \
+//  { \
+//    s_buckets[typeid(TYPE)] = bucket; \
+//  } \
+//  /* FLX_REFL_REGISTER_START */ \
+//  FlexEngine::Reflection::TypeDescriptor_Struct TYPE::Reflection{TYPE::InitReflection}; \
+//  void TYPE::InitReflection(FlexEngine::Reflection::TypeDescriptor_Struct* type_desc) \
+//  { \
+//    /* automatically register component */ \
+//    FlexEngine::ECS::Internal_RegisterComponent<TYPE>(&s_bucket); \
+//    using T = TYPE; \
+//    type_desc->name = #TYPE; \
+//    type_desc->size = sizeof(T); \
+//    type_desc->members = {
+//
+//// Registers a member variable for reflection
+//// Place inside the FLX_REFL_ECS_REGISTER_START block
+//// Use the name of the member variable as the argument
+//// It's best practice to indent the block for readability
+//#define FLX_REFL_ECS_REGISTER_PROPERTY(VARIABLE) FLX_REFL_REGISTER_PROPERTY(VARIABLE)
+//
+//// Ends the reflection registration
+//// Pair this with FLX_REFL_ECS_REGISTER_START
+//#define FLX_REFL_ECS_REGISTER_END FLX_REFL_REGISTER_END
 
 #pragma endregion
-
 
 #pragma endregion
 
@@ -171,18 +172,48 @@ namespace FlexEngine
   namespace Reflection
   {
 
+    #pragma region TypeDescriptor
+
+    struct DefaultResolver;
+    struct TypeDescriptor_Struct;
+
     // Base class for all type descriptors.
     // A type descriptor is a class that describes a type,
     // including its name, size, and how to serialize/deserialize it.
     struct __FLX_API TypeDescriptor
-    {
+    { FLX_REFL_SERIALIZABLE
       using json = rapidjson::Value;
 
-      const char* name;
-      size_t size;
+      //const char* name; // The name of the type.
+      std::string name; // The name of the type.
+      size_t size;      // The size of the type in bytes.
 
-      TypeDescriptor(const char* name, size_t size) : name{ name }, size{ size } {}
+
+      // Store a umap of all the type descriptors.
+      // This is used to deserialize the TypeDescriptor from its name.
+      // This is a static member function to avoid the static initialization order fiasco.
+      // Just use the macro TYPE_DESCRIPTOR_LOOKUP to access this map.
+      static std::unordered_map<std::string, TypeDescriptor*>& type_descriptor_lookup()
+      {
+        static std::unordered_map<std::string, TypeDescriptor*> type_descriptor_lookup;
+        return type_descriptor_lookup;
+      }
+      // Macro to access the type_descriptor_lookup map.
+      // Usage example: TYPE_DESCRIPTOR_LOOKUP["int"]
+      #define TYPE_DESCRIPTOR_LOOKUP FlexEngine::Reflection::TypeDescriptor::type_descriptor_lookup()
+
+
+      //TypeDescriptor(const char* name, size_t size) : name{ name }, size{ size } {}
+      TypeDescriptor(const std::string& name, size_t size) : name{ name }, size{ size } {}
       virtual ~TypeDescriptor() {}
+
+      // Overload the comparison operator to compare the type name.
+      // We need this to sort TypeDescriptors.
+      bool operator<(const TypeDescriptor& other) const
+      {
+        //return std::strcmp(name, other.name) < 0;
+        return name < other.name;
+      }
 
       // Get the full name of the type, including any template parameters.
       virtual std::string ToString() const { return name; }
@@ -211,16 +242,17 @@ namespace FlexEngine
       virtual void Deserialize(void* obj, const json& value) const = 0;
     };
 
-    /// <summary>
-    /// Declare the function template that handles primitive types
-    /// such as int, std::string, etc.
-    /// </summary>
-    template <typename T>
-    TypeDescriptor* GetPrimitiveDescriptor();
 
-    /// <summary>
-    /// A helper class to find TypeDescriptors in different ways.
-    /// </summary>
+    // Declare the function template that handles primitive types
+    // such as int, std::string, etc. in primitives.cpp
+    template <typename T>
+    __FLX_API TypeDescriptor* GetPrimitiveDescriptor();
+
+    #pragma endregion
+
+    #pragma region TypeResolver
+
+    // A helper class to find TypeDescriptors with SFINAE.
     struct DefaultResolver
     {
       // Detects if the type T has a static member named "Reflection"
@@ -235,18 +267,14 @@ namespace FlexEngine
         enum { value = (sizeof(func<T>(nullptr)) == sizeof(char)) };
       };
 
-      /// <summary>
-      /// This version is called if T has a static member named "Reflection"
-      /// </summary>
+      // This version is called if T has a static member named "Reflection"
       template <typename T, typename std::enable_if<IsReflected<T>::value, int>::type = 0>
       static TypeDescriptor* Get()
       {
         return &T::Reflection;
       }
 
-      /// <summary>
-      /// This version is called if T is a primitive type
-      /// </summary>
+      // This version is called if T is a primitive type
       template <typename T, typename std::enable_if<!IsReflected<T>::value, int>::type = 0>
       static TypeDescriptor* Get()
       {
@@ -254,9 +282,8 @@ namespace FlexEngine
       }
     };
 
-    /// <summary>
-    /// This is the primary class template for finding all TypeDescriptors.
-    /// </summary>
+    // This is the primary class template for finding all TypeDescriptors.
+    // Usage example: FlexEngine::Reflection::TypeDescriptor* type_desc = FlexEngine::Reflection::TypeResolver<int>::Get();
     template <typename T>
     struct TypeResolver
     {
@@ -265,6 +292,8 @@ namespace FlexEngine
         return DefaultResolver::Get<T>();
       }
     };
+
+    #pragma endregion
 
 
 
@@ -313,13 +342,11 @@ namespace FlexEngine
     //  [ ] TypeDescriptor_StdWeakPtr (C++11)
     // 
 
+    #pragma region Specializations for C++ containers
 
-
-    /// <summary>
-    /// Type descriptor for user-defined structs/classes.
-    /// <para>Specialized for structs/classes.</para>
-    /// </summary>
-    struct __FLX_API TypeDescriptor_Struct : TypeDescriptor
+    // Type descriptor for user-defined structs/classes.
+    // Specialized for structs/classes.
+    struct TypeDescriptor_Struct : TypeDescriptor
     {
       struct Member
       {
@@ -328,17 +355,16 @@ namespace FlexEngine
         TypeDescriptor* type;
       };
 
-      #pragma warning(suppress: 4251) // needs to have dll-interface to be used by clients of class
       std::vector<Member> members;
 
       TypeDescriptor_Struct(void (*init)(TypeDescriptor_Struct*))
-        : TypeDescriptor{ nullptr, 0 }
+        : TypeDescriptor{ "", 0}
       {
         init(this);
       }
 
       TypeDescriptor_Struct(const char*, size_t, const std::initializer_list<Member>& init)
-        : TypeDescriptor{ nullptr, 0 }, members{ init }
+        : TypeDescriptor{ "", 0}, members{init}
       {
       }
 
@@ -357,11 +383,12 @@ namespace FlexEngine
       virtual void Serialize(const void* obj, std::ostream& os) const override
       {
         os << R"({"type":")" << name << R"(","data":[)";
-        int index = 0;
+        bool first = true;
         for (const Member& member : members)
         {
+          if (!first) os << ",";
+          first = false;
           member.type->Serialize((char*)obj + member.offset, os);
-          if (index++ < members.size() - 1) os << ","; 
         }
         os << "]}";
       }
@@ -371,7 +398,7 @@ namespace FlexEngine
         const auto& arr = value["data"].GetArray();
 
         // guard against array size mismatch
-        FLX_INTERNAL_ASSERT(arr.Size() != members.size(),
+        FLX_INTERNAL_ASSERT(arr.Size() == members.size(),
           "Array size mismatch while deserializing struct\n"
           "This is most likely caused by a corrupted .flx file"
         );
@@ -387,10 +414,8 @@ namespace FlexEngine
 
 
 
-    /// <summary>
-    /// TypeDescriptor for std::vector.
-    /// <para>Specialized for std::vector.</para>
-    /// </summary>
+    // TypeDescriptor for std::vector.
+    // Specialized for std::vector.
     struct TypeDescriptor_StdVector : TypeDescriptor
     {
       TypeDescriptor* item_type;
@@ -448,7 +473,11 @@ namespace FlexEngine
       virtual void Serialize(const void* obj, std::ostream& os) const override
       {
         size_t num_items = get_size(obj);
-        if (num_items != 0)
+        if (num_items == 0)
+        {
+          os << R"({"type":")" << ToString() << R"(","data":[]})";
+        }
+        else
         {
           os << R"({"type":")" << ToString() << R"(","data":[)";
           for (size_t index = 0; index < num_items; index++)
@@ -472,25 +501,25 @@ namespace FlexEngine
 
     };
 
-    /// <summary>
-    /// Partially specialize TypeResolver for std::vectors.
-    /// </summary>
+    // Partially specialize TypeResolver for std::vectors.
     template <typename T>
     struct TypeResolver<std::vector<T>>
     {
       static TypeDescriptor* Get()
       {
         static TypeDescriptor_StdVector type_desc{ (T*) nullptr };
+        if (TYPE_DESCRIPTOR_LOOKUP.count(type_desc.name) == 0)
+        {
+          TYPE_DESCRIPTOR_LOOKUP[type_desc.name] = &type_desc;
+        }
         return &type_desc;
       }
     };
 
 
 
-    /// <summary>
-    /// TypeDescriptor for std::shared_ptr.
-    /// <para>Specialized for std::shared_ptr.</para>
-    /// </summary>
+    // TypeDescriptor for std::shared_ptr.
+    // Specialized for std::shared_ptr.
     template <typename T>
     struct TypeDescriptor_StdSharedPtr : TypeDescriptor
     {
@@ -555,25 +584,100 @@ namespace FlexEngine
 
     };
 
-    /// <summary>
+    // Specialization for std::shared_ptr<void>.
+    // This is used for type erasure.
+    template <>
+    struct TypeDescriptor_StdSharedPtr<void> : TypeDescriptor
+    {
+      TypeDescriptor* item_type;
+
+      TypeDescriptor_StdSharedPtr(void*)
+        : TypeDescriptor{ "std::shared_ptr<>", sizeof(std::shared_ptr<void>) }
+        , item_type{ nullptr }
+      {
+      }
+
+      virtual std::string ToString() const override
+      {
+        return "std::shared_ptr<void>";
+      }
+
+      virtual void Dump(const void* obj, std::ostream& os, int indent_level) const override
+      {
+        const auto& shared_ptr = *reinterpret_cast<const std::shared_ptr<void>*>(obj);
+        if (shared_ptr)
+        {
+          os
+            << "\n" << ToString() << "\n"
+            << std::string(4 * indent_level, ' ') << "{\n"
+            << std::string(4 * (indent_level + 1), ' ') << shared_ptr.get() << "\n"
+            << std::string(4 * indent_level, ' ') << "}\n"
+          ;
+        }
+        else
+        {
+          os << "null";
+        }
+      }
+
+      virtual void Serialize(const void* obj, std::ostream& os) const override
+      {
+        const auto& shared_ptr = *reinterpret_cast<const std::shared_ptr<void>*>(obj);
+        if (shared_ptr)
+        {
+          // Serialize as a json string
+          os << R"({"type":")" << "std::shared_ptr<void>" << R"(","data":")" << shared_ptr.get() << R"("})";
+        }
+        else
+        {
+          os << "null";
+        }
+      }
+
+      virtual void Deserialize(void* obj, const json& value) const override
+      {
+        if (value.IsNull())
+        {
+          // Set the shared_ptr to null
+          *reinterpret_cast<std::shared_ptr<void>*>(obj) = nullptr;
+        }
+        else
+        {
+          // Deserialize as a json string
+          std::string data = value["data"].Get<std::string>();
+          std::stringstream ss;
+          void* ptr;
+          ss << std::hex << data;
+          ss >> ptr;
+          // convert it to a std::shared_ptr<void> using a custom deleter
+          std::shared_ptr<void> shared_ptr = std::shared_ptr<void>(reinterpret_cast<void*>(ptr), [](void*) { /* custom deleter */ });
+          *reinterpret_cast<std::shared_ptr<void>*>(obj) = shared_ptr;
+        }
+      }
+
+    };
+
     /// Partially specialize TypeResolver for std::shared_ptrs.
-    /// </summary>
     template <typename T>
     struct TypeResolver<std::shared_ptr<T>>
     {
       static TypeDescriptor* Get()
       {
         static TypeDescriptor_StdSharedPtr type_desc{ (T*) nullptr };
+        if (TYPE_DESCRIPTOR_LOOKUP.count(type_desc.name) == 0)
+        {
+          TYPE_DESCRIPTOR_LOOKUP[type_desc.name] = &type_desc;
+        }
         return &type_desc;
       }
     };
 
 
 
-    /// <summary>
-    /// TypeDescriptor for std::unordered_map.
-    /// <para>Specialized for std::unordered_map.</para>
-    /// </summary>
+    // TypeDescriptor for std::unordered_map.
+    // Specialized for std::unordered_map.
+    // Important note that raw pointers are not supported
+    // Use std::shared_ptr instead.
     template <typename KeyType, typename ValueType>
     struct TypeDescriptor_StdUnorderedMap : TypeDescriptor
     {
@@ -644,20 +748,22 @@ namespace FlexEngine
       }
     };
 
-    /// <summary>
-    /// Partially specialize TypeResolver for std::unordered_maps.
-    /// </summary>
+    // Partially specialize TypeResolver for std::unordered_maps.
     template <typename KeyType, typename ValueType>
     struct TypeResolver<std::unordered_map<KeyType, ValueType>>
     {
       static TypeDescriptor* Get()
       {
         static TypeDescriptor_StdUnorderedMap<KeyType, ValueType> type_desc{ (std::unordered_map<KeyType, ValueType>*)nullptr };
+        if (TYPE_DESCRIPTOR_LOOKUP.count(type_desc.name) == 0)
+        {
+          TYPE_DESCRIPTOR_LOOKUP[type_desc.name] = &type_desc;
+        }
         return &type_desc;
       }
     };
 
-
+    #pragma endregion
 
   }
 

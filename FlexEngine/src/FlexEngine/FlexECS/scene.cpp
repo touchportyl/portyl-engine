@@ -54,7 +54,7 @@ namespace FlexEngine
 
       // manually register a name component
       // this is to register the entity in the entity index and archetype
-      ComponentID component = typeid(std::string);
+      ComponentID component = Reflection::TypeResolver<std::string>::Get()->name;
 
       // type erasure
       ComponentData<void> data_ptr = std::make_shared<std::string>(name);
@@ -73,7 +73,7 @@ namespace FlexEngine
       archetype.entities.push_back(Scene::GetActiveScene()->next_entity_id);
 
       // update entity records
-      EntityRecord entity_record = { &archetype, archetype.entities.size() - 1 };
+      EntityRecord entity_record = { &archetype, archetype.id, archetype.entities.size() - 1 };
       ENTITY_INDEX[Scene::GetActiveScene()->next_entity_id] = entity_record;
 
       // store the component data in the archetype
@@ -84,6 +84,38 @@ namespace FlexEngine
 
       return Scene::GetActiveScene()->next_entity_id++;
     }
+
+    #pragma region Internal Functions
+
+
+    // relink entity archetype pointers
+    // for each entity in the entity index, set the archetype pointer to the archetype in the archetype index
+    void Scene::Internal_RelinkEntityArchetypePointers()
+    {
+      for (auto& [uuid, entity_record] : entity_index)
+      {
+        auto it = std::find_if(
+          archetype_index.begin(), archetype_index.end(),
+          [entity_record](auto& archetype_record)
+          {
+            return archetype_record.second.id == entity_record.archetype_id;
+          }
+        );
+
+        if (it != archetype_index.end())
+        {
+          // relink
+          entity_record.archetype = &it->second;
+        }
+        else
+        {
+          Log::Error("Entity archetype not found in archetype index.");
+        }
+      }
+    }
+
+    #pragma endregion
+
 
 
 #ifdef _DEBUG
@@ -98,7 +130,7 @@ namespace FlexEngine
     void Scene::DumpArchetypeIndex() const
     {
       Log::Info("Dumping archetype_index");
-      for (auto& [archetype, archetype_storage] : ARCHETYPE_INDEX)
+      for (auto& [archetype, archetype_storage] : archetype_index)
       {
         Log::Debug("Archetype: " + std::to_string(archetype_storage.id));
         Log::Debug("- Number of entities: " + std::to_string(archetype_storage.entities.size()));
@@ -107,7 +139,7 @@ namespace FlexEngine
         int i = 0;
         for (auto& column : archetype_storage.archetype_table)
         {
-          Log::Debug("  Component(" + std::to_string(i) + "): " + std::string(archetype_storage.type[i].name()));
+          Log::Debug("  Component(" + std::to_string(i) + "): " + archetype_storage.type[i]);
           Log::Debug("    Entities in component: " + std::to_string(column.size()));
           i++;
         }
@@ -118,7 +150,7 @@ namespace FlexEngine
     void Scene::DumpEntityIndex() const
     {
       Log::Info("Dumping entity_index");
-      for (auto& [id, entity_record] : ENTITY_INDEX)
+      for (auto& [id, entity_record] : entity_index)
       {
         Log::Debug("Entity: " + std::to_string(id));
         Log::Debug("  Archetype ID: " + std::to_string(entity_record.archetype->id));
@@ -129,9 +161,9 @@ namespace FlexEngine
     void Scene::DumpComponentIndex() const
     {
       Log::Info("Dumping component_index");
-      for (auto& [component_id, archetype_map] : COMPONENT_INDEX)
+      for (auto& [component_id, archetype_map] : component_index)
       {
-        Log::Debug("Component: " + std::string(component_id.name()));
+        Log::Debug("Component: " + component_id);
         for (auto& [archetype, archetype_record] : archetype_map)
         {
           Log::Debug("  Archetype ID: " + std::to_string(archetype));

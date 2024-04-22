@@ -1,5 +1,7 @@
 #pragma once
 
+#include "flx_api.h"
+
 //#include <iostream>
 #include <fstream>
 #include <sstream>
@@ -32,7 +34,7 @@ namespace FlexEngine
   /// Formatter for the FlexFormat file specification.
   /// <para>This class does not handle the actual reading and writing of the file.</para>
   /// </summary>
-  class FlexFormatter
+  class __FLX_API FlexFormatter
   {
   public:
     /// <summary>

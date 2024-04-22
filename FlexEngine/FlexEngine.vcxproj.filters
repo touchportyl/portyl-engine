@@ -29,9 +29,6 @@
     <Filter Include="src\FlexEngine\FlexMath">
       <UniqueIdentifier>{074c64d3-93c6-4963-a353-8f4f11343c1e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\FlexEngine\Component">
-      <UniqueIdentifier>{056a8a36-4ac8-4d06-acb5-bd1ac0bc8b49}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\FlexEngine\FlexECS">
       <UniqueIdentifier>{2e5cd5b6-0dbd-499e-b72e-fa402aee38a3}</UniqueIdentifier>
     </Filter>
@@ -103,13 +100,13 @@
     <ClCompile Include="src\FlexEngine\FlexMath\vector4.cpp">
       <Filter>src\FlexEngine\FlexMath</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\Component\Transform2D.cpp">
-      <Filter>src\FlexEngine\Component</Filter>
-    </ClCompile>
     <ClCompile Include="src\FlexEngine\FlexECS\entity.cpp">
       <Filter>src\FlexEngine\FlexECS</Filter>
     </ClCompile>
     <ClCompile Include="src\FlexEngine\FlexECS\scene.cpp">
+      <Filter>src\FlexEngine\FlexECS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\FlexECS\datastructures.cpp">
       <Filter>src\FlexEngine\FlexECS</Filter>
     </ClCompile>
   </ItemGroup>
@@ -206,9 +203,6 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\FlexMath\vector4.h">
       <Filter>src\FlexEngine\FlexMath</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\Component\Transform2D.h">
-      <Filter>src\FlexEngine\Component</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\ansi_color.h">
       <Filter>src\FlexEngine</Filter>
