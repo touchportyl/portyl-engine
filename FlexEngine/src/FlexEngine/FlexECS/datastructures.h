@@ -5,9 +5,8 @@
 #include "uuid.h" // <functional> <string>
 #include "flexlogger.h" // <filesystem> <fstream> <string>
 #include "Reflection/base.h" // <cstddef> <iostream> <vector> <map> <functional> "flexassert.h" "flexformatter.h"
+#include "DataStructures/file.h" // <filesystem> <iostream> <string> <exception> <unordered_map> <set> <fstream>
 
-//#include <vector>
-#include <unordered_map>
 #include <algorithm> // std::sort
 #include <typeindex> // std::type_index
 #include <memory> // std::shared_ptr
@@ -212,11 +211,11 @@ namespace FlexEngine
       // This is the interface for the reflection system to serialize and deserialize
       // the ECS data structures. Use this interface to save and load scenes.
 
-      void Save();
-      void Load();
+      void Save(File& file);
+      static Scene Load(File& file);
       static void SaveActiveScene();
 
-    private:
+    //private:
       // INTERNAL FUNCTION
       // After reconstructing the ECS from a saved state, the archetype pointers in the entity_index
       // need to be reconnected to the archetype_index

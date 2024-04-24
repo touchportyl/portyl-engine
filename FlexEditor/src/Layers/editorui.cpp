@@ -3,7 +3,7 @@
 
 // temporary
 #include <FlexEngine/flexformatter.h>
-#include <FlexEngine/FlexECS/datastructures.h>
+//#include <FlexEngine/FlexECS/datastructures.h>
 #include "Components/DemoComponents.h"
 
 void DumpJsonNodes(const rapidjson::Value& value, int depth = 0)
@@ -561,11 +561,11 @@ namespace FlexEditor
 
     #pragma region Test 9 - FlexECS Reflection
 
-    // test 9: basic ECS commands
+    // test 9a: basic ECS commands
 
-#if 1
+#if 0
     {
-      Log::Debug("test 9");
+      Log::Debug("test 9a");
     
       auto scene = FlexECS::Scene::CreateScene();
       
@@ -596,6 +596,39 @@ namespace FlexEditor
 
       // dump the scene
       deserialized_scene.Dump();
+    }
+#endif
+
+    // test 9b: Saving/loading scene file to .flxscene
+
+#if 1
+    {
+      Log::Debug("test 9b");
+
+      // set up scene
+      auto scene = FlexECS::Scene::CreateScene();
+
+      auto entity1 = FlexECS::Scene::CreateEntity("Player");
+      entity1.AddComponent<Vector2>({ 1.0f, 2.0f });
+      entity1.AddComponent<IsAlive>({ true });
+      entity1.AddComponent<Health>({ 0.9f });
+
+      auto entity2 = FlexECS::Scene::CreateEntity("Item");
+      entity2.AddComponent<Vector2>({ 35.0f, 42.0f });
+      entity2.AddComponent<Amount>({ 3 });
+
+      // dump
+      scene->DumpEntityIndex();
+
+      // save to file
+      auto& save_file = FlexEngine::File::Open( Path::current_path("test9b.flxscene") );
+      scene->Save(save_file);
+
+      // read from file
+      auto loaded_scene = FlexECS::Scene::Load(save_file);
+
+      // dump
+      loaded_scene.DumpEntityIndex();
     }
 #endif
 

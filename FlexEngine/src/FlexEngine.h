@@ -22,7 +22,20 @@
 #include "FlexEngine/Core/imguiwrapper.h"
 
 // Contains the FlexECS system.
-//#include "FlexEngine/Core/scene.h"
+#include "FlexEngine/FlexECS/datastructures.h"
+
+
+/* |---------------------------| */
+/* |----- Data Structures -----| */
+/* |---------------------------| */
+
+// Contains the path, file, and filelist class.
+// Has the Extension namespace with a list of safe and supported extensions.
+// Handles the functionality to read and write files.
+// The path class is used to ensure the validity of the path. Can throw exceptions.
+#include "FlexEngine/DataStructures/path.h"
+#include "FlexEngine/DataStructures/file.h"
+#include "FlexEngine/DataStructures/filelist.h"
 
 
 /* |---------------------------| */
@@ -104,7 +117,7 @@
 
 // File handling.
 // Read and write files.
-#include "FlexEngine/Loader/files.h"
+//#include "FlexEngine/Loader/files.h"
 
 // OpenGL shaders handling.
 // Load and compile shaders from files.

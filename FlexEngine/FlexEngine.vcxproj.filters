@@ -32,6 +32,9 @@
     <Filter Include="src\FlexEngine\FlexECS">
       <UniqueIdentifier>{2e5cd5b6-0dbd-499e-b72e-fa402aee38a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\FlexEngine\DataStructures">
+      <UniqueIdentifier>{d1154156-d650-4268-b90f-1eb3ac8e9b9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -108,6 +111,15 @@
     </ClCompile>
     <ClCompile Include="src\FlexEngine\FlexECS\datastructures.cpp">
       <Filter>src\FlexEngine\FlexECS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\DataStructures\path.cpp">
+      <Filter>src\FlexEngine\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\DataStructures\file.cpp">
+      <Filter>src\FlexEngine\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\DataStructures\filelist.cpp">
+      <Filter>src\FlexEngine\DataStructures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +224,15 @@
     </ClInclude>
     <ClInclude Include="src\flx_api.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\DataStructures\file.h">
+      <Filter>src\FlexEngine\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\DataStructures\filelist.h">
+      <Filter>src\FlexEngine\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\DataStructures\path.h">
+      <Filter>src\FlexEngine\DataStructures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

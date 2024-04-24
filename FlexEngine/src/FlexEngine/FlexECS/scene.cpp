@@ -9,6 +9,8 @@ namespace FlexEngine
     std::shared_ptr<Scene> Scene::s_active_scene = nullptr;
     Scene Scene::Null = Scene();
 
+    #pragma region Scene Management Functions
+
     std::shared_ptr<Scene> Scene::CreateScene()
     {
       FLX_FLOW_FUNCTION();
@@ -48,6 +50,11 @@ namespace FlexEngine
       s_active_scene = scene;
     }
 
+    #pragma endregion
+
+
+    #pragma region Entity Management Functions
+
     Entity Scene::CreateEntity(const std::string& name)
     {
       FLX_FLOW_FUNCTION();
@@ -85,8 +92,58 @@ namespace FlexEngine
       return Scene::GetActiveScene()->next_entity_id++;
     }
 
-    #pragma region Internal Functions
+    #pragma endregion
 
+
+    #pragma region Scene Serialization Functions
+
+    // save the scene to a File
+    // the flx formatter is wrapped here
+    void Scene::Save(File& file)
+    {
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<FlexECS::Scene>::Get();
+
+      std::stringstream ss;
+      type_desc->Serialize(this, ss);
+      //Log::Debug(ss.str());
+      file.Write(ss.str());
+    }
+
+    // static function
+    Scene Scene::Load(File& file)
+    {
+      Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<FlexECS::Scene>::Get();
+
+      // get scene data
+      std::string scene_data = file.Read();
+      if (scene_data.empty())
+      {
+        Log::Error("Failed to load scene data.");
+        return Scene::Null;
+      }
+
+      // deserialize
+      Document document;
+      document.Parse(scene_data.c_str());
+
+      FlexECS::Scene deserialized_scene;
+      type_desc->Deserialize(&deserialized_scene, document);
+
+      // relink entity archetype pointers
+      deserialized_scene.Internal_RelinkEntityArchetypePointers();
+
+      return deserialized_scene;
+    }
+
+    void Scene::SaveActiveScene()
+    {
+
+    }
+
+    #pragma endregion
+
+
+    #pragma region Internal Functions
 
     // relink entity archetype pointers
     // for each entity in the entity index, set the archetype pointer to the archetype in the archetype index
@@ -115,7 +172,6 @@ namespace FlexEngine
     }
 
     #pragma endregion
-
 
 
 #ifdef _DEBUG
