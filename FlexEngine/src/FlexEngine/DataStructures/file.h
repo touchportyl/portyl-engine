@@ -40,7 +40,10 @@ namespace FlexEngine
     // File Management Functions
 
     std::string Read();
-    void Write(const std::string& data);
+    void Write(const std::string& _data);
+
+    // Note: No support for deleting directories because it's dangerous
+    void Delete();
 
     // Operator Overloads
 

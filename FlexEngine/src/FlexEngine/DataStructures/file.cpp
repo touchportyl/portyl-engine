@@ -39,6 +39,7 @@ namespace FlexEngine
   std::string File::Read()
   {
     FLX_FLOW_FUNCTION();
+    FLX_SCOPED_TIMER();
 
     // guard
     if (!path.is_file())
@@ -75,6 +76,7 @@ namespace FlexEngine
   void File::Write(const std::string& _data)
   {
     FLX_FLOW_FUNCTION();
+    FLX_SCOPED_TIMER();
 
     // guard
     if (!path.is_file())
@@ -90,13 +92,44 @@ namespace FlexEngine
       return;
     }
 
-    file << _data;
+    data = _data;
+    file << data;
 
     if (file.fail())
     {
       Log::Error("Failed to write to file: " + path.get().string());
       return;
     }
+
+#ifdef _DEBUG
+    Log::Debug("Successfully wrote to file: " + path.get().string());
+#endif
+  }
+
+  void File::Delete()
+  {
+    FLX_FLOW_FUNCTION();
+    FLX_SCOPED_TIMER();
+
+    // guard
+    if (!path.is_file())
+    {
+      Log::Warning("Attempted to delete a non-file: " + path.get().string());
+      return;
+    }
+
+    std::error_code errorcode;
+    std::filesystem::remove(path.get(), errorcode);
+
+    if (errorcode)
+    {
+      Log::Error("Failed to delete file: " + path.get().string());
+      return;
+    }
+
+#ifdef _DEBUG
+    Log::Debug("Successfully deleted file: " + path.get().string());
+#endif
   }
 
   #pragma endregion

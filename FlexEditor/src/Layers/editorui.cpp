@@ -622,6 +622,7 @@ namespace FlexEditor
 
       // save to file
       auto& save_file = FlexEngine::File::Open( Path::current_path("test9b.flxscene") );
+      save_file.Delete();
       scene->Save(save_file);
 
       // read from file
