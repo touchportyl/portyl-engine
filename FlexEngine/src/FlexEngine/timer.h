@@ -41,7 +41,7 @@ namespace FlexEngine
       duration = end - start;
 
       float ms = duration.count() * 1000.0f;
-      Log::Info("[Timer] " + m_log_message + " (" + std::to_string(ms) + "ms)");
+      Log::Debug("[Timer] " + m_log_message + " (" + std::to_string(ms) + "ms)");
     }
 
   private:
