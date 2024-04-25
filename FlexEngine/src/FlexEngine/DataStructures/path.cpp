@@ -5,6 +5,7 @@ namespace FlexEngine
 
   namespace Extensions
   {
+    // Match these file extensions with the FlxFmtFileType enum (flexformatter.h)
     const std::unordered_map<std::string, std::set<std::string>> safe =
     {
       // FlexEngine files

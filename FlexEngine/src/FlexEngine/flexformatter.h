@@ -2,12 +2,10 @@
 
 #include "flx_api.h"
 
-//#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
+#include "datetime.h" // <iostream> <chrono> <string>
+#include "DataStructures/file.h" // <filesystem> <iostream> <string> <exception> <unordered_map> <set> <fstream>
 
-#include "datetime.h" // includes iostream
+#include <sstream>
 
 #include <RapidJSON/document.h>
 #include <RapidJSON/istreamwrapper.h>
@@ -16,41 +14,102 @@
 #include <RapidJSON/prettywriter.h>
 using namespace rapidjson;
 
-/// <summary>
-/// The current version of the Flex Formatter.
-/// <para>Do not change this value!</para>
-/// </summary>
-constexpr int FLXFMT_VERSION = 1;
+namespace rapidjson
+{
+  const char* GetParseErrorString(ParseErrorCode code);
+}
+
+// Flex Formatter metadata.
+// Do not change these values!
+#define FLXFMT_NAME     "flxfmt"
+#define FLXFMT_VERSION  1
 
 namespace FlexEngine
 {
 
-  /// <summary>
-  /// Contains the required header information for the FlexFormat file.
-  /// </summary>
-  struct FlexFormatHeader;
+  #pragma region FlxFmtFileType
 
-  /// <summary>
-  /// Formatter for the FlexFormat file specification.
-  /// <para>This class does not handle the actual reading and writing of the file.</para>
-  /// </summary>
+  // Match this enum with the file extensions in Extensions::safe (path.cpp)
+  enum class __FLX_API FlxFmtFileType
+  {
+    Other = 0,
+    Scene,
+    Script,
+    Prefab,
+    Material
+  };
+  // Lookup the string representation of the FlxFmtFileType enum.
+  __FLX_API FlxFmtFileType FlxFmtFileType_Lookup(const std::string& file_type);
+  __FLX_API std::string FlxFmtFileType_ReverseLookup(FlxFmtFileType file_type);
+
+  #pragma endregion
+
+  #pragma region FlxFmtMetadata
+
+  // Contains metadata for the FlexFormat file.
+  class __FLX_API FlxFmtMetadata
+  {
+  public:
+    using Version = unsigned int;
+
+    std::string format = FLXFMT_NAME;
+    Version format_version = FLXFMT_VERSION;
+    DateTime::Date created = DateTime::Date();
+    DateTime::Date last_edited = DateTime::Date();
+    Version save_version = 0;                           // 0 = version not saved
+    FlxFmtFileType file_type = FlxFmtFileType::Other;
+  };
+
+  #pragma endregion
+
+  #pragma region FlxFmtFile
+
+  // Used internally to store the FlexFormat file.
+  // Wraps around the FlexEngine::File class to provide additional functionality.
+  class __FLX_API FlxFmtFile
+  {
+  public:
+    FlxFmtMetadata metadata;
+    std::string data = "";
+
+    // Converts into a std::string for writing to a file.
+    // Use Save() instead to increment the save version.
+    // This is more for debugging purposes.
+    std::string ToString() const;
+
+    // Increments the save version and updates the last edited date.
+    // Usage example: File.Write(FlxFmtFile.Save());
+    std::string Save();
+
+    // Null file for error handling.
+    static FlxFmtFile Null;
+
+    #pragma region Operator Overloads
+
+    bool operator==(const FlxFmtFile& other) const;
+    bool operator!=(const FlxFmtFile& other) const;
+
+    #pragma endregion
+  };
+
+  #pragma endregion
+
+  #pragma region FlexFormatter
+
+  // Formatter for the FlexFormat file specification.
+  // This is a helper class for reading and writing FlexFormat files.
   class __FLX_API FlexFormatter
   {
   public:
-    /// <summary>
-    /// Loads the header information and parses the data using RapidJSON.
-    /// <para>If there is a parse error, an empty rapidjson::Document is returned.</para>
-    /// <para>Currently does not support reading multiple files. Old file header data will be overwritten.</para>
-    /// </summary>
-    static Document Load(std::istream& is);
+    // Creates a new FlxFmtFile wrapper.
+    static FlxFmtFile Create(const std::string& data = "", bool save_version_enabled = false);
 
-    /// <summary>
-    /// Formats the data into the Flex Format.
-    /// </summary>
-    static std::ostream& Format(std::ostream& os, const std::string& scene_data);
-
-  private:
-    static FlexFormatHeader header;
+    // Parses the format into a FlxFmtFile using RapidJSON.
+    // If there is a parse error, an empty FlxFmtFile is returned.
+    // Usage: FlxFmtFile flxfmtfile_scene = FlexFormatter::Parse(file_scene, FlxFmtFileType::Scene);
+    static FlxFmtFile Parse(FlexEngine::File& file, FlxFmtFileType expected_file_type);
   };
+
+  #pragma endregion
 
 }

@@ -213,7 +213,7 @@ namespace FlexEngine
 
       void Save(File& file);
       static Scene Load(File& file);
-      static void SaveActiveScene();
+      static void SaveActiveScene(File& file);
 
     //private:
       // INTERNAL FUNCTION

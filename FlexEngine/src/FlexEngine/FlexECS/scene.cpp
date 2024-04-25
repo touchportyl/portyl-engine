@@ -105,8 +105,21 @@ namespace FlexEngine
 
       std::stringstream ss;
       type_desc->Serialize(this, ss);
-      //Log::Debug(ss.str());
-      file.Write(ss.str());
+
+      // check if we need to create a new flx file or overwrite the existing one
+      FlxFmtFile flxfmtfile = FlexFormatter::Parse(file, FlxFmtFileType::Scene);
+      if (flxfmtfile == FlxFmtFile::Null)
+      {
+        // make a new flx file
+        flxfmtfile = FlexFormatter::Create(ss.str(), true);
+      }
+      else
+      {
+        // update the data
+        flxfmtfile.data = ss.str();
+      }
+
+      file.Write(flxfmtfile.Save());
     }
 
     // static function
@@ -115,16 +128,15 @@ namespace FlexEngine
       Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<FlexECS::Scene>::Get();
 
       // get scene data
-      std::string scene_data = file.Read();
-      if (scene_data.empty())
+      FlxFmtFile flxfmtfile = FlexFormatter::Parse(file, FlxFmtFileType::Scene);
+      if (flxfmtfile == FlxFmtFile::Null)
       {
-        Log::Error("Failed to load scene data.");
         return Scene::Null;
       }
 
       // deserialize
       Document document;
-      document.Parse(scene_data.c_str());
+      document.Parse(flxfmtfile.data.c_str());
 
       FlexECS::Scene deserialized_scene;
       type_desc->Deserialize(&deserialized_scene, document);
@@ -135,9 +147,9 @@ namespace FlexEngine
       return deserialized_scene;
     }
 
-    void Scene::SaveActiveScene()
+    void Scene::SaveActiveScene(File& file)
     {
-
+      Scene::GetActiveScene()->Save(file);
     }
 
     #pragma endregion
