@@ -601,7 +601,7 @@ namespace FlexEditor
 
     // test 9b: Saving/loading scene file to .flxscene
 
-#if 1
+#if 0
     {
       Log::Debug("test 9b");
 
