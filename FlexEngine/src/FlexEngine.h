@@ -134,10 +134,6 @@
 /* |---------- Loaders ----------| */
 /* |-----------------------------| */
 
-// File handling.
-// Read and write files.
-//#include "FlexEngine/Loader/files.h"
-
 // OpenGL shaders handling.
 // Load and compile shaders from files.
 #include "FlexEngine/Loader/shaders.h"
