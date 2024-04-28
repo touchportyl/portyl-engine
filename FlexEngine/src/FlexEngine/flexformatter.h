@@ -2,8 +2,8 @@
 
 #include "flx_api.h"
 
-#include "datetime.h" // <iostream> <chrono> <string>
-#include "DataStructures/file.h" // <filesystem> <iostream> <string> <exception> <unordered_map> <set> <fstream>
+#include "Wrapper/datetime.h" // <iostream> <chrono> <string>
+#include "Wrapper/file.h" // <filesystem> <iostream> <string> <exception> <unordered_map> <set> <fstream>
 
 #include <sstream>
 
@@ -54,8 +54,8 @@ namespace FlexEngine
 
     std::string format = FLXFMT_NAME;
     Version format_version = FLXFMT_VERSION;
-    DateTime::Date created = DateTime::Date();
-    DateTime::Date last_edited = DateTime::Date();
+    Date created = Date::Now();
+    Date last_edited = Date::Now();
     Version save_version = 0;                           // 0 = version not saved
     FlxFmtFileType file_type = FlxFmtFileType::Other;
   };
@@ -78,7 +78,7 @@ namespace FlexEngine
     std::string ToString() const;
 
     // Increments the save version and updates the last edited date.
-    // Usage example: File.Write(FlxFmtFile.Save());
+    // Usage: File.Write(FlxFmtFile.Save());
     std::string Save();
 
     // Null file for error handling.

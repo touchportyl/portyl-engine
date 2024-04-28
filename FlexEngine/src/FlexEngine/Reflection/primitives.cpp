@@ -1,5 +1,7 @@
 #include "Reflection/base.h"
 
+#pragma region Macros
+
 // TypeDescriptor for primitive types
 // Supports the same types that rapidjson supports except const char*
 // Abstracted for easy editing
@@ -33,6 +35,8 @@
     } \
     return &type_desc; \
   }
+
+#pragma endregion
 
 
 

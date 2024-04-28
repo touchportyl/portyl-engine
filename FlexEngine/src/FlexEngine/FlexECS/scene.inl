@@ -1,14 +1,6 @@
 // inline functions for Scene class
 
-
-// This is a lot more complex to understand because it needs graph traversal
-// to get all the entities with the components requested
 // Steps:
-// 1. Find the archetype with the requested components
-// 2. Get the entities from the archetype
-// 3. Check the edges to other archetypes and add all the edges to a queue
-// 4. Traverse the graph and add the entities to the list
-// Alternate steps:
 // 1. Loop through each archetype and check if the archetype has the requested components
 // 2. Get the entities from the archetype
 template <typename... Ts>

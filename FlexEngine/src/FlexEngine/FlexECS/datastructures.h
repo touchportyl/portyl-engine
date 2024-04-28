@@ -2,10 +2,14 @@
 
 #include "flx_api.h"
 
-#include "uuid.h" // <functional> <string>
+#include "flexformatter.h"  // "Wrapper/datetime.h" "Wrapper/file.h" <sstream>
+                            // <RapidJSON/document.h> <RapidJSON/istreamwrapper.h> <RapidJSON/ostreamwrapper.h>
+                            // <RapidJSON/writer.h> <RapidJSON/prettywriter.h>
 #include "flexlogger.h" // <filesystem> <fstream> <string>
-#include "Reflection/base.h" // <cstddef> <iostream> <vector> <map> <functional> "flexassert.h" "flexformatter.h"
-#include "DataStructures/file.h" // <filesystem> <iostream> <string> <exception> <unordered_map> <set> <fstream>
+#include "Reflection/base.h"  // "Wrapper/flexassert.h" <rapidjson/document.h>
+                              // <cstddef> <iostream> <string> <sstream> <vector> <map> <unordered_map> <functional>
+#include "uuid.h" // <functional> <string>
+#include "Wrapper/file.h" // "Wrapper/path.h" <fstream>
 
 #include <algorithm> // std::sort
 #include <typeindex> // std::type_index
@@ -275,13 +279,13 @@ namespace FlexEngine
       bool TryGetComponent(std::shared_ptr<T>& out);
 
       // Add a component to an entity
-      // Usage example: entity.AddComponent<Transform>({ 1, 2, 3 });
-      // Usage example: entity.AddComponent(Transform(1, 2, 3));
+      // Usage: entity.AddComponent<Transform>({ 1, 2, 3 });
+      // Usage: entity.AddComponent(Transform(1, 2, 3));
       template <typename T>
       void AddComponent(const T& data);
 
       // Remove a component from an entity
-      // Usage example: entity.RemoveComponent<Transform>();
+      // Usage: entity.RemoveComponent<Transform>();
       template <typename T>
       void RemoveComponent();
 

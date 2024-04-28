@@ -17,7 +17,9 @@ namespace FlexEngine
     {
       // create a new file
       FILE_REGISTRY[path] = { path, "" };
-      // TODO: read the file's contents
+
+      // file reading should be handled by the user
+      // this is to prevent reading files that are not needed
     }
     return FILE_REGISTRY[path];
   }

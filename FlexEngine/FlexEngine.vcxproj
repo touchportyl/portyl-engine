@@ -166,10 +166,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="..\third_party\src\glad\glad.c" />
     <ClCompile Include="src\FlexEngine\Core\imguiwrapper.cpp" />
     <ClCompile Include="src\FlexEngine\Core\layerstack.cpp" />
-    <ClCompile Include="src\FlexEngine\DataStructures\file.cpp" />
-    <ClCompile Include="src\FlexEngine\DataStructures\filelist.cpp" />
-    <ClCompile Include="src\FlexEngine\DataStructures\path.cpp" />
-    <ClCompile Include="src\FlexEngine\datetime.cpp" />
     <ClCompile Include="src\FlexEngine\FlexECS\datastructures.cpp" />
     <ClCompile Include="src\FlexEngine\FlexECS\entity.cpp" />
     <ClCompile Include="src\FlexEngine\FlexECS\scene.cpp" />
@@ -188,6 +184,11 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Reflection\primitives.cpp" />
     <ClCompile Include="src\FlexEngine\StateManager\statemanager.cpp" />
     <ClCompile Include="src\FlexEngine\uuid.cpp" />
+    <ClCompile Include="src\FlexEngine\Wrapper\date.cpp" />
+    <ClCompile Include="src\FlexEngine\Wrapper\datetime.cpp" />
+    <ClCompile Include="src\FlexEngine\Wrapper\file.cpp" />
+    <ClCompile Include="src\FlexEngine\Wrapper\filelist.cpp" />
+    <ClCompile Include="src\FlexEngine\Wrapper\path.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -202,17 +203,10 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\FlexEngine\ansi_color.h" />
     <ClInclude Include="src\FlexEngine\Core\components.h" />
     <ClInclude Include="src\FlexEngine\Core\imguiwrapper.h" />
     <ClInclude Include="src\FlexEngine\Core\layer.h" />
     <ClInclude Include="src\FlexEngine\Core\layerstack.h" />
-    <ClInclude Include="src\FlexEngine\DataStructures\file.h" />
-    <ClInclude Include="src\FlexEngine\DataStructures\filelist.h" />
-    <ClInclude Include="src\FlexEngine\DataStructures\path.h" />
-    <ClInclude Include="src\FlexEngine\DataStructures\range.h" />
-    <ClInclude Include="src\FlexEngine\datetime.h" />
-    <ClInclude Include="src\FlexEngine\flexassert.h" />
     <ClInclude Include="src\FlexEngine\FlexECS\datastructures.h" />
     <ClInclude Include="src\FlexEngine\flexformatter.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\values.h" />
@@ -222,7 +216,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\freequeue.h" />
     <ClInclude Include="src\FlexEngine\functionqueue.h" />
     <ClInclude Include="src\FlexEngine\input.h" />
-    <ClInclude Include="src\FlexEngine\Loader\files.h" />
     <ClInclude Include="src\FlexEngine\Loader\fmodstudio.h" />
     <ClInclude Include="src\FlexEngine\Loader\gltf.h" />
     <ClInclude Include="src\FlexEngine\Loader\textures.h" />
@@ -234,6 +227,13 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\StateManager\statemanager.h" />
     <ClInclude Include="src\FlexEngine\timer.h" />
     <ClInclude Include="src\FlexEngine\uuid.h" />
+    <ClInclude Include="src\FlexEngine\Wrapper\ansi_color.h" />
+    <ClInclude Include="src\FlexEngine\Wrapper\datetime.h" />
+    <ClInclude Include="src\FlexEngine\Wrapper\file.h" />
+    <ClInclude Include="src\FlexEngine\Wrapper\filelist.h" />
+    <ClInclude Include="src\FlexEngine\Wrapper\flexassert.h" />
+    <ClInclude Include="src\FlexEngine\Wrapper\path.h" />
+    <ClInclude Include="src\FlexEngine\Wrapper\range.h" />
     <ClInclude Include="src\flx_api.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\FlexEngine.h" />

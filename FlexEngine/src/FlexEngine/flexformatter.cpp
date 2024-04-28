@@ -82,7 +82,7 @@ namespace FlexEngine
   std::string FlxFmtFile::Save()
   {
     if (metadata.save_version != 0) metadata.save_version++;
-    metadata.last_edited = DateTime::Date();
+    metadata.last_edited = Date::Now();
     return ToString();
   }
 
@@ -226,13 +226,13 @@ namespace FlexEngine
       flxfmtfile.metadata.format = format;
       flxfmtfile.metadata.format_version = format_version;
       std::string created = document["created"].GetString();
-      flxfmtfile.metadata.created = DateTime::Date(
+      flxfmtfile.metadata.created = Date(
         std::stoi(created.substr(0, 4)),
         std::stoi(created.substr(5, 2)),
         std::stoi(created.substr(8, 2))
       );
       std::string last_edited = document["last_edited"].GetString();
-      flxfmtfile.metadata.last_edited = DateTime::Date(
+      flxfmtfile.metadata.last_edited = Date(
         std::stoi(last_edited.substr(0, 4)),
         std::stoi(last_edited.substr(5, 2)),
         std::stoi(last_edited.substr(8, 2))

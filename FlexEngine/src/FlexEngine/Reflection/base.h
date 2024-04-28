@@ -2,15 +2,19 @@
 
 #include "flx_api.h"
 
+#include "Wrapper/flexassert.h"
+
+#include <rapidjson/document.h>
+using namespace rapidjson;
+
 #include <cstddef>
 #include <iostream>
+#include <string>
+#include <sstream>
 #include <vector>
-#include <unordered_map>
 #include <map>
+#include <unordered_map>
 #include <functional>
-
-#include "flexassert.h"
-#include "flexformatter.h"
 
 // Reflection system for C++
 // 
@@ -199,7 +203,7 @@ namespace FlexEngine
         return type_descriptor_lookup;
       }
       // Macro to access the type_descriptor_lookup map.
-      // Usage example: TYPE_DESCRIPTOR_LOOKUP["int"]
+      // Usage: TYPE_DESCRIPTOR_LOOKUP["int"]
       #define TYPE_DESCRIPTOR_LOOKUP FlexEngine::Reflection::TypeDescriptor::type_descriptor_lookup()
 
 
@@ -283,7 +287,7 @@ namespace FlexEngine
     };
 
     // This is the primary class template for finding all TypeDescriptors.
-    // Usage example: FlexEngine::Reflection::TypeDescriptor* type_desc = FlexEngine::Reflection::TypeResolver<int>::Get();
+    // Usage: FlexEngine::Reflection::TypeDescriptor* type_desc = FlexEngine::Reflection::TypeResolver<int>::Get();
     template <typename T>
     struct TypeResolver
     {

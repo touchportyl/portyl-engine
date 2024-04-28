@@ -1,5 +1,15 @@
 #pragma once
 
+// FlexEngine Main Include File
+// This file includes all the necessary files to use the FlexEngine library.
+// 
+// Sections:
+// - Core  . . . . . . The core of the engine. Required for all applications.
+// - Tools . . . . . . Tools for logging, timing, and other utilities.
+// - Wrappers  . . . . Wrappers for external libraries and tools.
+// - Data Structures . Data structures used in the engine.
+// - Loaders . . . . . Loaders for handling files, shaders, and textures. (To be deprecated)
+
 
 /* |----------------------------| */
 /* |----------- Core -----------| */
@@ -14,32 +24,6 @@
 // Layers are used to separate different parts of the application.
 // Layers are updated and rendered in the order they are pushed.
 #include "FlexEngine/Core/layer.h"
-
-// Wraps the ImGui library for easier use.
-// Includes the ImGui library.
-#include "FlexEngine/Core/imguiwrapper.h"
-
-
-/* |-----------------------------| */
-/* |------ Data Structures ------| */
-/* |-----------------------------| */
-
-// Contains the path, file, and filelist class.
-// Has the Extension namespace with a list of safe and supported extensions.
-// Handles the functionality to read and write files.
-// The path class is used to ensure the validity of the path. Can throw exceptions.
-#include "FlexEngine/DataStructures/path.h"
-#include "FlexEngine/DataStructures/file.h"
-#include "FlexEngine/DataStructures/filelist.h"
-
-// Wrapper for a range of values.
-// Use Get() to generate random values within the range.
-// The number that is generated is inclusive of the min and max values.
-// Can also be used to store a range of values by getting min and max.
-#include "FlexEngine/DataStructures/range.h"
-
-// Contains the FlexECS system.
-#include "FlexEngine/FlexECS/datastructures.h"
 
 
 /* |-----------------------------| */
@@ -71,7 +55,7 @@
 // Use FLX_CORE_ASSERT for assertions for the application core.
 // Use FLX_ASSERT in place of regular assertions.
 // Use FLX_NULLPTR_ASSERT for checking pointers.
-#include "FlexEngine/flexassert.h"
+#include "FlexEngine/Wrapper/flexassert.h"
 
 // UUID class for generating unique identifiers.
 // Get the UUID by casting it to a hash, string, or by
@@ -113,6 +97,37 @@
 // Specialized function queue for storing and executing functions for freeing
 // heap objects after execution.
 #include "FlexEngine/freequeue.h"
+
+
+/* |-----------------------------| */
+/* |---------- Wrappers ---------| */
+/* |-----------------------------| */
+
+// Wraps the ImGui library for easier use.
+// Includes the ImGui library.
+#include "FlexEngine/Core/imguiwrapper.h"
+
+// Contains the path, file, and filelist class.
+// Has the Extension namespace with a list of safe and supported extensions.
+// Handles the functionality to read and write files.
+// The path class is used to ensure the validity of the path. Can throw exceptions.
+#include "FlexEngine/Wrapper/path.h"
+#include "FlexEngine/Wrapper/file.h"
+#include "FlexEngine/Wrapper/filelist.h"
+
+// Wrapper for a range of values.
+// Use Get() to generate random values within the range.
+// The number that is generated is inclusive of the min and max values.
+// Can also be used to store a range of values by getting min and max.
+#include "FlexEngine/Wrapper/range.h"
+
+
+/* |-----------------------------| */
+/* |------ Data Structures ------| */
+/* |-----------------------------| */
+
+// Contains the FlexECS system.
+#include "FlexEngine/FlexECS/datastructures.h"
 
 
 /* |-----------------------------| */

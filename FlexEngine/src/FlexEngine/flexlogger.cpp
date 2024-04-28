@@ -2,8 +2,8 @@
 
 #include <Windows.h> // SetFileAttributes
 
-#include "ansi_color.h"
-#include "datetime.h"
+#include "Wrapper/ansi_color.h"
+#include "Wrapper/datetime.h"
 
 #include "Core/application.h"
 

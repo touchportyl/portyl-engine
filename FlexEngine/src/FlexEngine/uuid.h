@@ -1,7 +1,7 @@
 #pragma once
 
 #include <functional> // std::hash
-#include <string>     // std::string
+#include <string> // std::string
 
 namespace FlexEngine
 {

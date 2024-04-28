@@ -1,12 +1,12 @@
 #pragma once
 
-#include <array>
-#include <algorithm>
+#include "FlexMath/vector2.h"
 
 #include <GLFW/glfw3.h>
-
 //#include "glm.hpp"
-#include "FlexMath/vector2.h"
+
+#include <array>
+#include <algorithm>
 
 // GLFW key codes
 // https://www.glfw.org/docs/3.3/group__keys.html
@@ -65,7 +65,6 @@ namespace FlexEngine
   // prevent instantiation
   public:
     Input() = delete;
-    ~Input() = delete;
     Input(const Input&) = delete;
     Input(Input&&) = delete;
     Input& operator=(const Input&) = delete;

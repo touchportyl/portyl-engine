@@ -14,7 +14,6 @@ namespace FlexEngine
   public:
     // static class
     FreeQueue() = delete;
-    ~FreeQueue() = delete;
     FreeQueue(const FreeQueue&) = delete;
     FreeQueue(FreeQueue&&) = delete;
     FreeQueue& operator=(const FreeQueue&) = delete;

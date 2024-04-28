@@ -12,7 +12,7 @@
 
 #pragma region Declaration
 // Creates a StateManager class with the given name.
-// Usage example: FLX_STATEMANAGER_REGISTER_DECL(Application);
+// Usage: FLX_STATEMANAGER_REGISTER_DECL(Application);
 // This will create a class called ApplicationStateManager.
 // Remember to run the FLX_STATEMANAGER_REGISTER_IMPL macro in a cpp file.
 #define FLX_STATEMANAGER_REGISTER_DECL(NAME)                                     \
@@ -29,7 +29,7 @@ public:                                                                         
   }                                                                              \
                                                                                  \
   /* For best practice, use the SetState template method instead                 \
-   * Usage example: NAME##StateManager::SetState(std::make_unique<GameState>()); \
+   * Usage: NAME##StateManager::SetState(std::make_unique<GameState>());         \
    */                                                                            \
   static void SetState(std::unique_ptr<State> state);                            \
                                                                                  \
@@ -41,7 +41,7 @@ public:                                                                         
 
 #pragma region Implementation
 // Implementation of the StateManager class.
-// Usage example: FLX_STATEMANAGER_REGISTER_IMPL(Application);
+// Usage: FLX_STATEMANAGER_REGISTER_IMPL(Application);
 // This will create the implementation of the ApplicationStateManager class.
 // This implementation keeps everything in scope, do not rely on restart to fully reset the state.
 // That is the responsibility of the state itself

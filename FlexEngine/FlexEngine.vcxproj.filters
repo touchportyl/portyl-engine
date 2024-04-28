@@ -32,7 +32,7 @@
     <Filter Include="src\FlexEngine\FlexECS">
       <UniqueIdentifier>{2e5cd5b6-0dbd-499e-b72e-fa402aee38a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\FlexEngine\DataStructures">
+    <Filter Include="src\FlexEngine\Wrapper">
       <UniqueIdentifier>{d1154156-d650-4268-b90f-1eb3ac8e9b9e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -82,9 +82,6 @@
     <ClCompile Include="src\FlexEngine\flexformatter.cpp">
       <Filter>src\FlexEngine</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\datetime.cpp">
-      <Filter>src\FlexEngine</Filter>
-    </ClCompile>
     <ClCompile Include="src\FlexEngine\Core\imguiwrapper.cpp">
       <Filter>src\FlexEngine\Core</Filter>
     </ClCompile>
@@ -112,14 +109,20 @@
     <ClCompile Include="src\FlexEngine\FlexECS\datastructures.cpp">
       <Filter>src\FlexEngine\FlexECS</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\DataStructures\path.cpp">
-      <Filter>src\FlexEngine\DataStructures</Filter>
+    <ClCompile Include="src\FlexEngine\Wrapper\file.cpp">
+      <Filter>src\FlexEngine\Wrapper</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\DataStructures\file.cpp">
-      <Filter>src\FlexEngine\DataStructures</Filter>
+    <ClCompile Include="src\FlexEngine\Wrapper\filelist.cpp">
+      <Filter>src\FlexEngine\Wrapper</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\DataStructures\filelist.cpp">
-      <Filter>src\FlexEngine\DataStructures</Filter>
+    <ClCompile Include="src\FlexEngine\Wrapper\path.cpp">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Wrapper\datetime.cpp">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Wrapper\date.cpp">
+      <Filter>src\FlexEngine\Wrapper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,9 +159,6 @@
     <ClInclude Include="src\FlexEngine\flexlogger.h">
       <Filter>src\FlexEngine</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Loader\files.h">
-      <Filter>src\FlexEngine\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="src\FlexEngine\Loader\textures.h">
       <Filter>src\FlexEngine\Loader</Filter>
     </ClInclude>
@@ -166,9 +166,6 @@
       <Filter>src\FlexEngine</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\functionqueue.h">
-      <Filter>src\FlexEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\flexassert.h">
       <Filter>src\FlexEngine</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Loader\fmodstudio.h">
@@ -184,9 +181,6 @@
       <Filter>src\FlexEngine\Reflection</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\flexformatter.h">
-      <Filter>src\FlexEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\datetime.h">
       <Filter>src\FlexEngine</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Core\imguiwrapper.h">
@@ -216,26 +210,32 @@
     <ClInclude Include="src\FlexEngine\FlexMath\vector4.h">
       <Filter>src\FlexEngine\FlexMath</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\ansi_color.h">
-      <Filter>src\FlexEngine</Filter>
-    </ClInclude>
     <ClInclude Include="src\FlexEngine\FlexECS\datastructures.h">
       <Filter>src\FlexEngine\FlexECS</Filter>
     </ClInclude>
     <ClInclude Include="src\flx_api.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\DataStructures\file.h">
-      <Filter>src\FlexEngine\DataStructures</Filter>
+    <ClInclude Include="src\FlexEngine\Wrapper\file.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\DataStructures\filelist.h">
-      <Filter>src\FlexEngine\DataStructures</Filter>
+    <ClInclude Include="src\FlexEngine\Wrapper\filelist.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\DataStructures\path.h">
-      <Filter>src\FlexEngine\DataStructures</Filter>
+    <ClInclude Include="src\FlexEngine\Wrapper\path.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\DataStructures\range.h">
-      <Filter>src\FlexEngine\DataStructures</Filter>
+    <ClInclude Include="src\FlexEngine\Wrapper\range.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Wrapper\datetime.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Wrapper\flexassert.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Wrapper\ansi_color.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

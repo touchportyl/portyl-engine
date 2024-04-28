@@ -1,8 +1,10 @@
 #pragma once
 
-#include <string>
+#include "flx_api.h"
 
 #include <glad/glad.h>
+
+#include <string>
 
 namespace FlexEngine
 {
