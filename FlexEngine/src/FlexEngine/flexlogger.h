@@ -17,6 +17,7 @@
 
 namespace FlexEngine
 {
+
   class __FLX_API Log
   {
     static bool is_initialized;
@@ -81,4 +82,5 @@ namespace FlexEngine
 
     static void Internal_Logger(WarningLevel level, const char* message);
   };
+
 }

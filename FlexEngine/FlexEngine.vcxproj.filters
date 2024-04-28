@@ -234,6 +234,9 @@
     <ClInclude Include="src\FlexEngine\DataStructures\path.h">
       <Filter>src\FlexEngine\DataStructures</Filter>
     </ClInclude>
+    <ClInclude Include="src\FlexEngine\DataStructures\range.h">
+      <Filter>src\FlexEngine\DataStructures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\FlexEngine\FlexECS\entity.inl">

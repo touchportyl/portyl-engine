@@ -891,6 +891,8 @@ namespace FlexEditor
       // display components
       ImGui::Text(selected_entity.GetComponent<std::string>()->c_str());
 
+      ImGui::Separator();
+
       ImGuiTreeNodeFlags properties_flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnDoubleClick; // open by default
 
       if (selected_entity.HasComponent<Vector2>() && ImGui::CollapsingHeader("Vector2", properties_flags))

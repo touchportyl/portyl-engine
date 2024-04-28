@@ -1,10 +1,9 @@
 #pragma once
 
 
-
-/* |--------------------------| */
-/* |---------- Core ----------| */
-/* |--------------------------| */
+/* |----------------------------| */
+/* |----------- Core -----------| */
+/* |----------------------------| */
 
 // Contains the application class.
 // Inherit from FlexEngine::Application in the entry point to create a new application.
@@ -13,7 +12,6 @@
 // Contains the layer class.
 // Inherit from FlexEngine::Layer to create a new layer.
 // Layers are used to separate different parts of the application.
-// Layers can be pushed and popped from the layer stack.
 // Layers are updated and rendered in the order they are pushed.
 #include "FlexEngine/Core/layer.h"
 
@@ -21,13 +19,10 @@
 // Includes the ImGui library.
 #include "FlexEngine/Core/imguiwrapper.h"
 
-// Contains the FlexECS system.
-#include "FlexEngine/FlexECS/datastructures.h"
 
-
-/* |---------------------------| */
-/* |----- Data Structures -----| */
-/* |---------------------------| */
+/* |-----------------------------| */
+/* |------ Data Structures ------| */
+/* |-----------------------------| */
 
 // Contains the path, file, and filelist class.
 // Has the Extension namespace with a list of safe and supported extensions.
@@ -37,10 +32,19 @@
 #include "FlexEngine/DataStructures/file.h"
 #include "FlexEngine/DataStructures/filelist.h"
 
+// Wrapper for a range of values.
+// Use Get() to generate random values within the range.
+// The number that is generated is inclusive of the min and max values.
+// Can also be used to store a range of values by getting min and max.
+#include "FlexEngine/DataStructures/range.h"
 
-/* |---------------------------| */
-/* |---------- Tools ----------| */
-/* |---------------------------| */
+// Contains the FlexECS system.
+#include "FlexEngine/FlexECS/datastructures.h"
+
+
+/* |-----------------------------| */
+/* |----------- Tools -----------| */
+/* |-----------------------------| */
 
 // Logger for logging messages to a file
 // 
