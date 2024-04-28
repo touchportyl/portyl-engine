@@ -42,7 +42,7 @@ namespace FlexEditor
   Asset::Shader shader_color;
   Asset::Texture test_image;
 
-  //Entity selected_entity;
+  FlexECS::Entity selected_entity;
 
   void EditorLayer::OnAttach()
   {
@@ -635,6 +635,34 @@ namespace FlexEditor
 
     #pragma endregion
 
+    #pragma region Test 10 - FlexECS Properties Inspector
+
+    // test 10: Properties Inspector
+
+#if 1
+    {
+      Log::Debug("test 10");
+
+      // set up demo scene
+      FlexECS::Scene::CreateScene();
+      auto entity0 = FlexECS::Scene::CreateEntity("Null");
+
+      auto entity1 = FlexECS::Scene::CreateEntity("Player");
+      entity1.AddComponent<Vector2>({ 1.0f, 2.0f });
+      entity1.AddComponent<IsAlive>({ true });
+      entity1.AddComponent<Health>({ 0.9f });
+
+      auto entity2 = FlexECS::Scene::CreateEntity("Item");
+      entity2.AddComponent<Vector2>({ 35.0f, 42.0f });
+      entity2.AddComponent<Amount>({ 3 });
+
+      selected_entity = entity1;
+    }
+#endif
+
+    #pragma endregion
+
+
 
     #pragma region Reflection Tests
 
@@ -720,6 +748,9 @@ namespace FlexEditor
 #endif
 
     #pragma endregion
+    
+    
+    #pragma endregion
 
 
     // todo: add opengl rendering
@@ -750,59 +781,95 @@ namespace FlexEditor
     #pragma warning(suppress: 4189) // unused variable
     ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
+
     #pragma region Entity Testing Panel
 
     // this panel will be used to test the ECS system
     // it allows the user to create entities and select them for the properties panel
     ImGui::Begin("Entity Testing");
     
-    //// create a new entity
-    //if (ImGui::Button("Create Entity"))
-    //{
-    //  ImGui::OpenPopup("Create Entity");
-    //}
-    //
-    //// popup to set the entity name
-    //if (ImGui::BeginPopupModal("Create Entity"))
-    //{
-    //  static char name[128] = "New Entity";
-    //  ImGui::InputText("Name", name, sizeof(name));
-    //
-    //  if (ImGui::Button("Create"))
-    //  {
-    //    selected_entity = ECS::CreateEntity(name);
-    //    ImGui::CloseCurrentPopup();
-    //  }
-    //
-    //  ImGui::EndPopup();
-    //}
-    //
-    //ImGui::SeparatorText("Entities");
-    //
-    //// get all entities
-    //FLX_ECS_SYSTEM_VIEW_START(view_all_entities)
-    //FLX_ECS_SYSTEM_VIEW_END(view_all_entities);
-    //
-    //// list all entities with a button to select them
-    //for (auto& [uuid, name] : view_all_entities)
-    //{
-    //  std::string buffer;
-    //
-    //  buffer = "Select " + name;
-    //  if (ImGui::Button(buffer.c_str()))
-    //  {
-    //    selected_entity = { name, uuid };
-    //  }
-    //
-    //  ImGui::SameLine();
-    //
-    //  buffer = "Destroy " + name;
-    //  if (ImGui::Button(buffer.c_str()))
-    //  {
-    //    ECS::DestroyEntity(uuid);
-    //  }
-    //}
+    // create a new entity
+    if (ImGui::Button("Create Entity"))
+    {
+      ImGui::OpenPopup("Create Entity");
+    }
     
+    // popup to set the entity name
+    if (ImGui::BeginPopupModal("Create Entity"))
+    {
+      static char name[128] = "New Entity";
+      ImGui::InputText("Name", name, sizeof(name));
+    
+      if (ImGui::Button("Create"))
+      {
+        selected_entity = FlexECS::Scene::CreateEntity(name);
+        ImGui::CloseCurrentPopup();
+      }
+    
+      ImGui::EndPopup();
+    }
+    
+    ImGui::SeparatorText("Entities");
+
+    // get all entities
+    auto view_all_entities = FlexECS::Scene::GetActiveScene()->View<std::string>();
+    for (auto& entity : view_all_entities)
+    {
+      // get the entity name
+      std::shared_ptr<std::string> entity_name = entity.GetComponent<std::string>();
+
+      std::string buffer = "Select " + *entity_name;
+      if (ImGui::Button(buffer.c_str()))
+      {
+        selected_entity = entity;
+      }
+
+      ImGui::SameLine();
+
+      buffer = "Destroy " + *entity_name;
+      if (ImGui::Button(buffer.c_str()))
+      {
+        selected_entity = FlexECS::Entity::Null;
+        #pragma warning(suppress: 6031) // return value ignored
+        FlexECS::Scene::GetActiveScene()->DestroyEntity(entity);
+      }
+    }
+
+    ImGui::SeparatorText("Debugging");
+
+    if (ImGui::Button("Dump Scene"))
+      FlexECS::Scene::GetActiveScene()->Dump();
+
+    if (ImGui::Button("Dump Archetype Index"))
+      FlexECS::Scene::GetActiveScene()->DumpArchetypeIndex();
+
+    if (ImGui::Button("Dump Component Index"))
+      FlexECS::Scene::GetActiveScene()->DumpComponentIndex();
+
+    if (ImGui::Button("Dump Entity Index"))
+      FlexECS::Scene::GetActiveScene()->DumpEntityIndex();
+    
+    ImGui::End();
+
+    #pragma endregion
+
+
+    #pragma region Scene Panel
+
+    ImGui::Begin("Scene");
+
+    // display entities
+    auto view_entities = FlexECS::Scene::GetActiveScene()->View<std::string>();
+    std::sort(view_entities.begin(), view_entities.end());
+    for (auto& entity : view_entities)
+    {
+      std::shared_ptr<std::string> entity_name = entity.GetComponent<std::string>();
+      if (ImGui::Selectable(entity_name->c_str()))
+      {
+        selected_entity = entity;
+      }
+    }
+
     ImGui::End();
 
     #pragma endregion
@@ -811,56 +878,79 @@ namespace FlexEditor
     #pragma region Properties Panel
 
     ImGui::Begin("Properties");
+
+    if (selected_entity == FlexECS::Entity::Null)
+    {
+      ImGui::Text("No entity selected");
+    }
+    else
+    {
+
+      #pragma region Display Properties
+
+      // display components
+      ImGui::Text(selected_entity.GetComponent<std::string>()->c_str());
+
+      ImGuiTreeNodeFlags properties_flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnDoubleClick; // open by default
+
+      if (selected_entity.HasComponent<Vector2>() && ImGui::CollapsingHeader("Vector2", properties_flags))
+      {
+        auto vec2 = selected_entity.GetComponent<Vector2>();
+        ImGui::DragFloat2("Position", vec2->begin(), 0.1f, -std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+      }
+
+      if (selected_entity.HasComponent<IsAlive>() && ImGui::CollapsingHeader("IsAlive", properties_flags))
+      {
+        auto is_alive = selected_entity.GetComponent<IsAlive>();
+        ImGui::Checkbox("Alive", &is_alive->value);
+      }
+
+      if (selected_entity.HasComponent<Health>() && ImGui::CollapsingHeader("Health", properties_flags))
+      {
+        auto health = selected_entity.GetComponent<Health>();
+        ImGui::DragFloat("Health", &health->value, 0.01f, 0.0f, 1.0f);
+      }
+
+      if (selected_entity.HasComponent<Amount>() && ImGui::CollapsingHeader("Amount", properties_flags))
+      {
+        auto amount = selected_entity.GetComponent<Amount>();
+        ImGui::DragInt("Amount", &amount->value, 1, 0, std::numeric_limits<int>::max());
+      }
+
+      #pragma endregion
+
+      ImGui::Separator();
+
+      #pragma region Add Component
+
+      static bool menustate_add_component_listbox = false;
+      if (ImGui::Button("Add Component"))
+      {
+        // toggle button
+        menustate_add_component_listbox = !menustate_add_component_listbox;
+      }
+      if (menustate_add_component_listbox)
+      {
+        // temporary helper macro for registering components
+        #define REGISTER_ADD_COMPONENT_LISTBOX(COMPONENT) \
+          if (!selected_entity.HasComponent<COMPONENT>() && ImGui::Selectable(#COMPONENT)) \
+          { \
+            menustate_add_component_listbox = false; \
+            selected_entity.AddComponent<COMPONENT>
+
+        ImGui::Text("Select a component from the list.");
+        ImGui::BeginListBox("##");
+        REGISTER_ADD_COMPONENT_LISTBOX(Vector2)({ 0.0f, 0.0f }); }
+        REGISTER_ADD_COMPONENT_LISTBOX(IsAlive)({ true }); }
+        REGISTER_ADD_COMPONENT_LISTBOX(Health)({ 1.0f }); }
+        REGISTER_ADD_COMPONENT_LISTBOX(Amount)({ 0 }); }
+        ImGui::EndListBox();
+      }
+
+      #pragma endregion
     
-    //// display the selected entity
-    //if (selected_entity)
-    //{
-    //  ImGui::Text(selected_entity.name.c_str());
-    //}
-    //else
-    //{
-    //  ImGui::Text("No entity selected");
-    //}
-    //
-    //
-    //// loop through every single registered component
-    //// if the entity is found, display the component
-    //if (Transform::GetComponent(selected_entity))
-    //{
-    //  // display the component
-    //  // each data field is automatically generated based on the type
-    //  if (ImGui::CollapsingHeader("Transform"))
-    //  {
-    //    // TODO: cache this so we don't have to call GetComponent() every frame
-    //    Vector2 vec2 = Transform::GetComponent(selected_entity)->GetPosition();
-    //    ImGui::DragFloat2("Position", vec2.begin(), 0.1f, -std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
-    //
-    //    if (ImGui::IsItemEdited())
-    //    {
-    //      // update the transform component
-    //      Transform::GetComponent(selected_entity)->SetPosition(vec2);
-    //    }
-    //  }
-    //}
-    //
-    //// loop through every single registered component
-    ////for (auto& bucket : ECS::Internal_GetComponentBuckets())
-    ////{
-    ////  // if the entity is found, display the component
-    ////  if (bucket.second->find(selected_entity) != bucket.second->end())
-    ////  {
-    ////    // serialize the data to json
-    ////
-    ////    // display field depending on json type
-    ////  }
-    ////}
-    //
-    //
-    //if (ImGui::Button("Dump"))
-    //{
-    //  ECS::Dump();
-    //}
-    
+    }
+
     ImGui::End();
 
     #pragma endregion

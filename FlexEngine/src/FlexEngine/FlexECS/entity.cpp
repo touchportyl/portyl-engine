@@ -5,12 +5,45 @@ namespace FlexEngine
   namespace FlexECS
   {
 
+    // static member initialization
+    Entity Entity::Null = Entity();
+
+    Entity::Entity()
+      : entity_id(0)
+    {
+    }
+
     Entity::Entity(EntityID id)
       : entity_id(id)
     {
     }
 
-    Entity::operator EntityID() const { return entity_id; }
+    #pragma region Operator Overloads
+
+    bool Entity::operator==(const Entity& other) const
+    {
+      return entity_id == other.entity_id;
+    }
+
+    bool Entity::operator!=(const Entity& other) const
+    {
+      return entity_id != other.entity_id;
+    }
+
+    bool Entity::operator<(const Entity& other) const
+    {
+      // compare their names (in std::string component)
+      // makes a copy because GetComponent is not const, gets the name component, and compares the strings
+      Entity lhs = *this; Entity rhs = other;
+      return *(lhs.GetComponent<std::string>().get()) < *(rhs.GetComponent<std::string>().get());
+    }
+
+    Entity::operator EntityID() const
+    {
+      return entity_id;
+    }
+
+    #pragma endregion
 
     #pragma region Internal Functions
 
@@ -77,6 +110,7 @@ namespace FlexEngine
 
 
       // 2. Remove the entity from the source archetype's columns and entities vector
+      // The same code is being used in DestroyEntity
       // Empty archetypes won't be cleaned up.
       // This is by design to avoid the overhead of creating and destroying archetypes frequently.
       #pragma region Step 2

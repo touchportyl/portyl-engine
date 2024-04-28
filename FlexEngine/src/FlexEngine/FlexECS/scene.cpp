@@ -9,6 +9,7 @@ namespace FlexEngine
     std::shared_ptr<Scene> Scene::s_active_scene = nullptr;
     Scene Scene::Null = Scene();
 
+
     #pragma region Scene Management Functions
 
     std::shared_ptr<Scene> Scene::CreateScene()
@@ -90,6 +91,65 @@ namespace FlexEngine
       archetype.archetype_table[0].push_back(data_ptr); // there is only one component in this archetype
 
       return Scene::GetActiveScene()->next_entity_id++;
+    }
+
+    void Scene::DestroyEntity(EntityID entity)
+    {
+      FLX_FLOW_FUNCTION();
+
+      // guard: entity does not exist
+      if (ENTITY_INDEX.count(entity) == 0)
+      {
+        Log::Warning("Attempted to destroy entity that does not exist.");
+        return;
+      }
+
+      // Get the important data
+      // The entity's archetype and row are needed to remove the entity from the archetype
+      EntityRecord& entity_record = ENTITY_INDEX[entity];
+      Archetype& archetype = *entity_record.archetype;
+      size_t row = entity_record.row;
+
+      // Remove the entity from the source archetype's columns and entities vector
+      // The same code is being used in Internal_MoveEntity
+      size_t last_row_index = archetype.archetype_table[0].size() - 1;
+
+      // Handle the case where the entity is the last entity in the archetype
+      if (row == last_row_index)
+      {
+        for (size_t i = 0; i < archetype.archetype_table.size(); i++)
+        {
+          archetype.archetype_table[i].pop_back();
+        }
+      }
+      else
+      {
+        // Swap the entity with the last entity in the archetype and pop it
+        // Using swap-and-pop is more performant than erase() since it requires shifting
+        // all subsequent elements forward.
+        // O(1) complexity for swap-and-pop vs O(n) complexity for erase()
+        for (size_t i = 0; i < archetype.archetype_table.size(); i++)
+        {
+          std::swap(archetype.archetype_table[i][row], archetype.archetype_table[i][last_row_index]);
+          archetype.archetype_table[i].pop_back();
+        }
+
+        // Update entity_index for the swapped entity if necessary
+        if (row < last_row_index)
+        {
+          EntityID swapped_entity = archetype.entities[last_row_index];
+          ENTITY_INDEX[swapped_entity].row = row;
+
+          // Replace the entity's row in the entities vector
+          archetype.entities[row] = swapped_entity;
+        }
+      }
+
+      // Pop the entity from the entities vector
+      archetype.entities.pop_back();
+
+      // Remove the entity from the entity index
+      ENTITY_INDEX.erase(entity);
     }
 
     #pragma endregion

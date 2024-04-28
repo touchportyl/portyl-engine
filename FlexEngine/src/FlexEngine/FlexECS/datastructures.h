@@ -42,8 +42,6 @@ namespace FlexEngine
     // TODO: Implement loaded entity ids to store lifetime, flags, and functionality to reuse ids
 
     using EntityID = std::size_t;
-    //using ComponentID = std::type_index;
-    //using ComponentID = Reflection::TypeDescriptor*;
     using ComponentID = std::string; // Use TYPE_DESCRIPTOR_LOOKUP to get the TypeDescriptor
     using ArchetypeID = std::size_t;
 
@@ -124,10 +122,9 @@ namespace FlexEngine
     {
       Archetype* add = nullptr;
       Archetype* remove = nullptr;
+      //ArchetypeID archetype_id_add = 0;     // used during deserialization to reconnect the archetype ptr
+      //ArchetypeID archetype_id_remove = 0;  // used during deserialization to reconnect the archetype ptr
     };
-
-    // Find an archetype by its list of component ids
-    //extern std::unordered_map<ComponentIDList, Archetype> archetype_index;
 
 
 
@@ -143,9 +140,6 @@ namespace FlexEngine
       std::size_t row;
     };
 
-    // Find the archetype for an entity
-    //extern std::unordered_map<EntityID, EntityRecord> entity_index;
-
 
 
 
@@ -159,9 +153,6 @@ namespace FlexEngine
     // Used to lookup components in archetypes
     using ArchetypeMap = std::unordered_map<ArchetypeID, ArchetypeRecord>;
 
-    // Find the column for a component in an archetype
-    //extern std::unordered_map<ComponentID, ArchetypeMap> component_index;
-
     #pragma endregion
 
 
@@ -169,28 +160,38 @@ namespace FlexEngine
 
     // Macros for access to the ECS data structures
 
-    #define ARCHETYPE_INDEX Scene::GetActiveScene()->archetype_index
-    #define ENTITY_INDEX Scene::GetActiveScene()->entity_index
-    #define COMPONENT_INDEX Scene::GetActiveScene()->component_index
+    // Find an archetype by its list of component ids
+    #define ARCHETYPE_INDEX FlexEngine::FlexECS::Scene::GetActiveScene()->archetype_index
+
+    // Find the archetype for an entity
+    #define ENTITY_INDEX FlexEngine::FlexECS::Scene::GetActiveScene()->entity_index
+
+    // Find the column for a component in an archetype
+    #define COMPONENT_INDEX FlexEngine::FlexECS::Scene::GetActiveScene()->component_index
 
 
     // The scene holds all the entities and components.
     class __FLX_API Scene
     { FLX_REFL_SERIALIZABLE
-      // ecs data structures
-      std::unordered_map<ComponentIDList, Archetype> archetype_index;
-      std::unordered_map<EntityID, EntityRecord> entity_index;
-      std::unordered_map<ComponentID, ArchetypeMap> component_index;
 
       // TODO: Implement reusing entity ids
       EntityID next_entity_id = 0;
 
       static std::shared_ptr<Scene> s_active_scene;
 
-      // allow access internal ecs data structures
-      friend class Entity;
-
     public:
+
+      // ECS data structures
+
+      std::unordered_map<ComponentIDList, Archetype> archetype_index;
+      std::unordered_map<EntityID, EntityRecord> entity_index;
+      std::unordered_map<ComponentID, ArchetypeMap> component_index;
+
+      // Returns an entity list based off the list of components
+      template <typename... Ts>
+      std::vector<Entity> View();
+
+      // Null scene for when the active scene is set to null
 
       static Scene Null;
 
@@ -207,6 +208,9 @@ namespace FlexEngine
       // Entities are registered this way. They are not stored in the scene, but in the actual ECS.
       static Entity CreateEntity(const std::string& name = "New Entity");
 
+      // Removes an entity from the ECS
+      static void DestroyEntity(EntityID entity);
+
       // Scene serialization functions
       // This is the interface for the reflection system to serialize and deserialize
       // the ECS data structures. Use this interface to save and load scenes.
@@ -218,7 +222,7 @@ namespace FlexEngine
     //private:
       // INTERNAL FUNCTION
       // After reconstructing the ECS from a saved state, the archetype pointers in the entity_index
-      // need to be reconnected to the archetype_index
+      // need to be reconnected to the archetype_index.
       void Internal_RelinkEntityArchetypePointers();
 
 #ifdef _DEBUG
@@ -239,10 +243,23 @@ namespace FlexEngine
       EntityID entity_id;
 
     public:
+
+      // Null entity
+      static Entity Null;
+
+      Entity();
       Entity(EntityID id);
+
+      #pragma region Operator Overloads
+
+      bool operator==(const Entity& other) const;
+      bool operator!=(const Entity& other) const;
+      bool operator<(const Entity& other) const;
 
       // Conversion operator to EntityID for ease of use
       operator EntityID() const;
+
+      #pragma endregion
 
       // Checks if an entity has a component
       template <typename T>
@@ -285,6 +302,9 @@ namespace FlexEngine
 
   }
 }
+
+// Template implementations for Scene
+#include "scene.inl"
 
 // Template implementations for Entity
 #include "entity.inl"

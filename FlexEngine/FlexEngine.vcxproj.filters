@@ -239,5 +239,8 @@
     <None Include="src\FlexEngine\FlexECS\entity.inl">
       <Filter>src\FlexEngine\FlexECS</Filter>
     </None>
+    <None Include="src\FlexEngine\FlexECS\scene.inl">
+      <Filter>src\FlexEngine\FlexECS</Filter>
+    </None>
   </ItemGroup>
 </Project>
