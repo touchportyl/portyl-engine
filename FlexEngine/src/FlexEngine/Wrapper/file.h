@@ -31,6 +31,7 @@ namespace FlexEngine
 
     // Adds a file to the registry if it doesn't exist
     // Otherwise, returns the existing file
+    // Usage: File& file_txt = File::Open("path/to/file.txt");
     static File& Open(const Path& path);
 
     // Removes a file from the registry

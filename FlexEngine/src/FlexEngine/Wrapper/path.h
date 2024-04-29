@@ -16,7 +16,7 @@ namespace FlexEngine
   {
     // All the extensions that are considered safe
     // Extensions have a "." in front, e.g. ".txt"
-    // Categories: "flx", "flb", "data", "image", "video", "audio", "model"
+    // Categories: "flx", "flb", "data", "shader", "image", "video", "audio", "model"
     // Usage: safe["category"]
     __FLX_API extern const std::unordered_map<std::string, std::set<std::string>> safe;
   }
@@ -58,6 +58,7 @@ namespace FlexEngine
     // operator overloads
 
     operator std::filesystem::path() const noexcept;
+    operator std::string() const noexcept;
   };
 
   // operator overloads
@@ -98,4 +99,8 @@ namespace std
       return lhs == rhs;
     }
   };
+
+  // Overload std::to_string for FlexEngine::FilePath
+  std::string to_string(const FlexEngine::Path& p);
+
 }

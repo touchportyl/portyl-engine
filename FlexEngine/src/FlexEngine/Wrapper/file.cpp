@@ -46,14 +46,14 @@ namespace FlexEngine
     // guard
     if (!path.is_file())
     {
-      Log::Warning("Attempted to read a non-file: " + path.get().string());
+      Log::Warning("Attempted to read a non-file: " + std::to_string(path));
       return data;
     }
 
-    std::ifstream file(path.get(), std::ios::binary);
+    std::ifstream file(path, std::ios::binary);
     if (!file.is_open())
     {
-      Log::Error("Failed to open file: " + path.get().string());
+      Log::Error("Failed to open file: " + std::to_string(path));
       return data;
     }
 
@@ -68,7 +68,7 @@ namespace FlexEngine
 
     if (file.fail())
     {
-      Log::Error("Failed to read file: " + path.get().string());
+      Log::Error("Failed to read file: " + std::to_string(path));
       return data = ""; // return an empty string in case data was partially read/corrupted
     }
 
@@ -83,14 +83,14 @@ namespace FlexEngine
     // guard
     if (!path.is_file())
     {
-      Log::Warning("Attempted to write to a non-file: " + path.get().string());
+      Log::Warning("Attempted to write to a non-file: " + std::to_string(path));
       return;
     }
 
-    std::ofstream file(path.get(), std::ios::binary);
+    std::ofstream file(path, std::ios::binary);
     if (!file.is_open())
     {
-      Log::Error("Failed to open file: " + path.get().string());
+      Log::Error("Failed to open file: " + std::to_string(path));
       return;
     }
 
@@ -99,12 +99,12 @@ namespace FlexEngine
 
     if (file.fail())
     {
-      Log::Error("Failed to write to file: " + path.get().string());
+      Log::Error("Failed to write to file: " + std::to_string(path));
       return;
     }
 
 #ifdef _DEBUG
-    Log::Debug("Successfully wrote to file: " + path.get().string());
+    Log::Debug("Successfully wrote to file: " + std::to_string(path));
 #endif
   }
 
@@ -116,21 +116,21 @@ namespace FlexEngine
     // guard
     if (!path.is_file())
     {
-      Log::Warning("Attempted to delete a non-file: " + path.get().string());
+      Log::Warning("Attempted to delete a non-file: " + std::to_string(path));
       return;
     }
 
     std::error_code errorcode;
-    std::filesystem::remove(path.get(), errorcode);
+    std::filesystem::remove(path, errorcode);
 
     if (errorcode)
     {
-      Log::Error("Failed to delete file: " + path.get().string());
+      Log::Error("Failed to delete file: " + std::to_string(path));
       return;
     }
 
 #ifdef _DEBUG
-    Log::Debug("Successfully deleted file: " + path.get().string());
+    Log::Debug("Successfully deleted file: " + std::to_string(path));
 #endif
   }
 

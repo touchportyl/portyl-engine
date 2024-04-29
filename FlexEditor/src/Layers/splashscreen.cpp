@@ -8,10 +8,7 @@ namespace FlexEditor
     FLX_FLOW_BEGINSCOPE();
 
     // load shaders
-    shader_texture.SetBasePath("assets/shaders")
-      ->CreateVertexShader("texture.vert")
-      ->CreateFragmentShader("texture.frag")
-      ->Link();
+    shader_texture.Create(Path::current_path("assets/shaders/texture.vert"), Path::current_path("assets/shaders/texture.frag"));
 
     // load image
     //img_splash.Load(); // default texture
@@ -37,26 +34,20 @@ namespace FlexEditor
     };
 
     glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
-    glGenBuffers(1, &VBO);
-
     glBindVertexArray(VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    vertex_buffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+    index_buffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(unsigned int)));
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     // texture coord attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
   }
 
   void SplashScreenLayer::OnDetach()
@@ -72,7 +63,7 @@ namespace FlexEditor
     shader_texture.Use();
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, index_buffer->GetCount(), GL_UNSIGNED_INT, 0);
   }
 
 }

@@ -7,6 +7,7 @@
 // - Core  . . . . . . The core of the engine. Required for all applications.
 // - Tools . . . . . . Tools for logging, timing, and other utilities.
 // - Wrappers  . . . . Wrappers for external libraries and tools.
+// - Assets  . . . . . Assets like textures, shaders, and models.
 // - Data Structures . Data structures used in the engine.
 // - Loaders . . . . . Loaders for handling files, shaders, and textures. (To be deprecated)
 
@@ -107,6 +108,13 @@
 // Includes the ImGui library.
 #include "FlexEngine/Core/imguiwrapper.h"
 
+// Handles the creation and destruction of vertex and index buffers.
+// This is platform-independent and can be used with any graphics API.
+// Although the current implementation is exclusively for OpenGL.
+// Use the Create function to create a new buffer.
+#include "FlexEngine/Renderer/buffer.h"
+#include "FlexEngine/Renderer/OpenGL/openglbuffer.h"
+
 // Contains the path, file, and filelist class.
 // Has the Extension namespace with a list of safe and supported extensions.
 // Handles the functionality to read and write files.
@@ -123,20 +131,26 @@
 
 
 /* |-----------------------------| */
+/* |----------- Assets ----------| */
+/* |-----------------------------| */
+
+// OpenGL shaders handling.
+// Load and compile shaders from files.
+#include "FlexEngine/Loader/shaders.h"
+
+
+/* |-----------------------------| */
 /* |------ Data Structures ------| */
 /* |-----------------------------| */
 
 // Contains the FlexECS system.
+// This uses the Archetype-based Entity-Component-System architecture.
 #include "FlexEngine/FlexECS/datastructures.h"
 
 
 /* |-----------------------------| */
 /* |---------- Loaders ----------| */
 /* |-----------------------------| */
-
-// OpenGL shaders handling.
-// Load and compile shaders from files.
-#include "FlexEngine/Loader/shaders.h"
 
 // OpenGL texture handling.
 // Load textures from files.

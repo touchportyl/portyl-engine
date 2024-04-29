@@ -14,6 +14,8 @@ namespace FlexEngine
       { "flb", { ".flbscene", ".flbscript", ".flbprefab", ".flbmaterial" } },
       // Data files (txt, json, etc.)
       { "data", { ".txt", ".json", ".csv", ".yaml", ".ini", ".cfg", ".log", ".dat" } },
+      // Shader files (glsl, frag, etc.)
+      { "shader", { ".glsl", ".hlsl", ".frag", ".vert" }},
       // Image files (jpg, png, etc.)
       { "image", { ".jpg", ".jpeg", ".png" } },
       // Video files (mp4, avi, etc.)
@@ -31,17 +33,20 @@ namespace FlexEngine
   // Throws an exception if the path is invalid
   Path::Path(const std::filesystem::path& _path)
   {
+    // Normalize the path
+    std::filesystem::path normalized_path = std::filesystem::absolute(_path);
+
     // Check if the new path is valid, if not, throw an exception
-    if (!std::filesystem::exists(_path.root_path()))
+    if (!std::filesystem::exists(normalized_path.root_path()))
     {
       throw std::invalid_argument("Invalid file path");
     }
 
     // Check if the file is safe/supported
-    if (_path.has_extension())
+    if (normalized_path.has_extension())
     {
       // Get the extension
-      std::string extension = _path.extension().string();
+      std::string extension = normalized_path.extension().string();
 
       // Check if the extension is safe
       bool is_safe = false;
@@ -58,7 +63,7 @@ namespace FlexEngine
       if (!is_safe) throw std::invalid_argument("Unsupported file extension: " + extension);
     }
 
-    path = _path;
+    path = normalized_path;
   }
 
   #pragma endregion
@@ -144,6 +149,7 @@ namespace FlexEngine
   #pragma region operator overloads
 
   Path::operator std::filesystem::path() const noexcept { return path; }
+  Path::operator std::string() const noexcept { return path.string(); }
 
   bool operator==(const Path& lhs, const Path& rhs) noexcept { return lhs.get() == rhs.get(); }
   bool operator!=(const Path& lhs, const Path& rhs) noexcept { return lhs.get() != rhs.get(); }
@@ -161,4 +167,13 @@ namespace FlexEngine
 
   #pragma endregion
 
+}
+
+namespace std
+{
+  // Specialize std::to_string for FlexEngine::FilePath
+  std::string to_string(const FlexEngine::Path& p)
+  {
+    return p.get().string();
+  }
 }

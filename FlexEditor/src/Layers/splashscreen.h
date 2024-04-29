@@ -10,7 +10,9 @@ namespace FlexEditor
   {
     Asset::Shader shader_texture;
     Asset::Texture img_splash;
-    unsigned int VAO{}, VBO{}, EBO{};
+    unsigned int VAO{};
+    std::unique_ptr<VertexBuffer> vertex_buffer;
+    std::unique_ptr<IndexBuffer> index_buffer;
 
   public:
     SplashScreenLayer() : Layer("Flex Editor") {}

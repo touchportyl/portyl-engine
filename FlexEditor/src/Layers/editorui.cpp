@@ -49,10 +49,7 @@ namespace FlexEditor
     FLX_FLOW_BEGINSCOPE();
 
     // load shaders
-    shader_color.SetBasePath("assets/shaders")
-      ->CreateVertexShader("color.vert")
-      ->CreateFragmentShader("color.frag")
-      ->Link();
+    shader_color.Create(Path::current_path("assets/shaders/color.vert"), Path::current_path("assets/shaders/color.frag"));
 
     // load image
     //test_image.Load(); // default texture

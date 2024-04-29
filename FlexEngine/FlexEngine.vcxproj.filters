@@ -35,6 +35,12 @@
     <Filter Include="src\FlexEngine\Wrapper">
       <UniqueIdentifier>{d1154156-d650-4268-b90f-1eb3ac8e9b9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\FlexEngine\Renderer">
+      <UniqueIdentifier>{d4c22a84-5513-4213-b9c8-b90e5aff99cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\FlexEngine\Renderer\OpenGL">
+      <UniqueIdentifier>{f25f8024-bc0e-4f2a-aa58-6323cfc9f33f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -129,6 +135,12 @@
     </ClCompile>
     <ClCompile Include="src\FlexEngine\Core\windowprops.cpp">
       <Filter>src\FlexEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglbuffer.cpp">
+      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Renderer\buffer.cpp">
+      <Filter>src\FlexEngine\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +257,12 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Core\frameratecontroller.h">
       <Filter>src\FlexEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Renderer\buffer.h">
+      <Filter>src\FlexEngine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglbuffer.h">
+      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
