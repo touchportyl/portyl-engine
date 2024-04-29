@@ -2,19 +2,18 @@
 
 #include "flx_api.h"
 
-#include <memory>
-
 #include "window.h"
-#include "layerstack.h"
-#include "layer.h"
-#include "imgui.h"
+
+#include <string>
+#include <vector>
+#include <memory> // std::shared_ptr
 
 int main(int, char**);
 
 namespace FlexEngine
 {
 
-  // the architecture of the engine is designed to have only one application instance
+  // The architecture of the engine is designed to only have one application instance.
   class __FLX_API Application
   {
   public:
@@ -25,14 +24,16 @@ namespace FlexEngine
     // Sets the glfwSetWindowShouldClose flag
     static void Close();
 
-    // Window handling
+    #pragma region Window Handling Functions
 
     static std::shared_ptr<Window> OpenWindow(const WindowProps& props = {});
 
     static void CloseWindow(std::string& window_title);
     static void CloseWindow(std::shared_ptr<Window> window);
 
-    // checks
+    #pragma endregion
+
+    // Checks
 
     static bool IsRunning() { return m_is_running; }
     static bool IsMinimized() { return m_is_minimized; }

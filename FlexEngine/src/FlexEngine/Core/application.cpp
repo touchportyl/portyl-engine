@@ -3,9 +3,7 @@
 #include "application.h"
 
 #include "StateManager/statemanager.h"
-#include "imguiwrapper.h"
 #include "input.h"
-#include "freequeue.h"
 
 namespace FlexEngine
 {
@@ -45,6 +43,8 @@ namespace FlexEngine
     m_is_running = false;
   }
 
+  #pragma region Window Handling Functions
+
   std::shared_ptr<Window> Application::OpenWindow(const WindowProps& props)
   {
     FLX_FLOW_FUNCTION();
@@ -72,6 +72,8 @@ namespace FlexEngine
     window->Close();
     m_windows.erase(std::remove(m_windows.begin(), m_windows.end(), window), m_windows.end());
   }
+
+  #pragma endregion
 
   void Application::Run()
   {
