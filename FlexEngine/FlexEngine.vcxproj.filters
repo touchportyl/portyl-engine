@@ -41,6 +41,9 @@
     <Filter Include="src\FlexEngine\Renderer\OpenGL">
       <UniqueIdentifier>{f25f8024-bc0e-4f2a-aa58-6323cfc9f33f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\FlexEngine\DataStructures">
+      <UniqueIdentifier>{e2f4f80d-0a65-4a7f-8ca7-4e1832967dca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -62,18 +65,6 @@
       <Filter>src\FlexEngine</Filter>
     </ClCompile>
     <ClCompile Include="src\FlexEngine\flexlogger.cpp">
-      <Filter>src\FlexEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\Loader\shaders.cpp">
-      <Filter>src\FlexEngine\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\Loader\textures.cpp">
-      <Filter>src\FlexEngine\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\freequeue.cpp">
-      <Filter>src\FlexEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\functionqueue.cpp">
       <Filter>src\FlexEngine</Filter>
     </ClCompile>
     <ClCompile Include="src\FlexEngine\Loader\fmodstudio.cpp">
@@ -142,6 +133,18 @@
     <ClCompile Include="src\FlexEngine\Renderer\buffer.cpp">
       <Filter>src\FlexEngine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\Wrapper\shaders.cpp">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Wrapper\textures.cpp">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\DataStructures\freequeue.cpp">
+      <Filter>src\FlexEngine\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\DataStructures\functionqueue.cpp">
+      <Filter>src\FlexEngine\DataStructures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -159,9 +162,6 @@
     <ClInclude Include="src\FlexEngine\Core\entrypoint.h">
       <Filter>src\FlexEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Loader\shaders.h">
-      <Filter>src\FlexEngine\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="src\FlexEngine\Loader\gltf.h">
       <Filter>src\FlexEngine\Loader</Filter>
     </ClInclude>
@@ -175,15 +175,6 @@
       <Filter>src\FlexEngine</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\flexlogger.h">
-      <Filter>src\FlexEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\Loader\textures.h">
-      <Filter>src\FlexEngine\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\freequeue.h">
-      <Filter>src\FlexEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\functionqueue.h">
       <Filter>src\FlexEngine</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Loader\fmodstudio.h">
@@ -263,6 +254,18 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglbuffer.h">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Wrapper\shaders.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Wrapper\textures.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\DataStructures\freequeue.h">
+      <Filter>src\FlexEngine\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\DataStructures\functionqueue.h">
+      <Filter>src\FlexEngine\DataStructures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

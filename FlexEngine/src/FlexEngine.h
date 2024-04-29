@@ -7,9 +7,7 @@
 // - Core  . . . . . . The core of the engine. Required for all applications.
 // - Tools . . . . . . Tools for logging, timing, and other utilities.
 // - Wrappers  . . . . Wrappers for external libraries and tools.
-// - Assets  . . . . . Assets like textures, shaders, and models.
 // - Data Structures . Data structures used in the engine.
-// - Loaders . . . . . Loaders for handling files, shaders, and textures. (To be deprecated)
 
 
 /* |----------------------------| */
@@ -58,16 +56,15 @@
 // Use FLX_NULLPTR_ASSERT for checking pointers.
 #include "FlexEngine/Wrapper/flexassert.h"
 
+// Formatter for storing metadata in files.
+// Uses a simple key-value pair system to store metadata in files.
+#include "FlexEngine/flexformatter.h"
+
 // UUID class for generating unique identifiers.
-// Get the UUID by casting it to a hash, string, or by
-// using the << operator.
-// Hash is an unsigned 64-bit integer. (unsigned long long)
 #include "FlexEngine/uuid.h"
 
 // Scoped timer to measure time taken by functions.
-// Call the constructor at the start of the scope to start the timer.
-// Call the destructor at the end to end the timer and print the
-// time taken to the log.
+// Macros are provided to measure the time taken by a function.
 #include "FlexEngine/timer.h"
 
 // Math functions and constants.
@@ -91,13 +88,6 @@
 // Use GLFW key codes.
 // Currently does not support gamepads.
 #include "FlexEngine/input.h"
-
-// Two way queue for storing and executing functions.
-#include "FlexEngine/functionqueue.h"
-
-// Specialized function queue for storing and executing functions for freeing
-// heap objects after execution.
-#include "FlexEngine/freequeue.h"
 
 
 /* |-----------------------------| */
@@ -129,14 +119,13 @@
 // Can also be used to store a range of values by getting min and max.
 #include "FlexEngine/Wrapper/range.h"
 
-
-/* |-----------------------------| */
-/* |----------- Assets ----------| */
-/* |-----------------------------| */
-
 // OpenGL shaders handling.
 // Load and compile shaders from files.
-#include "FlexEngine/Loader/shaders.h"
+#include "FlexEngine/Wrapper/shaders.h"
+
+// OpenGL texture handling.
+// Load textures from files.
+#include "FlexEngine/Wrapper/textures.h"
 
 
 /* |-----------------------------| */
@@ -147,11 +136,9 @@
 // This uses the Archetype-based Entity-Component-System architecture.
 #include "FlexEngine/FlexECS/datastructures.h"
 
+// Two way queue for storing and executing functions.
+#include "FlexEngine/DataStructures/functionqueue.h"
 
-/* |-----------------------------| */
-/* |---------- Loaders ----------| */
-/* |-----------------------------| */
-
-// OpenGL texture handling.
-// Load textures from files.
-#include "FlexEngine/Loader/textures.h"
+// Specialized function queue for storing and executing functions for freeing
+// heap objects after execution.
+#include "FlexEngine/DataStructures/freequeue.h"

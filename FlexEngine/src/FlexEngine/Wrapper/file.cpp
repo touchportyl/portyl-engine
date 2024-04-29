@@ -41,7 +41,7 @@ namespace FlexEngine
   std::string File::Read()
   {
     FLX_FLOW_FUNCTION();
-    FLX_SCOPED_TIMER();
+    FLX_SCOPED_TIMER(__FUNCTION__ + std::string(" ") + std::to_string(path));
 
     // guard
     if (!path.is_file())
@@ -78,7 +78,7 @@ namespace FlexEngine
   void File::Write(const std::string& _data)
   {
     FLX_FLOW_FUNCTION();
-    FLX_SCOPED_TIMER();
+    FLX_SCOPED_TIMER(__FUNCTION__ + std::string(" ") + std::to_string(path));
 
     // guard
     if (!path.is_file())
@@ -111,7 +111,7 @@ namespace FlexEngine
   void File::Delete()
   {
     FLX_FLOW_FUNCTION();
-    FLX_SCOPED_TIMER();
+    FLX_SCOPED_TIMER(__FUNCTION__ + std::string(" ") + std::to_string(path));
 
     // guard
     if (!path.is_file())

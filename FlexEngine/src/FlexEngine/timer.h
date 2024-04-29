@@ -6,10 +6,12 @@
 
 #ifdef _DEBUG
   // Logs the duration automatically when it goes out of scope
-  #define FLX_SCOPED_TIMER() FlexEngine::Timer timer(__FUNCTION__);
+  #define FLX_SCOPED_TIMER(TEXT) FlexEngine::Timer timer(TEXT);
+  #define FLX_SCOPED_FUNCTION_TIMER() FlexEngine::Timer timer(__FUNCTION__);
 #else
   // Disabled in release mode
   #define FLX_SCOPED_TIMER()
+  #define FLX_SCOPED_FUNCTION_TIMER()
 #endif
 
 namespace FlexEngine

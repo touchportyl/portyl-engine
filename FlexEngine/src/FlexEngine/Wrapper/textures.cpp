@@ -9,7 +9,9 @@
 
 namespace FlexEngine
 {
-  
+
+  #pragma region Static Internal Functions
+
   // Create a default texture
   // This is the legendary Valve purple and black checkered texture
   static void CreateDefaultTexture(GLubyte* data, int width, int height)
@@ -84,20 +86,18 @@ namespace FlexEngine
 
     return true;
   }
+
+  #pragma endregion
   
   namespace Asset
   {
-
-    Texture::Texture(const std::string& path)
-      : m_path(path)
-    {
-      LoadTextureFromFile(path.c_str(), &m_texture, &m_width, &m_height);
-    }
 
     Texture::~Texture()
     {
       Unload();
     }
+
+    #pragma region Binding functions for OpenGL
 
     void Texture::Bind(unsigned int slot) const
     {
@@ -109,6 +109,10 @@ namespace FlexEngine
     {
       glBindTexture(GL_TEXTURE_2D, 0);
     }
+
+    #pragma endregion
+
+    #pragma region Texture Management Functions
 
     void Texture::Load()
     {
@@ -122,9 +126,10 @@ namespace FlexEngine
       m_width = default_width;
       m_height = default_height;
     }
-    void Texture::Load(const char* path)
+
+    void Texture::Load(const File& file)
     {
-      bool success = LoadTextureFromFile(path, &m_texture, &m_width, &m_height);
+      bool success = LoadTextureFromFile(file.path.get().string().c_str(), &m_texture, &m_width, &m_height);
       // if no texture is loaded, bind the default texture
       if (!success || m_texture == 0 || m_width == 0 || m_height == 0)
       {
@@ -139,6 +144,8 @@ namespace FlexEngine
         glDeleteTextures(1, &m_texture);
       }
     }
+
+    #pragma endregion
 
   }
 

@@ -125,6 +125,10 @@ RECENT REVISION HISTORY:
   of the credits.
 */
 
+#pragma warning(push)
+#pragma warning(disable: 26819) // Unannotated fallthrough between switch labels
+#pragma warning(disable: 6262) // Function uses X bytes of stack
+
 #ifndef STBI_INCLUDE_STB_IMAGE_H
 #define STBI_INCLUDE_STB_IMAGE_H
 
@@ -7983,3 +7987,5 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ------------------------------------------------------------------------------
 */
+
+#pragma warning(pop)

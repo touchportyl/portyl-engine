@@ -2,6 +2,8 @@
 
 #include "flx_api.h"
 
+#include "Wrapper/file.h"
+
 #include <string>
 
 // Helper macro to display a texture for ImGui using the ImGui::Image function
@@ -19,21 +21,35 @@ namespace FlexEngine
     // Can be used to bind and unbind textures for OpenGL
     class __FLX_API Texture
     {
+      unsigned int m_texture = 0;
+      int m_width = 0;
+      int m_height = 0;
+
     public:
       Texture() = default;
       ~Texture();
 
-      // load and unload functions
+      #pragma region Texture Management Functions
 
+      // Load the default texture
       void Load();
-      void Load(const char* path);
-      void Load(const std::string& path) { Load(path.c_str()); }
+
+      // Load a texture from a file
+      // The file does not need to be read before loading because
+      // the function will read the file and load the texture using
+      // the stb_image.h library.
+      void Load(const File& file);
+
       void Unload() const;
 
-      // binding functions for OpenGL
+      #pragma endregion
+
+      #pragma region Binding functions for OpenGL
 
       void Bind(unsigned int slot = 0) const;
       void Unbind() const;
+
+      #pragma endregion
 
       // == and != operator overloading to compare two textures
 
@@ -47,16 +63,9 @@ namespace FlexEngine
       int          GetHeight()       const { return m_height; }
       float        GetWidthF()       const { return static_cast<float>(m_width); }
       float        GetHeightF()      const { return static_cast<float>(m_height); }
-      // helper function for ImGui
+      // Helper function for ImGui
       void*        GetTextureImGui() const { return (void*)(intptr_t)m_texture; }
 
-    private:
-      Texture(const std::string& path);
-
-      std::string m_path{};
-      unsigned int m_texture = 0;
-      int m_width = 0;
-      int m_height = 0;
     };
 
   }

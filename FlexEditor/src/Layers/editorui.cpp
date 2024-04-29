@@ -1,9 +1,6 @@
 #include "Layers/editorui.h"
 
-
 // temporary
-#include <FlexEngine/flexformatter.h>
-//#include <FlexEngine/FlexECS/datastructures.h>
 #include "Components/DemoComponents.h"
 
 void DumpJsonNodes(const rapidjson::Value& value, int depth = 0)

@@ -168,6 +168,8 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Core\imguiwrapper.cpp" />
     <ClCompile Include="src\FlexEngine\Core\layerstack.cpp" />
     <ClCompile Include="src\FlexEngine\Core\windowprops.cpp" />
+    <ClCompile Include="src\FlexEngine\DataStructures\freequeue.cpp" />
+    <ClCompile Include="src\FlexEngine\DataStructures\functionqueue.cpp" />
     <ClCompile Include="src\FlexEngine\FlexECS\datastructures.cpp" />
     <ClCompile Include="src\FlexEngine\FlexECS\entity.cpp" />
     <ClCompile Include="src\FlexEngine\FlexECS\scene.cpp" />
@@ -175,13 +177,9 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\FlexMath\vector2.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\vector3.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\vector4.cpp" />
-    <ClCompile Include="src\FlexEngine\freequeue.cpp" />
-    <ClCompile Include="src\FlexEngine\functionqueue.cpp" />
     <ClCompile Include="src\FlexEngine\input.cpp" />
     <ClCompile Include="src\FlexEngine\flexlogger.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\fmodstudio.cpp" />
-    <ClCompile Include="src\FlexEngine\Loader\textures.cpp" />
-    <ClCompile Include="src\FlexEngine\Loader\shaders.cpp" />
     <ClCompile Include="src\FlexEngine\playerprefs.cpp" />
     <ClCompile Include="src\FlexEngine\Reflection\primitives.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\buffer.cpp" />
@@ -193,6 +191,8 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Wrapper\file.cpp" />
     <ClCompile Include="src\FlexEngine\Wrapper\filelist.cpp" />
     <ClCompile Include="src\FlexEngine\Wrapper\path.cpp" />
+    <ClCompile Include="src\FlexEngine\Wrapper\shaders.cpp" />
+    <ClCompile Include="src\FlexEngine\Wrapper\textures.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -212,19 +212,17 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Core\imguiwrapper.h" />
     <ClInclude Include="src\FlexEngine\Core\layer.h" />
     <ClInclude Include="src\FlexEngine\Core\layerstack.h" />
+    <ClInclude Include="src\FlexEngine\DataStructures\freequeue.h" />
+    <ClInclude Include="src\FlexEngine\DataStructures\functionqueue.h" />
     <ClInclude Include="src\FlexEngine\FlexECS\datastructures.h" />
     <ClInclude Include="src\FlexEngine\flexformatter.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\values.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\vector2.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\vector3.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\vector4.h" />
-    <ClInclude Include="src\FlexEngine\freequeue.h" />
-    <ClInclude Include="src\FlexEngine\functionqueue.h" />
     <ClInclude Include="src\FlexEngine\input.h" />
     <ClInclude Include="src\FlexEngine\Loader\fmodstudio.h" />
     <ClInclude Include="src\FlexEngine\Loader\gltf.h" />
-    <ClInclude Include="src\FlexEngine\Loader\textures.h" />
-    <ClInclude Include="src\FlexEngine\Loader\shaders.h" />
     <ClInclude Include="src\FlexEngine\flexlogger.h" />
     <ClInclude Include="src\FlexEngine\playerprefs.h" />
     <ClInclude Include="src\FlexEngine\Reflection\base.h" />
@@ -241,6 +239,8 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Wrapper\flexassert.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\path.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\range.h" />
+    <ClInclude Include="src\FlexEngine\Wrapper\shaders.h" />
+    <ClInclude Include="src\FlexEngine\Wrapper\textures.h" />
     <ClInclude Include="src\flx_api.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\FlexEngine.h" />

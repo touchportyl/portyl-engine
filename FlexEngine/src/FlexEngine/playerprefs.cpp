@@ -47,7 +47,7 @@ namespace FlexEngine
   {
     FLX_FLOW_FUNCTION();
 
-    FLX_SCOPED_TIMER();
+    FLX_SCOPED_FUNCTION_TIMER();
 
     std::ifstream ifs(PLAYERPREFS_FILE_PATH);
     if (!ifs.is_open())
@@ -79,7 +79,7 @@ namespace FlexEngine
   {
     FLX_FLOW_FUNCTION();
 
-    FLX_SCOPED_TIMER();
+    FLX_SCOPED_FUNCTION_TIMER();
 
     std::ofstream ofs(PLAYERPREFS_FILE_PATH);
     if (!ofs.is_open())
