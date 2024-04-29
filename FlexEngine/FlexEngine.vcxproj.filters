@@ -124,6 +124,12 @@
     <ClCompile Include="src\FlexEngine\Wrapper\date.cpp">
       <Filter>src\FlexEngine\Wrapper</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\Core\frameratecontroller.cpp">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Core\windowprops.cpp">
+      <Filter>src\FlexEngine\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -236,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Wrapper\ansi_color.h">
       <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Core\frameratecontroller.h">
+      <Filter>src\FlexEngine\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

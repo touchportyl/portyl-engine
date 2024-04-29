@@ -79,6 +79,20 @@ namespace FlexEngine
     glfwDestroyWindow(m_glfwwindow);
   }
 
+  #pragma region Getter/Setter Functions
+
+  std::string Window::GetTitle() const { return s_props.title; }
+  unsigned int Window::GetWidth() const { return s_props.width; }
+  unsigned int Window::GetHeight() const { return s_props.height; }
+  WindowProps Window::GetProps() const { return Props(); }
+  WindowProps Window::Props() const { return s_props; }
+
+  void Window::SetTitle(std::string const& title) { s_props.title = title; }
+  void Window::SetWidth(unsigned int const& width) { s_props.width = width; }
+  void Window::SetHeight(unsigned int const& height) { s_props.height = height; }
+
+  #pragma endregion
+
   void Window::Update()
   {
     // make sure the current window is the one we are working with
@@ -89,12 +103,14 @@ namespace FlexEngine
     glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT); // clear framebuffer
 
+    m_frameratecontroller.BeginFrame();
     ImGuiWrapper::BeginFrame();
 
     // update layer stack
     m_layerstack.Update();
 
     ImGuiWrapper::EndFrame();
+    m_frameratecontroller.EndFrame();
 
     // swap buffers
     glfwSwapBuffers(m_glfwwindow);

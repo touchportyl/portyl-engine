@@ -2,15 +2,17 @@
 
 #include "flx_api.h"
 
+#include "FlexEngine/Core/frameratecontroller.h" // <chrono>
+#include "FlexEngine/Core/layerstack.h" // <string> <memory> <vector>
+
 #include <glad/glad.h>
-#include <GLFW/glfw3.h> // put glad before glfw
+#include <GLFW/glfw3.h> // always put glad before glfw
+
+#include <imgui.h> // ImGuiContext
 
 #include <string>
 #include <vector>
-
-#include <imgui.h>
-
-#include "FlexEngine/Core/layerstack.h"
+#include <memory> // std::shared_ptr
 
 namespace FlexEngine
 {
@@ -19,15 +21,16 @@ namespace FlexEngine
   // Pass in window hints as a vector of pairs of integers.
   // Window hints cannot be changed after the window is created.
   // https://www.glfw.org/docs/3.0/window.html#window_hints
-  struct WindowProps
+  struct __FLX_API WindowProps
   {
-    std::string title;
-    int width, height;
-    const std::vector<std::pair<int, int>> window_hints;
-    const char* opengl_version_text;
+    std::string title = "FlexEngine";
+    int width = 1280;
+    int height = 720;
+    const std::vector<std::pair<int, int>> window_hints{};
+    const char* opengl_version_text = "#version 460 core";
 
     WindowProps(
-      std::string const& title = "FlexEngine",
+      const std::string& title = "FlexEngine",
       int width = 1280, int height = 720,
       std::vector<std::pair<int, int>> window_hints = {
         { GLFW_CONTEXT_VERSION_MAJOR, 4 },
@@ -35,16 +38,19 @@ namespace FlexEngine
         { GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE }
       },
       const char* opengl_version_text = "#version 460 core"
-    )
-      : title(title), width(width), height(height)
-      , window_hints(window_hints)
-      , opengl_version_text(opengl_version_text)
-    {
-    }
+    );
   };
 
   class __FLX_API Window
   {
+    WindowProps s_props;
+
+    FramerateController m_frameratecontroller;
+    LayerStack m_layerstack;
+
+    GLFWwindow* m_glfwwindow{ nullptr };
+    ImGuiContext* m_imguicontext{ nullptr };
+
   public:
     Window(const WindowProps& props);
     ~Window();
@@ -56,19 +62,19 @@ namespace FlexEngine
     Window& operator=(const Window&) = delete;
     Window& operator=(Window&&) = delete;
 
-    // getters
+    #pragma region Getter/Setter Functions
 
-    std::string GetTitle() const { return s_props.title; }
-    unsigned int GetWidth() const { return s_props.width; }
-    unsigned int GetHeight() const { return s_props.height; }
-    WindowProps GetProps() const { return Props(); } // alias for convention
-    WindowProps Props() const { return s_props; }
+    std::string GetTitle() const;
+    unsigned int GetWidth() const;
+    unsigned int GetHeight() const;
+    WindowProps GetProps() const; // alias for convention
+    WindowProps Props() const;
 
-    // setters
+    void SetTitle(std::string const& title);
+    void SetWidth(unsigned int const& width);
+    void SetHeight(unsigned int const& height);
 
-    void SetTitle(std::string const& title) { s_props.title = title; }
-    void SetWidth(unsigned int const& width) { s_props.width = width; }
-    void SetHeight(unsigned int const& height) { s_props.height = height; }
+    #pragma endregion
 
     // Sets the current window as the active window
     // Clears the screen and runs the layer stack
@@ -81,12 +87,23 @@ namespace FlexEngine
     // Do not call this function unnecessarily
     void CenterWindow();
 
+    #pragma region Passthrough Functions
+
+    // passthrough functions for the framerate controller
+
+    float GetDeltaTime() const { return m_frameratecontroller.GetDeltaTime(); }
+    unsigned int GetFPS() const { return m_frameratecontroller.GetFPS(); }
+
+    void SetTargetFPS(unsigned int fps) { m_frameratecontroller.SetTargetFPS(fps); }
+
     // passthrough functions for the layer stack
 
     void PushLayer(std::shared_ptr<Layer> layer) { m_layerstack.PushLayer(layer); }
     void PushOverlay(std::shared_ptr<Layer> layer) { m_layerstack.PushOverlay(layer); }
     void PopLayer() { m_layerstack.PopLayer(); }
     void PopOverlay() { m_layerstack.PopOverlay(); }
+
+    #pragma endregion
 
     // Returns the GLFW window pointer.
     // Do not use this unless you know what you are doing.
@@ -98,13 +115,6 @@ namespace FlexEngine
     // The function is unsafe because it returns a raw pointer.
     ImGuiContext* GetImGuiContext() const { return m_imguicontext; }
 
-  private:
-    LayerStack m_layerstack;
-
-    GLFWwindow* m_glfwwindow{ nullptr };
-    ImGuiContext* m_imguicontext{ nullptr };
-
-    WindowProps s_props;
   };
 
 }

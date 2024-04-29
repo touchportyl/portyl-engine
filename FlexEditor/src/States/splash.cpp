@@ -27,6 +27,8 @@ namespace FlexEditor
     );
     AlignImGuiContext(window);
     window->PushLayer(std::make_shared<SplashScreenLayer>());
+
+    window->SetTargetFPS(30);
   }
 
   void SplashState::OnExit()
@@ -39,8 +41,13 @@ namespace FlexEditor
   {
     window->Update();
 
-    // todo: replace with async asset loading
-    if (Input::GetKeyDown(GLFW_KEY_SPACE))
+    static float delay = 0.0f;
+    delay += window->GetDeltaTime();
+
+    // TODO:
+    // replace with async asset loading
+    //if (Input::GetKeyDown(GLFW_KEY_SPACE))
+    if (delay > 2.0f) // 2 seconds
     {
       ApplicationStateManager::SetState<EditorState>();
     }
