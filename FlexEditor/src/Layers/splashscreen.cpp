@@ -11,13 +11,11 @@ namespace FlexEditor
     shader_texture.Create(Path::current_path("assets/shaders/texture.vert"), Path::current_path("assets/shaders/texture.frag"));
 
     // load image
-    //img_splash.Load(); // default texture
-    img_splash.Load("assets/images/flexengine/flexengine_splash.png");
+    File& file_splash = File::Open(Path::current_path("assets/images/flexengine/flexengine_splash.png"));
+    img_splash.Load(file_splash);
 
 
     // todo: add opengl rendering
-    // vertex buffer objects (VBO)
-    // indices (IBO)
     // vertex array object (VAO)
 
     float vertices[] = {

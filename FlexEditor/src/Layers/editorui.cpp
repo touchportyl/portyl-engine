@@ -50,7 +50,8 @@ namespace FlexEditor
 
     // load image
     //test_image.Load(); // default texture
-    test_image.Load("assets/images/Body_SG1_baseColor.jpeg");
+    File& file_test_image = File::Open(Path::current_path("assets/images/Body_SG1_baseColor.jpeg"));
+    test_image.Load(file_test_image);
 
 
     // todo: remove debug code
@@ -746,11 +747,6 @@ namespace FlexEditor
     
     #pragma endregion
 
-
-    // todo: add opengl rendering
-    // vertex buffer objects (VBO)
-    // indices (IBO)
-    // vertex array object (VAO)
   }
 
   void EditorLayer::OnDetach()

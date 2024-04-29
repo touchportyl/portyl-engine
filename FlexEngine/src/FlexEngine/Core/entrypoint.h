@@ -10,7 +10,7 @@
 
 #include "flexlogger.h"
 #include "application.h"
-#include "freequeue.h"
+#include "DataStructures/freequeue.h"
 
 // Create an application.
 // Use it by creating a new class that inherits from FlexEngine::Application and override the CreateApplication function.
