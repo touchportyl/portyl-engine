@@ -47,7 +47,7 @@ namespace FlexEditor
     // TODO:
     // replace with async asset loading
     //if (Input::GetKeyDown(GLFW_KEY_SPACE))
-    if (delay > 2.0f) // 2 seconds
+    if (delay > 20.0f) // 2 seconds
     {
       ApplicationStateManager::SetState<EditorState>();
     }

@@ -9,10 +9,8 @@ namespace FlexEditor
   class SplashScreenLayer : public FlexEngine::Layer
   {
     Asset::Shader shader_texture;
+    Asset::Mesh mesh_splash;
     Asset::Texture img_splash;
-    unsigned int VAO{};
-    std::unique_ptr<VertexBuffer> vertex_buffer;
-    std::unique_ptr<IndexBuffer> index_buffer;
 
   public:
     SplashScreenLayer() : Layer("Flex Editor") {}

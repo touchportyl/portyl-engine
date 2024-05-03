@@ -19,6 +19,8 @@
 #include <unordered_set>                    // std::unordered_set and std::unordered_multiset unordered associative containers
 #include <unordered_map>                    // std::unordered_map and std::unordered_multimap unordered associative containers
 
+#include <variant>                          // Store types from a fixed set of types with type-safe access
+
 #include <memory>                           // High-level memory management utilities
 #include <utility>                          // Various utility components
 #include <algorithm>                        // Algorithms that operate on ranges

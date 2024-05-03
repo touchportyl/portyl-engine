@@ -1,11 +1,13 @@
 #pragma once
 
+#include "flx_api.h"
+
 #include "vector2.h"
 
 namespace FlexEngine
 {
 
-  struct Vector3
+  struct __FLX_API Vector3
   { FLX_REFL_SERIALIZABLE
 
     // Using directives

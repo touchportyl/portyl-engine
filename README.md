@@ -12,6 +12,7 @@ FlexEngine is a work-in-progress game engine.
 - fmod 2.02
 
 ## working on implementation
+- assimp 5.4.0
 
 ## unsure if allowed
 - fastgltf 0.6.1

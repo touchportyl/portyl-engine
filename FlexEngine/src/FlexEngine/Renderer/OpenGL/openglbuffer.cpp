@@ -7,9 +7,36 @@
 namespace FlexEngine
 {
 
-  #pragma region VertexBuffer
+  #pragma region OpenGLVertexArray
 
-  OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, unsigned int size)
+  OpenGLVertexArray::OpenGLVertexArray()
+  {
+    glGenVertexArrays(1, &m_renderer_id);
+  }
+
+  OpenGLVertexArray::~OpenGLVertexArray()
+  {
+    glDeleteVertexArrays(1, &m_renderer_id);
+  }
+
+  void OpenGLVertexArray::Bind() const
+  {
+    glBindVertexArray(m_renderer_id);
+
+    // Hardcoded vertex layout
+    Vertex::SetLayout();
+  }
+
+  void OpenGLVertexArray::Unbind() const
+  {
+    glBindVertexArray(0);
+  }
+
+  #pragma endregion
+
+  #pragma region OpenGLVertexBuffer
+
+  OpenGLVertexBuffer::OpenGLVertexBuffer(Vertex* vertices, std::size_t size)
   {
     glGenBuffers(1, &m_renderer_id);
     glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id);
@@ -33,9 +60,9 @@ namespace FlexEngine
 
   #pragma endregion
 
-  #pragma region IndexBuffer
+  #pragma region OpenGLIndexBuffer
 
-  OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int* indices, unsigned int count)
+  OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int* indices, GLsizei count)
     : m_count(count)
   {
     glGenBuffers(1, &m_renderer_id);
@@ -58,7 +85,7 @@ namespace FlexEngine
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
 
-  unsigned int OpenGLIndexBuffer::GetCount() const
+  GLsizei OpenGLIndexBuffer::GetCount() const
   {
     return m_count;
   }

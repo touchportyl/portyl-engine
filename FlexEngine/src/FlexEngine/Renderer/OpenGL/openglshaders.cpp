@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "shaders.h"
+#include "openglshaders.h"
 
 #include <glad/glad.h>
 
@@ -59,6 +59,13 @@ namespace FlexEngine
       }
 
       glUseProgram(m_shader_program);
+    }
+
+    void Shader::SetUniform(const char* name, int value)
+    {
+      Use(); // make sure the shader is being used
+      int location = glGetUniformLocation(m_shader_program, name);
+      glUniform1i(location, value);
     }
 
     unsigned int Shader::Get() const

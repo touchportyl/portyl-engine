@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "textures.h"
+#include "opengltextures.h"
 
 #include <glad/glad.h>
 
@@ -71,10 +71,16 @@ namespace FlexEngine
     glBindTexture(GL_TEXTURE_2D, image_texture);
 
     // Setup filtering parameters for display
+    //glGenerateMipmap(GL_TEXTURE_2D);
+
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // This is required on WebGL for non power-of-two textures
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Same
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // This is required on WebGL for non power-of-two textures
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Same
 
     // Upload pixels into texture
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
@@ -127,9 +133,9 @@ namespace FlexEngine
       m_height = default_height;
     }
 
-    void Texture::Load(const File& file)
+    void Texture::Load(const Path& path_to_texture)
     {
-      bool success = LoadTextureFromFile(file.path.get().string().c_str(), &m_texture, &m_width, &m_height);
+      bool success = LoadTextureFromFile(path_to_texture.string().c_str(), &m_texture, &m_width, &m_height);
       // if no texture is loaded, bind the default texture
       if (!success || m_texture == 0 || m_width == 0 || m_height == 0)
       {

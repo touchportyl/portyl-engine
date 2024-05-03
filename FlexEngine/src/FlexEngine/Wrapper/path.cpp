@@ -125,6 +125,16 @@ namespace FlexEngine
 
   #pragma region Passthrough functions
 
+  std::filesystem::path Path::stem() const noexcept
+  {
+    return path.stem();
+  }
+
+  std::string Path::string() const noexcept
+  {
+    return path.string();
+  }
+
   bool Path::exists(const Path& _path) noexcept
   {
     return std::filesystem::exists(_path);

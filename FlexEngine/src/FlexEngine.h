@@ -24,6 +24,12 @@
 // Layers are updated and rendered in the order they are pushed.
 #include "FlexEngine/Core/layer.h"
 
+// Manages all the assets in the application.
+// Load and store assets like textures and shaders.
+// All assets should be referenced by their key, which will
+// then be used to retrieve the asset.
+#include "FlexEngine/AssetManager/assetmanager.h"
+
 
 /* |-----------------------------| */
 /* |----------- Tools -----------| */
@@ -70,9 +76,12 @@
 // Math functions and constants.
 // Contains constants like PI and EPSILON.
 // Implements Vector2, Vector3, Vector4.
+// Implements Matrix4x4 for transformations.
+#include "FlexEngine/FlexMath/mathconstants.h"
 #include "FlexEngine/FlexMath/vector2.h"
 #include "FlexEngine/FlexMath/vector3.h"
 #include "FlexEngine/FlexMath/vector4.h"
+#include "FlexEngine/FlexMath/matrix4x4.h"
 
 // Used to manage states.
 // Make your own states by inheriting from FlexEngine::State.
@@ -98,13 +107,6 @@
 // Includes the ImGui library.
 #include "FlexEngine/Core/imguiwrapper.h"
 
-// Handles the creation and destruction of vertex and index buffers.
-// This is platform-independent and can be used with any graphics API.
-// Although the current implementation is exclusively for OpenGL.
-// Use the Create function to create a new buffer.
-#include "FlexEngine/Renderer/buffer.h"
-#include "FlexEngine/Renderer/OpenGL/openglbuffer.h"
-
 // Contains the path, file, and filelist class.
 // Has the Extension namespace with a list of safe and supported extensions.
 // Handles the functionality to read and write files.
@@ -119,13 +121,37 @@
 // Can also be used to store a range of values by getting min and max.
 #include "FlexEngine/Wrapper/range.h"
 
-// OpenGL shaders handling.
-// Load and compile shaders from files.
-#include "FlexEngine/Wrapper/shaders.h"
 
-// OpenGL texture handling.
+/* |-----------------------------| */
+/* |---------- Renderer ---------| */
+/* |-----------------------------| */
+
+// Contains the renderer class.
+// The current implementation is exclusively for OpenGL.
+#include "FlexEngine/Renderer/OpenGL/openglrenderer.h"
+
+// Stores one vertex for the mesh.
+// The current implementation is exclusively for OpenGL.
+#include "FlexEngine/Renderer/OpenGL/openglvertex.h"
+
+// Handles the creation and destruction of vertex and index buffers.
+// This is platform-independent and can be used with any graphics API.
+// Although the current implementation is exclusively for OpenGL.
+#include "FlexEngine/Renderer/buffer.h"
+#include "FlexEngine/Renderer/OpenGL/openglbuffer.h"
+
 // Load textures from files.
-#include "FlexEngine/Wrapper/textures.h"
+// The current implementation is exclusively for OpenGL.
+#include "FlexEngine/Renderer/OpenGL/opengltextures.h"
+
+// Contains the FlexEngine mesh class.
+// This class is used to store vertices, indices, and textures.
+// The current implementation is exclusively for OpenGL.
+#include "FlexEngine/Renderer/OpenGL/openglmesh.h"
+
+// Load and compile shaders from files.
+// The current implementation is exclusively for OpenGL.
+#include "FlexEngine/Renderer/OpenGL/openglshaders.h"
 
 
 /* |-----------------------------| */

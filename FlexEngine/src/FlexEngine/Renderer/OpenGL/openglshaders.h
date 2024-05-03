@@ -28,6 +28,9 @@ namespace FlexEngine
       // Use the shader program with glUseProgram
       void Use() const;
 
+      // Set a uniform integer
+      void SetUniform(const char* name, int value);
+
       // Returns the shader program
       unsigned int Get() const;
 
@@ -37,6 +40,18 @@ namespace FlexEngine
       void Internal_CreateVertexShader(const Path& path_to_vertex_shader);
       void Internal_CreateFragmentShader(const Path& path_to_fragment_shader);
       void Internal_Link();
+
+      #pragma endregion
+
+      #pragma region Enums
+
+    public:
+      enum Type
+      {
+        Vertex = 0,
+        Fragment,
+        Geometry
+      };
 
       #pragma endregion
 

@@ -77,13 +77,14 @@ namespace FlexEngine
 
   void FileList::each(std::function<void(File&)> func)
   {
-    for (auto& file : m_files)
+    for (auto& path : m_files)
     {
+      File& file = FlexEngine::File::Open(path);
       func(file);
     }
   }
 
-  FileList FileList::find_if(std::function<bool(const File&)> predicate)
+  FileList FileList::find_if(std::function<bool(const Path&)> predicate)
   {
     FileList found;
 
@@ -111,7 +112,50 @@ namespace FlexEngine
 
     for (const auto& entry : std::filesystem::directory_iterator(directory.get()))
     {
-      files.push_back({ entry.path() });
+      // guard
+      if (entry.is_directory()) continue;
+
+      // catch unsafe extensions
+      try
+      {
+        files.push_back({ entry.path() });
+      }
+      catch (const std::exception& e)
+      {
+        Log::Warning(e.what());
+        continue;
+      }
+    }
+
+    return files;
+  }
+
+  FileList FileList::GetAllFilesInDirectoryRecursively(const Path& directory)
+  {
+    // guard
+    if (!directory.is_directory())
+    {
+      Log::Error("Attempted to get files from a non-directory: " + directory.get().string());
+      return {};
+    }
+
+    FileList files;
+
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(directory.get()))
+    {
+      // guard
+      if (entry.is_directory()) continue;
+
+      // catch unsafe extensions
+      try
+      {
+        files.push_back({ entry.path() });
+      }
+      catch (const std::exception& e)
+      {
+        Log::Warning(e.what());
+        continue;
+      }
     }
 
     return files;

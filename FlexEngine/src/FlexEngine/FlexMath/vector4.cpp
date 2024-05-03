@@ -317,12 +317,21 @@ namespace FlexEngine
 
   std::istream& operator>>(std::istream& is, Vector4& point)
   {
-    return is >> point.x >> point.y >> point.z >> point.w;
+    for (Vector4::size_type i = 0; i < point.size(); ++i)
+    {
+      is >> point.data[i];
+    }
+    return is;
   }
 
   std::ostream& operator<<(std::ostream& os, const Vector4& point)
   {
-    return os << "(" << point.x << ", " << point.y << ", " << point.z << ", " << point.w << ")";
+    for (Vector4::size_type i = 0; i < point.size(); ++i)
+    {
+      os << point.data[i];
+      if (i < point.size() - 1) os << " ";
+    }
+    return os;
   }
 
 #pragma endregion

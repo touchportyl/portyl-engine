@@ -7,12 +7,17 @@ namespace FlexEngine
 
   // In the future, support for other graphics APIs can be added here.
 
-  VertexBuffer* VertexBuffer::Create(float* vertices, unsigned int size)
+  VertexArray* VertexArray::Create()
+  {
+    return new OpenGLVertexArray();
+  }
+
+  VertexBuffer* VertexBuffer::Create(Vertex* vertices, std::size_t size)
   {
     return new OpenGLVertexBuffer(vertices, size);
   }
 
-  IndexBuffer* IndexBuffer::Create(unsigned int* indices, unsigned int count)
+  IndexBuffer* IndexBuffer::Create(unsigned int* indices, GLsizei count)
   {
     return new OpenGLIndexBuffer(indices, count);
   }

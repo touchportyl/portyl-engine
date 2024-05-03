@@ -2,10 +2,35 @@
 
 #include "flx_api.h"
 
+#include "Renderer/OpenGL/openglvertex.h"
+
+#include <glad/glad.h>
+
+#include <vector>
 #include <memory> // std::shared_ptr
 
 namespace FlexEngine
 {
+
+  #pragma region VertexArray
+
+  class __FLX_API VertexArray
+  {
+  public:
+    virtual ~VertexArray() {}
+
+    virtual void Bind() const = 0;
+    virtual void Unbind() const = 0;
+
+    // Best practice to store the pointer in a unique_ptr or shared_ptr
+    // Usage: std::unique_ptr<VertexArray> vertex_array;
+    //        vertex_array.reset(VertexArray::Create());
+    static VertexArray* Create();
+  };
+
+  #pragma endregion
+
+  #pragma region VertexBuffer
 
   class __FLX_API VertexBuffer
   {
@@ -17,9 +42,13 @@ namespace FlexEngine
 
     // Best practice to store the pointer in a unique_ptr or shared_ptr
     // Usage: std::unique_ptr<VertexBuffer> vertex_buffer;
-    //        vertex_buffer.reset(VertexBuffer::Create(vertices, sizeof(vertices));
-    static VertexBuffer* Create(float* vertices, unsigned int size);
+    //        vertex_buffer.reset(VertexBuffer::Create(vertices.data(), sizeof(vertices));
+    static VertexBuffer* Create(Vertex* vertices, std::size_t size);
   };
+
+  #pragma endregion
+
+  #pragma region IndexBuffer
 
   class __FLX_API IndexBuffer
   {
@@ -29,12 +58,14 @@ namespace FlexEngine
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
 
-    virtual unsigned int GetCount() const = 0;
+    virtual GLsizei GetCount() const = 0;
 
     // Best practice to store the pointer in a unique_ptr or shared_ptr
     // Usage: std::unique_ptr<IndexBuffer> index_buffer;
     //        index_buffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(unsigned int)));
-    static IndexBuffer* Create(unsigned int* indices, unsigned int count);
+    static IndexBuffer* Create(unsigned int* indices, GLsizei count);
   };
+
+  #pragma endregion
 
 }

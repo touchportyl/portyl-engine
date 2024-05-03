@@ -2,7 +2,7 @@
 
 #include "flx_api.h"
 
-#include "values.h"
+#include "mathconstants.h" // PI, EPSILON
 
 #include "Reflection/base.h"
 

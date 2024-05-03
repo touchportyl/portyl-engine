@@ -15,10 +15,21 @@ namespace FlexEngine
   namespace Extensions
   {
     // All the extensions that are considered safe
+    // Do not use this directly, use the FLX_EXTENSIONS macro instead
+    // 
     // Extensions have a "." in front, e.g. ".txt"
     // Categories: "flx", "flb", "data", "shader", "image", "video", "audio", "model"
-    // Usage: safe["category"]
     __FLX_API extern const std::unordered_map<std::string, std::set<std::string>> safe;
+
+    // Helper macro to get the safe extensions for a category
+    // Categories: "flx", "flb", "data", "shader", "image", "video", "audio", "model"
+    // Usage: FLX_EXTENSIONS("category")
+    #define FLX_EXTENSIONS(CATEGORY) FlexEngine::Extensions::safe.at(CATEGORY)
+
+    // Helper macro to check if an extension is safe
+    // Categories: "flx", "flb", "data", "shader", "image", "video", "audio", "model"
+    // Usage: if (FLX_EXTENSIONS_CHECK_SAFETY("image", ".png"))
+    #define FLX_EXTENSIONS_CHECK_SAFETY(CATEGORY, EXTENSION) (FLX_EXTENSIONS(CATEGORY).count(EXTENSION) != 0)
   }
 
   // Wrapper for std::filesystem::path
@@ -47,6 +58,9 @@ namespace FlexEngine
     bool is_directory() const noexcept;
 
     // Passthrough functions
+
+    std::filesystem::path stem() const noexcept;
+    std::string string() const noexcept;
 
     static bool exists(const Path& _path) noexcept;
     static Path current_path();

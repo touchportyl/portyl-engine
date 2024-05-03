@@ -34,11 +34,8 @@ namespace FlexEngine
       // Load the default texture
       void Load();
 
-      // Load a texture from a file
-      // The file does not need to be read before loading because
-      // the function will read the file and load the texture using
-      // the stb_image.h library.
-      void Load(const File& file);
+      // Load a texture from a path
+      void Load(const Path& path_to_texture);
 
       void Unload() const;
 
