@@ -31,10 +31,10 @@ namespace FlexEngine
 
   // Constructor to ensure validity of the path
   // Throws an exception if the path is invalid
-  Path::Path(const std::filesystem::path& _path)
+  Path::Path(const std::filesystem::path& path)
   {
     // Normalize the path
-    std::filesystem::path normalized_path = std::filesystem::absolute(_path);
+    std::filesystem::path normalized_path = std::filesystem::absolute(path);
 
     // Check if the new path is valid, if not, throw an exception
     if (!std::filesystem::exists(normalized_path.root_path()))
@@ -63,81 +63,35 @@ namespace FlexEngine
       if (!is_safe) throw std::invalid_argument("Unsupported file extension: " + extension);
     }
 
-    path = normalized_path;
+    m_path = normalized_path;
   }
 
   #pragma endregion
 
-  #pragma region Getter/setter functions
+  #pragma region Getter
 
   std::filesystem::path Path::get() const noexcept
   {
-    return path;
+    return m_path;
   }
-
-  //void Path::set(const std::filesystem::path& _path)
-  //{
-  //  // Check if the file is safe/supported
-  //  if (_path.has_extension())
-  //  {
-  //    // Get the extension
-  //    std::string extension = _path.extension().string();
-  //
-  //    // Check if the extension is safe
-  //    bool is_safe = false;
-  //    for (const auto& [category, extensions] : Extensions::safe)
-  //    {
-  //      if (extensions.count(extension) != 0)
-  //      {
-  //        is_safe = true;
-  //        break;
-  //      }
-  //    }
-  //
-  //    // Throw an exception if the extension is not safe
-  //    if (!is_safe) throw std::invalid_argument("Unsupported file extension: " + extension);
-  //  }
-  //
-  //  // Check if the new path is valid, if not, throw an exception
-  //  if (!exists(_path))
-  //  {
-  //    throw std::invalid_argument("Invalid file path");
-  //  }
-  //
-  //  this->path = _path;
-  //}
 
   #pragma endregion
 
-  #pragma region Queries
+  #pragma region Extra Queries
 
   bool Path::is_file() const noexcept
   {
-    return !std::filesystem::is_directory(path);
+    return !std::filesystem::is_directory(m_path);
   }
 
   bool Path::is_directory() const noexcept
   {
-    return std::filesystem::is_directory(path);
+    return std::filesystem::is_directory(m_path);
   }
 
-  #pragma endregion
-
-  #pragma region Passthrough functions
-
-  std::filesystem::path Path::stem() const noexcept
+  bool Path::exists(const Path& path) noexcept
   {
-    return path.stem();
-  }
-
-  std::string Path::string() const noexcept
-  {
-    return path.string();
-  }
-
-  bool Path::exists(const Path& _path) noexcept
-  {
-    return std::filesystem::exists(_path);
+    return std::filesystem::exists(path);
   }
 
   Path Path::current_path()
@@ -147,7 +101,116 @@ namespace FlexEngine
 
   #pragma endregion
 
-  #pragma region Helper functions
+  #pragma region Passthrough Functions
+
+  #pragma region Modifiers
+
+  void Path::clear() noexcept
+  {
+    m_path.clear();
+  }
+
+  void Path::swap(Path& other) noexcept
+  {
+    m_path.swap(other.m_path);
+  }
+
+  #pragma endregion
+
+  #pragma region Format observers
+
+  const std::filesystem::path::value_type* Path::c_str() const noexcept
+  {
+    return m_path.c_str();
+  }
+
+  std::string Path::string() const noexcept
+  {
+    return m_path.string();
+  }
+
+  std::wstring Path::wstring() const noexcept
+  {
+    return m_path.wstring();
+  }
+
+  #pragma endregion
+
+  #pragma region Decomposition
+
+  std::filesystem::path Path::root_name() const
+  {
+    return m_path.root_name();
+  }
+
+  std::filesystem::path Path::root_directory() const
+  {
+    return m_path.root_directory();
+  }
+
+  std::filesystem::path Path::root_path() const
+  {
+    return m_path.root_path();
+  }
+
+  std::filesystem::path Path::relative_path() const
+  {
+    return m_path.relative_path();
+  }
+
+  std::filesystem::path Path::parent_path() const
+  {
+    return m_path.parent_path();
+  }
+
+  std::filesystem::path Path::filename() const
+  {
+    return m_path.filename();
+  }
+
+  std::filesystem::path Path::stem() const
+  {
+    return m_path.stem();
+  }
+
+  std::filesystem::path Path::extension() const
+  {
+    return m_path.extension();
+  }
+
+  #pragma endregion
+
+  #pragma region Queries
+
+  bool Path::empty() const noexcept
+  {
+    return m_path.empty();
+  }
+
+  bool Path::has_extension() const
+  {
+    return m_path.has_extension();
+  }
+
+  #pragma endregion
+
+  #pragma region Iterators
+
+  std::filesystem::path::iterator Path::begin() const
+  {
+    return m_path.begin();
+  }
+
+  std::filesystem::path::iterator Path::end() const
+  {
+    return m_path.end();
+  }
+
+  #pragma endregion
+
+  #pragma endregion
+
+  #pragma region Helper Functions
 
   Path Path::current_path(const std::string& path_to_append)
   {
@@ -156,22 +219,48 @@ namespace FlexEngine
 
   #pragma endregion
 
-  #pragma region operator overloads
+  #pragma region Operator Overloads
 
-  Path::operator std::filesystem::path() const noexcept { return path; }
-  Path::operator std::string() const noexcept { return path.string(); }
-
-  bool operator==(const Path& lhs, const Path& rhs) noexcept { return lhs.get() == rhs.get(); }
-  bool operator!=(const Path& lhs, const Path& rhs) noexcept { return lhs.get() != rhs.get(); }
-  bool operator<(const Path& lhs, const Path& rhs) noexcept { return lhs.get() < rhs.get(); }
-  bool operator>(const Path& lhs, const Path& rhs) noexcept { return lhs.get() > rhs.get(); }
-
-  std::ostream& operator<<(std::ostream& os, const Path& p) noexcept { return os << p.get(); }
-  std::istream& operator>>(std::istream& is, Path& p) noexcept
+  Path::operator std::filesystem::path() const noexcept
   {
-    std::filesystem::path pth;
-    is >> pth;
-    p = pth;
+    return m_path;
+  }
+
+  Path::operator std::string() const noexcept
+  {
+    return m_path.string();
+  }
+
+  bool operator==(const Path& lhs, const Path& rhs) noexcept
+  {
+    return lhs.get() == rhs.get();
+  }
+
+  bool operator!=(const Path& lhs, const Path& rhs) noexcept
+  {
+    return lhs.get() != rhs.get();
+  }
+
+  bool operator<(const Path& lhs, const Path& rhs) noexcept
+  {
+    return lhs.get() < rhs.get();
+  }
+
+  bool operator>(const Path& lhs, const Path& rhs) noexcept
+  {
+    return lhs.get() > rhs.get();
+  }
+
+  std::ostream& operator<<(std::ostream& os, const Path& path) noexcept
+  {
+    return os << path.get();
+  }
+
+  std::istream& operator>>(std::istream& is, Path& path) noexcept
+  {
+    std::filesystem::path _path;
+    is >> _path;
+    path = _path;
     return is;
   }
 
@@ -182,7 +271,7 @@ namespace FlexEngine
 namespace std
 {
   // Specialize std::to_string for FlexEngine::FilePath
-  std::string to_string(const FlexEngine::Path& p)
+  string to_string(const FlexEngine::Path& p)
   {
     return p.get().string();
   }

@@ -104,13 +104,13 @@ namespace FlexEngine
     // guard
     if (!directory.is_directory())
     {
-      Log::Error("Attempted to get files from a non-directory: " + directory.get().string());
+      Log::Error("Attempted to get files from a non-directory: " + directory.string());
       return {};
     }
 
     FileList files;
 
-    for (const auto& entry : std::filesystem::directory_iterator(directory.get()))
+    for (const auto& entry : std::filesystem::directory_iterator(directory))
     {
       // guard
       if (entry.is_directory()) continue;
@@ -135,13 +135,13 @@ namespace FlexEngine
     // guard
     if (!directory.is_directory())
     {
-      Log::Error("Attempted to get files from a non-directory: " + directory.get().string());
+      Log::Error("Attempted to get files from a non-directory: " + directory.string());
       return {};
     }
 
     FileList files;
 
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(directory.get()))
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(directory))
     {
       // guard
       if (entry.is_directory()) continue;

@@ -128,11 +128,11 @@ namespace FlexEngine
 
     // guard: wrong file extension
     // only .flx files are supported
-    std::string extension = file.path.get().extension().string();
+    std::string extension = file.path.extension().string();
 
     if (extension.substr(0, 4) != ".flx")
     {
-      Log::Warning("Unsupported file extension: " + file.path.get().string());
+      Log::Warning("Unsupported file extension: " + file.path.string());
       return FlxFmtFile::Null;
     }
 
@@ -152,7 +152,7 @@ namespace FlexEngine
     // guard: empty file
     if (file.data.empty())
     {
-      Log::Warning("Empty file: " + file.path.get().string());
+      Log::Warning("Empty file: " + file.path.string());
       return FlxFmtFile::Null;
     }
 

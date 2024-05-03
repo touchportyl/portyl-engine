@@ -47,7 +47,7 @@ namespace FlexEngine
         // - textures
         // - shaders
 
-        auto file_extension = file.path.get().extension();
+        auto file_extension = file.path.extension();
 
         if (FLX_EXTENSIONS_CHECK_SAFETY("image", file_extension.string()))
         {
