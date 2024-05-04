@@ -5,6 +5,7 @@
 #include "application.h"
 #include "imguiwrapper.h"
 #include "input.h"
+#include "Renderer/OpenGL/openglrenderer.h"
 
 namespace
 {
@@ -96,12 +97,12 @@ namespace FlexEngine
   void Window::Update()
   {
     // make sure the current window is the one we are working with
+    Application::Internal_SetCurrentWindow(this);
     glfwMakeContextCurrent(m_glfwwindow);
     ImGui::SetCurrentContext(m_imguicontext);
 
     // clear screen
-    glClearColor(0.f, 0.f, 0.f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT); // clear framebuffer
+    OpenGLRenderer::ClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 
     m_frameratecontroller.BeginFrame();
     ImGuiWrapper::BeginFrame();
@@ -124,6 +125,8 @@ namespace FlexEngine
     // shutdown imgui
     // the imgui initialization is done in the window constructor
     ImGuiWrapper::Shutdown(m_imguicontext);
+
+    Application::Internal_SetCurrentWindow(nullptr);
 
     // set the window to close
     glfwSetWindowShouldClose(m_glfwwindow, true);

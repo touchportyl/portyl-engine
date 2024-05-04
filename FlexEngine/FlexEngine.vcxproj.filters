@@ -163,6 +163,9 @@
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglrenderer.cpp">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\FlexMath\mathconversions.cpp">
+      <Filter>src\FlexEngine\FlexMath</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -296,6 +299,15 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglrenderer.h">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\FlexMath\mathconversions.h">
+      <Filter>src\FlexEngine\FlexMath</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\FlexMath\vector1.h">
+      <Filter>src\FlexEngine\FlexMath</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\FlexMath\matrix1x1.h">
+      <Filter>src\FlexEngine\FlexMath</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

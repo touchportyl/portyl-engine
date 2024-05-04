@@ -3,12 +3,32 @@
 #include <FlexEngine.h>
 using namespace FlexEngine;
 
-// TODO:
-// Replace this with my own math library
-//#include <glm/glm.hpp>
-
 namespace OpenGLRendering
 {
+
+  class LocalPosition
+  { FLX_REFL_SERIALIZABLE
+  public:
+    Vector3 position;
+  };
+
+  class GlobalPosition
+  { FLX_REFL_SERIALIZABLE
+  public:
+    Vector3 position;
+  };
+
+  class Rotation
+  { FLX_REFL_SERIALIZABLE
+  public:
+    Vector3 rotation;
+  };
+
+  class Scale
+  { FLX_REFL_SERIALIZABLE
+  public:
+    Vector3 scale;
+  };
 
   class Transform
   { FLX_REFL_SERIALIZABLE
@@ -45,10 +65,16 @@ namespace OpenGLRendering
   class Camera
   { FLX_REFL_SERIALIZABLE
   public:
-    Vector3 target_position;
-    Vector3 direction;
+    Vector3 front;
     Vector3 right;
     Vector3 up;
+    const Vector3 world_up = Vector3::Up;
+    Matrix4x4 view;
+    Matrix4x4 projection;
+    bool perspective = true;
+    float fov = 45.0f;
+    float near = 0.1f;
+    float far = 100.0f;
   };
 
 }

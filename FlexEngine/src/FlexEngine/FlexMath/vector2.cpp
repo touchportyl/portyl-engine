@@ -18,10 +18,11 @@ namespace FlexEngine
   const Vector2 Vector2::One    = {  1,  1 };
   const Vector2 Vector2::Up     = {  0,  1 };
   const Vector2 Vector2::Down   = {  0, -1 };
-  const Vector2 Vector2::Left   = {  1,  0 };
-  const Vector2 Vector2::Right  = { -1,  0 };
+  const Vector2 Vector2::Left   = { -1,  0 };
+  const Vector2 Vector2::Right  = {  1,  0 };
 
   Vector2::operator bool() const { return *this != Zero; }
+  Vector2::operator Vector1() const { return { x }; }
 
   Vector2 Vector2::Swizzle(const std::string& swizzle) const
   {
@@ -151,12 +152,19 @@ namespace FlexEngine
 
   bool Vector2::operator==(const Vector2& other) const
   {
-    return x - other.x < EPSILON_f && y - other.y < EPSILON_f;
+    if constexpr (std::is_same_v<value_type, float>)
+    {
+      return abs(x - other.x) < EPSILONf && abs(y - other.y) < EPSILONf;
+    }
+    else if constexpr (std::is_same_v<value_type, double>)
+    {
+      return abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON;
+    }
   }
 
   bool Vector2::operator!=(const Vector2& other) const
   {
-    return !(x - other.x < EPSILON_f && y - other.y < EPSILON_f);
+    return !(*this == other);
   }
 
   Vector2 Vector2::RotateRad(const_value_type radians) const
@@ -168,8 +176,7 @@ namespace FlexEngine
 
   Vector2 Vector2::RotateDeg(const_value_type degrees) const
   {
-    const_value_type radians = degrees * PI_f / 180.0f;
-    return RotateRad(radians);
+    return RotateRad(radians(degrees));
   }
 
   Vector2::value_type Vector2::Magnitude() const
@@ -187,12 +194,18 @@ namespace FlexEngine
     return x * x + y * y;
   }
 
-  Vector2 Vector2::Normalize() const
-    {
-      const_value_type mag = Magnitude();
-      if (mag == 0) return { 0, 0 };
-      return { x / mag, y / mag };
-    }
+  Vector2& Vector2::Normalize()
+  {
+    const_value_type length = Magnitude();
+    if (length == 0) return *this;
+    return *this /= length;
+  }
+
+  Vector2 Vector2::Normalize(const Vector2& other)
+  {
+    Vector2 result = other;
+    return result.Normalize();
+  }
 
 #pragma endregion
 
@@ -331,6 +344,20 @@ namespace FlexEngine
       if (i < point.size() - 1) os << ' ';
     }
     return os;
+  }
+
+#pragma endregion
+
+#pragma region mathconversions Overloads
+
+  Vector2 radians(const Vector2& degrees)
+  {
+    return { radians(degrees.x), radians(degrees.y) };
+  }
+
+  Vector2 degrees(const Vector2& radians)
+  {
+    return { degrees(radians.x), degrees(radians.y) };
   }
 
 #pragma endregion

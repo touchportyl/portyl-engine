@@ -12,7 +12,7 @@ namespace FlexEngine
 
     // Using directives
 
-    using value_type = float;
+    using value_type = Vector1;
     using const_value_type = const value_type;
     using size_type = std::size_t;
     using reference = value_type&;
@@ -35,6 +35,7 @@ namespace FlexEngine
       struct { value_type x, y, z; };
       struct { value_type r, g, b; };
       struct { value_type u, v, w; };
+      struct { value_type s, t, p; };
       struct { value_type first, second, third; };
     #pragma warning(pop)
       value_type data[3];
@@ -43,7 +44,10 @@ namespace FlexEngine
 
 #pragma region Standard Functions
 
-    // Shorthand, follows Unity conventions
+    // Shorthand for common vectors
+    // 
+    // Unity uses left-handed coordinate system while OpenGL uses right-handed coordinate system.
+    // These are following OpenGL right-handedness despite using Unity naming conventions.
 
     static const Vector3 Zero;
     static const Vector3 One;
@@ -57,6 +61,7 @@ namespace FlexEngine
     // Conversion operators
 
     operator bool() const;
+    operator Vector1() const;
     operator Vector2() const;
 
     // Swizzle support
@@ -113,7 +118,9 @@ namespace FlexEngine
     value_type Magnitude() const;
     value_type Length() const;
     value_type LengthSqr() const;
-    Vector3 Normalize() const;
+
+    Vector3& Normalize();
+    static Vector3 Normalize(const Vector3& other);
 
 #pragma endregion
 
@@ -151,27 +158,34 @@ namespace FlexEngine
 
 #pragma region Vector3 Helper Fns
 
-  Vector3 operator+(const Vector3& point_a, const Vector3& point_b);
-  Vector3 operator+(Vector3::const_value_type value, const Vector3& point);
-  Vector3 operator+(const Vector3& point, Vector3::const_value_type value);
+  __FLX_API Vector3 operator+(const Vector3& point_a, const Vector3& point_b);
+  __FLX_API Vector3 operator+(Vector3::const_value_type value, const Vector3& point);
+  __FLX_API Vector3 operator+(const Vector3& point, Vector3::const_value_type value);
 
-  Vector3 operator-(const Vector3& point_a, const Vector3& point_b);
-  Vector3 operator-(Vector3::const_value_type value, const Vector3& point);
-  Vector3 operator-(const Vector3& point, Vector3::const_value_type value);
+  __FLX_API Vector3 operator-(const Vector3& point_a, const Vector3& point_b);
+  __FLX_API Vector3 operator-(Vector3::const_value_type value, const Vector3& point);
+  __FLX_API Vector3 operator-(const Vector3& point, Vector3::const_value_type value);
 
-  //Vector3 operator*(const Vector3& point_a, const Vector3& point_b);
-  Vector3::value_type Dot(const Vector3& point_a, const Vector3& point_b);
-  Vector3 operator*(Vector3::const_value_type value, const Vector3& point);
-  Vector3 operator*(const Vector3& point, Vector3::const_value_type value);
+  //__FLX_API Vector3 operator*(const Vector3& point_a, const Vector3& point_b);
+  __FLX_API Vector3::value_type Dot(const Vector3& point_a, const Vector3& point_b);
+  __FLX_API Vector3 operator*(Vector3::const_value_type value, const Vector3& point);
+  __FLX_API Vector3 operator*(const Vector3& point, Vector3::const_value_type value);
 
-  //Vector3 operator/(const Vector3& point, const_value_type value);
-  Vector3 operator/(Vector3::const_value_type value, const Vector3& point);
-  Vector3 operator/(const Vector3& point, Vector3::const_value_type value);
+  //__FLX_API Vector3 operator/(const Vector3& point, const_value_type value);
+  __FLX_API Vector3 operator/(Vector3::const_value_type value, const Vector3& point);
+  __FLX_API Vector3 operator/(const Vector3& point, Vector3::const_value_type value);
 
-  Vector3 Cross(const Vector3& a, const Vector3& b);
+  __FLX_API Vector3 Cross(const Vector3& a, const Vector3& b);
 
-  std::istream& operator>>(std::istream& is, Vector3& point);
-  std::ostream& operator<<(std::ostream& os, const Vector3& point);
+  __FLX_API std::istream& operator>>(std::istream& is, Vector3& point);
+  __FLX_API std::ostream& operator<<(std::ostream& os, const Vector3& point);
+
+#pragma endregion
+
+#pragma region mathconversions Overloads
+
+  __FLX_API Vector3 radians(const Vector3& degrees);
+  __FLX_API Vector3 degrees(const Vector3& radians);
 
 #pragma endregion
 

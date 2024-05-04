@@ -75,12 +75,16 @@
 
 // Math functions and constants.
 // Contains constants like PI and EPSILON.
+// Contains conversion functions for degrees and radians.
 // Implements Vector2, Vector3, Vector4.
 // Implements Matrix4x4 for transformations.
 #include "FlexEngine/FlexMath/mathconstants.h"
+#include "FlexEngine/FlexMath/mathconversions.h"
+#include "FlexEngine/FlexMath/vector1.h"
 #include "FlexEngine/FlexMath/vector2.h"
 #include "FlexEngine/FlexMath/vector3.h"
 #include "FlexEngine/FlexMath/vector4.h"
+#include "FlexEngine/FlexMath/matrix1x1.h"
 #include "FlexEngine/FlexMath/matrix4x4.h"
 
 // Used to manage states.

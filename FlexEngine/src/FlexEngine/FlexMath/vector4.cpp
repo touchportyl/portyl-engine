@@ -20,6 +20,7 @@ namespace FlexEngine
   const Vector4 Vector4::One  = { 1, 1, 1, 1 };
 
   Vector4::operator bool() const { return *this != Zero; }
+  Vector4::operator Vector1() const { return { x }; }
   Vector4::operator Vector2() const { return { x, y }; }
   Vector4::operator Vector3() const { return { x, y, z }; }
 
@@ -191,12 +192,19 @@ namespace FlexEngine
 
   bool Vector4::operator==(const Vector4& other) const
   {
-    return x - other.x < EPSILON_f && y - other.y < EPSILON_f && z - other.z < EPSILON_f && w - other.w < EPSILON_f;
+    if constexpr (std::is_same_v<value_type, float>)
+    {
+      return abs(x - other.x) < EPSILONf && abs(y - other.y) < EPSILONf && abs(z - other.z) < EPSILONf && abs(w - other.w) < EPSILONf;
+    }
+    else if constexpr (std::is_same_v<value_type, double>)
+    {
+      return abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON && abs(w - other.w) < EPSILON;
+    }
   }
 
   bool Vector4::operator!=(const Vector4& other) const
   {
-    return !(x - other.x < EPSILON_f && y - other.y < EPSILON_f && z - other.z < EPSILON_f && w - other.w < EPSILON_f);
+    return !(*this == other);
   }
 
   // Note: Returns the magnitude of the xyz component
@@ -217,12 +225,17 @@ namespace FlexEngine
     return x * x + y * y + z * z;
   }
 
-  // Note: Returns the normalized xyz component
-  Vector4 Vector4::Normalize() const
+  Vector4& Vector4::Normalize()
   {
-    value_type length = Magnitude();
-    if (length == 0) return { 0, 0, 0, 0 };
-    return { x / length, y / length, z / length, w / length };
+    const_value_type length = Magnitude();
+    if (length == 0) return *this;
+    return *this /= length;
+  }
+
+  Vector4 Vector4::Normalize(const Vector4& other)
+  {
+    Vector4 result = other;
+    return result.Normalize();
   }
 
 #pragma endregion
@@ -283,10 +296,10 @@ namespace FlexEngine
     return { point.x - value, point.y - value, point.z - value, point.w - value };
   }
 
-  //Vector4 operator*(const Vector4& point_a, const Vector4& point_b)
-  //{
-  //  return { point_a.x * point_b.x, point_a.y * point_b.y, point_a.z * point_b.z, point_a.w * point_b.w };
-  //}
+  Vector4 operator*(const Vector4& point_a, const Vector4& point_b)
+  {
+    return { point_a.x * point_b.x, point_a.y * point_b.y, point_a.z * point_b.z, point_a.w * point_b.w };
+  }
 
   Vector4 operator*(Vector4::const_value_type value, const Vector4& point)
   {
@@ -332,6 +345,20 @@ namespace FlexEngine
       if (i < point.size() - 1) os << " ";
     }
     return os;
+  }
+
+#pragma endregion
+
+#pragma region mathconversions Overloads
+
+  Vector4 radians(const Vector4& degrees)
+  {
+    return { radians(degrees.x), radians(degrees.y), radians(degrees.z), radians(degrees.w) };
+  }
+
+  Vector4 degrees(const Vector4& radians)
+  {
+    return { degrees(radians.x), degrees(radians.y), degrees(radians.z), degrees(radians.w) };
   }
 
 #pragma endregion

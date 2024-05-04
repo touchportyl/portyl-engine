@@ -38,15 +38,30 @@ namespace FlexEngine
     static bool IsRunning() { return m_is_running; }
     static bool IsMinimized() { return m_is_minimized; }
 
+    // Returns the current window.
+    // This is not the same as the focused window, the current window is
+    // the window that is currently being processed.
+    // Works somewhat like the opengl or imgui context.
+    static Window* GetCurrentWindow();
+
     // Returns all the windows
     static const std::vector<std::shared_ptr<Window>>& GetWindows() { return m_windows; }
 
   private:
+
+    // allow access to internal functions
+    friend class Window;
+
+    // INTERNAL FUNCTION
+    // Sets the current window
+    static void Internal_SetCurrentWindow(Window* window);
+
     static void Run();
 
     static bool m_is_running;
     static bool m_is_minimized;
 
+    static Window* m_current_window;
     static std::vector<std::shared_ptr<Window>> m_windows;
 
     friend int ::main(int, char**);

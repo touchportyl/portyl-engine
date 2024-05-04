@@ -1,5 +1,7 @@
 #include "vector3.h"
 
+#include <algorithm> // std::min
+
 namespace FlexEngine
 {
 
@@ -19,19 +21,20 @@ namespace FlexEngine
   const Vector3 Vector3::One      = {  1,  1,  1 };
   const Vector3 Vector3::Up       = {  0,  1,  0 };
   const Vector3 Vector3::Down     = {  0, -1,  0 };
-  const Vector3 Vector3::Left     = {  1,  0,  0 };
-  const Vector3 Vector3::Right    = { -1,  0,  0 };
+  const Vector3 Vector3::Left     = { -1,  0,  0 };
+  const Vector3 Vector3::Right    = {  1,  0,  0 };
   const Vector3 Vector3::Forward  = {  0,  0,  1 };
   const Vector3 Vector3::Back     = {  0,  0, -1 };
 
   Vector3::operator bool() const { return *this != Zero; }
+  Vector3::operator Vector1() const { return { x }; }
   Vector3::operator Vector2() const { return { x, y }; }
 
   Vector3 Vector3::Swizzle(const std::string& swizzle) const
   {
     // build new vector based on swizzle
-    Vector3 new_vector;
-    for (size_type i = 0; i < size(); ++i)
+    Vector3 new_vector = Vector3::Zero;
+    for (size_type i = 0; i < std::min(swizzle.size(), size()); ++i)
     {
       switch (swizzle[i])
       {
@@ -41,6 +44,7 @@ namespace FlexEngine
       default: new_vector[i] = data[i]; break;
       }
     }
+
     return new_vector;
   }
 
@@ -181,12 +185,19 @@ namespace FlexEngine
 
   bool Vector3::operator==(const Vector3& other) const
   {
-    return x - other.x < EPSILON_f && y - other.y < EPSILON_f && z - other.z < EPSILON_f;
+    if constexpr (std::is_same_v<value_type, float>)
+    {
+      return abs(x - other.x) < EPSILONf && abs(y - other.y) < EPSILONf && abs(z - other.z) < EPSILONf;
+    }
+    else if constexpr (std::is_same_v<value_type, double>)
+    {
+      return abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON;
+    }
   }
 
   bool Vector3::operator!=(const Vector3& other) const
   {
-    return !(x - other.x < EPSILON_f && y - other.y < EPSILON_f && z - other.z < EPSILON_f);
+    return !(*this == other);
   }
 
   Vector3::value_type Vector3::Magnitude() const
@@ -204,11 +215,17 @@ namespace FlexEngine
     return x * x + y * y + z * z;
   }
 
-  Vector3 Vector3::Normalize() const
+  Vector3& Vector3::Normalize()
   {
-    value_type length = Magnitude();
-    if (length == 0) return { 0, 0, 0 };
-    return { x / length, y / length, z / length };
+    const_value_type length = Magnitude();
+    if (length == 0) return *this;
+    return *this /= length;
+  }
+
+  Vector3 Vector3::Normalize(const Vector3& other)
+  {
+    Vector3 result = other;
+    return result.Normalize();
   }
 
 #pragma endregion
@@ -259,14 +276,14 @@ namespace FlexEngine
     return { point_a.x - point_b.x, point_a.y - point_b.y, point_a.z - point_b.z };
   }
 
-  Vector3 operator-(Vector3::const_value_type value, const Vector3& point)
+  Vector3 operator-(const Vector3& point, Vector3::const_value_type value)
   {
     return { point.x - value, point.y - value, point.z - value };
   }
 
-  Vector3 operator-(const Vector3& point, Vector3::const_value_type value)
+  Vector3 operator-(Vector3::const_value_type value, const Vector3& point)
   {
-    return { point.x - value, point.y - value, point.z - value };
+    return { value - point.x, value - point.y, value - point.z };
   }
 
   //Vector3 operator*(const Vector3& point_a, const Vector3& point_b)
@@ -328,6 +345,20 @@ namespace FlexEngine
       if (i < point.size() - 1) os << " ";
     }
     return os;
+  }
+
+#pragma endregion
+
+#pragma region mathconversions Overloads
+
+  Vector3 radians(const Vector3& degrees)
+  {
+    return { radians(degrees.x), radians(degrees.y), radians(degrees.z) };
+  }
+
+  Vector3 degrees(const Vector3& radians)
+  {
+    return { degrees(radians.x), degrees(radians.y), degrees(radians.z) };
   }
 
 #pragma endregion

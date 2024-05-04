@@ -3,6 +3,7 @@
 #include "flx_api.h"
 
 #include "Wrapper/path.h"
+#include "FlexMath/matrix4x4.h"
 
 namespace FlexEngine
 {
@@ -28,8 +29,16 @@ namespace FlexEngine
       // Use the shader program with glUseProgram
       void Use() const;
 
-      // Set a uniform integer
-      void SetUniform(const char* name, int value);
+      #pragma region Set Uniforms
+
+      void SetUniform_bool(const char* name, bool value);
+      void SetUniform_int(const char* name, int value);
+      void SetUniform_float(const char* name, float value);
+      void SetUniform_vec2(const char* name, const Vector2& vector);
+      void SetUniform_vec3(const char* name, const Vector3& vector);
+      void SetUniform_mat4(const char* name, const Matrix4x4& matrix);
+
+      #pragma endregion
 
       // Returns the shader program
       unsigned int Get() const;

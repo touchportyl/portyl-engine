@@ -175,6 +175,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\FlexECS\entity.cpp" />
     <ClCompile Include="src\FlexEngine\FlexECS\scene.cpp" />
     <ClCompile Include="src\FlexEngine\flexformatter.cpp" />
+    <ClCompile Include="src\FlexEngine\FlexMath\mathconversions.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\matrix4x4.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\vector2.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\vector3.cpp" />
@@ -221,8 +222,11 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\DataStructures\functionqueue.h" />
     <ClInclude Include="src\FlexEngine\FlexECS\datastructures.h" />
     <ClInclude Include="src\FlexEngine\flexformatter.h" />
+    <ClInclude Include="src\FlexEngine\FlexMath\mathconversions.h" />
+    <ClInclude Include="src\FlexEngine\FlexMath\matrix1x1.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\matrix4x4.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\mathconstants.h" />
+    <ClInclude Include="src\FlexEngine\FlexMath\vector1.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\vector2.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\vector3.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\vector4.h" />

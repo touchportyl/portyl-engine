@@ -12,7 +12,7 @@ namespace FlexEngine
 
     // Using directives
 
-    using value_type = float;
+    using value_type = Vector1;
     using const_value_type = const value_type;
     using size_type = std::size_t;
     using reference = value_type&;
@@ -40,7 +40,7 @@ namespace FlexEngine
 
 #pragma region Standard Functions
 
-    // Shorthand, follows Unity conventions
+    // Shorthand for common vectors
 
     static const Vector4 Zero;
     static const Vector4 One;
@@ -48,6 +48,7 @@ namespace FlexEngine
     // Conversion operators
 
     operator bool() const;
+    operator Vector1() const;
     operator Vector2() const;
     operator Vector3() const;
 
@@ -111,8 +112,8 @@ namespace FlexEngine
     // Note: Returns the length of the xyz component
     value_type LengthSqr() const;
 
-    // Note: Returns the normalized xyz component
-    Vector4 Normalize() const;
+    Vector4& Normalize();
+    static Vector4 Normalize(const Vector4& other);
 
 #pragma endregion
 
@@ -150,24 +151,31 @@ namespace FlexEngine
 
 #pragma region Vector4 Helper Fns
 
-  Vector4 operator+(const Vector4& point_a, const Vector4& point_b);
-  Vector4 operator+(Vector4::const_value_type value, const Vector4& point);
-  Vector4 operator+(const Vector4& point, Vector4::const_value_type value);
+  __FLX_API Vector4 operator+(const Vector4& point_a, const Vector4& point_b);
+  __FLX_API Vector4 operator+(Vector4::const_value_type value, const Vector4& point);
+  __FLX_API Vector4 operator+(const Vector4& point, Vector4::const_value_type value);
 
-  Vector4 operator-(const Vector4& point_a, const Vector4& point_b);
-  Vector4 operator-(Vector4::const_value_type value, const Vector4& point);
-  Vector4 operator-(const Vector4& point, Vector4::const_value_type value);
+  __FLX_API Vector4 operator-(const Vector4& point_a, const Vector4& point_b);
+  __FLX_API Vector4 operator-(Vector4::const_value_type value, const Vector4& point);
+  __FLX_API Vector4 operator-(const Vector4& point, Vector4::const_value_type value);
 
-  //Vector4 operator*(const Vector4& point_a, const Vector4& point_b);
-  Vector4 operator*(Vector4::const_value_type value, const Vector4& point);
-  Vector4 operator*(const Vector4& point, Vector4::const_value_type value);
+  __FLX_API Vector4 operator*(const Vector4& point_a, const Vector4& point_b);
+  __FLX_API Vector4 operator*(Vector4::const_value_type value, const Vector4& point);
+  __FLX_API Vector4 operator*(const Vector4& point, Vector4::const_value_type value);
 
-  //Vector4 operator/(const Vector4& point_a, const Vector4& point_b);
-  Vector4 operator/(Vector4::const_value_type value, const Vector4& point);
-  Vector4 operator/(const Vector4& point, Vector4::const_value_type value);
+  //__FLX_API Vector4 operator/(const Vector4& point_a, const Vector4& point_b);
+  __FLX_API Vector4 operator/(Vector4::const_value_type value, const Vector4& point);
+  __FLX_API Vector4 operator/(const Vector4& point, Vector4::const_value_type value);
 
-  std::istream& operator>>(std::istream& is, Vector4& point);
-  std::ostream& operator<<(std::ostream& os, const Vector4& point);
+  __FLX_API std::istream& operator>>(std::istream& is, Vector4& point);
+  __FLX_API std::ostream& operator<<(std::ostream& os, const Vector4& point);
+
+#pragma endregion
+
+#pragma region mathconversions Overloads
+
+  __FLX_API Vector4 radians(const Vector4& degrees);
+  __FLX_API Vector4 degrees(const Vector4& radians);
 
 #pragma endregion
 

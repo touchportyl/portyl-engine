@@ -3,6 +3,9 @@
 #include "flx_api.h"
 
 #include "mathconstants.h" // PI, EPSILON
+#include "mathconversions.h" // radians, degrees
+
+#include "vector1.h"
 
 #include "Reflection/base.h"
 
@@ -17,7 +20,7 @@ namespace FlexEngine
 
     // Using directives
 
-    using value_type = float;
+    using value_type = Vector1;
     using const_value_type = const value_type;
     using size_type = std::size_t;
     using reference = value_type&;
@@ -36,7 +39,9 @@ namespace FlexEngine
     #pragma warning(push)
     #pragma warning(disable: 4201) // nonstandard extension used: nameless struct/union
       struct { value_type x, y; };
+      struct { value_type r, g; };
       struct { value_type u, v; };
+      struct { value_type s, t; };
       struct { value_type first, second; };
     #pragma warning(pop)
       value_type data[2];
@@ -44,7 +49,10 @@ namespace FlexEngine
 
 #pragma region Standard Functions
 
-    // Shorthand, follows Unity conventions
+    // Shorthand for common vectors
+    // 
+    // Unity uses left-handed coordinate system while OpenGL uses right-handed coordinate system.
+    // These are following OpenGL right-handedness despite using Unity naming conventions.
 
     static const Vector2 Zero;
     static const Vector2 One;
@@ -56,6 +64,7 @@ namespace FlexEngine
     // Conversion operators
 
     operator bool() const;
+    operator Vector1() const;
 
     // Swizzle support
 
@@ -112,7 +121,9 @@ namespace FlexEngine
     value_type Magnitude() const;
     value_type Length() const;
     value_type LengthSqr() const;
-    Vector2 Normalize() const;
+
+    Vector2& Normalize();
+    static Vector2 Normalize(const Vector2& other);
 
 #pragma endregion
 
@@ -150,38 +161,45 @@ namespace FlexEngine
 
 #pragma region Vector2 Helper Fns
 
-  Vector2 operator+(const Vector2& point_a, const Vector2& point_b);
-  Vector2 operator+(Vector2::const_value_type value, const Vector2& point);
-  Vector2 operator+(const Vector2& point, Vector2::const_value_type value);
+  __FLX_API Vector2 operator+(const Vector2& point_a, const Vector2& point_b);
+  __FLX_API Vector2 operator+(Vector2::const_value_type value, const Vector2& point);
+  __FLX_API Vector2 operator+(const Vector2& point, Vector2::const_value_type value);
 
-  Vector2 operator-(const Vector2& point_a, const Vector2& point_b);
-  Vector2 operator-(Vector2::const_value_type value, const Vector2& point);
-  Vector2 operator-(const Vector2& point, Vector2::const_value_type value);
+  __FLX_API Vector2 operator-(const Vector2& point_a, const Vector2& point_b);
+  __FLX_API Vector2 operator-(Vector2::const_value_type value, const Vector2& point);
+  __FLX_API Vector2 operator-(const Vector2& point, Vector2::const_value_type value);
 
-  //Vector2 operator*(const Vector2& point_a, const Vector2& point_b);
+  //__FLX_API Vector2 operator*(const Vector2& point_a, const Vector2& point_b);
 
   // Dot product of two vectors
-  Vector2::value_type Dot(const Vector2& a, const Vector2& b);
-  Vector2 operator*(const Vector2& point, Vector2::const_value_type value);
-  Vector2 operator*(Vector2::const_value_type value, const Vector2& point);
+  __FLX_API Vector2::value_type Dot(const Vector2& a, const Vector2& b);
+  __FLX_API Vector2 operator*(const Vector2& point, Vector2::const_value_type value);
+  __FLX_API Vector2 operator*(Vector2::const_value_type value, const Vector2& point);
 
-  //Vector2 operator/(const Vector2& point_a, const Vector2& point_b);
-  Vector2 operator/(Vector2::const_value_type value, const Vector2& point);
-  Vector2 operator/(const Vector2& point, Vector2::const_value_type value);
+  //__FLX_API Vector2 operator/(const Vector2& point_a, const Vector2& point_b);
+  __FLX_API Vector2 operator/(Vector2::const_value_type value, const Vector2& point);
+  __FLX_API Vector2 operator/(const Vector2& point, Vector2::const_value_type value);
 
   // Cross product of two vectors
   // Two crossed vectors return a scalar
-  Vector2::value_type Cross(const Vector2& a, const Vector2& b);
+  __FLX_API Vector2::value_type Cross(const Vector2& a, const Vector2& b);
   // Cross product of a vector with a scalar
   // with a vector v and scalar a, both returning a vector
-  Vector2 Cross(const Vector2& v, Vector2::value_type a);
+  __FLX_API Vector2 Cross(const Vector2& v, Vector2::value_type a);
   // Cross product of a vector with a scalar
   // with a vector v and scalar a, both returning a vector
-  Vector2 Cross(Vector2::value_type a, const Vector2& v);
-  Vector2::value_type Distance(const Vector2& a, const Vector2& b);
+  __FLX_API Vector2 Cross(Vector2::value_type a, const Vector2& v);
+  __FLX_API Vector2::value_type Distance(const Vector2& a, const Vector2& b);
 
-  std::istream& operator>>(std::istream& is, Vector2& point);
-  std::ostream& operator<<(std::ostream& os, const Vector2& point);
+  __FLX_API std::istream& operator>>(std::istream& is, Vector2& point);
+  __FLX_API std::ostream& operator<<(std::ostream& os, const Vector2& point);
+
+#pragma endregion
+
+#pragma region mathconversions Overloads
+  
+  __FLX_API Vector2 radians(const Vector2& degrees);
+  __FLX_API Vector2 degrees(const Vector2& radians);
 
 #pragma endregion
 

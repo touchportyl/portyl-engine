@@ -64,23 +64,19 @@ namespace FlexEngine
         {
           // ignore .glsl and .hlsl files
           // they are not currently supported
-          if (file_extension.string() == ".glsl" || file_extension.string() == ".hlsl") return;
+          // TODO: add support for these files
+          if (file_extension.string() == ".glsl" || file_extension.string() == ".hlsl")
+          {
+            Log::Warning(std::string("Unsupported shader type: ") + file_extension.string());
+            return;
+          }
 
           std::string file_name = file.path.stem().string();
 
           Asset::Shader::Type shader_type;
-          if (file_extension.string() == ".vert")
-          {
-            shader_type = Asset::Shader::Type::Vertex;
-          }
-          else if (file_extension.string() == ".frag")
-          {
-            shader_type = Asset::Shader::Type::Fragment;
-          }
-          else if (file_extension.string() == ".geom")
-          {
-            shader_type = Asset::Shader::Type::Geometry;
-          }
+               if (file_extension.string() == ".vert") shader_type = Asset::Shader::Type::Vertex;
+          else if (file_extension.string() == ".frag") shader_type = Asset::Shader::Type::Fragment;
+          else if (file_extension.string() == ".geom") shader_type = Asset::Shader::Type::Geometry;
           else
           {
             Log::Warning(std::string("Unsupported shader type: ") + file_extension.string());

@@ -61,12 +61,45 @@ namespace FlexEngine
       glUseProgram(m_shader_program);
     }
 
-    void Shader::SetUniform(const char* name, int value)
+    #pragma region Set Uniforms
+
+    void Shader::SetUniform_bool(const char* name, bool value)
     {
       Use(); // make sure the shader is being used
-      int location = glGetUniformLocation(m_shader_program, name);
-      glUniform1i(location, value);
+      glUniform1i(glGetUniformLocation(m_shader_program, name), (int)value);
     }
+
+    void Shader::SetUniform_int(const char* name, int value)
+    {
+      Use();
+      glUniform1i(glGetUniformLocation(m_shader_program, name), value);
+    }
+
+    void Shader::SetUniform_float(const char* name, float value)
+    {
+      Use();
+      glUniform1f(glGetUniformLocation(m_shader_program, name), value);
+    }
+
+    void Shader::SetUniform_vec2(const char* name, const Vector2& vector)
+    {
+      Use();
+      glUniform2f(glGetUniformLocation(m_shader_program, name), vector.x, vector.y);
+    }
+
+    void Shader::SetUniform_vec3(const char* name, const Vector3& vector)
+    {
+      Use();
+      glUniform3f(glGetUniformLocation(m_shader_program, name), vector.x, vector.y, vector.z);
+    }
+
+    void Shader::SetUniform_mat4(const char* name, const Matrix4x4& matrix)
+    {
+      Use();
+      glUniformMatrix4fv(glGetUniformLocation(m_shader_program, name), 1, GL_FALSE, matrix.data);
+    }
+
+    #pragma endregion
 
     unsigned int Shader::Get() const
     {

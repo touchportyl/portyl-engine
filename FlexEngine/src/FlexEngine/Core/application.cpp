@@ -11,6 +11,7 @@ namespace FlexEngine
   bool Application::m_is_running = true;
   bool Application::m_is_minimized = false;
   std::vector<std::shared_ptr<Window>> Application::m_windows;
+  Window* Application::m_current_window = nullptr;
 
   Application::Application()
   {
@@ -31,6 +32,8 @@ namespace FlexEngine
   void Application::Close()
   {
     FLX_FLOW_FUNCTION();
+
+    m_current_window = nullptr;
 
     // close all windows
     // done this way because the windows vector is modified in the loop
@@ -74,6 +77,21 @@ namespace FlexEngine
   }
 
   #pragma endregion
+
+  #pragma region Active Window Handling
+
+  Window* Application::GetCurrentWindow()
+  {
+    return m_current_window;
+  }
+
+  void Application::Internal_SetCurrentWindow(Window* window)
+  {
+    m_current_window = window;
+  }
+
+  #pragma endregion
+
 
   void Application::Run()
   {

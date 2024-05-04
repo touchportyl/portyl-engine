@@ -55,6 +55,13 @@ namespace FlexEngine
   
   static bool LoadTextureFromFile(const char* filename, unsigned int* out_texture, int* out_width, int* out_height)
   {
+    // The usual image format has the origin at the top-left corner.
+    // OpenGL expects the origin at the bottom-left corner.
+    // We handle this in the vertex shader by flipping the y-coordinate.
+    // The reason is so that ImGui can display the texture correctly because
+    // it does its own texture flipping.
+    //stbi_set_flip_vertically_on_load(true);
+
     // Load from file
     int image_width = 0;
     int image_height = 0;
