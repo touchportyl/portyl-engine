@@ -8,10 +8,10 @@ namespace FlexEditor
     FLX_FLOW_BEGINSCOPE();
 
     // load shaders
-    shader_texture.Create(Path::current_path("assets/shaders/texture.vert"), Path::current_path("assets/shaders/texture.frag"));
+    shader_texture.Create(Path::current("assets/shaders/texture.vert"), Path::current("assets/shaders/texture.frag"));
 
     // load image
-    File& file_splash = File::Open(Path::current_path("assets/images/flexengine/flexengine_splash.png"));
+    File& file_splash = File::Open(Path::current("assets/images/flexengine/flexengine_splash.png"));
     img_splash.Load(file_splash);
 
     // manually build a mesh

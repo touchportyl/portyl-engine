@@ -17,11 +17,17 @@ namespace FlexEngine
   // The key is specifically the relative path to the asset from the
   // default directory. This is to ensure that the asset manager can
   // easily find the asset.
-  // Example: "\images\flexengine\flexengine_logo_black.png"
+  // Example: R"(/images/flexengine/flexengine_logo_black.png)"
   using AssetKey = std::string;
   using AssetVariant = std::variant<Asset::Texture, Asset::Shader>;
 
+  // Helper macro to get an asset by its key.
+  // Example usage: FLX_ASSET_GET(Asset::Texture, R"(/images/flexengine/flexengine-256.png)")
+  #define FLX_ASSET_GET(TYPE, KEY) std::get<TYPE>(*AssetManager::Get(KEY))
+
+
   // Asset Manager
+  // 
   // An asset manager must exist. The components should never hold things
   // like mesh data, it should simply point to an already existing asset.
   // 
@@ -35,6 +41,7 @@ namespace FlexEngine
   // The key is specifically the relative path to the asset from the
   // default directory. This is to ensure that the asset manager can
   // easily find the asset.
+
   class __FLX_API AssetManager
   {
     static Path default_directory;
@@ -47,10 +54,6 @@ namespace FlexEngine
 
     // Get an asset variant by its key
     static AssetVariant* Get(const AssetKey& key);
-
-    // Helper macro to get an asset by its key
-    // Example usage: FLX_ASSET_GET(Asset::Texture, "path/to/texture.png")
-    #define FLX_ASSET_GET(TYPE, KEY) std::get<TYPE>(*AssetManager::Get(KEY))
 
 #ifdef _DEBUG
     static void Dump();

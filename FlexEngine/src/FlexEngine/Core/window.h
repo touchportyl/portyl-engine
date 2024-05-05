@@ -4,6 +4,7 @@
 
 #include "FlexEngine/Core/frameratecontroller.h" // <chrono>
 #include "FlexEngine/Core/layerstack.h" // <string> <memory> <vector>
+#include "Renderer/OpenGL/opengltextures.h" // Asset::Texture
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h> // always put glad before glfw
@@ -88,6 +89,10 @@ namespace FlexEngine
     void CenterWindow();
 
     #pragma region Passthrough Functions
+
+    // passthrough functions for glfw
+
+    void SetIcon(const Asset::Texture& icon) const;
 
     // passthrough functions for the framerate controller
 

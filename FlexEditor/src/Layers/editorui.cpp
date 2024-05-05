@@ -46,11 +46,11 @@ namespace FlexEditor
     FLX_FLOW_BEGINSCOPE();
 
     // load shaders
-    shader_color.Create(Path::current_path("assets/shaders/color.vert"), Path::current_path("assets/shaders/color.frag"));
+    shader_color.Create(Path::current("assets/shaders/color.vert"), Path::current("assets/shaders/color.frag"));
 
     // load image
     //test_image.Load(); // default texture
-    File& file_test_image = File::Open(Path::current_path("assets/images/Body_SG1_baseColor.jpeg"));
+    File& file_test_image = File::Open(Path::current("assets/images/Body_SG1_baseColor.jpeg"));
     test_image.Load(file_test_image);
 
 
@@ -616,7 +616,7 @@ namespace FlexEditor
       scene->DumpEntityIndex();
 
       // save to file
-      auto& save_file = FlexEngine::File::Open( Path::current_path("test9b.flxscene") );
+      auto& save_file = FlexEngine::File::Open( Path::current("test9b.flxscene") );
       save_file.Delete();
       scene->Save(save_file);
 

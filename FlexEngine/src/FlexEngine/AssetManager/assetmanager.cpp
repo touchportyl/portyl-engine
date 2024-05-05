@@ -6,7 +6,7 @@ namespace FlexEngine
 {
 
   // static member initialization
-  Path AssetManager::default_directory = Path::current_path("assets");
+  Path AssetManager::default_directory = Path::current("assets");
   std::unordered_map<AssetKey, AssetVariant> AssetManager::assets;
 
 
@@ -55,7 +55,7 @@ namespace FlexEngine
           AssetKey key = file.path.string().substr(default_directory_length);
 
           // load texture
-          assets[key] = Asset::Texture();
+          assets[key] = Asset::Texture::Null;
           Asset::Texture& texture = std::get<Asset::Texture>(assets[key]);
           texture.Load(file.path);
           Log::Info(std::string("Loaded texture: ") + key);
@@ -126,12 +126,19 @@ namespace FlexEngine
 
   AssetVariant* AssetManager::Get(const AssetKey& key)
   {
-    if (assets.count(key) == 0)
+    // replace all / or \ in the key with the platform specific separator
+    // this is to ensure that the key is always the same
+    // regardless of the platform
+    std::string key_copy = key;
+    std::replace(key_copy.begin(), key_copy.end(), '/', Path::separator);
+    std::replace(key_copy.begin(), key_copy.end(), '\\', Path::separator);
+
+    if (assets.count(key_copy) == 0)
     {
-      Log::Error(std::string("Asset not found: ") + key);
+      Log::Error(std::string("Asset not found: ") + key_copy);
       return nullptr;
     }
-    return &assets[key];
+    return &assets[key_copy];
   }
 
 #ifdef _DEBUG

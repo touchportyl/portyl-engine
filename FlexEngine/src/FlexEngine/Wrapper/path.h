@@ -48,6 +48,9 @@ namespace FlexEngine
 
   public:
 
+    // Preferred separator for the current platform
+    static constexpr char separator = static_cast<char>(std::filesystem::path::preferred_separator);
+
     // Constructors
 
     Path() = default;
@@ -63,7 +66,7 @@ namespace FlexEngine
     bool is_directory() const noexcept;
 
     static bool exists(const Path& _path) noexcept;
-    static Path current_path();
+    static Path current();
 
     #pragma endregion
 
@@ -151,7 +154,7 @@ namespace FlexEngine
 
     // Helper Functions
 
-    static Path current_path(const std::string& path_to_append);
+    static Path current(const std::string& path_to_append);
 
     // Operator Overloads
 

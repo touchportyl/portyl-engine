@@ -10,8 +10,8 @@ namespace OpenGLRendering
   {
     window = Application::OpenWindow(
       {
-        "OpenGL Rendering",
-        1280, 720,
+        "FlexEngine - OpenGL Rendering",
+        1280, 720 + 30, // 30 pixels for the title bar
         {
           { GLFW_CONTEXT_VERSION_MAJOR, 4 },
           { GLFW_CONTEXT_VERSION_MINOR, 6 },
@@ -22,8 +22,12 @@ namespace OpenGLRendering
       }
     );
     AlignImGuiContext(window);
-    window->PushLayer(std::make_shared<MainLayer>());
 
+    // load assets only after the window has been created
+    AssetManager::Load();
+
+    window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_icon_white.png)"));
+    window->PushLayer(std::make_shared<MainLayer>());
     window->SetTargetFPS(60);
   }
 

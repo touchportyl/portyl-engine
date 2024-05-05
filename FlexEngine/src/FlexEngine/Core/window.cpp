@@ -134,6 +134,8 @@ namespace FlexEngine
 
   void Window::CenterWindow()
   {
+    FLX_FLOW_FUNCTION();
+
     // get the primary monitor
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     if (!monitor)
@@ -164,6 +166,20 @@ namespace FlexEngine
 
     // set the position of the window
     glfwSetWindowPos(m_glfwwindow, x, y);
+  }
+
+  void Window::SetIcon(const Asset::Texture& icon) const
+  {
+    FLX_FLOW_FUNCTION();
+
+    // create the image
+    GLFWimage image;
+    image.width = icon.GetWidth();
+    image.height = icon.GetHeight();
+    image.pixels = icon.GetTextureData();
+    
+    // set the icon
+    glfwSetWindowIcon(m_glfwwindow, 1, &image);
   }
 
 }

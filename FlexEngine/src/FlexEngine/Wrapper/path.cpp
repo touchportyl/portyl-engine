@@ -94,7 +94,7 @@ namespace FlexEngine
     return std::filesystem::exists(path);
   }
 
-  Path Path::current_path()
+  Path Path::current()
   {
     return std::filesystem::current_path();
   }
@@ -212,7 +212,7 @@ namespace FlexEngine
 
   #pragma region Helper Functions
 
-  Path Path::current_path(const std::string& path_to_append)
+  Path Path::current(const std::string& path_to_append)
   {
     return std::filesystem::current_path() / path_to_append;
   }

@@ -2,10 +2,14 @@
 
 #include "Components/Components.h"
 
-#include <glm.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <ext/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
+//#include <glm.hpp>
+//#include <glm/ext/matrix_clip_space.hpp>
+//#include <ext/matrix_transform.hpp>
+//#include <gtc/type_ptr.hpp>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 namespace OpenGLRendering
 {
@@ -14,7 +18,15 @@ namespace OpenGLRendering
   {
     FLX_FLOW_BEGINSCOPE();
 
-    AssetManager::Load();
+    // temporary for testing assimp
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(Path::current("assets/models/trailer.glb"), aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    // check for errors
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
+    {
+      Log::Error(std::string("Assimp import error: ") + importer.GetErrorString());
+      return;
+    }
 
     FlexECS::Scene::CreateScene();
     main_camera = FlexECS::Scene::CreateEntity("Main Camera");
@@ -65,6 +77,54 @@ namespace OpenGLRendering
 
   void MainLayer::Update()
   {
+
+    #pragma region Main Menu Bar
+
+    #if 1
+    {
+      ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 8.0f));
+      ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(16.0f, 8.0f));
+
+      if (ImGui::BeginMainMenuBar())
+      {
+        // center the logo
+        float logo_scl = 25.f;
+        float prev_cursor_y = ImGui::GetCursorPosY();
+        float cursor_y = prev_cursor_y + (ImGui::GetFrameHeight() - logo_scl) * 0.5f;
+        ImGui::SetCursorPosY(cursor_y);
+
+        // display the flexengine logo
+        Asset::Texture& flexengine_logo = FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_logo_white.png)");
+        ImGui::Image(flexengine_logo.GetTextureImGui(), ImVec2((logo_scl / 7 * 20), logo_scl));
+
+        // reset the cursor position
+        ImGui::SetCursorPosY(prev_cursor_y);
+
+        if (ImGui::BeginMenu("File"))
+        {
+          //if (ImGui::MenuItem("New", "Ctrl+N")) {}
+          //if (ImGui::MenuItem("Save", "Ctrl+S")) {)
+          //if (ImGui::MenuItem("Reload", "Ctrl+R")) {}
+          //if (ImGui::MenuItem("Close File", "Ctrl+W")) {}
+          if (ImGui::MenuItem("Exit", "Ctrl+Q")) { Application::Close(); }
+          ImGui::EndMenu();
+        }
+
+        //if (ImGui::BeginMenu("Edit"))
+        //{
+        //  if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
+        //  if (ImGui::MenuItem("Redo", "Ctrl+Y")) {}
+        //  ImGui::EndMenu();
+        //}
+
+        ImGui::EndMainMenuBar();
+      }
+
+      ImGui::PopStyleVar(2);
+    }
+    #endif
+
+    #pragma endregion
 
     #pragma region ImGui Editor System
 
