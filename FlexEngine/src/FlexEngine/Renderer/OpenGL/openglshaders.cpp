@@ -31,9 +31,6 @@ namespace FlexEngine
       // store paths for debugging
       m_path_to_vertex_shader = path_to_vertex_shader;
       m_path_to_fragment_shader = path_to_fragment_shader;
-#else
-      m_path_to_vertex_shader = Path();
-      m_path_to_fragment_shader = Path();
 #endif
     }
 

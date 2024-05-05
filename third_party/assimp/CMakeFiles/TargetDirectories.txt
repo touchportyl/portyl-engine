@@ -1,0 +1,13 @@
+E:/GitHub/FlexEngine/third_party/assimp/CMakeFiles/uninstall.dir
+E:/GitHub/FlexEngine/third_party/assimp/CMakeFiles/UpdateAssimpLibsDebugSymbolsAndDLLs.dir
+E:/GitHub/FlexEngine/third_party/assimp/CMakeFiles/INSTALL.dir
+E:/GitHub/FlexEngine/third_party/assimp/CMakeFiles/ALL_BUILD.dir
+E:/GitHub/FlexEngine/third_party/assimp/CMakeFiles/ZERO_CHECK.dir
+E:/GitHub/FlexEngine/third_party/assimp/contrib/zlib/CMakeFiles/zlibstatic.dir
+E:/GitHub/FlexEngine/third_party/assimp/contrib/zlib/CMakeFiles/INSTALL.dir
+E:/GitHub/FlexEngine/third_party/assimp/contrib/zlib/CMakeFiles/ALL_BUILD.dir
+E:/GitHub/FlexEngine/third_party/assimp/code/CMakeFiles/assimp.dir
+E:/GitHub/FlexEngine/third_party/assimp/code/CMakeFiles/INSTALL.dir
+E:/GitHub/FlexEngine/third_party/assimp/test/CMakeFiles/unit.dir
+E:/GitHub/FlexEngine/third_party/assimp/test/CMakeFiles/INSTALL.dir
+E:/GitHub/FlexEngine/third_party/assimp/test/headercheck/CMakeFiles/INSTALL.dir

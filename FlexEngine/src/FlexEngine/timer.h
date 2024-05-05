@@ -10,7 +10,7 @@
   #define FLX_SCOPED_FUNCTION_TIMER() FlexEngine::Timer timer(__FUNCTION__);
 #else
   // Disabled in release mode
-  #define FLX_SCOPED_TIMER()
+  #define FLX_SCOPED_TIMER(TEXT)
   #define FLX_SCOPED_FUNCTION_TIMER()
 #endif
 
