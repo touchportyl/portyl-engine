@@ -40,13 +40,11 @@ namespace FlexEngine
 
   class __FLX_API FunctionQueue
   {
-    static std::vector<FunctionQueueData> m_queue;
-
-    static void Sort() { std::sort(m_queue.begin(), m_queue.end()); }
+    std::vector<FunctionQueueData> m_queue;
 
   public:
 
-    // passthrough
+    #pragma region Passthrough Functions
 
     FunctionQueueData& operator[](size_t index) { return m_queue[index]; }
     const FunctionQueueData& operator[](size_t index) const { return m_queue[index]; }
@@ -71,9 +69,16 @@ namespace FlexEngine
     std::vector<FunctionQueueData>::const_iterator cend()	const { return m_queue.cend(); }
     std::vector<FunctionQueueData>::const_reverse_iterator crbegin() const { return m_queue.crbegin(); }
     std::vector<FunctionQueueData>::const_reverse_iterator crend() const { return m_queue.crend(); }
+
+    #pragma endregion
+
+    // Add a function to the back of the queue.
+    // Bind Usage: FunctionQueue::Push({ std::bind(&GameObject::Draw, gameobject) });
+    // Lambda Usage: FunctionQueue::Push({ [&gameobject]() { gameobject.Draw(); } });
+    void Push(FunctionQueueData data) { m_queue.push_back(data); }
     
-    // Add a function to the queue
-    // Lowest priority will be run first
+    // Add a function to the queue.
+    // Lowest priority will be run first.
     // Bind Usage: FunctionQueue::Insert({ std::bind(&GameObject::Draw, gameobject), gameobject.GetZIndex() });
     // Lambda Usage: FunctionQueue::Insert({ [&gameobject]() { gameobject.Draw(); }, 0 });
     void Insert(FunctionQueueData data);
@@ -83,7 +88,11 @@ namespace FlexEngine
     // Functions with the same priority will be run in the order they were added
     void Flush();
 
+  private:
+    void Sort() { std::sort(m_queue.begin(), m_queue.end()); }
+
 #ifdef _DEBUG
+  public:
     // For debugging
     // Logs all the function addresses in the queue
     void Dump();

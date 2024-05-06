@@ -77,6 +77,8 @@ namespace FlexEngine
 
     #pragma endregion
 
+    #pragma region Window Management Functions
+
     // Sets the current window as the active window
     // Clears the screen and runs the layer stack
     void Update();
@@ -88,9 +90,14 @@ namespace FlexEngine
     // Do not call this function unnecessarily
     void CenterWindow();
 
+    #pragma endregion
+
     #pragma region Passthrough Functions
 
     // passthrough functions for glfw
+
+    void GetWindowPosition(int* out_x, int* out_y) const;
+    void SetWindowPosition(int x, int y) const;
 
     void SetIcon(const Asset::Texture& icon) const;
 

@@ -94,6 +94,8 @@ namespace FlexEngine
 
   #pragma endregion
 
+  #pragma region Window Management Functions
+
   void Window::Update()
   {
     // make sure the current window is the one we are working with
@@ -165,6 +167,22 @@ namespace FlexEngine
     int y = (mode->height - window_height) / 2;
 
     // set the position of the window
+    SetWindowPosition(x, y);
+  }
+
+  #pragma endregion
+
+  #pragma region Passthrough Functions
+
+  void Window::GetWindowPosition(int* out_x, int* out_y) const
+  {
+    // get the position of the window
+    glfwGetWindowPos(m_glfwwindow, out_x, out_y);
+  }
+
+  void Window::SetWindowPosition(int x, int y) const
+  {
+    // set the position of the window
     glfwSetWindowPos(m_glfwwindow, x, y);
   }
 
@@ -181,5 +199,7 @@ namespace FlexEngine
     // set the icon
     glfwSetWindowIcon(m_glfwwindow, 1, &image);
   }
+
+  #pragma endregion
 
 }

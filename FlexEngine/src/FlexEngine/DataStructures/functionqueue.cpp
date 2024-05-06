@@ -4,8 +4,6 @@
 
 namespace FlexEngine
 {
-  // static member initialization
-  std::vector<FunctionQueueData> FunctionQueue::m_queue;
 
   void FunctionQueue::Insert(FunctionQueueData data)
   {

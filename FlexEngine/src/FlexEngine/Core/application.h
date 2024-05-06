@@ -28,7 +28,7 @@ namespace FlexEngine
 
     static std::shared_ptr<Window> OpenWindow(const WindowProps& props = {});
 
-    static void CloseWindow(std::string& window_title);
+    static void CloseWindow(const std::string& window_title);
     static void CloseWindow(std::shared_ptr<Window> window);
 
     #pragma endregion

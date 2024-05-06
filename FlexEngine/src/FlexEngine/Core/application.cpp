@@ -57,7 +57,7 @@ namespace FlexEngine
     return window;
   }
 
-  void Application::CloseWindow(std::string& window_title)
+  void Application::CloseWindow(const std::string& window_title)
   {
     // find the window with the given title and close it
     CloseWindow(

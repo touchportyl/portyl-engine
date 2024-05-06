@@ -28,6 +28,8 @@ namespace OpenGLRendering
       return;
     }
 
+    // ECS Setup
+
     FlexECS::Scene::CreateScene();
     main_camera = FlexECS::Scene::CreateEntity("Main Camera");
     //cube = FlexECS::Scene::CreateEntity("Cube");
@@ -78,10 +80,13 @@ namespace OpenGLRendering
   void MainLayer::Update()
   {
 
-    #pragma region Main Menu Bar
+    #pragma region Title Bar
 
     #if 1
     {
+      // Function queue to handle title bar actions
+      //FunctionQueue fq_actions;
+
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 8.0f));
       ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(16.0f, 8.0f));
 
@@ -105,8 +110,15 @@ namespace OpenGLRendering
           //if (ImGui::MenuItem("New", "Ctrl+N")) {}
           //if (ImGui::MenuItem("Save", "Ctrl+S")) {)
           //if (ImGui::MenuItem("Reload", "Ctrl+R")) {}
-          //if (ImGui::MenuItem("Close File", "Ctrl+W")) {}
-          if (ImGui::MenuItem("Exit", "Ctrl+Q")) { Application::Close(); }
+          //if (ImGui::MenuItem("Close", "Ctrl+W")) {}
+          if (ImGui::MenuItem("Exit", "Ctrl+Q")) {}
+          //{
+          //  fq_actions.Push({ []()
+          //    {
+          //      Application::Close();
+          //    }
+          //  });
+          //}
           ImGui::EndMenu();
         }
 
@@ -121,10 +133,73 @@ namespace OpenGLRendering
       }
 
       ImGui::PopStyleVar(2);
+
+      // Execute function queue
+      //fq_actions.Flush();
+
+      // Title bar window drag functionality
+
+      static bool is_dragging_window = false;
+
+      ImGuiIO& io = ImGui::GetIO();
+      ImVec2 mouse_pos = io.MousePos;
+      
+      // The main menu bar height is 30 pixels
+      ImGuiViewport* viewport = ImGui::GetMainViewport();
+      ImVec2 top_left = viewport->Pos;
+      ImVec2 bottom_right = ImVec2(top_left.x + viewport->Size.x, top_left.y + 30.0f);
+
+      // Window dragging state
+      if (io.MouseDown[0])
+      {
+        if (
+          mouse_pos.x >= top_left.x && mouse_pos.x <= bottom_right.x &&
+          mouse_pos.y >= top_left.y && mouse_pos.y <= bottom_right.y
+        )
+        {
+          is_dragging_window = true;
+        }
+      }
+      else
+      {
+        is_dragging_window = false;
+      }
+      
+      // Dragging the window
+      if (is_dragging_window)
+      {
+        Window* current_window = Application::GetCurrentWindow();
+        if (current_window)
+        {
+          int pos_x, pos_y;
+          current_window->GetWindowPosition(&pos_x, &pos_y);
+
+          // We can't use Input::GetCursorPositionDelta() because it only handles within the glfw window
+          // ImGui's IO MousePos is in global screen coordinates
+          
+          //Vector2 mouse_delta = Input::GetCursorPositionDelta();
+          //if (mouse_delta.x != 0.0f || mouse_delta.y != 0.0f)
+          //{
+          //  current_window->SetWindowPosition(
+          //    pos_x + static_cast<int>(mouse_delta.x),
+          //    pos_y + static_cast<int>(mouse_delta.y)
+          //  );
+          //}
+
+          if (io.MouseDelta.x != 0.0f || io.MouseDelta.y != 0.0f)
+          {
+            current_window->SetWindowPosition(
+              pos_x + static_cast<int>(io.MouseDelta.x),
+              pos_y + static_cast<int>(io.MouseDelta.y)
+            );
+          }
+        }
+      }
     }
     #endif
 
     #pragma endregion
+
 
     #pragma region ImGui Editor System
 
