@@ -14,11 +14,11 @@ FlexEngine is a work-in-progress game engine.
 ## working on implementation
 - assimp 5.4.0
 
-## unsure if allowed
+## deprecating
 - fastgltf 0.6.1
 
 ### potential third_party libraries
-- freetype (will implement after setting up the 2d opengl renderer)
+- freetype (will implement after setting up the opengl renderer)
 - wwise (will look into it as a replacement to fmod)
 - property (terrible to work with)
 - rttr (doesn't work)
