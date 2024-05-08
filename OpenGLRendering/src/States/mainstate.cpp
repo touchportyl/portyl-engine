@@ -25,7 +25,7 @@ namespace OpenGLRendering
 
     // load assets only after the window has been created
     AssetManager::Load();
-    //FreeQueue::Push(std::bind(&AssetManager::Unload));
+    FreeQueue::Push(std::bind(&AssetManager::Unload), "OpenGLRendering AssetManager");
 
     window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_icon_white.png)"));
     window->PushLayer(std::make_shared<MainLayer>());
@@ -34,6 +34,8 @@ namespace OpenGLRendering
 
   void MainState::OnExit()
   {
+    FreeQueue::RemoveAndExecute("OpenGLRendering AssetManager");
+
     Application::CloseWindow(window);
     window.reset();
   }

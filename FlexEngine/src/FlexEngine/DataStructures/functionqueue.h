@@ -2,6 +2,7 @@
 
 #include "flx_api.h"
 
+#include <string>
 #include <vector>
 #include <functional>
 #include <algorithm>
@@ -11,31 +12,26 @@ namespace FlexEngine
 
   struct __FLX_API FunctionQueueData
   {
-    std::function<void()> m_function = nullptr;
-    int m_priority = 0;
+    std::function<void()> function = nullptr;
+    std::string id = "";
+    int priority = 0;
 
-    FunctionQueueData(std::function<void()> function, int priority = 0)
-      : m_function(function), m_priority(priority)
+    FunctionQueueData(std::function<void()> function, std::string id = "", int priority = 0)
+      : function(function), id(id), priority(priority)
     {
     }
 
-    // setter
+    void Run() const { function(); }
 
-    void SetFunction(std::function<void()> function) { m_function = function; }
-    void SetPriority(int p) { m_priority = p; }
-
-    // getter
-
-    //std::function<void()> GetFunction() const { return m_function; }
-    int GetPriority() const { return m_priority; }
-
-    void Run() const { m_function(); }
-
-    // make it a functor
+    // Functor
     void operator()() const { Run(); }
 
+    // Stringify
+    std::string ToString() const { return std::string("[") + std::to_string(priority) + "] " + id + ": " + function.target_type().name(); }
+    operator std::string() const { return ToString(); }
+
     // overload < operator for sorting
-    bool operator<(const FunctionQueueData& rhs) const { return m_priority < rhs.m_priority; }
+    bool operator<(const FunctionQueueData& rhs) const { return priority < rhs.priority; }
   };
 
   class __FLX_API FunctionQueue
@@ -71,11 +67,6 @@ namespace FlexEngine
     std::vector<FunctionQueueData>::const_reverse_iterator crend() const { return m_queue.crend(); }
 
     #pragma endregion
-
-    // Add a function to the back of the queue.
-    // Bind Usage: FunctionQueue::Push({ std::bind(&GameObject::Draw, gameobject) });
-    // Lambda Usage: FunctionQueue::Push({ [&gameobject]() { gameobject.Draw(); } });
-    void Push(FunctionQueueData data) { m_queue.push_back(data); }
     
     // Add a function to the queue.
     // Lowest priority will be run first.
@@ -83,13 +74,24 @@ namespace FlexEngine
     // Lambda Usage: FunctionQueue::Insert({ [&gameobject]() { gameobject.Draw(); }, 0 });
     void Insert(FunctionQueueData data);
 
+    // Removes a function from the queue based on its id.
+    // Useful for removing a specific function from the queue when it is no longer needed.
+    // For example when an object is already freed by another manager.
+    void Remove(const std::string& id);
+
+    // Specialization of Remove().
+    // It also runs the function immediately after removing it from the queue.
+    void RemoveAndExecute(const std::string& id);
+
     // Run all the functions in the queue
     // Functions will be run in order of priority from lowest to highest
     // Functions with the same priority will be run in the order they were added
     void Flush();
 
-  private:
-    void Sort() { std::sort(m_queue.begin(), m_queue.end()); }
+    // Sorts the queue based on priority.
+    // The list should always be sorted, however this is just a safety measure.
+    // This is called automatically by Flush().
+    void Sort();
 
 #ifdef _DEBUG
   public:

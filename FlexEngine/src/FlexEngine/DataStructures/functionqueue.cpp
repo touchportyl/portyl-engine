@@ -5,12 +5,44 @@
 namespace FlexEngine
 {
 
+  void FunctionQueue::Sort()
+  {
+    std::sort(m_queue.begin(), m_queue.end());
+  }
+
   void FunctionQueue::Insert(FunctionQueueData data)
   {
     // guard
-    if (!data.m_function) return;
+    if (!data.function) return;
 
-    m_queue.push_back(data);
+    // insert the function based on its priority
+    auto it = std::lower_bound(m_queue.begin(), m_queue.end(), data);
+    m_queue.insert(it, data);
+  }
+
+  void FunctionQueue::Remove(const std::string& id)
+  {
+    // guard
+    if (m_queue.empty()) return;
+
+    // erase all elements that match the id
+    m_queue.erase(std::remove_if(m_queue.begin(), m_queue.end(), [&](const FunctionQueueData& data) { return data.id == id; }), m_queue.end());
+  }
+
+  void FunctionQueue::RemoveAndExecute(const std::string& id)
+  {
+    // guard
+    if (m_queue.empty()) return;
+
+    // find the element
+    auto it = std::find_if(m_queue.begin(), m_queue.end(), [&](const FunctionQueueData& data) { return data.id == id; });
+    if (it != m_queue.end())
+    {
+      // run the function
+      (*it)();
+      // remove the element
+      m_queue.erase(it);
+    }
   }
 
   void FunctionQueue::Flush()
@@ -40,8 +72,7 @@ namespace FlexEngine
     Sort();
     for (auto& data : m_queue)
     {
-      // print the function address
-      Log::Debug("[" + std::to_string(data.GetPriority()) + "] Function: " + data.m_function.target_type().name());
+      Log::Debug(data);
     }
     Log::Debug("End of dump.");
   }
