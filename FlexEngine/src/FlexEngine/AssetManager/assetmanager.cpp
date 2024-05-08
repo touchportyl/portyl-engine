@@ -123,6 +123,30 @@ namespace FlexEngine
     FLX_FLOW_ENDSCOPE();
   }
 
+  void AssetManager::Unload()
+  {
+    FLX_FLOW_FUNCTION();
+
+    for (auto& [key, asset] : assets)
+    {
+      std::visit(
+        [](auto&& arg)
+        {
+          using T = std::decay_t<decltype(arg)>;
+          if constexpr (std::is_same_v<T, Asset::Texture>)
+          {
+            arg.Unload();
+          }
+          else if constexpr (std::is_same_v<T, Asset::Shader>)
+          {
+            arg.Destroy();
+          }
+        },
+        asset
+      );
+    }
+  }
+
 
   AssetVariant* AssetManager::Get(const AssetKey& key)
   {

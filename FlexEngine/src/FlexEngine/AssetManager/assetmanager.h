@@ -52,6 +52,9 @@ namespace FlexEngine
     // Load all assets in the directory
     static void Load();
 
+    // Frees OpenGL textures and shaders
+    static void Unload();
+
     // Get an asset variant by its key
     static AssetVariant* Get(const AssetKey& key);
 

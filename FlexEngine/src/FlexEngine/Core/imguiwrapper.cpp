@@ -214,9 +214,10 @@ namespace FlexEngine
 
   void ImGuiWrapper::EndFrame()
   {
+    GLFWwindow* glfwwindow = Application::GetCurrentWindow()->GetGLFWWindow();
     ImGuiIO& io = ImGui::GetIO();
     int width, height;
-    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
+    glfwGetWindowSize(glfwwindow, &width, &height);
     io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 
     ImGui::Render();
