@@ -1,10 +1,10 @@
 #include "pch.h"
+
 #include "CppUnitTest.h"
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #include <FlexEngine.h>
 using namespace FlexEngine;
-
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 
 #pragma region Helper Functions
