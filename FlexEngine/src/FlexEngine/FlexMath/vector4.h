@@ -26,7 +26,7 @@ namespace FlexEngine
 
     // Data members
 
-    union __FLX_ALIGN_AS(16)
+    union __FLX_ALIGNAS(16)
     {
     #pragma warning(push)
     #pragma warning(disable: 4201) // nonstandard extension used: nameless struct/union
