@@ -193,6 +193,7 @@ namespace FlexEngine
       // Returns an entity list based off the list of components
       template <typename... Ts>
       std::vector<Entity> View();
+      //#define FLX_ECS_VIEW(...) for (FlexEngine::FlexECS::Entity& entity : FlexEngine::FlexECS::Scene::GetActiveScene()->View<__VA_ARGS__>())
 
       // Null scene for when the active scene is set to null
 
@@ -270,12 +271,13 @@ namespace FlexEngine
 
       // Returns a nullptr if the component is not found
       template <typename T>
-      std::shared_ptr<T> GetComponent();
+      ComponentData<T> GetComponent();
 
       // Specialization to get a component safely
+      // out is not modified if the component is not found
       // Returns true if the component is found
       template <typename T>
-      bool TryGetComponent(std::shared_ptr<T>& out);
+      bool TryGetComponent(ComponentData<T>& out);
 
       // Add a component to an entity
       // Usage: entity.AddComponent<Transform>({ 1, 2, 3 });

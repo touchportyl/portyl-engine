@@ -2,11 +2,6 @@
 
 #include "Components/Components.h"
 
-//#include <glm.hpp>
-//#include <glm/ext/matrix_clip_space.hpp>
-//#include <ext/matrix_transform.hpp>
-//#include <gtc/type_ptr.hpp>
-
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>

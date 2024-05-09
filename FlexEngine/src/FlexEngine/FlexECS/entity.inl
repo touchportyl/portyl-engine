@@ -28,7 +28,7 @@ bool FlexEngine::FlexECS::Entity::HasComponent()
 // Use the column and row to get the component data from the archetype_table.
 // This performs two lookups in the entity_index and two lookups in the component_index.
 template <typename T>
-std::shared_ptr<T> FlexEngine::FlexECS::Entity::GetComponent()
+FlexEngine::FlexECS::ComponentData<T> FlexEngine::FlexECS::Entity::GetComponent()
 {
   // cache the entity id
   EntityID entity = entity_id;
@@ -62,9 +62,12 @@ std::shared_ptr<T> FlexEngine::FlexECS::Entity::GetComponent()
 }
 
 template <typename T>
-bool FlexEngine::FlexECS::Entity::TryGetComponent(std::shared_ptr<T>& out)
+bool FlexEngine::FlexECS::Entity::TryGetComponent(ComponentData<T>& out)
 {
-  out = this->GetComponent<T>();
+  // guard
+  if (!HasComponent<T>()) return false;
+
+  out = GetComponent<T>();
   return (out != nullptr);
 }
 

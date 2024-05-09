@@ -27,7 +27,7 @@ namespace FlexEngine
   Vector4 Vector4::Swizzle(const std::string& swizzle) const
   {
     // build new vector based on swizzle
-    Vector3 new_vector = Vector3::Zero;
+    Vector4 new_vector = Vector4::Zero;
     for (size_type i = 0; i < std::min(swizzle.size(), size()); ++i)
     {
       switch (swizzle[i])
@@ -290,7 +290,7 @@ namespace FlexEngine
   //Vector4::const_reverse_iterator   Vector4::rend() const     { return data - 1; }
   //Vector4::const_reverse_iterator   Vector4::crend() const    { return data - 1; }
 
-  constexpr Vector4::size_type Vector4::size() const { return 3; }
+  constexpr Vector4::size_type Vector4::size() const { return 4; }
 
 #pragma endregion
 
