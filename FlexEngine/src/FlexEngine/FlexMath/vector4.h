@@ -7,6 +7,7 @@
 namespace FlexEngine
 {
 
+  // Note: Uses the xyzw standard
   struct __FLX_API Vector4
   { FLX_REFL_SERIALIZABLE
 
@@ -54,8 +55,8 @@ namespace FlexEngine
 
     // Swizzle support
 
-    Vector4 Swizzle(const std::string& swizzle = "xyz") const;
-    static void Swizzle(Vector4& other, const std::string& swizzle = "xyz");
+    Vector4 Swizzle(const std::string& swizzle = "xyzw") const;
+    static void Swizzle(Vector4& other, const std::string& swizzle = "xyzw");
 
     // Stringify the vector
 
@@ -72,8 +73,14 @@ namespace FlexEngine
 
     Vector4(value_type _x = 0.0f, value_type _y = 0.0f, value_type _z = 0.0f, value_type _w = 0.0f);
     Vector4(const Vector4& other);
+
     Vector4(const Vector3& xyz, value_type _w = 0.0f);
+    Vector4(value_type _x, const Vector3& yzw);
+
     Vector4(const Vector2& xy, value_type _z = 0.0f, value_type _w = 0.0f);
+    Vector4(value_type _x, const Vector2& yz, value_type _w);
+    Vector4(value_type _x, value_type _y, const Vector2& zw);
+    Vector4(const Vector2& xy, const Vector2& zw);
 
 #pragma endregion
 

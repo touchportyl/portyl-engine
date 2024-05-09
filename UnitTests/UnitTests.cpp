@@ -1,10 +1,10 @@
 #include "pch.h"
+
 #include "CppUnitTest.h"
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #include <FlexEngine.h>
 using namespace FlexEngine;
-
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 
 #pragma region Helper Functions
@@ -150,8 +150,449 @@ static void AreEqualMatrix(const glm::mat4& expected, const Matrix4x4& actual, c
 namespace UnitTests_FlexMath
 {
 
+  namespace UnitTests_Vector2
+  {
+
+    TEST_CLASS(UnitTests_Constructors)
+    {
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(DefaultConstructor)
+      {
+        Vector2 a;
+        Assert::AreEqual(0.0f, a.x);
+        Assert::AreEqual(0.0f, a.y);
+      }
+
+      TEST_METHOD(ValueConstructor)
+      {
+        Vector2 a = Vector2(1.0f, 2.0f);
+        Assert::AreEqual(1.0f, a.x);
+        Assert::AreEqual(2.0f, a.y);
+      }
+
+      TEST_METHOD(CopyConstructor)
+      {
+        Vector2 a = Vector2(1.0f, 2.0f);
+        Vector2 b = Vector2(a);
+        Assert::AreEqual(1.0f, b.x);
+        Assert::AreEqual(2.0f, b.y);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_Accessors)
+    {
+      Vector2 a;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(XY)
+      {
+        Assert::AreEqual(1.0f, a.x);
+        Assert::AreEqual(2.0f, a.y);
+      }
+
+      TEST_METHOD(RG)
+      {
+        Assert::AreEqual(1.0f, a.r);
+        Assert::AreEqual(2.0f, a.g);
+      }
+
+      TEST_METHOD(ST)
+      {
+        Assert::AreEqual(1.0f, a.s);
+        Assert::AreEqual(2.0f, a.t);
+      }
+
+      TEST_METHOD(FirstSecond)
+      {
+        Assert::AreEqual(1.0f, a.first);
+        Assert::AreEqual(2.0f, a.second);
+      }
+
+      TEST_METHOD(Array)
+      {
+        Assert::AreEqual(1.0f, a[0]);
+        Assert::AreEqual(2.0f, a[1]);
+      }
+
+      TEST_METHOD(DataArray)
+      {
+        Assert::AreEqual(1.0f, a.data[0]);
+        Assert::AreEqual(2.0f, a.data[1]);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_ConversionOperators)
+    {
+      Vector2 a;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(ToVector4)
+      {
+        AreEqualVector(Vector4(1.0f, 2.0f, 0.0f, 0.0f), (Vector4)a);
+      }
+
+      TEST_METHOD(ToVector3)
+      {
+        AreEqualVector(Vector3(1.0f, 2.0f, 0.0f), (Vector3)a);
+      }
+
+      TEST_METHOD(ToVector1)
+      {
+        Assert::AreEqual(1.0f, (Vector1)a);
+      }
+
+      TEST_METHOD(ToBool)
+      {
+        Assert::IsTrue((bool)a);
+      }
+
+      TEST_METHOD(ToBool_EmptyVector)
+      {
+        Assert::IsFalse((bool)Vector4(0, 0, 0, 0));
+      }
+
+    };
+
+    //TEST_CLASS(UnitTests_Swizzling)
+
+    TEST_CLASS(UnitTests_UnaryOperators)
+    {
+      Vector2 a, b;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f };
+        b = { 4.0f, 5.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(Negation)
+      {
+        AreEqualVector(Vector2(-a.x, -a.y), -a);
+      }
+
+      TEST_METHOD(Comparison_Equality)
+      {
+        Assert::IsTrue(a == Vector2(1.0f, 2.0f));
+        Assert::IsFalse(a == Vector2(4.0f, 5.0f));
+      }
+
+      TEST_METHOD(Comparison_Inequality)
+      {
+        Assert::IsFalse(a != Vector2(1.0f, 2.0f));
+        Assert::IsTrue(a != Vector2(4.0f, 5.0f));
+      }
+
+      TEST_METHOD(Addition_Vector)
+      {
+        a += b;
+        AreEqualVector(Vector2(5.0f, 7.0f), a);
+      }
+
+      TEST_METHOD(Addition_Value)
+      {
+        a += 4.0f;
+        AreEqualVector(Vector2(5.0f, 6.0f), a);
+      }
+
+      TEST_METHOD(Subtraction_Vector)
+      {
+        a -= b;
+        AreEqualVector(Vector2(-3.0f, -3.0f), a);
+      }
+
+      TEST_METHOD(Subtraction_Value)
+      {
+        a -= 4.0f;
+        AreEqualVector(Vector2(-3.0f, -2.0f), a);
+      }
+
+      TEST_METHOD(Multiplication_Vector)
+      {
+        a *= b;
+        AreEqualVector(Vector2(4.0f, 10.0f), a);
+      }
+
+      TEST_METHOD(Multiplication_Value)
+      {
+        a *= 4.0f;
+        AreEqualVector(Vector2(4.0f, 8.0f), a);
+      }
+
+      TEST_METHOD(Division_Vec)
+      {
+        a /= b;
+        AreEqualVector(Vector2(1.0f / 4.0f, 2.0f / 5.0f), a);
+      }
+
+      TEST_METHOD(Division_Value)
+      {
+        a /= 4.0f;
+        AreEqualVector(Vector2(1.0f / 4.0f, 2.0f / 4.0f), a);
+      }
+
+      TEST_METHOD(Division_ValueZero)
+      {
+        a /= 0.0f;
+        AreEqualVector(Vector2(1.0f, 2.0f), a);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_BinaryOperators)
+    {
+      Vector2 a, b;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f };
+        b = { 4.0f, 5.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(Addition_VectorToVector)
+      {
+        AreEqualVector(Vector2(5.0f, 7.0f), a + b);
+      }
+
+      TEST_METHOD(Addition_VectorToValue)
+      {
+        AreEqualVector(Vector2(5.0f, 6.0f), a + 4.0f);
+      }
+
+      TEST_METHOD(Addition_ValueToVector)
+      {
+        AreEqualVector(Vector2(5.0f, 6.0f), 4.0f + a);
+      }
+
+      TEST_METHOD(Subtraction_VectorToVector)
+      {
+        AreEqualVector(Vector2(-3.0f, -3.0f), a - b);
+      }
+
+      TEST_METHOD(Subtraction_VectorToValue)
+      {
+        AreEqualVector(Vector2(-3.0f, -2.0f), a - 4.0f);
+      }
+
+      TEST_METHOD(Subtraction_ValueToVector)
+      {
+        AreEqualVector(Vector2(3.0f, 2.0f), 4.0f - a);
+      }
+
+      TEST_METHOD(Multiplication_VectorToValue)
+      {
+        AreEqualVector(Vector2(4.0f, 8.0f), a * 4.0f);
+      }
+
+      TEST_METHOD(Multiplication_ValueToVector)
+      {
+        AreEqualVector(Vector2(4.0f, 8.0f), 4.0f * a);
+      }
+
+      TEST_METHOD(Division_VectorToValue)
+      {
+        AreEqualVector(Vector2(1.0f / 4.0f, 2.0f / 4.0f), a / 4.0f);
+      }
+
+      TEST_METHOD(Division_ValueToVector)
+      {
+        AreEqualVector(Vector2(4.0f / 1.0f, 4.0f / 2.0f), 4.0f / a);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_Functions)
+    {
+      Vector2 a, b;
+      glm::vec2 glm_a, glm_b;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f };
+        b = { 4.0f, 5.0f };
+        glm_a = { 1.0f, 2.0f };
+        glm_b = { 4.0f, 5.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      //TEST_METHOD(Rotate)
+
+      TEST_METHOD(Magnitude_LengthParity)
+      {
+        Assert::IsTrue(a.Magnitude() == a.Length());
+      }
+
+      TEST_METHOD(Magnitude_LengthSqrParity)
+      {
+        Assert::IsTrue(a.Length() == sqrt(a.LengthSqr()));
+      }
+
+      TEST_METHOD(Magnitude_Calculation)
+      {
+        Assert::AreEqual(glm::length(glm_a), a.Length());
+      }
+
+      TEST_METHOD(Normalize_StaticParity)
+      {
+        Vector2 my_normalize_static = Vector2::Normalize(a);
+        Vector2 my_normalize = a.Normalize();
+        Assert::IsTrue(my_normalize == my_normalize_static);
+      }
+
+      TEST_METHOD(Normalize_LengthCheck)
+      {
+        Assert::AreEqual(1.0f, Vector2::Normalize(a).Length(), EPSILONf);
+      }
+
+      TEST_METHOD(Normalize_Calculation)
+      {
+        AreEqualVector(glm::normalize(glm_a), Vector2::Normalize(a));
+      }
+
+      TEST_METHOD(DotProduct)
+      {
+        Assert::AreEqual(glm::dot(glm_a, glm_b), Dot(a, b));
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_ConversionOverloads)
+    {
+      Vector2 a;
+      glm::vec2 glm_a;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f };
+        glm_a = { 1.0f, 2.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(DegreeToRadians)
+      {
+        AreEqualVector(glm::radians(glm_a), radians(a));
+      }
+
+      TEST_METHOD(RadiansToDegrees)
+      {
+        AreEqualVector(glm::degrees(glm_a), degrees(a));
+      }
+
+    };
+
+  }
+
   namespace UnitTests_Vector3
   {
+
+    TEST_CLASS(UnitTests_Constructors)
+    {
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(DefaultConstructor)
+      {
+        Vector3 a;
+        Assert::AreEqual(0.0f, a.x);
+        Assert::AreEqual(0.0f, a.y);
+        Assert::AreEqual(0.0f, a.z);
+      }
+
+      TEST_METHOD(ValueConstructor)
+      {
+        Vector3 a = Vector3(1.0f, 2.0f, 3.0f);
+        Assert::AreEqual(1.0f, a.x);
+        Assert::AreEqual(2.0f, a.y);
+        Assert::AreEqual(3.0f, a.z);
+      }
+
+      TEST_METHOD(CopyConstructor)
+      {
+        Vector3 a = Vector3(1.0f, 2.0f, 3.0f);
+        Vector3 b = Vector3(a);
+        Assert::AreEqual(1.0f, b.x);
+        Assert::AreEqual(2.0f, b.y);
+        Assert::AreEqual(3.0f, b.z);
+      }
+
+      TEST_METHOD(Vector2Constructor_Left)
+      {
+        Vector2 a = Vector2(1.0f, 2.0f);
+        Vector3 b = Vector3(a, 3.0f);
+        Assert::AreEqual(1.0f, b.x);
+        Assert::AreEqual(2.0f, b.y);
+        Assert::AreEqual(3.0f, b.z);
+      }
+
+      TEST_METHOD(Vector2Constructor_Right)
+      {
+        Vector2 a = Vector2(1.0f, 2.0f);
+        Vector3 b = Vector3(3.0f, a);
+        Assert::AreEqual(3.0f, b.x);
+        Assert::AreEqual(1.0f, b.y);
+        Assert::AreEqual(2.0f, b.z);
+      }
+
+    };
 
     TEST_CLASS(UnitTests_Accessors)
     {
@@ -227,6 +668,11 @@ namespace UnitTests_FlexMath
       {
       }
 
+      TEST_METHOD(ToVector4)
+      {
+        AreEqualVector(Vector4(1.0f, 2.0f, 3.0f, 0.0f), (Vector4)a);
+      }
+
       TEST_METHOD(ToVector2)
       {
         AreEqualVector(Vector2(1.0f, 2.0f), (Vector2)a);
@@ -262,6 +708,15 @@ namespace UnitTests_FlexMath
 
       TEST_METHOD_CLEANUP(Cleanup)
       {
+      }
+
+      TEST_METHOD(Swizzling_Vector4)
+      {
+        // Since swizzling is not very important.
+        // I'm not going to natively support swizzling up.
+        // Do it this way instead.
+        AreEqualVector(Vector4(a.x, a.x, a.x, a.x), Vector4(a.Swizzle("xxx"), a.x));
+        AreEqualVector(Vector4(1.0f, a.z, a.y, a.x), Vector4(1.0f, a.Swizzle("zyx")));
       }
 
       TEST_METHOD(Swizzling_Vector3_Same)
@@ -583,6 +1038,733 @@ namespace UnitTests_FlexMath
       {
         a = { 1.0f, 2.0f, 3.0f };
         glm_a = { 1.0f, 2.0f, 3.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(DegreeToRadians)
+      {
+        AreEqualVector(glm::radians(glm_a), radians(a));
+      }
+
+      TEST_METHOD(RadiansToDegrees)
+      {
+        AreEqualVector(glm::degrees(glm_a), degrees(a));
+      }
+
+    };
+
+  }
+
+  namespace UnitTests_Vector4
+  {
+
+    TEST_CLASS(UnitTests_Constructors)
+    {
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(DefaultConstructor)
+      {
+        Vector4 a;
+        Assert::AreEqual(0.0f, a.x);
+        Assert::AreEqual(0.0f, a.y);
+        Assert::AreEqual(0.0f, a.z);
+        Assert::AreEqual(0.0f, a.w);
+      }
+
+      TEST_METHOD(ValueConstructor)
+      {
+        Vector4 a = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
+        Assert::AreEqual(1.0f, a.x);
+        Assert::AreEqual(2.0f, a.y);
+        Assert::AreEqual(3.0f, a.z);
+        Assert::AreEqual(4.0f, a.w);
+      }
+
+      TEST_METHOD(CopyConstructor)
+      {
+        Vector4 a = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
+        Vector4 b = Vector4(a);
+        Assert::AreEqual(1.0f, b.x);
+        Assert::AreEqual(2.0f, b.y);
+        Assert::AreEqual(3.0f, b.z);
+        Assert::AreEqual(4.0f, b.w);
+      }
+
+      TEST_METHOD(Vector3Constructor_Left)
+      {
+        Vector3 a = Vector3(1.0f, 2.0f, 3.0f);
+        Vector4 b = Vector4(a, 4.0f);
+        Assert::AreEqual(1.0f, b.x);
+        Assert::AreEqual(2.0f, b.y);
+        Assert::AreEqual(3.0f, b.z);
+        Assert::AreEqual(4.0f, b.w);
+      }
+
+      TEST_METHOD(Vector3Constructor_Right)
+      {
+        Vector3 a = Vector3(1.0f, 2.0f, 3.0f);
+        Vector4 b = Vector4(4.0f, a);
+        Assert::AreEqual(4.0f, b.x);
+        Assert::AreEqual(1.0f, b.y);
+        Assert::AreEqual(2.0f, b.z);
+        Assert::AreEqual(3.0f, b.w);
+      }
+
+      TEST_METHOD(Vector2Constructor_Left)
+      {
+        Vector2 a = Vector2(1.0f, 2.0f);
+        Vector4 b = Vector4(a, 3.0f, 4.0f);
+        Assert::AreEqual(1.0f, b.x);
+        Assert::AreEqual(2.0f, b.y);
+        Assert::AreEqual(3.0f, b.z);
+        Assert::AreEqual(4.0f, b.w);
+      }
+
+      TEST_METHOD(Vector2Constructor_Middle)
+      {
+        Vector2 a = Vector2(1.0f, 2.0f);
+        Vector4 b = Vector4(3.0f, a, 4.0f);
+        Assert::AreEqual(3.0f, b.x);
+        Assert::AreEqual(1.0f, b.y);
+        Assert::AreEqual(2.0f, b.z);
+        Assert::AreEqual(4.0f, b.w);
+      }
+
+      TEST_METHOD(Vector2Constructor_Right)
+      {
+        Vector2 a = Vector2(1.0f, 2.0f);
+        Vector4 b = Vector4(3.0f, 4.0f, a);
+        Assert::AreEqual(3.0f, b.x);
+        Assert::AreEqual(4.0f, b.y);
+        Assert::AreEqual(1.0f, b.z);
+        Assert::AreEqual(2.0f, b.w);
+      }
+
+      TEST_METHOD(Vector2Constructor_Both)
+      {
+        Vector2 a = Vector2(1.0f, 2.0f);
+        Vector2 b = Vector2(3.0f, 4.0f);
+        Vector4 c = Vector4(a, b);
+        Assert::AreEqual(1.0f, c.x);
+        Assert::AreEqual(2.0f, c.y);
+        Assert::AreEqual(3.0f, c.z);
+        Assert::AreEqual(4.0f, c.w);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_Accessors)
+    {
+      Vector4 a;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f, 3.0f, 4.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(XYZW)
+      {
+        Assert::AreEqual(1.0f, a.x);
+        Assert::AreEqual(2.0f, a.y);
+        Assert::AreEqual(3.0f, a.z);
+        Assert::AreEqual(4.0f, a.w);
+      }
+
+      TEST_METHOD(RGBA)
+      {
+        Assert::AreEqual(1.0f, a.r);
+        Assert::AreEqual(2.0f, a.g);
+        Assert::AreEqual(3.0f, a.b);
+        Assert::AreEqual(4.0f, a.a);
+      }
+
+      TEST_METHOD(STPQ)
+      {
+        Assert::AreEqual(1.0f, a.s);
+        Assert::AreEqual(2.0f, a.t);
+        Assert::AreEqual(3.0f, a.p);
+        Assert::AreEqual(4.0f, a.q);
+      }
+
+      TEST_METHOD(FirstSecondThirdFourth)
+      {
+        Assert::AreEqual(1.0f, a.first);
+        Assert::AreEqual(2.0f, a.second);
+        Assert::AreEqual(3.0f, a.third);
+        Assert::AreEqual(4.0f, a.fourth);
+      }
+
+      TEST_METHOD(Array)
+      {
+        Assert::AreEqual(1.0f, a[0]);
+        Assert::AreEqual(2.0f, a[1]);
+        Assert::AreEqual(3.0f, a[2]);
+        Assert::AreEqual(4.0f, a[3]);
+      }
+
+      TEST_METHOD(DataArray)
+      {
+        Assert::AreEqual(1.0f, a.data[0]);
+        Assert::AreEqual(2.0f, a.data[1]);
+        Assert::AreEqual(3.0f, a.data[2]);
+        Assert::AreEqual(4.0f, a.data[3]);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_ConversionOperators)
+    {
+      Vector4 a;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f, 3.0f, 4.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(ToVector3)
+      {
+        AreEqualVector(Vector3(1.0f, 2.0f, 3.0f), (Vector3)a);
+      }
+
+      TEST_METHOD(ToVector2)
+      {
+        AreEqualVector(Vector2(1.0f, 2.0f), (Vector2)a);
+      }
+
+      TEST_METHOD(ToVector1)
+      {
+        Assert::AreEqual(1.0f, (Vector1)a);
+      }
+
+      TEST_METHOD(ToBool)
+      {
+        Assert::IsTrue((bool)a);
+      }
+
+      TEST_METHOD(ToBool_EmptyVector)
+      {
+        Assert::IsFalse((bool)Vector4(0, 0, 0));
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_Swizzling)
+    {
+      Vector4 a;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f, 3.0f, 4.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(Swizzling_Vector4_Same)
+      {
+        AreEqualVector(a, a.Swizzle());
+        AreEqualVector(a, a.Swizzle("xyzw"));
+      }
+
+      TEST_METHOD(Swizzling_Vector4)
+      {
+        AreEqualVector(Vector4(a.x, a.x, a.x, a.x), a.Swizzle("xxxx"));
+        AreEqualVector(Vector4(a.x, a.x, a.y, a.x), a.Swizzle("xxyx"));
+        AreEqualVector(Vector4(a.x, a.x, a.z, a.x), a.Swizzle("xxzx"));
+        AreEqualVector(Vector4(a.x, a.y, a.x, a.x), a.Swizzle("xyxx"));
+        AreEqualVector(Vector4(a.x, a.y, a.y, a.x), a.Swizzle("xyyx"));
+        AreEqualVector(Vector4(a.x, a.y, a.z, a.x), a.Swizzle("xyzx"));
+        AreEqualVector(Vector4(a.x, a.z, a.x, a.x), a.Swizzle("xzxx"));
+        AreEqualVector(Vector4(a.x, a.z, a.y, a.x), a.Swizzle("xzyx"));
+        AreEqualVector(Vector4(a.x, a.z, a.z, a.x), a.Swizzle("xzzx"));
+        AreEqualVector(Vector4(a.y, a.x, a.x, a.x), a.Swizzle("yxxx"));
+        AreEqualVector(Vector4(a.y, a.x, a.y, a.x), a.Swizzle("yxyx"));
+        AreEqualVector(Vector4(a.y, a.x, a.z, a.x), a.Swizzle("yxzx"));
+        AreEqualVector(Vector4(a.y, a.y, a.x, a.x), a.Swizzle("yyxx"));
+        AreEqualVector(Vector4(a.y, a.y, a.y, a.x), a.Swizzle("yyyx"));
+        AreEqualVector(Vector4(a.y, a.y, a.z, a.x), a.Swizzle("yyzx"));
+        AreEqualVector(Vector4(a.y, a.z, a.x, a.x), a.Swizzle("yzxx"));
+        AreEqualVector(Vector4(a.y, a.z, a.y, a.x), a.Swizzle("yzyx"));
+        AreEqualVector(Vector4(a.y, a.z, a.z, a.x), a.Swizzle("yzzx"));
+        AreEqualVector(Vector4(a.z, a.x, a.x, a.x), a.Swizzle("zxxx"));
+        AreEqualVector(Vector4(a.z, a.x, a.y, a.x), a.Swizzle("zxyx"));
+        AreEqualVector(Vector4(a.z, a.x, a.z, a.x), a.Swizzle("zxzx"));
+        AreEqualVector(Vector4(a.z, a.y, a.x, a.x), a.Swizzle("zyxx"));
+        AreEqualVector(Vector4(a.z, a.y, a.y, a.x), a.Swizzle("zyyx"));
+        AreEqualVector(Vector4(a.z, a.y, a.z, a.x), a.Swizzle("zyzx"));
+        AreEqualVector(Vector4(a.z, a.z, a.x, a.x), a.Swizzle("zzxx"));
+        AreEqualVector(Vector4(a.z, a.z, a.y, a.x), a.Swizzle("zzyx"));
+        AreEqualVector(Vector4(a.z, a.z, a.z, a.x), a.Swizzle("zzzx"));
+
+        AreEqualVector(Vector4(a.x, a.x, a.x, a.y), a.Swizzle("xxxy"));
+        AreEqualVector(Vector4(a.x, a.x, a.y, a.y), a.Swizzle("xxyy"));
+        AreEqualVector(Vector4(a.x, a.x, a.z, a.y), a.Swizzle("xxzy"));
+        AreEqualVector(Vector4(a.x, a.y, a.x, a.y), a.Swizzle("xyxy"));
+        AreEqualVector(Vector4(a.x, a.y, a.y, a.y), a.Swizzle("xyyy"));
+        AreEqualVector(Vector4(a.x, a.y, a.z, a.y), a.Swizzle("xyzy"));
+        AreEqualVector(Vector4(a.x, a.z, a.x, a.y), a.Swizzle("xzxy"));
+        AreEqualVector(Vector4(a.x, a.z, a.y, a.y), a.Swizzle("xzyy"));
+        AreEqualVector(Vector4(a.x, a.z, a.z, a.y), a.Swizzle("xzzy"));
+        AreEqualVector(Vector4(a.y, a.x, a.x, a.y), a.Swizzle("yxxy"));
+        AreEqualVector(Vector4(a.y, a.x, a.y, a.y), a.Swizzle("yxyy"));
+        AreEqualVector(Vector4(a.y, a.x, a.z, a.y), a.Swizzle("yxzy"));
+        AreEqualVector(Vector4(a.y, a.y, a.x, a.y), a.Swizzle("yyxy"));
+        AreEqualVector(Vector4(a.y, a.y, a.y, a.y), a.Swizzle("yyyy"));
+        AreEqualVector(Vector4(a.y, a.y, a.z, a.y), a.Swizzle("yyzy"));
+        AreEqualVector(Vector4(a.y, a.z, a.x, a.y), a.Swizzle("yzxy"));
+        AreEqualVector(Vector4(a.y, a.z, a.y, a.y), a.Swizzle("yzyy"));
+        AreEqualVector(Vector4(a.y, a.z, a.z, a.y), a.Swizzle("yzzy"));
+        AreEqualVector(Vector4(a.z, a.x, a.x, a.y), a.Swizzle("zxxy"));
+        AreEqualVector(Vector4(a.z, a.x, a.y, a.y), a.Swizzle("zxyy"));
+        AreEqualVector(Vector4(a.z, a.x, a.z, a.y), a.Swizzle("zxzy"));
+        AreEqualVector(Vector4(a.z, a.y, a.x, a.y), a.Swizzle("zyxy"));
+        AreEqualVector(Vector4(a.z, a.y, a.y, a.y), a.Swizzle("zyyy"));
+        AreEqualVector(Vector4(a.z, a.y, a.z, a.y), a.Swizzle("zyzy"));
+        AreEqualVector(Vector4(a.z, a.z, a.x, a.y), a.Swizzle("zzxy"));
+        AreEqualVector(Vector4(a.z, a.z, a.y, a.y), a.Swizzle("zzyy"));
+        AreEqualVector(Vector4(a.z, a.z, a.z, a.y), a.Swizzle("zzzy"));
+
+        AreEqualVector(Vector4(a.x, a.x, a.x, a.z), a.Swizzle("xxxz"));
+        AreEqualVector(Vector4(a.x, a.x, a.y, a.z), a.Swizzle("xxyz"));
+        AreEqualVector(Vector4(a.x, a.x, a.z, a.z), a.Swizzle("xxzz"));
+        AreEqualVector(Vector4(a.x, a.y, a.x, a.z), a.Swizzle("xyxz"));
+        AreEqualVector(Vector4(a.x, a.y, a.y, a.z), a.Swizzle("xyyz"));
+        AreEqualVector(Vector4(a.x, a.y, a.z, a.z), a.Swizzle("xyzz"));
+        AreEqualVector(Vector4(a.x, a.z, a.x, a.z), a.Swizzle("xzxz"));
+        AreEqualVector(Vector4(a.x, a.z, a.y, a.z), a.Swizzle("xzyz"));
+        AreEqualVector(Vector4(a.x, a.z, a.z, a.z), a.Swizzle("xzzz"));
+        AreEqualVector(Vector4(a.y, a.x, a.x, a.z), a.Swizzle("yxxz"));
+        AreEqualVector(Vector4(a.y, a.x, a.y, a.z), a.Swizzle("yxyz"));
+        AreEqualVector(Vector4(a.y, a.x, a.z, a.z), a.Swizzle("yxzz"));
+        AreEqualVector(Vector4(a.y, a.y, a.x, a.z), a.Swizzle("yyxz"));
+        AreEqualVector(Vector4(a.y, a.y, a.y, a.z), a.Swizzle("yyyz"));
+        AreEqualVector(Vector4(a.y, a.y, a.z, a.z), a.Swizzle("yyzz"));
+        AreEqualVector(Vector4(a.y, a.z, a.x, a.z), a.Swizzle("yzxz"));
+        AreEqualVector(Vector4(a.y, a.z, a.y, a.z), a.Swizzle("yzyz"));
+        AreEqualVector(Vector4(a.y, a.z, a.z, a.z), a.Swizzle("yzzz"));
+        AreEqualVector(Vector4(a.z, a.x, a.x, a.z), a.Swizzle("zxxz"));
+        AreEqualVector(Vector4(a.z, a.x, a.y, a.z), a.Swizzle("zxyz"));
+        AreEqualVector(Vector4(a.z, a.x, a.z, a.z), a.Swizzle("zxzz"));
+        AreEqualVector(Vector4(a.z, a.y, a.x, a.z), a.Swizzle("zyxz"));
+        AreEqualVector(Vector4(a.z, a.y, a.y, a.z), a.Swizzle("zyyz"));
+        AreEqualVector(Vector4(a.z, a.y, a.z, a.z), a.Swizzle("zyzz"));
+        AreEqualVector(Vector4(a.z, a.z, a.x, a.z), a.Swizzle("zzxz"));
+        AreEqualVector(Vector4(a.z, a.z, a.y, a.z), a.Swizzle("zzyz"));
+        AreEqualVector(Vector4(a.z, a.z, a.z, a.z), a.Swizzle("zzzz"));
+
+        AreEqualVector(Vector4(a.x, a.x, a.x, a.w), a.Swizzle("xxxw"));
+        AreEqualVector(Vector4(a.x, a.x, a.y, a.w), a.Swizzle("xxyw"));
+        AreEqualVector(Vector4(a.x, a.x, a.z, a.w), a.Swizzle("xxzw"));
+        AreEqualVector(Vector4(a.x, a.y, a.x, a.w), a.Swizzle("xyxw"));
+        AreEqualVector(Vector4(a.x, a.y, a.y, a.w), a.Swizzle("xyyw"));
+        AreEqualVector(Vector4(a.x, a.y, a.z, a.w), a.Swizzle("xyzw"));
+        AreEqualVector(Vector4(a.x, a.z, a.x, a.w), a.Swizzle("xzxw"));
+        AreEqualVector(Vector4(a.x, a.z, a.y, a.w), a.Swizzle("xzyw"));
+        AreEqualVector(Vector4(a.x, a.z, a.z, a.w), a.Swizzle("xzzw"));
+        AreEqualVector(Vector4(a.y, a.x, a.x, a.w), a.Swizzle("yxxw"));
+        AreEqualVector(Vector4(a.y, a.x, a.y, a.w), a.Swizzle("yxyw"));
+        AreEqualVector(Vector4(a.y, a.x, a.z, a.w), a.Swizzle("yxzw"));
+        AreEqualVector(Vector4(a.y, a.y, a.x, a.w), a.Swizzle("yyxw"));
+        AreEqualVector(Vector4(a.y, a.y, a.y, a.w), a.Swizzle("yyyw"));
+        AreEqualVector(Vector4(a.y, a.y, a.z, a.w), a.Swizzle("yyzw"));
+        AreEqualVector(Vector4(a.y, a.z, a.x, a.w), a.Swizzle("yzxw"));
+        AreEqualVector(Vector4(a.y, a.z, a.y, a.w), a.Swizzle("yzyw"));
+        AreEqualVector(Vector4(a.y, a.z, a.z, a.w), a.Swizzle("yzzw"));
+        AreEqualVector(Vector4(a.z, a.x, a.x, a.w), a.Swizzle("zxxw"));
+        AreEqualVector(Vector4(a.z, a.x, a.y, a.w), a.Swizzle("zxyw"));
+        AreEqualVector(Vector4(a.z, a.x, a.z, a.w), a.Swizzle("zxzw"));
+        AreEqualVector(Vector4(a.z, a.y, a.x, a.w), a.Swizzle("zyxw"));
+        AreEqualVector(Vector4(a.z, a.y, a.y, a.w), a.Swizzle("zyyw"));
+        AreEqualVector(Vector4(a.z, a.y, a.z, a.w), a.Swizzle("zyzw"));
+        AreEqualVector(Vector4(a.z, a.z, a.x, a.w), a.Swizzle("zzxw"));
+        AreEqualVector(Vector4(a.z, a.z, a.y, a.w), a.Swizzle("zzyw"));
+        AreEqualVector(Vector4(a.z, a.z, a.z, a.w), a.Swizzle("zzzw"));
+      }
+
+      TEST_METHOD(Swizzling_Vector3)
+      {
+        AreEqualVector(Vector3(a.x, a.x, a.x), (Vector3)a.Swizzle("xxx"));
+        AreEqualVector(Vector3(a.x, a.x, a.y), (Vector3)a.Swizzle("xxy"));
+        AreEqualVector(Vector3(a.x, a.x, a.z), (Vector3)a.Swizzle("xxz"));
+        AreEqualVector(Vector3(a.x, a.x, a.w), (Vector3)a.Swizzle("xxw"));
+        AreEqualVector(Vector3(a.x, a.y, a.x), (Vector3)a.Swizzle("xyx"));
+        AreEqualVector(Vector3(a.x, a.y, a.y), (Vector3)a.Swizzle("xyy"));
+        AreEqualVector(Vector3(a.x, a.y, a.z), (Vector3)a.Swizzle("xyz"));
+        AreEqualVector(Vector3(a.x, a.y, a.w), (Vector3)a.Swizzle("xyw"));
+        AreEqualVector(Vector3(a.x, a.z, a.x), (Vector3)a.Swizzle("xzx"));
+        AreEqualVector(Vector3(a.x, a.z, a.y), (Vector3)a.Swizzle("xzy"));
+        AreEqualVector(Vector3(a.x, a.z, a.z), (Vector3)a.Swizzle("xzz"));
+        AreEqualVector(Vector3(a.x, a.z, a.w), (Vector3)a.Swizzle("xzw"));
+        AreEqualVector(Vector3(a.x, a.w, a.x), (Vector3)a.Swizzle("xwx"));
+        AreEqualVector(Vector3(a.x, a.w, a.y), (Vector3)a.Swizzle("xwy"));
+        AreEqualVector(Vector3(a.x, a.w, a.z), (Vector3)a.Swizzle("xwz"));
+        AreEqualVector(Vector3(a.x, a.w, a.w), (Vector3)a.Swizzle("xww"));
+
+        AreEqualVector(Vector3(a.y, a.x, a.x), (Vector3)a.Swizzle("yxx"));
+        AreEqualVector(Vector3(a.y, a.x, a.y), (Vector3)a.Swizzle("yxy"));
+        AreEqualVector(Vector3(a.y, a.x, a.z), (Vector3)a.Swizzle("yxz"));
+        AreEqualVector(Vector3(a.y, a.x, a.w), (Vector3)a.Swizzle("yxw"));
+        AreEqualVector(Vector3(a.y, a.y, a.x), (Vector3)a.Swizzle("yyx"));
+        AreEqualVector(Vector3(a.y, a.y, a.y), (Vector3)a.Swizzle("yyy"));
+        AreEqualVector(Vector3(a.y, a.y, a.z), (Vector3)a.Swizzle("yyz"));
+        AreEqualVector(Vector3(a.y, a.y, a.w), (Vector3)a.Swizzle("yyw"));
+        AreEqualVector(Vector3(a.y, a.z, a.x), (Vector3)a.Swizzle("yzx"));
+        AreEqualVector(Vector3(a.y, a.z, a.y), (Vector3)a.Swizzle("yzy"));
+        AreEqualVector(Vector3(a.y, a.z, a.z), (Vector3)a.Swizzle("yzz"));
+        AreEqualVector(Vector3(a.y, a.z, a.w), (Vector3)a.Swizzle("yzw"));
+        AreEqualVector(Vector3(a.y, a.w, a.x), (Vector3)a.Swizzle("ywx"));
+        AreEqualVector(Vector3(a.y, a.w, a.y), (Vector3)a.Swizzle("ywy"));
+        AreEqualVector(Vector3(a.y, a.w, a.z), (Vector3)a.Swizzle("ywz"));
+        AreEqualVector(Vector3(a.y, a.w, a.w), (Vector3)a.Swizzle("yww"));
+
+        AreEqualVector(Vector3(a.z, a.x, a.x), (Vector3)a.Swizzle("zxx"));
+        AreEqualVector(Vector3(a.z, a.x, a.y), (Vector3)a.Swizzle("zxy"));
+        AreEqualVector(Vector3(a.z, a.x, a.z), (Vector3)a.Swizzle("zxz"));
+        AreEqualVector(Vector3(a.z, a.x, a.w), (Vector3)a.Swizzle("zxw"));
+        AreEqualVector(Vector3(a.z, a.y, a.x), (Vector3)a.Swizzle("zyx"));
+        AreEqualVector(Vector3(a.z, a.y, a.y), (Vector3)a.Swizzle("zyy"));
+        AreEqualVector(Vector3(a.z, a.y, a.z), (Vector3)a.Swizzle("zyz"));
+        AreEqualVector(Vector3(a.z, a.y, a.w), (Vector3)a.Swizzle("zyw"));
+        AreEqualVector(Vector3(a.z, a.z, a.x), (Vector3)a.Swizzle("zzx"));
+        AreEqualVector(Vector3(a.z, a.z, a.y), (Vector3)a.Swizzle("zzy"));
+        AreEqualVector(Vector3(a.z, a.z, a.z), (Vector3)a.Swizzle("zzz"));
+        AreEqualVector(Vector3(a.z, a.z, a.w), (Vector3)a.Swizzle("zzw"));
+        AreEqualVector(Vector3(a.z, a.w, a.x), (Vector3)a.Swizzle("zwx"));
+        AreEqualVector(Vector3(a.z, a.w, a.y), (Vector3)a.Swizzle("zwy"));
+        AreEqualVector(Vector3(a.z, a.w, a.z), (Vector3)a.Swizzle("zwz"));
+        AreEqualVector(Vector3(a.z, a.w, a.w), (Vector3)a.Swizzle("zww"));
+
+        AreEqualVector(Vector3(a.w, a.x, a.x), (Vector3)a.Swizzle("wxx"));
+        AreEqualVector(Vector3(a.w, a.x, a.y), (Vector3)a.Swizzle("wxy"));
+        AreEqualVector(Vector3(a.w, a.x, a.z), (Vector3)a.Swizzle("wxz"));
+        AreEqualVector(Vector3(a.w, a.x, a.w), (Vector3)a.Swizzle("wxw"));
+        AreEqualVector(Vector3(a.w, a.y, a.x), (Vector3)a.Swizzle("wyx"));
+        AreEqualVector(Vector3(a.w, a.y, a.y), (Vector3)a.Swizzle("wyy"));
+        AreEqualVector(Vector3(a.w, a.y, a.z), (Vector3)a.Swizzle("wyz"));
+        AreEqualVector(Vector3(a.w, a.y, a.w), (Vector3)a.Swizzle("wyw"));
+        AreEqualVector(Vector3(a.w, a.z, a.x), (Vector3)a.Swizzle("wzx"));
+        AreEqualVector(Vector3(a.w, a.z, a.y), (Vector3)a.Swizzle("wzy"));
+        AreEqualVector(Vector3(a.w, a.z, a.z), (Vector3)a.Swizzle("wzz"));
+        AreEqualVector(Vector3(a.w, a.z, a.w), (Vector3)a.Swizzle("wzw"));
+        AreEqualVector(Vector3(a.w, a.w, a.x), (Vector3)a.Swizzle("wwx"));
+        AreEqualVector(Vector3(a.w, a.w, a.y), (Vector3)a.Swizzle("wwy"));
+        AreEqualVector(Vector3(a.w, a.w, a.z), (Vector3)a.Swizzle("wwz"));
+        AreEqualVector(Vector3(a.w, a.w, a.w), (Vector3)a.Swizzle("www"));
+      }
+
+      TEST_METHOD(Swizzling_Vector3_2)
+      {
+        AreEqualVector(Vector3(a.x, a.x), (Vector3)a.Swizzle("xx"));
+        AreEqualVector(Vector3(a.x, a.y), (Vector3)a.Swizzle("xy"));
+        AreEqualVector(Vector3(a.x, a.z), (Vector3)a.Swizzle("xz"));
+        AreEqualVector(Vector3(a.x, a.w), (Vector3)a.Swizzle("xw"));
+        AreEqualVector(Vector3(a.y, a.x), (Vector3)a.Swizzle("yx"));
+        AreEqualVector(Vector3(a.y, a.y), (Vector3)a.Swizzle("yy"));
+        AreEqualVector(Vector3(a.y, a.z), (Vector3)a.Swizzle("yz"));
+        AreEqualVector(Vector3(a.y, a.w), (Vector3)a.Swizzle("yw"));
+        AreEqualVector(Vector3(a.z, a.x), (Vector3)a.Swizzle("zx"));
+        AreEqualVector(Vector3(a.z, a.y), (Vector3)a.Swizzle("zy"));
+        AreEqualVector(Vector3(a.z, a.z), (Vector3)a.Swizzle("zz"));
+        AreEqualVector(Vector3(a.z, a.w), (Vector3)a.Swizzle("zw"));
+        AreEqualVector(Vector3(a.w, a.x), (Vector3)a.Swizzle("wx"));
+        AreEqualVector(Vector3(a.w, a.y), (Vector3)a.Swizzle("wy"));
+        AreEqualVector(Vector3(a.w, a.z), (Vector3)a.Swizzle("wz"));
+        AreEqualVector(Vector3(a.w, a.w), (Vector3)a.Swizzle("ww"));
+      }
+
+      TEST_METHOD(Swizzling_Vector3_1)
+      {
+        AreEqualVector(Vector3(a.x), (Vector3)a.Swizzle("x"));
+        AreEqualVector(Vector3(a.y), (Vector3)a.Swizzle("y"));
+        AreEqualVector(Vector3(a.z), (Vector3)a.Swizzle("z"));
+        AreEqualVector(Vector3(a.w), (Vector3)a.Swizzle("w"));
+      }
+
+      TEST_METHOD(Swizzling_Vector2)
+      {
+        AreEqualVector(Vector2(a.x, a.x), (Vector2)a.Swizzle("xx"));
+        AreEqualVector(Vector2(a.x, a.y), (Vector2)a.Swizzle("xy"));
+        AreEqualVector(Vector2(a.x, a.z), (Vector2)a.Swizzle("xz"));
+        AreEqualVector(Vector2(a.x, a.w), (Vector2)a.Swizzle("xw"));
+        AreEqualVector(Vector2(a.y, a.x), (Vector2)a.Swizzle("yx"));
+        AreEqualVector(Vector2(a.y, a.y), (Vector2)a.Swizzle("yy"));
+        AreEqualVector(Vector2(a.y, a.z), (Vector2)a.Swizzle("yz"));
+        AreEqualVector(Vector2(a.y, a.w), (Vector2)a.Swizzle("yw"));
+        AreEqualVector(Vector2(a.z, a.x), (Vector2)a.Swizzle("zx"));
+        AreEqualVector(Vector2(a.z, a.y), (Vector2)a.Swizzle("zy"));
+        AreEqualVector(Vector2(a.z, a.z), (Vector2)a.Swizzle("zz"));
+        AreEqualVector(Vector2(a.z, a.w), (Vector2)a.Swizzle("zw"));
+        AreEqualVector(Vector2(a.w, a.x), (Vector2)a.Swizzle("wx"));
+        AreEqualVector(Vector2(a.w, a.y), (Vector2)a.Swizzle("wy"));
+        AreEqualVector(Vector2(a.w, a.z), (Vector2)a.Swizzle("wz"));
+        AreEqualVector(Vector2(a.w, a.w), (Vector2)a.Swizzle("ww"));
+      }
+
+      TEST_METHOD(Swizzling_Vector2_1)
+      {
+        AreEqualVector(Vector2(a.x), (Vector2)a.Swizzle("x"));
+        AreEqualVector(Vector2(a.y), (Vector2)a.Swizzle("y"));
+        AreEqualVector(Vector2(a.z), (Vector2)a.Swizzle("z"));
+        AreEqualVector(Vector2(a.w), (Vector2)a.Swizzle("w"));
+      }
+
+      TEST_METHOD(Swizzling_Vector1)
+      {
+        Assert::AreEqual(Vector1(a.x), (Vector1)a.Swizzle("x"));
+        Assert::AreEqual(Vector1(a.y), (Vector1)a.Swizzle("y"));
+        Assert::AreEqual(Vector1(a.z), (Vector1)a.Swizzle("z"));
+        Assert::AreEqual(Vector1(a.w), (Vector1)a.Swizzle("w"));
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_UnaryOperators)
+    {
+      Vector4 a, b;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f, 3.0f, 4.0f };
+        b = { 5.0f, 6.0f, 7.0f, 8.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(Negation)
+      {
+        AreEqualVector(Vector4(-a.x, -a.y, -a.z, -a.w), -a);
+      }
+
+      TEST_METHOD(Comparison_Equality)
+      {
+        Assert::IsTrue(a == Vector4(1.0f, 2.0f, 3.0f, 4.0f));
+        Assert::IsFalse(a == Vector4(5.0f, 6.0f, 7.0f, 8.0f));
+      }
+
+      TEST_METHOD(Comparison_Inequality)
+      {
+        Assert::IsFalse(a != Vector4(1.0f, 2.0f, 3.0f, 4.0f));
+        Assert::IsTrue(a != Vector4(5.0f, 6.0f, 7.0f, 8.0f));
+      }
+
+      TEST_METHOD(Addition_Vector)
+      {
+        a += b;
+        AreEqualVector(Vector4(6.0f, 8.0f, 10.0f, 12.0f), a);
+      }
+
+      TEST_METHOD(Addition_Value)
+      {
+        a += 4.0f;
+        AreEqualVector(Vector4(5.0f, 6.0f, 7.0f, 8.0f), a);
+      }
+
+      TEST_METHOD(Subtraction_Vector)
+      {
+        a -= b;
+        AreEqualVector(Vector4(-4.0f, -4.0f, -4.0f, -4.0f), a);
+      }
+
+      TEST_METHOD(Subtraction_Value)
+      {
+        a -= 4.0f;
+        AreEqualVector(Vector4(-3.0f, -2.0f, -1.0f, 0.0f), a);
+      }
+
+      TEST_METHOD(Multiplication_Vector)
+      {
+        a *= b;
+        AreEqualVector(Vector4(5.0f, 12.0f, 21.0f, 32.0f), a);
+      }
+
+      TEST_METHOD(Multiplication_Value)
+      {
+        a *= 4.0f;
+        AreEqualVector(Vector4(4.0f, 8.0f, 12.0f, 16.0f), a);
+      }
+
+      TEST_METHOD(Division_Vec)
+      {
+        a /= b;
+        AreEqualVector(Vector4(1.0f / 5.0f, 2.0f / 6.0f, 3.0f / 7.0f, 4.0f / 8.0f), a);
+      }
+
+      TEST_METHOD(Division_Value)
+      {
+        a /= 4.0f;
+        AreEqualVector(Vector4(1.0f / 4.0f, 2.0f / 4.0f, 3.0f / 4.0f, 4.0f / 4.0f), a);
+      }
+
+      TEST_METHOD(Division_ValueZero)
+      {
+        a /= 0.0f;
+        AreEqualVector(Vector4(1.0f, 2.0f, 3.0f, 4.0f), a);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_BinaryOperators)
+    {
+      Vector4 a, b;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f, 3.0f, 4.0f };
+        b = { 5.0f, 6.0f, 7.0f, 8.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(Addition_VectorToVector)
+      {
+        AreEqualVector(Vector4(6.0f, 8.0f, 10.0f, 12.0f), a + b);
+      }
+
+      TEST_METHOD(Addition_VectorToValue)
+      {
+        AreEqualVector(Vector4(5.0f, 6.0f, 7.0f, 8.0f), a + 4.0f);
+      }
+
+      TEST_METHOD(Addition_ValueToVector)
+      {
+        AreEqualVector(Vector4(5.0f, 6.0f, 7.0f, 8.0f), 4.0f + a);
+      }
+
+      TEST_METHOD(Subtraction_VectorToVector)
+      {
+        AreEqualVector(Vector4(-4.0f, -4.0f, -4.0f, -4.0f), a - b);
+      }
+
+      TEST_METHOD(Subtraction_VectorToValue)
+      {
+        AreEqualVector(Vector4(-3.0f, -2.0f, -1.0f, 0.0f), a - 4.0f);
+      }
+
+      TEST_METHOD(Subtraction_ValueToVector)
+      {
+        AreEqualVector(Vector4(3.0f, 2.0f, 1.0f, 0.0f), 4.0f - a);
+      }
+
+      TEST_METHOD(Multiplication_VectorToValue)
+      {
+        AreEqualVector(Vector4(4.0f, 8.0f, 12.0f, 16.0f), a * 4.0f);
+      }
+
+      TEST_METHOD(Multiplication_ValueToVector)
+      {
+        AreEqualVector(Vector4(4.0f, 8.0f, 12.0f, 16.0f), 4.0f * a);
+      }
+
+      TEST_METHOD(Division_VectorToValue)
+      {
+        AreEqualVector(Vector4(1.0f / 4.0f, 2.0f / 4.0f, 3.0f / 4.0f, 4.0f / 4.0f), a / 4.0f);
+      }
+
+      TEST_METHOD(Division_ValueToVector)
+      {
+        AreEqualVector(Vector4(4.0f / 1.0f, 4.0f / 2.0f, 4.0f / 3.0f, 4.0f / 4.0f), 4.0f / a);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_Functions)
+    {
+      Vector4 a, b;
+      glm::vec4 glm_a, glm_b;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f, 3.0f, 4.0f };
+        b = { 5.0f, 6.0f, 7.0f, 8.0f };
+        glm_a = { 1.0f, 2.0f, 3.0f, 4.0f };
+        glm_b = { 5.0f, 6.0f, 7.0f, 8.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(Magnitude_LengthParity)
+      {
+        Assert::IsTrue(a.Magnitude() == a.Length());
+      }
+
+      TEST_METHOD(Magnitude_LengthSqrParity)
+      {
+        Assert::IsTrue(a.Length() == sqrt(a.LengthSqr()));
+      }
+
+      TEST_METHOD(Magnitude_Calculation)
+      {
+        Assert::AreEqual(glm::length(glm_a), a.Length());
+      }
+
+      TEST_METHOD(Normalize_StaticParity)
+      {
+        Vector4 my_normalize_static = Vector4::Normalize(a);
+        Vector4 my_normalize = a.Normalize();
+        Assert::IsTrue(my_normalize == my_normalize_static);
+      }
+
+      TEST_METHOD(Normalize_LengthCheck)
+      {
+        Assert::AreEqual(1.0f, Vector4::Normalize(a).Length(), EPSILONf);
+      }
+
+      TEST_METHOD(Normalize_Calculation)
+      {
+        AreEqualVector(glm::normalize(glm_a), Vector4::Normalize(a), EPSILONf);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_ConversionOverloads)
+    {
+      Vector4 a;
+      glm::vec4 glm_a;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f, 3.0f, 4.0f };
+        glm_a = { 1.0f, 2.0f, 3.0f, 4.0f };
       }
 
       TEST_METHOD_CLEANUP(Cleanup)

@@ -115,7 +115,7 @@ namespace FlexEngine
     bool operator==(const Vector2& other) const;
     bool operator!=(const Vector2& other) const;
 
-    Vector2 RotateRad(const value_type radians) const;
+    Vector2 Rotate(const value_type radians) const;
     Vector2 RotateDeg(const value_type degrees) const;
 
     value_type Magnitude() const;

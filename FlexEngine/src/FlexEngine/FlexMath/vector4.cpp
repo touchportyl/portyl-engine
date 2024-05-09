@@ -27,8 +27,8 @@ namespace FlexEngine
   Vector4 Vector4::Swizzle(const std::string& swizzle) const
   {
     // build new vector based on swizzle
-    Vector3 new_vector;
-    for (size_type i = 0; i < size(); ++i)
+    Vector3 new_vector = Vector3::Zero;
+    for (size_type i = 0; i < std::min(swizzle.size(), size()); ++i)
     {
       switch (swizzle[i])
       {
@@ -39,6 +39,7 @@ namespace FlexEngine
       default: new_vector[i] = data[i]; break;
       }
     }
+
     return new_vector;
   }
 
@@ -85,12 +86,44 @@ namespace FlexEngine
     w = _w;
   }
 
+  Vector4::Vector4(value_type _x, const Vector3& yzw)
+  {
+    x = _x;
+    y = yzw.x;
+    z = yzw.y;
+    w = yzw.z;
+  }
+
   Vector4::Vector4(const Vector2& xy, value_type _z, value_type _w)
   {
     x = xy.x;
     y = xy.y;
     z = _z;
     w = _w;
+  }
+
+  Vector4::Vector4(value_type _x, const Vector2& yz, value_type _w)
+  {
+    x = _x;
+    y = yz.x;
+    z = yz.y;
+    w = _w;
+  }
+
+  Vector4::Vector4(value_type _x, value_type _y, const Vector2& zw)
+  {
+    x = _x;
+    y = _y;
+    z = zw.x;
+    w = zw.y;
+  }
+
+  Vector4::Vector4(const Vector2& xy, const Vector2& zw)
+  {
+    x = xy.x;
+    y = xy.y;
+    z = zw.x;
+    w = zw.y;
   }
 
 #pragma endregion
@@ -207,22 +240,19 @@ namespace FlexEngine
     return !(*this == other);
   }
 
-  // Note: Returns the magnitude of the xyz component
   Vector4::value_type Vector4::Magnitude() const
   {
-    return std::sqrt(x * x + y * y + z * z);
+    return std::sqrt(x * x + y * y + z * z + w * w);
   }
 
-  // Note: Returns the length of the xyz component
   Vector4::value_type Vector4::Length() const
   {
     return Magnitude();
   }
 
-  // Note: Returns the length of the xyz component
   Vector4::value_type Vector4::LengthSqr() const
   {
-    return x * x + y * y + z * z;
+    return x * x + y * y + z * z + w * w;
   }
 
   Vector4& Vector4::Normalize()
@@ -288,7 +318,7 @@ namespace FlexEngine
 
   Vector4 operator-(Vector4::const_value_type value, const Vector4& point)
   {
-    return { point.x - value, point.y - value, point.z - value, point.w - value };
+    return { value - point.x, value - point.y, value - point.z, value - point.w };
   }
 
   Vector4 operator-(const Vector4& point, Vector4::const_value_type value)

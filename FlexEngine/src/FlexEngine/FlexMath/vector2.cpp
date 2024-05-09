@@ -27,8 +27,8 @@ namespace FlexEngine
   Vector2 Vector2::Swizzle(const std::string& swizzle) const
   {
     // build new vector based on swizzle
-    Vector2 new_vector;
-    for (size_type i = 0; i < size(); ++i)
+    Vector2 new_vector = Vector2::Zero;
+    for (size_type i = 0; i < std::min(swizzle.size(), size()); ++i)
     {
       switch (swizzle[i])
       {
@@ -37,6 +37,7 @@ namespace FlexEngine
       default: new_vector[i] = data[i]; break;
       }
     }
+
     return new_vector;
   }
 
@@ -167,7 +168,7 @@ namespace FlexEngine
     return !(*this == other);
   }
 
-  Vector2 Vector2::RotateRad(const_value_type radians) const
+  Vector2 Vector2::Rotate(const_value_type radians) const
   {
     const_value_type cos = std::cos(radians);
     const_value_type sin = std::sin(radians);
@@ -176,7 +177,7 @@ namespace FlexEngine
 
   Vector2 Vector2::RotateDeg(const_value_type degrees) const
   {
-    return RotateRad(radians(degrees));
+    return Rotate(radians(degrees));
   }
 
   Vector2::value_type Vector2::Magnitude() const
@@ -257,7 +258,7 @@ namespace FlexEngine
 
   Vector2 operator-(Vector2::const_value_type value, const Vector2& point)
   {
-    return { point.x - value, point.y - value };
+    return { value - point.x, value - point.y };
   }
 
   Vector2 operator-(const Vector2& point, Vector2::const_value_type value)
