@@ -309,6 +309,9 @@
     <ClInclude Include="src\FlexEngine\FlexMath\matrix1x1.h">
       <Filter>src\FlexEngine\FlexMath</Filter>
     </ClInclude>
+    <ClInclude Include="src\FlexEngine\Wrapper\simd.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\FlexEngine\FlexECS\entity.inl">

@@ -33,7 +33,6 @@ namespace FlexEngine
 
     // Forward declarations
 
-    class State;
     class Scene;
     class Entity;
     struct ArchetypeEdge;

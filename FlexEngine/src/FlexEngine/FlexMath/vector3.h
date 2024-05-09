@@ -2,6 +2,7 @@
 
 #include "flx_api.h"
 
+//#include "Wrapper/simd.h"
 #include "vector2.h"
 
 namespace FlexEngine
@@ -28,7 +29,7 @@ namespace FlexEngine
 
     #pragma warning(push)
     #pragma warning(disable: 4324) // structure was padded due to alignment specifier
-    union __FLX_ALIGN_AS(16)
+    union __FLX_ALIGNAS(16)
     {
     #pragma warning(push)
     #pragma warning(disable: 4201) // nonstandard extension used: nameless struct/union
