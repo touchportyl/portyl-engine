@@ -79,9 +79,6 @@ namespace OpenGLRendering
 
     #if 1
     {
-      // Function queue to handle title bar actions
-      //FunctionQueue fq_actions;
-
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 8.0f));
       ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(16.0f, 8.0f));
 
@@ -106,14 +103,7 @@ namespace OpenGLRendering
           //if (ImGui::MenuItem("Save", "Ctrl+S")) {)
           //if (ImGui::MenuItem("Reload", "Ctrl+R")) {}
           //if (ImGui::MenuItem("Close", "Ctrl+W")) {}
-          if (ImGui::MenuItem("Exit", "Ctrl+Q")) {}
-          //{
-          //  fq_actions.Push({ []()
-          //    {
-          //      Application::Close();
-          //    }
-          //  });
-          //}
+          if (ImGui::MenuItem("Exit", "Ctrl+Q")) { Application::Close(); }
           ImGui::EndMenu();
         }
 
@@ -128,9 +118,6 @@ namespace OpenGLRendering
       }
 
       ImGui::PopStyleVar(2);
-
-      // Execute function queue
-      //fq_actions.Flush();
 
       // Title bar window drag functionality
 

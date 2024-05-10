@@ -16,12 +16,21 @@ namespace FlexEngine
   // The architecture of the engine is designed to only have one application instance.
   class __FLX_API Application
   {
+    static bool m_is_closing;
+
+    static bool m_is_running;
+    static bool m_is_minimized;
+
+    static Window* m_current_window;
+    static std::vector<std::shared_ptr<Window>> m_windows;
+
   public:
     Application();
     virtual ~Application();
 
     // Closes the application and all windows
-    // Sets the glfwSetWindowShouldClose flag
+    // Important to note that this does not immediately close the application,
+    // the application will close at the end of the current frame.
     static void Close();
 
     #pragma region Window Handling Functions
@@ -56,13 +65,10 @@ namespace FlexEngine
     // Sets the current window
     static void Internal_SetCurrentWindow(Window* window);
 
+    // INTERNAL FUNCTION
+    static void Internal_Close();
+
     static void Run();
-
-    static bool m_is_running;
-    static bool m_is_minimized;
-
-    static Window* m_current_window;
-    static std::vector<std::shared_ptr<Window>> m_windows;
 
     friend int ::main(int, char**);
   };

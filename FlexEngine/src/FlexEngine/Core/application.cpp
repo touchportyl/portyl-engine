@@ -8,6 +8,7 @@
 namespace FlexEngine
 {
   // static member initialization
+  bool Application::m_is_closing = false;
   bool Application::m_is_running = true;
   bool Application::m_is_minimized = false;
   std::vector<std::shared_ptr<Window>> Application::m_windows;
@@ -30,6 +31,11 @@ namespace FlexEngine
   }
 
   void Application::Close()
+  {
+    m_is_closing = true;
+  }
+
+  void Application::Internal_Close()
   {
     FLX_FLOW_FUNCTION();
 
@@ -97,14 +103,20 @@ namespace FlexEngine
   {
     while (m_is_running)
     {
+      // poll IO events (keys pressed/released, mouse moved etc.)
+      glfwPollEvents();
+
       // run the application state
       ApplicationStateManager::Update();
 
       // quit application
-      if (Input::GetKey(GLFW_KEY_LEFT_CONTROL) && Input::GetKeyDown(GLFW_KEY_Q)) Application::Close();
-
-      // poll IO events (keys pressed/released, mouse moved etc.)
-      glfwPollEvents();
+      if (
+        m_is_closing ||
+        Input::GetKey(GLFW_KEY_LEFT_CONTROL) && Input::GetKeyDown(GLFW_KEY_Q)
+      )
+      {
+        Application::Internal_Close();
+      }
     }
   }
 
