@@ -89,6 +89,11 @@ namespace FlexEngine
     return std::filesystem::is_directory(m_path);
   }
 
+  bool Path::exists() noexcept
+  {
+    return std::filesystem::exists(*this);
+  }
+
   bool Path::exists(const Path& path) noexcept
   {
     return std::filesystem::exists(path);

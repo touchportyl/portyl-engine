@@ -108,6 +108,56 @@ namespace FlexEngine
 #endif
   }
 
+  Path File::Create(const Path& path, const std::string& filename)
+  {
+    FLX_FLOW_FUNCTION();
+    FLX_SCOPED_TIMER(__FUNCTION__ + std::string(" ") + std::to_string(path) + Path::separator + filename);
+
+    // guard: path is not a directory
+    if (!path.is_directory())
+    {
+      Log::Warning("Attempted to create a file in a non-directory: " + std::to_string(path));
+      return path;
+    }
+
+    // guard: filename
+    if (filename.empty() || filename.find_first_of(Path::invalid_characters) != std::string::npos)
+    {
+      Log::Warning("Attempted to create a file with an invalid filename: " + std::to_string(path) + Path::separator + filename);
+      return path;
+    }
+
+    // guard: length
+    if ((path.string().length() + filename.length()) >= 260)
+    {
+      Log::Warning("Attempted to create a file with a filename that is too long: " + std::to_string(path) + Path::separator + filename);
+      return path;
+    }
+
+    // create the file
+    Path new_path = path.get() / filename;
+    std::ofstream file(new_path, std::ios::binary);
+    if (!file.is_open())
+    {
+      Log::Error("Failed to create file: " + std::to_string(new_path));
+      return path;
+    }
+    file.close();
+
+    // double check
+    if (!new_path.exists())
+    {
+      Log::Error("Failed to create file: " + std::to_string(new_path));
+      return path;
+    }
+
+#ifdef _DEBUG
+    Log::Debug("Successfully created file: " + std::to_string(new_path));
+#endif
+
+    return new_path;
+  }
+
   void File::Delete()
   {
     FLX_FLOW_FUNCTION();

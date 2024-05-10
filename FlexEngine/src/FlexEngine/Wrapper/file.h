@@ -43,6 +43,9 @@ namespace FlexEngine
     std::string Read();
     void Write(const std::string& _data);
 
+    // Use Open() to get the file
+    static Path Create(const Path& path, const std::string& filename);
+
     // Note: No support for deleting directories because it's dangerous
     void Delete();
 

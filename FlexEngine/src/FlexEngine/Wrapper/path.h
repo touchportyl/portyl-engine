@@ -51,6 +51,9 @@ namespace FlexEngine
     // Preferred separator for the current platform
     static constexpr char separator = static_cast<char>(std::filesystem::path::preferred_separator);
 
+    // Invalid characters for paths
+    static constexpr char invalid_characters[] = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
+
     // Constructors
 
     Path() = default;
@@ -65,6 +68,7 @@ namespace FlexEngine
     bool is_file() const noexcept;
     bool is_directory() const noexcept;
 
+    bool exists() noexcept;
     static bool exists(const Path& _path) noexcept;
     static Path current();
 
@@ -160,6 +164,7 @@ namespace FlexEngine
 
     operator std::filesystem::path() const noexcept;
     operator std::string() const noexcept;
+
   };
 
   // Operator Overloads
