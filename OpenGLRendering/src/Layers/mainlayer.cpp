@@ -503,14 +503,14 @@ namespace OpenGLRendering
           //auto textures = mesh.material.GetDiffuse();
           //for (std::size_t i = 0; i < textures.size(); i++)
           //{
-          //  std::string uniform_name = "texture_diffuse" + std::to_string(i);
+          //  std::string uniform_name = "u_texture_diffuse" + std::to_string(i);
           //  textures[i]->Bind(shader_asset, uniform_name.c_str(), i);
           //}
 
-          auto& texture_asset = FLX_ASSET_GET(Asset::Texture, R"(\models\firetruck\Textures\colormap.png)");
-          texture_asset.Bind(shader_asset, "u_texture_diffuse", 0);
+          //auto& texture_asset = FLX_ASSET_GET(Asset::Texture, R"(\models\firetruck\Textures\colormap.png)");
+          //texture_asset.Bind(shader_asset, "u_texture_diffuse", 0);
 
-          //mesh.material.GetDiffuse()->Bind(shader_asset, "u_texture_diffuse", 0);
+          mesh.material.GetDiffuse()->Bind(shader_asset, "u_texture_diffuse", 0);
           //auto specular = mesh.material.GetSpecular();
           //specular.first->Bind(shader_asset, "u_texture_specular", 0);
           //shader_asset.SetUniform_float("u_shininess", specular.second);
