@@ -62,6 +62,13 @@ namespace OpenGLRendering
     std::vector<unsigned int> indices;
   };
 
+  class Model
+  { FLX_REFL_SERIALIZABLE
+  public:
+    AssetKey model;
+    //std::vector<Mesh> model;
+  };
+
   class Camera
   { FLX_REFL_SERIALIZABLE
   public:

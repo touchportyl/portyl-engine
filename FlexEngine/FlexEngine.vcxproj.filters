@@ -145,10 +145,10 @@
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmesh.cpp">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglshaders.cpp">
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglshader.cpp">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengltextures.cpp">
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengltexture.cpp">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglvertex.cpp">
@@ -165,6 +165,15 @@
     </ClCompile>
     <ClCompile Include="src\FlexEngine\FlexMath\mathconversions.cpp">
       <Filter>src\FlexEngine\FlexMath</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Wrapper\assimp.cpp">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmaterial.cpp">
+      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmodel.cpp">
+      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -282,10 +291,10 @@
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmesh.h">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglshaders.h">
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglshader.h">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengltextures.h">
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengltexture.h">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglvertex.h">
@@ -311,6 +320,18 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Wrapper\simd.h">
       <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Wrapper\assimp.h">
+      <Filter>src\FlexEngine\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmaterial.h">
+      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmodel.h">
+      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\AssetManager\assetkey.h">
+      <Filter>src\FlexEngine\AssetManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

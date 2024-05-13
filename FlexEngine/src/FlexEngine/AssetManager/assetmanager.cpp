@@ -2,6 +2,8 @@
 
 #include "assetmanager.h"
 
+#include "Wrapper/assimp.h"
+
 namespace FlexEngine
 {
 
@@ -46,6 +48,7 @@ namespace FlexEngine
         // currently supported:
         // - textures
         // - shaders
+        // - models
 
         auto file_extension = file.path.extension();
 
@@ -93,6 +96,22 @@ namespace FlexEngine
 
           // add the file to the linker
           shader_linker[file_name][shader_type] = &file;
+        }
+        else if (FLX_EXTENSIONS_CHECK_SAFETY("model", file_extension.string()))
+        {
+          // create an asset key
+          AssetKey key = file.path.string().substr(default_directory_length);
+
+          // load and save the model
+          Log::Flow("Loading model: " + key);
+          FLX_FLOW_BEGINSCOPE();
+          Asset::Model loaded_model = AssimpWrapper::LoadModel(file.path);
+          if (loaded_model)
+          {
+            Log::Info(std::string("Loaded model: ") + key);
+            assets[key] = loaded_model;
+          }
+          FLX_FLOW_ENDSCOPE();
         }
       }
     );
@@ -148,22 +167,28 @@ namespace FlexEngine
   }
 
 
-  AssetVariant* AssetManager::Get(const AssetKey& key)
+  AssetVariant* AssetManager::Get(AssetKey key)
   {
     // replace all / or \ in the key with the platform specific separator
     // this is to ensure that the key is always the same
     // regardless of the platform
-    std::string key_copy = key;
-    std::replace(key_copy.begin(), key_copy.end(), '/', Path::separator);
-    std::replace(key_copy.begin(), key_copy.end(), '\\', Path::separator);
+    std::replace(key.begin(), key.end(), '/', Path::separator);
+    std::replace(key.begin(), key.end(), '\\', Path::separator);
 
-    if (assets.count(key_copy) == 0)
+    if (assets.count(key) == 0)
     {
-      Log::Error(std::string("Asset not found: ") + key_copy);
+      Log::Error(std::string("Asset not found: ") + key);
       return nullptr;
     }
-    return &assets[key_copy];
+    return &assets[key];
   }
+
+
+  Path AssetManager::DefaultDirectory()
+  {
+    return default_directory;
+  }
+
 
 #ifdef _DEBUG
   void AssetManager::Dump()
@@ -185,6 +210,11 @@ namespace FlexEngine
           {
             Log::Debug("Type: Shader");
             arg.Dump();
+          }
+          else if constexpr (std::is_same_v<T, Asset::Model>)
+          {
+            Log::Debug("Type: Model");
+            Log::Debug("Meshes: " + std::to_string(arg.meshes.size()));
           }
         },
         asset

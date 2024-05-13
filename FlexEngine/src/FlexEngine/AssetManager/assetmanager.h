@@ -2,10 +2,11 @@
 
 #include "flx_api.h"
 
+#include "AssetManager/assetkey.h"
 #include "Wrapper/path.h"
-
-#include "Renderer/OpenGL/opengltextures.h"
-#include "Renderer/OpenGL/openglshaders.h"
+#include "Renderer/OpenGL/opengltexture.h"
+#include "Renderer/OpenGL/openglshader.h"
+#include "Renderer/OpenGL/openglmodel.h"
 
 #include <string>
 #include <unordered_map>
@@ -14,12 +15,8 @@
 namespace FlexEngine
 {
 
-  // The key is specifically the relative path to the asset from the
-  // default directory. This is to ensure that the asset manager can
-  // easily find the asset.
-  // Example: R"(/images/flexengine/flexengine_logo_black.png)"
-  using AssetKey = std::string;
-  using AssetVariant = std::variant<Asset::Texture, Asset::Shader>;
+  // Variant of all asset types
+  using AssetVariant = std::variant<Asset::Texture, Asset::Shader, Asset::Model>;
 
   // Helper macro to get an asset by its key.
   // Example usage: FLX_ASSET_GET(Asset::Texture, R"(/images/flexengine/flexengine-256.png)")
@@ -56,7 +53,10 @@ namespace FlexEngine
     static void Unload();
 
     // Get an asset variant by its key
-    static AssetVariant* Get(const AssetKey& key);
+    static AssetVariant* Get(AssetKey key);
+
+    // Get the default directory
+    static Path DefaultDirectory();
 
 #ifdef _DEBUG
     static void Dump();

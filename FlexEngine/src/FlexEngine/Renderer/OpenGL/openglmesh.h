@@ -4,8 +4,9 @@
 
 #include "Renderer/buffer.h"
 #include "Renderer/OpenGL/openglvertex.h"
-#include "Renderer/OpenGL/opengltextures.h"
-#include "Renderer/OpenGL/openglshaders.h"
+#include "Renderer/OpenGL/openglmaterial.h"
+#include "Renderer/OpenGL/openglshader.h"
+#include "FlexMath/matrix4x4.h"
 
 #include <vector>
 
@@ -14,23 +15,24 @@ namespace FlexEngine
   namespace Asset
   {
 
-    // The current implementation of the Mesh class is not optimal.
-    // It's only designed to work for single textures.
     class __FLX_API Mesh
     {
     public:
       std::vector<Vertex> vertices;
       std::vector<unsigned int> indices;
-      std::vector<Texture> textures;
-
-      std::unique_ptr<VertexArray> VAO;
-      std::unique_ptr<VertexBuffer> VBO;
-      std::unique_ptr<IndexBuffer> IBO;
+      Material material;
+      Matrix4x4 transform;
 
       Mesh() = default;
-      Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
+      Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const Material& material, const Matrix4x4& transform);
 
-      void Draw(const Asset::Shader& shader);
+      #pragma region Operator Overloads
+
+      bool operator==(const Mesh& other) const;
+      bool operator!=(const Mesh& other) const;
+
+      #pragma endregion
+
     };
 
   }

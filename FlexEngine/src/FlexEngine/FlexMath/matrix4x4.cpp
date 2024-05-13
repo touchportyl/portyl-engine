@@ -57,7 +57,7 @@ namespace FlexEngine
   }
   std::string Matrix4x4::ToPrettyString() const
   {
-    std::string str = "";
+    std::string str = "Matrix4x4\n";
     for (size_type i = 0; i < 4; ++i)
     {
       str += "(";
