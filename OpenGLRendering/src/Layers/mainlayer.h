@@ -11,6 +11,7 @@ namespace OpenGLRendering
     FlexECS::Entity main_camera;
     FlexECS::Entity plane;
     FlexECS::Entity cube;
+    FlexECS::Entity object;
 
   public:
     MainLayer() : Layer("Main Layer") {}

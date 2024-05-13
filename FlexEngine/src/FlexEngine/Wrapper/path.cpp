@@ -108,6 +108,21 @@ namespace FlexEngine
 
   #pragma region Passthrough Functions
 
+  #pragma region Concatenation
+
+  Path Path::append(const std::string& _path) const
+  {
+    return m_path / _path;
+  }
+  
+  Path& Path::operator/=(const std::string& _path)
+  {
+    m_path /= _path;
+    return *this;
+  }
+
+  #pragma endregion
+
   #pragma region Modifiers
 
   void Path::clear() noexcept
@@ -212,6 +227,10 @@ namespace FlexEngine
   }
 
   #pragma endregion
+
+  #pragma endregion
+
+  #pragma region Non-member Passthrough Functions
 
   #pragma endregion
 

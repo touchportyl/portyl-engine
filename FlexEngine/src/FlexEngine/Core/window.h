@@ -4,7 +4,7 @@
 
 #include "FlexEngine/Core/frameratecontroller.h" // <chrono>
 #include "FlexEngine/Core/layerstack.h" // <string> <memory> <vector>
-#include "Renderer/OpenGL/opengltextures.h" // Asset::Texture
+#include "Renderer/OpenGL/opengltexture.h" // Asset::Texture
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h> // always put glad before glfw

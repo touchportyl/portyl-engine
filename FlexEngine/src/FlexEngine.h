@@ -146,16 +146,20 @@
 
 // Load textures from files.
 // The current implementation is exclusively for OpenGL.
-#include "FlexEngine/Renderer/OpenGL/opengltextures.h"
+#include "FlexEngine/Renderer/OpenGL/opengltexture.h"
+
+#include "FlexEngine/Renderer/OpenGL/openglmaterial.h"
 
 // Contains the FlexEngine mesh class.
 // This class is used to store vertices, indices, and textures.
 // The current implementation is exclusively for OpenGL.
 #include "FlexEngine/Renderer/OpenGL/openglmesh.h"
 
+#include "FlexEngine/Renderer/OpenGL/openglmodel.h"
+
 // Load and compile shaders from files.
 // The current implementation is exclusively for OpenGL.
-#include "FlexEngine/Renderer/OpenGL/openglshaders.h"
+#include "FlexEngine/Renderer/OpenGL/openglshader.h"
 
 
 /* |-----------------------------| */

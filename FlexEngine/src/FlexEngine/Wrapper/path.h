@@ -78,8 +78,8 @@ namespace FlexEngine
 
     #pragma region Concatenation
 
-    //Path operator/(const Path& _path) const noexcept;
-    //Path& operator/=(const Path& _path) noexcept;
+    Path append(const std::string& _path) const;
+    Path& operator/=(const std::string& _path);
 
     #pragma endregion
 
@@ -176,6 +176,10 @@ namespace FlexEngine
 
   std::ostream& operator<<(std::ostream& os, const Path& p) noexcept;
   std::istream& operator>>(std::istream& is, Path& p) noexcept;
+
+  #pragma region Non-member Passthrough Functions
+
+  #pragma endregion
   
 }
 

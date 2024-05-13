@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(SolutionDir)third_party\lib\assimp;$(SolutionDir)third_party\lib\fastgltf;$(SolutionDir)third_party\lib\fmod\core;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\ImGui;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(SolutionDir)third_party\lib\assimp;$(SolutionDir)third_party\lib\fastgltf;$(SolutionDir)third_party\lib\fmod\core;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\GLFW;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)FlexEngine\src;$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)third_party\ImGui\src;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\stb;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>$(SolutionDir)third_party\lib\assimp;$(SolutionDir)third_party\lib\fastgltf;$(SolutionDir)third_party\lib\fmod\core;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\ImGui;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(SolutionDir)third_party\lib\assimp;$(SolutionDir)third_party\lib\fastgltf;$(SolutionDir)third_party\lib\fmod\core;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\GLFW;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)FlexEngine\src;$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)third_party\ImGui\src;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\stb;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -197,13 +197,16 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Reflection\primitives.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\buffer.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglbuffer.cpp" />
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmaterial.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmesh.cpp" />
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmodel.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglrenderer.cpp" />
-    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglshaders.cpp" />
-    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengltextures.cpp" />
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglshader.cpp" />
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengltexture.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglvertex.cpp" />
     <ClCompile Include="src\FlexEngine\StateManager\statemanager.cpp" />
     <ClCompile Include="src\FlexEngine\uuid.cpp" />
+    <ClCompile Include="src\FlexEngine\Wrapper\assimp.cpp" />
     <ClCompile Include="src\FlexEngine\Wrapper\date.cpp" />
     <ClCompile Include="src\FlexEngine\Wrapper\datetime.cpp" />
     <ClCompile Include="src\FlexEngine\Wrapper\file.cpp" />
@@ -223,6 +226,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\FlexEngine\AssetManager\assetkey.h" />
     <ClInclude Include="src\FlexEngine\AssetManager\assetmanager.h" />
     <ClInclude Include="src\FlexEngine\Core\frameratecontroller.h" />
     <ClInclude Include="src\FlexEngine\Core\imguiwrapper.h" />
@@ -248,16 +252,19 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Reflection\base.h" />
     <ClInclude Include="src\FlexEngine\Renderer\buffer.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglbuffer.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmaterial.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmesh.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmodel.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglrenderer.h" />
-    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglshaders.h" />
-    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengltextures.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglshader.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengltexture.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglvertex.h" />
     <ClInclude Include="src\FlexEngine\StateManager\state.h" />
     <ClInclude Include="src\FlexEngine\StateManager\statemanager.h" />
     <ClInclude Include="src\FlexEngine\timer.h" />
     <ClInclude Include="src\FlexEngine\uuid.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\ansi_color.h" />
+    <ClInclude Include="src\FlexEngine\Wrapper\assimp.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\datetime.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\file.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\filelist.h" />
