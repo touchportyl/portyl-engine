@@ -18,7 +18,7 @@ out vec4 fragment_color;
 //  vec3 specular;
 //};
 
-//in vec3 fragment_position;
+in vec3 fragment_position;
 in vec3 color;
 in vec2 tex_coord;
 in vec3 normal;
@@ -48,9 +48,9 @@ void main()
   //vec3 diffuse = light.diffuse * diff * texture(u_material.diffuse, tex_coord).rgb;
   //
   //// specular
-  //vec3 viewDir = normalize(u_view_position - fragment_position);
+  //vec3 view_direction = normalize(u_view_position - fragment_position);
   //vec3 reflection_direction = reflect(-light_direction, norm);
-  //float spec = pow(max(dot(viewDir, reflection_direction), 0.0), u_material.shininess);
+  //float spec = pow(max(dot(view_direction, reflection_direction), 0.0), u_material.shininess);
   //vec3 specular = light.specular * spec * texture(u_material.specular, tex_coord).rgb;
   //
   //vec3 result = ambient + diffuse + specular;

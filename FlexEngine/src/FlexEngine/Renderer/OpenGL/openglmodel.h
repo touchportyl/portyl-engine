@@ -2,7 +2,8 @@
 
 #include "flx_api.h"
 
-#include "openglmesh.h"
+#include "Renderer/OpenGL/openglmaterial.h"
+#include "Renderer/OpenGL/openglmesh.h"
 
 #include <vector>
 
@@ -18,9 +19,10 @@ namespace FlexEngine
       //static Model Default; // unit cube
 
       std::vector<Mesh> meshes;
+      std::vector<Material> materials;
 
       Model() = default;
-      Model(const std::vector<Mesh>& meshes);
+      Model(const std::vector<Mesh>& meshes, const std::vector<Material>& materials);
 
       #pragma region Operator Overloads
       

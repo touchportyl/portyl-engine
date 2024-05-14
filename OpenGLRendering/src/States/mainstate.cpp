@@ -13,9 +13,7 @@ namespace OpenGLRendering
         "FlexEngine - OpenGL Rendering",
         1280, 720 + 30, // 30 pixels for the title bar
         {
-          { GLFW_CONTEXT_VERSION_MAJOR, 4 },
-          { GLFW_CONTEXT_VERSION_MINOR, 6 },
-          { GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE },
+          FLX_DEFAULT_WINDOW_HINTS,
           { GLFW_DECORATED, false },
           { GLFW_RESIZABLE, false }
         }

@@ -92,6 +92,7 @@ namespace OpenGLRendering
     //    }
     //  }
     //);
+
   }
 
   void MainLayer::OnDetach()
@@ -507,13 +508,35 @@ namespace OpenGLRendering
           //  textures[i]->Bind(shader_asset, uniform_name.c_str(), i);
           //}
 
+          //// hardcoded
           //auto& texture_asset = FLX_ASSET_GET(Asset::Texture, R"(\models\firetruck\Textures\colormap.png)");
           //texture_asset.Bind(shader_asset, "u_texture_diffuse", 0);
 
-          mesh.material.GetDiffuse()->Bind(shader_asset, "u_texture_diffuse", 0);
+          //// first version
+          //// materials are stored in the mesh
+          //mesh.material.GetDiffuse()->Bind(shader_asset, "u_texture_diffuse", 0);
           //auto specular = mesh.material.GetSpecular();
           //specular.first->Bind(shader_asset, "u_texture_specular", 0);
           //shader_asset.SetUniform_float("u_shininess", specular.second);
+
+          // second version
+          // materials are stored in the model
+          // material index is stored in the mesh
+          if (mesh.material_index < model_asset.materials.size())
+          {
+            auto& material = model_asset.materials[mesh.material_index];
+            auto diffuse = material.GetDiffuse();
+            if (diffuse)
+            {
+              diffuse->Bind(shader_asset, "u_texture_diffuse", 0);
+            }
+            auto specular = material.GetSpecular();
+            if (specular.first)
+            {
+              specular.first->Bind(shader_asset, "u_texture_specular", 1);
+              shader_asset.SetUniform_float("u_shininess", specular.second);
+            }
+          }
 
           // draw
           OpenGLRenderer::Draw(IBO->GetCount());

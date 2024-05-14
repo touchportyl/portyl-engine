@@ -34,9 +34,25 @@ namespace FlexEngine
     static Asset::Model LoadModel(const Path& path);
 
   private:
-    static std::vector<Asset::Mesh> Internal_ProcessNode(aiNode* node, const aiScene* scene, Matrix4x4 parent_transform);
-    static Asset::Mesh Internal_ProcessMesh(aiMesh* mesh, const aiScene* scene, Matrix4x4 mesh_transform);
-    static Asset::Material::TextureVariant Internal_ProcessMaterialTextures(aiMaterial* material, aiTextureType type, const aiScene* scene);
+    static std::vector<Asset::Mesh> Internal_ProcessNode(
+      aiNode* node,
+      const aiScene* scene,
+      Matrix4x4 parent_transform,
+      std::vector<Asset::Material>* out_materials
+    );
+
+    static Asset::Mesh Internal_ProcessMesh(
+      aiMesh* mesh,
+      const aiScene* scene,
+      Matrix4x4 mesh_transform,
+      std::vector<Asset::Material>* out_materials
+    );
+
+    static Asset::Material::TextureVariant Internal_ProcessMaterialTextures(
+      aiMaterial* material,
+      aiTextureType type,
+      const aiScene* scene
+    );
   };
 
 }

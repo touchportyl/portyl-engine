@@ -105,6 +105,7 @@ namespace FlexEngine
           // load and save the model
           Log::Flow("Loading model: " + key);
           FLX_FLOW_BEGINSCOPE();
+          FLX_SCOPED_TIMER(std::string("Loaded model: ") + key);
           Asset::Model loaded_model = AssimpWrapper::LoadModel(file.path);
           if (loaded_model)
           {
