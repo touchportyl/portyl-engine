@@ -13,6 +13,7 @@ namespace OpenGLRendering
 
     FlexECS::Scene::CreateScene();
     main_camera = FlexECS::Scene::CreateEntity("Main Camera");
+    directional_light = FlexECS::Scene::CreateEntity("Directional Light");
     object = FlexECS::Scene::CreateEntity("Object");
     //cube = FlexECS::Scene::CreateEntity("Cube");
     //plane = FlexECS::Scene::CreateEntity("Plane");
@@ -21,6 +22,13 @@ namespace OpenGLRendering
     main_camera.AddComponent<GlobalPosition>({ { -0.35f, -0.2f, -0.4f } });
     main_camera.AddComponent<Rotation>({ { 12, 35, 0 } });
     main_camera.AddComponent<Camera>({});
+
+    directional_light.AddComponent<DirectionalLight>({
+      Vector3::Up,
+      { 0.5f, 0.5f, 0.5f },
+      { 1.0f, 1.0f, 1.0f },
+      { 1.0f, 1.0f, 1.0f }
+    });
 
     object.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
     object.AddComponent<LocalPosition>({ { 0, 0, 0 } });
@@ -246,6 +254,22 @@ namespace OpenGLRendering
         ImGui::PopID();
       }
 
+      // directional light
+      if (ImGui::CollapsingHeader("Directional Light", tree_node_flags))
+      {
+        auto& direction = directional_light.GetComponent<DirectionalLight>()->direction;
+        auto& ambient = directional_light.GetComponent<DirectionalLight>()->ambient;
+        auto& diffuse = directional_light.GetComponent<DirectionalLight>()->diffuse;
+        auto& specular = directional_light.GetComponent<DirectionalLight>()->specular;
+
+        ImGui::PushID("directional_light");
+        ImGui::DragFloat3("Direction", direction.begin(), 0.01f, -1.0f, 1.0f, "%.2f");
+        ImGui::ColorEdit3("Ambient", ambient.begin());
+        ImGui::ColorEdit3("Diffuse", diffuse.begin());
+        ImGui::ColorEdit3("Specular", specular.begin());
+        ImGui::PopID();
+      }
+
       //ImGui::Separator();
       //
       //// entities
@@ -457,6 +481,8 @@ namespace OpenGLRendering
     {
       // cache camera
       auto camera = main_camera.GetComponent<Camera>();
+      // cache directional light
+      auto dir_light = directional_light.GetComponent<DirectionalLight>();
 
       // Render all entities
       for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Transform, Model, Shader>())
@@ -522,19 +548,24 @@ namespace OpenGLRendering
           // second version
           // materials are stored in the model
           // material index is stored in the mesh
+          shader_asset.SetUniform_vec3("u_light_direction", dir_light->direction);
+          shader_asset.SetUniform_vec3("u_light_ambient", dir_light->ambient);
+          shader_asset.SetUniform_vec3("u_light_diffuse", dir_light->diffuse);
+          shader_asset.SetUniform_vec3("u_light_specular", dir_light->specular);
+
           if (mesh.material_index < model_asset.materials.size())
           {
             auto& material = model_asset.materials[mesh.material_index];
             auto diffuse = material.GetDiffuse();
             if (diffuse)
             {
-              diffuse->Bind(shader_asset, "u_texture_diffuse", 0);
+              diffuse->Bind(shader_asset, "u_material_diffuse", 0);
             }
             auto specular = material.GetSpecular();
             if (specular.first)
             {
-              specular.first->Bind(shader_asset, "u_texture_specular", 1);
-              shader_asset.SetUniform_float("u_shininess", specular.second);
+              specular.first->Bind(shader_asset, "u_material_specular", 1);
+              shader_asset.SetUniform_float("u_material_shininess", specular.second);
             }
           }
 

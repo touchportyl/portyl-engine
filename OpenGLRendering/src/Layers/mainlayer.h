@@ -9,6 +9,7 @@ namespace OpenGLRendering
   class MainLayer : public FlexEngine::Layer
   {
     FlexECS::Entity main_camera;
+    FlexECS::Entity directional_light;
     FlexECS::Entity plane;
     FlexECS::Entity cube;
     FlexECS::Entity object;

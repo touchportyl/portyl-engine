@@ -66,7 +66,6 @@ namespace OpenGLRendering
   { FLX_REFL_SERIALIZABLE
   public:
     AssetKey model;
-    //std::vector<Mesh> model;
   };
 
   class Camera
@@ -82,6 +81,15 @@ namespace OpenGLRendering
     float fov = 45.0f;
     float near = 0.1f;
     float far = 100.0f;
+  };
+
+  class DirectionalLight
+  { FLX_REFL_SERIALIZABLE
+  public:
+    Vector3 direction;
+    Vector3 ambient;
+    Vector3 diffuse;
+    Vector3 specular;
   };
 
 }
