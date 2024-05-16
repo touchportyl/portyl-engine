@@ -11,10 +11,10 @@ namespace FlexEngine
 
   class __FLX_API OpenGLVertexArray : public VertexArray
   {
-    unsigned int m_renderer_id = 0;
+    unsigned int m_binding_point = 0;
 
   public:
-    OpenGLVertexArray();
+    OpenGLVertexArray(unsigned int binding_point = 0);
     virtual ~OpenGLVertexArray();
 
     virtual void Bind() const;
@@ -27,10 +27,10 @@ namespace FlexEngine
 
   class __FLX_API OpenGLVertexBuffer : public VertexBuffer
   {
-    unsigned int m_renderer_id = 0;
+    unsigned int m_binding_point = 0;
 
   public:
-    OpenGLVertexBuffer(Vertex* vertices, std::size_t size);
+    OpenGLVertexBuffer(Vertex* vertices, std::size_t size, unsigned int binding_point = 0);
     virtual ~OpenGLVertexBuffer();
 
     virtual void Bind() const;
@@ -43,11 +43,11 @@ namespace FlexEngine
 
   class __FLX_API OpenGLIndexBuffer : public IndexBuffer
   {
-    unsigned int m_renderer_id = 0;
+    unsigned int m_binding_point = 0;
     GLsizei m_count = 0;
 
   public:
-    OpenGLIndexBuffer(unsigned int* indices, GLsizei count);
+    OpenGLIndexBuffer(unsigned int* indices, GLsizei count, unsigned int binding_point = 0);
     virtual ~OpenGLIndexBuffer();
 
     virtual void Bind() const;

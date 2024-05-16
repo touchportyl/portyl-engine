@@ -315,8 +315,11 @@ namespace FlexEngine
     // Referenced from https://en.cppreference.com/w/cpp/container
     // Use CTRL+F to find the one you're looking for.
     // 
+    // pair is supported.
+    // 
     // unique_ptr, shared_ptr, and weak_ptr are supported. (C++11)
     // auto_ptr is not supported. (deprecated in C++11, removed in C++17)
+    // Smart void pointers are supported. (std::shared_ptr<void>)
     // 
     // span (C++20) and md_span (C++23) are not supported.
     // flat_set, flat_map, flat_multiset, and flat_multimap are not supported. (C++23)
@@ -344,6 +347,7 @@ namespace FlexEngine
     //  [ ] TypeDescriptor_StdUniquePtr (C++11)
     //  [X] TypeDescriptor_StdSharedPtr (C++11)
     //  [ ] TypeDescriptor_StdWeakPtr (C++11)
+    //  [X] TypeDescriptor_StdPair
     // 
 
     #pragma region Specializations for C++ containers
@@ -522,6 +526,97 @@ namespace FlexEngine
 
 
 
+    // TypeDescriptor for std::unordered_map.
+    // Specialized for std::unordered_map.
+    // Important note that raw pointers are not supported
+    // Use std::shared_ptr instead.
+    template <typename KeyType, typename ValueType>
+    struct TypeDescriptor_StdUnorderedMap : TypeDescriptor
+    {
+      TypeDescriptor* key_type;
+      TypeDescriptor* value_type;
+
+      TypeDescriptor_StdUnorderedMap(std::unordered_map<KeyType, ValueType>*)
+        : TypeDescriptor{ "std::unordered_map<>", sizeof(std::unordered_map<KeyType, ValueType>) }
+        , key_type{ TypeResolver<KeyType>::Get() }
+        , value_type{ TypeResolver<ValueType>::Get() }
+      {
+      }
+
+      virtual std::string ToString() const override
+      {
+        return std::string("std::unordered_map<") + key_type->ToString() + ", " + value_type->ToString() + ">";
+      }
+
+      virtual void Dump(const void* obj, std::ostream& os, int indent_level) const override
+      {
+        const auto& map = *(const std::unordered_map<KeyType, ValueType>*)obj;
+        os << "\n"
+          << std::string(4 * indent_level, ' ') << ToString() << "\n"
+          << std::string(4 * indent_level, ' ') << "{\n";
+        for (const auto& pair : map)
+        {
+          os << std::string(4 * (indent_level + 1), ' ');
+          key_type->Dump(&pair.first, os, indent_level + 1);
+          os << ": ";
+          value_type->Dump(&pair.second, os, indent_level + 1);
+          os << "\n";
+        }
+        os << std::string(4 * indent_level, ' ') << "}\n";
+      }
+
+      virtual void Serialize(const void* obj, std::ostream& os) const override
+      {
+        const auto& map = *(const std::unordered_map<KeyType, ValueType>*)obj;
+        os << R"({"type":")" << ToString() << R"(","data":[)";
+        bool first = true;
+        for (const auto& pair : map)
+        {
+          if (!first) os << ",";
+          first = false;
+          os << "[";
+          key_type->Serialize(&pair.first, os);
+          os << ",";
+          value_type->Serialize(&pair.second, os);
+          os << "]";
+        }
+        os << "]}";
+      }
+
+      virtual void Deserialize(void* obj, const rapidjson::Value& value) const override
+      {
+        std::unordered_map<KeyType, ValueType>& map = *(std::unordered_map<KeyType, ValueType>*)obj;
+
+        const auto& arr = value["data"].GetArray();
+
+        for (SizeType i = 0; i < arr.Size(); i++)
+        {
+          KeyType key;
+          ValueType val;
+          key_type->Deserialize(&key, arr[i][0]);
+          value_type->Deserialize(&val, arr[i][1]);
+          map[key] = val;
+        }
+      }
+    };
+
+    // Partially specialize TypeResolver for std::unordered_maps.
+    template <typename KeyType, typename ValueType>
+    struct TypeResolver<std::unordered_map<KeyType, ValueType>>
+    {
+      static TypeDescriptor* Get()
+      {
+        static TypeDescriptor_StdUnorderedMap<KeyType, ValueType> type_desc{ (std::unordered_map<KeyType, ValueType>*)nullptr };
+        if (TYPE_DESCRIPTOR_LOOKUP.count(type_desc.name) == 0)
+        {
+          TYPE_DESCRIPTOR_LOOKUP[type_desc.name] = &type_desc;
+        }
+        return &type_desc;
+      }
+    };
+
+
+
     // TypeDescriptor for std::shared_ptr.
     // Specialized for std::shared_ptr.
     template <typename T>
@@ -678,87 +773,67 @@ namespace FlexEngine
 
 
 
-    // TypeDescriptor for std::unordered_map.
-    // Specialized for std::unordered_map.
-    // Important note that raw pointers are not supported
-    // Use std::shared_ptr instead.
-    template <typename KeyType, typename ValueType>
-    struct TypeDescriptor_StdUnorderedMap : TypeDescriptor
+    // TypeDescriptor for std::pair.
+    // Specialized for std::pair.
+    template <typename FirstType, typename SecondType>
+    struct TypeDescriptor_StdPair : TypeDescriptor
     {
-      TypeDescriptor* key_type;
-      TypeDescriptor* value_type;
+      TypeDescriptor* first_type;
+      TypeDescriptor* second_type;
 
-      TypeDescriptor_StdUnorderedMap(std::unordered_map<KeyType, ValueType>*)
-        : TypeDescriptor{ "std::unordered_map<>", sizeof(std::unordered_map<KeyType, ValueType>) }
-        , key_type{ TypeResolver<KeyType>::Get() }
-        , value_type{ TypeResolver<ValueType>::Get() }
+      TypeDescriptor_StdPair(std::pair<FirstType, SecondType>*)
+        : TypeDescriptor{ "std::pair<>", sizeof(std::pair<FirstType, SecondType>) }
+        , first_type{ TypeResolver<FirstType>::Get() }
+        , second_type{ TypeResolver<SecondType>::Get() }
       {
       }
 
       virtual std::string ToString() const override
       {
-        return std::string("std::unordered_map<") + key_type->ToString() + ", " + value_type->ToString() + ">";
+        return std::string("std::pair<") + first_type->ToString() + ", " + second_type->ToString() + ">";
       }
 
       virtual void Dump(const void* obj, std::ostream& os, int indent_level) const override
       {
-        const auto& map = *(const std::unordered_map<KeyType, ValueType>*)obj;
+        const auto& pair = *(const std::pair<FirstType, SecondType>*)obj;
         os << "\n"
           << std::string(4 * indent_level, ' ') << ToString() << "\n"
-          << std::string(4 * indent_level, ' ') << "{\n";
-        for (const auto& pair : map)
-        {
-          os << std::string(4 * (indent_level + 1), ' ');
-          key_type->Dump(&pair.first, os, indent_level + 1);
-          os << ": ";
-          value_type->Dump(&pair.second, os, indent_level + 1);
-          os << "\n";
-        }
-        os << std::string(4 * indent_level, ' ') << "}\n";
+          << std::string(4 * indent_level, ' ') << "{\n"
+          << std::string(4 * (indent_level + 1), ' ');
+        first_type->Dump(&pair.first, os, indent_level + 1);
+        os << ",\n"
+          << std::string(4 * (indent_level + 1), ' ');
+        second_type->Dump(&pair.second, os, indent_level + 1);
+        os << "\n"
+          << std::string(4 * indent_level, ' ') << "}\n";
       }
 
       virtual void Serialize(const void* obj, std::ostream& os) const override
       {
-        const auto& map = *(const std::unordered_map<KeyType, ValueType>*)obj;
+        const auto& pair = *(const std::pair<FirstType, SecondType>*)obj;
         os << R"({"type":")" << ToString() << R"(","data":[)";
-        bool first = true;
-        for (const auto& pair : map)
-        {
-          if (!first) os << ",";
-          first = false;
-          os << "[";
-          key_type->Serialize(&pair.first, os);
-          os << ",";
-          value_type->Serialize(&pair.second, os);
-          os << "]";
-        }
+        first_type->Serialize(&pair.first, os);
+        os << ",";
+        second_type->Serialize(&pair.second, os);
         os << "]}";
       }
 
-      virtual void Deserialize(void* obj, const rapidjson::Value& value) const override
+      virtual void Deserialize(void* obj, const json& value) const override
       {
-        std::unordered_map<KeyType, ValueType>& map = *(std::unordered_map<KeyType, ValueType>*)obj;
-
         const auto& arr = value["data"].GetArray();
-
-        for (SizeType i = 0; i < arr.Size(); i++)
-        {
-          KeyType key;
-          ValueType val;
-          key_type->Deserialize(&key, arr[i][0]);
-          value_type->Deserialize(&val, arr[i][1]);
-          map[key] = val;
-        }
+        first_type->Deserialize(&((std::pair<FirstType, SecondType>*)obj)->first, arr[0]);
+        second_type->Deserialize(&((std::pair<FirstType, SecondType>*)obj)->second, arr[1]);
       }
+
     };
 
-    // Partially specialize TypeResolver for std::unordered_maps.
-    template <typename KeyType, typename ValueType>
-    struct TypeResolver<std::unordered_map<KeyType, ValueType>>
+    // Partially specialize TypeResolver for std::pairs.
+    template <typename FirstType, typename SecondType>
+    struct TypeResolver<std::pair<FirstType, SecondType>>
     {
       static TypeDescriptor* Get()
       {
-        static TypeDescriptor_StdUnorderedMap<KeyType, ValueType> type_desc{ (std::unordered_map<KeyType, ValueType>*)nullptr };
+        static TypeDescriptor_StdPair<FirstType, SecondType> type_desc{ (std::pair<FirstType, SecondType>*)nullptr };
         if (TYPE_DESCRIPTOR_LOOKUP.count(type_desc.name) == 0)
         {
           TYPE_DESCRIPTOR_LOOKUP[type_desc.name] = &type_desc;

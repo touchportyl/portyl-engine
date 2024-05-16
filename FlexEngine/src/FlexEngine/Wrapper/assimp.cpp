@@ -17,16 +17,17 @@ namespace
 
   // Internal functions
 
+  // Transforms an aiMatrix4x4 to a FlexEngine::Matrix4x4.
+  // The aiMatrix4x4 is row-major, while the FlexEngine::Matrix4x4 (along with glm and OpenGL) is column-major.
+  // The matrix is transposed to match the column-major layout of the FlexEngine::Matrix4x4.
   FlexEngine::Matrix4x4 Internal_ConvertMatrix(const aiMatrix4x4& matrix)
   {
-    FlexEngine::Matrix4x4 out = {
+    return FlexEngine::Matrix4x4(
       matrix.a1, matrix.a2, matrix.a3, matrix.a4,
       matrix.b1, matrix.b2, matrix.b3, matrix.b4,
       matrix.c1, matrix.c2, matrix.c3, matrix.c4,
       matrix.d1, matrix.d2, matrix.d3, matrix.d4
-    };
-
-    return out.Transpose();
+    ).Transpose();
   }
 }
 
@@ -50,15 +51,9 @@ namespace FlexEngine
     // set the current working directory
     CURRENT_WORKING_DIRECTORY = path.parent_path();
 
-    // flip the model's y and z axis
-    // TODO: check if this is right, maybe a view matrix needs to be transposed or something
-    Matrix4x4 root_transform = Matrix4x4::Identity;
-    root_transform(1, 1) = -1.0f;
-    root_transform(2, 2) = -1.0f;
-
     // process the scene
     std::vector<Asset::Material> materials{};
-    std::vector<Asset::Mesh> meshes = Internal_ProcessNode(scene->mRootNode, scene, root_transform, &materials);
+    std::vector<Asset::Mesh> meshes = Internal_ProcessNode(scene->mRootNode, scene, Matrix4x4::Identity, &materials);
     materials.shrink_to_fit();
     meshes.shrink_to_fit();
     return Asset::Model(meshes, materials);
@@ -86,7 +81,7 @@ namespace FlexEngine
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
       aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-      meshes.push_back( Internal_ProcessMesh(mesh, scene, transform, out_materials) );
+      meshes.push_back( Internal_ProcessMesh(mesh, scene, transform, out_materials, node->mName.C_Str()) );
     }
 
     // process all the children of the node
@@ -103,7 +98,8 @@ namespace FlexEngine
     aiMesh* mesh,
     const aiScene* scene,
     Matrix4x4 mesh_transform,
-    std::vector<Asset::Material>* out_materials
+    std::vector<Asset::Material>* out_materials,
+    const std::string& node_name
   )
   {
     #pragma region Vertex Processing
@@ -188,7 +184,7 @@ namespace FlexEngine
     #pragma endregion
 
     // create the mesh
-    return Asset::Mesh(vertices, indices, mesh_transform, material_index, mesh->mName.C_Str());
+    return Asset::Mesh(vertices, indices, mesh_transform, material_index, node_name);
   }
 
   // Only supports diffuse and specular textures, one of each
@@ -272,62 +268,5 @@ namespace FlexEngine
     
     return textures;
   }
-
-  //Asset::Material::TextureVariant AssimpWrapper::Internal_ProcessMaterialTextures(aiMaterial* material, aiTextureType type, const aiScene* scene)
-  //{
-  //  Asset::Material::TextureVariant textures;
-  //
-  //  // process all the textures of the material
-  //  for (unsigned int i = 0; i < material->GetTextureCount(type); i++)
-  //  {
-  //    aiString texture_path;
-  //    material->GetTexture(type, i, &texture_path);
-  //
-  //    const aiTexture* texture = scene->GetEmbeddedTexture(texture_path.C_Str());
-  //    if (texture)
-  //    {
-  //      // guard: texture is compressed, idk what to do with this
-  //      if (texture->mHeight == 0) continue;
-  //
-  //      // create a buffer for the texture data
-  //      std::size_t size = texture->mWidth * texture->mHeight * 4;
-  //      unsigned char* data = new unsigned char[size];
-  //
-  //      // ARGB -> RGBA
-  //      for (std::size_t j = 0; j < size; j += 4)
-  //      {
-  //        data[j + 0] = texture->pcData[j].r;
-  //        data[j + 1] = texture->pcData[j].g;
-  //        data[j + 2] = texture->pcData[j].b;
-  //        data[j + 3] = texture->pcData[j].a;
-  //      }
-  //
-  //      // embed the texture
-  //      Asset::Texture embedded_texture(data, texture->mWidth, texture->mHeight);
-  //
-  //      // cleanup
-  //      delete[] data;
-  //
-  //      // add the texture to the list of textures
-  //      textures.push_back(embedded_texture);
-  //    }
-  //    else
-  //    {
-  //      // guard: texture is not a file
-  //      if (texture_path.length == 0) continue;
-  //
-  //      // create an asset key for the texture
-  //      // TODO: add checks for the texture path
-  //      // currently, the texture path is assumed to be relative to the model path
-  //      Path full_path = CURRENT_WORKING_DIRECTORY.append(texture_path.C_Str());
-  //
-  //      // add the asset key to the list of textures
-  //      textures.push_back( AssetKey(full_path.string()) );
-  //    }
-  //
-  //  }
-  //
-  //  return textures;
-  //}
 
 }

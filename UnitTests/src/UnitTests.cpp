@@ -501,6 +501,11 @@ namespace UnitTests_FlexMath
         Assert::AreEqual(glm::dot(glm_a, glm_b), Dot(a, b));
       }
 
+      TEST_METHOD(LinearInterpolation)
+      {
+        AreEqualVector(glm::mix(glm_a, glm_b, 0.5f), Lerp(a, b, 0.5f));
+      }
+
     };
 
     TEST_CLASS(UnitTests_ConversionOverloads)
@@ -1023,6 +1028,11 @@ namespace UnitTests_FlexMath
       TEST_METHOD(CrossProduct)
       {
         AreEqualVector(glm::cross(glm_a, glm_b), Cross(a, b));
+      }
+
+      TEST_METHOD(LinearInterpolation)
+      {
+        AreEqualVector(glm::mix(glm_a, glm_b, 0.5f), Lerp(a, b, 0.5f));
       }
 
     };
@@ -1750,6 +1760,11 @@ namespace UnitTests_FlexMath
       TEST_METHOD(Normalize_Calculation)
       {
         AreEqualVector(glm::normalize(glm_a), Vector4::Normalize(a), EPSILONf);
+      }
+
+      TEST_METHOD(LinearInterpolation)
+      {
+        AreEqualVector(glm::mix(glm_a, glm_b, 0.5f), Lerp(a, b, 0.5f));
       }
 
     };

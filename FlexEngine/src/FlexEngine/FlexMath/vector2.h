@@ -194,6 +194,8 @@ namespace FlexEngine
   __FLX_API std::istream& operator>>(std::istream& is, Vector2& point);
   __FLX_API std::ostream& operator<<(std::ostream& os, const Vector2& point);
 
+  __FLX_API Vector2 Lerp(const Vector2& a, const Vector2& b, Vector2::value_type t);
+
 #pragma endregion
 
 #pragma region mathconversions Overloads

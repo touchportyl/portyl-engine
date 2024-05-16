@@ -347,6 +347,11 @@ namespace FlexEngine
     return os;
   }
 
+  Vector3 Lerp(const Vector3& a, const Vector3& b, Vector3::const_value_type t)
+  {
+    return a + (b - a) * t;
+  }
+
 #pragma endregion
 
 #pragma region mathconversions Overloads

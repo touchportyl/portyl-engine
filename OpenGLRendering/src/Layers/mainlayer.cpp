@@ -13,22 +13,28 @@ namespace OpenGLRendering
 
     FlexECS::Scene::CreateScene();
     main_camera = FlexECS::Scene::CreateEntity("Main Camera");
+    point_light = FlexECS::Scene::CreateEntity("Point Light");
     directional_light = FlexECS::Scene::CreateEntity("Directional Light");
     object = FlexECS::Scene::CreateEntity("Object");
-    //cube = FlexECS::Scene::CreateEntity("Cube");
-    //plane = FlexECS::Scene::CreateEntity("Plane");
-    //plane = FlexECS::Scene::CreateEntity("Plane 2");
+    plane = FlexECS::Scene::CreateEntity("Plane");
 
-    main_camera.AddComponent<GlobalPosition>({ { -0.35f, -0.2f, -0.4f } });
-    main_camera.AddComponent<Rotation>({ { 12, 35, 0 } });
+    main_camera.AddComponent<GlobalPosition>({ { -0.4f, 0.24f, 0.44f } });
+    main_camera.AddComponent<Rotation>({ { -12, -35, 0 } });
     main_camera.AddComponent<Camera>({});
 
-    directional_light.AddComponent<DirectionalLight>({
-      Vector3::Up,
+    point_light.AddComponent<GlobalPosition>({ { 0, 0.9f, 0.35f } });
+    point_light.AddComponent<PointLight>({
       { 0.5f, 0.5f, 0.5f },
       { 1.0f, 1.0f, 1.0f },
       { 1.0f, 1.0f, 1.0f }
     });
+
+    //directional_light.AddComponent<GlobalPosition>({ { 0, 1, 0 } });
+    //directional_light.AddComponent<DirectionalLight>({
+    //  { 0.5f, 0.5f, 0.5f },
+    //  { 1.0f, 1.0f, 1.0f },
+    //  { 1.0f, 1.0f, 1.0f }
+    //});
 
     object.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
     object.AddComponent<LocalPosition>({ { 0, 0, 0 } });
@@ -38,69 +44,47 @@ namespace OpenGLRendering
     object.AddComponent<Model>({ R"(\models\firetruck\firetruck.fbx)" });
     object.AddComponent<Shader>({ R"(\shaders\renderer)" });
 
-    //cube.AddComponent<Transform>({});
-    //cube.AddComponent<Mesh>({});
-
-    //plane.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
-    //plane.AddComponent<LocalPosition>({ { 0, 0, 0 } });
-    //plane.AddComponent<Rotation>({ { 0, 0, 20 } });
-    //Scale plane_scl = { { 0.9f, 0.35f, 1 } };
-    //plane_scl.scale *= 1.5f;
-    //plane.AddComponent<Scale>(plane_scl);
-    //plane.AddComponent<Transform>({});
-    ////plane.AddComponent<Mesh>({});
+    plane.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
+    plane.AddComponent<LocalPosition>({ { 0, 0, 0 } });
+    plane.AddComponent<Rotation>({ { 0, 0, 20 } });
+    Vector3 plane_scale = { 0.9f, 0.35f, 1 };
+    plane_scale *= 0.0f;
+    plane.AddComponent<Scale>({ plane_scale });
+    plane.AddComponent<Transform>({});
     //plane.AddComponent<Texture>({ R"(\images\flexengine\flexengine_splash.png)" });
-    //plane.AddComponent<Shader>({ R"(\shaders\renderer)" });
-    //
-    //// manually build a mesh
-    //Mesh mesh_plane;
-    //
-    //mesh_plane.vertices = {
-    //     // positions              // colors               // texture coords
-    //  { {  1.0f,  1.0f, 0.0f },   { 1.0f, 0.0f, 0.0f },   { 1.0f, 0.0f } },  // top right
-    //  { {  1.0f, -1.0f, 0.0f },   { 0.0f, 1.0f, 0.0f },   { 1.0f, 1.0f } },  // bottom right
-    //  { { -1.0f, -1.0f, 0.0f },   { 0.0f, 0.0f, 1.0f },   { 0.0f, 1.0f } },  // bottom left
-    //  { { -1.0f,  1.0f, 0.0f },   { 1.0f, 1.0f, 0.0f },   { 0.0f, 0.0f } }   // top left
-    //};
-    //
-    //mesh_plane.indices = {
-    //  0, 1, 3, // first triangle
-    //  1, 2, 3  // second triangle
-    //};
-    //
-    //plane.AddComponent<Mesh>(mesh_plane);
+    plane.AddComponent<Material>(
+      { // Material
+        R"(\images\flexengine\flexengine_splash.png)",
+        { // std::pair<AssetKey, float>
+          R"(\images\flexengine\flexengine_splash.png)",
+          32.0f
+        }
+      }
+    );
+    plane.AddComponent<Shader>({ R"(\shaders\renderer)" });
+    
+    // manually build a mesh
+    plane.AddComponent<Mesh>({
+      { // Mesh
+        { // std::vector<Vertex>
+          Vertex(Vector3(1.0f,  1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector2(1.0f, 0.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
+          Vertex(Vector3(1.0f, -1.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(1.0f, 1.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
+          Vertex(Vector3(-1.0f, -1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector2(0.0f, 1.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
+          Vertex(Vector3(-1.0f,  1.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero)
+        },
+        { // std::vector<unsigned int>
+          0, 1, 3, // first triangle
+          1, 2, 3  // second triangle
+        }
+      }
+    });
 
-    //plane.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
-    //plane.AddComponent<LocalPosition>({ { 0, 0, 0 } });
-    //plane.AddComponent<Rotation>({ { 0, 0, 20 } });
-    //Scale plane_scl = { { 0.9f, 0.35f, 1 } };
-    //plane_scl.scale *= 1.5f;
-    //plane.AddComponent<Scale>(plane_scl);
-    //plane.AddComponent<Transform>({});
-    ////plane.AddComponent<Mesh>({});
-    //plane.AddComponent<Texture>({ R"(\images\flexengine\flexengine_splash.png)" });
-    //plane.AddComponent<Shader>({ R"(\shaders\renderer)" });
-    //
-    //// manually build a mesh
-    //plane.AddComponent<Model>(
-    //  { // Model
-    //    { // std::vector<Mesh>
-    //      { // Mesh
-    //        { // std::vector<Vertex>
-    //          Vertex(Vector3(1.0f,  1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector2(1.0f, 0.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
-    //          Vertex(Vector3(1.0f, -1.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(1.0f, 1.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
-    //          Vertex(Vector3(-1.0f, -1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector2(0.0f, 1.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
-    //          Vertex(Vector3(-1.0f,  1.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero)
-    //        },
-    //        { // std::vector<unsigned int>
-    //          0, 1, 3, // first triangle
-    //          1, 2, 3  // second triangle
-    //        }
-    //      }
-    //    }
-    //  }
-    //);
+    // manually create buffers
+    plane.GetComponent<Mesh>()->mesh.Internal_CreateBuffers();
 
+    // Renderer Setup
+
+    OpenGLRenderer::EnableDepthTest();
   }
 
   void MainLayer::OnDetach()
@@ -110,6 +94,7 @@ namespace OpenGLRendering
 
   void MainLayer::Update()
   {
+    OpenGLRenderer::ClearFrameBuffer();
 
     #pragma region Title Bar
 
@@ -236,7 +221,7 @@ namespace OpenGLRendering
         auto camera = main_camera.GetComponent<Camera>();
 
         ImGui::PushID("camera");
-        ImGui::DragFloat3("Global Position", global_position.begin(), 0.01f, -10.0f, 10.0f, "%.2f");
+        ImGui::DragFloat3("Global Position", global_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f");
         if (ImGui::DragFloat3("Rotation", rotation.begin(), 0.1f, -0.1f, 360.1f, "%.1f"))
         {
           // loop around
@@ -254,51 +239,67 @@ namespace OpenGLRendering
         ImGui::PopID();
       }
 
-      // directional light
-      if (ImGui::CollapsingHeader("Directional Light", tree_node_flags))
+      // point light
+      if (ImGui::CollapsingHeader("Point Light", tree_node_flags))
       {
-        auto& direction = directional_light.GetComponent<DirectionalLight>()->direction;
-        auto& ambient = directional_light.GetComponent<DirectionalLight>()->ambient;
-        auto& diffuse = directional_light.GetComponent<DirectionalLight>()->diffuse;
-        auto& specular = directional_light.GetComponent<DirectionalLight>()->specular;
+        auto& position = point_light.GetComponent<GlobalPosition>()->position;
+        auto& ambient = point_light.GetComponent<PointLight>()->ambient;
+        auto& diffuse = point_light.GetComponent<PointLight>()->diffuse;
+        auto& specular = point_light.GetComponent<PointLight>()->specular;
 
-        ImGui::PushID("directional_light");
-        ImGui::DragFloat3("Direction", direction.begin(), 0.01f, -1.0f, 1.0f, "%.2f");
+        ImGui::PushID("point_light");
+        ImGui::DragFloat3("Position", position.begin(), 0.01f, -100.0f, 100.0f, "%.2f");
         ImGui::ColorEdit3("Ambient", ambient.begin());
         ImGui::ColorEdit3("Diffuse", diffuse.begin());
         ImGui::ColorEdit3("Specular", specular.begin());
         ImGui::PopID();
       }
 
-      //ImGui::Separator();
-      //
-      //// entities
-      //for (auto& entity : FlexECS::Scene::GetActiveScene()->View<LocalPosition, GlobalPosition, Rotation, Scale>())
+      // directional light
+      //if (ImGui::CollapsingHeader("Directional Light", tree_node_flags))
       //{
-      //  auto entity_name = entity.GetComponent<std::string>();
-      //  auto& local_position = entity.GetComponent<LocalPosition>()->position;
-      //  auto& global_position = entity.GetComponent<GlobalPosition>()->position;
-      //  auto& rotation = entity.GetComponent<Rotation>()->rotation;
-      //  auto& scale = entity.GetComponent<Scale>()->scale;
+      //  auto& position = directional_light.GetComponent<GlobalPosition>()->position;
+      //  auto& ambient = directional_light.GetComponent<DirectionalLight>()->ambient;
+      //  auto& diffuse = directional_light.GetComponent<DirectionalLight>()->diffuse;
+      //  auto& specular = directional_light.GetComponent<DirectionalLight>()->specular;
       //
-      //  if (ImGui::CollapsingHeader(entity_name->c_str(), tree_node_flags))
-      //  {
-      //    ImGui::PushID(entity_name->c_str());
-      //    ImGui::DragFloat3("Global Position", global_position.begin(), 0.01f, -10.0f, 10.0f, "%.2f");
-      //    ImGui::DragFloat3("Local Position", local_position.begin(), 0.01f, -10.0f, 10.0f, "%.2f");
-      //    if (ImGui::DragFloat3("Rotation", rotation.begin(), 0.1f, -0.1f, 360.1f, "%.1f"))
-      //    {
-      //      // loop around
-      //      for (auto& value : rotation)
-      //      {
-      //        if (value > 360.0f) value -= 360.0f;
-      //        else if (value < 0.0f) value += 360.0f;
-      //      }
-      //    }
-      //    ImGui::DragFloat3("Scale", scale.begin(), 0.01f, 0.1f, 10.0f, "%.2f");
-      //    ImGui::PopID();
-      //  }
+      //  ImGui::PushID("directional_light");
+      //  ImGui::DragFloat3("Position", position.begin(), 0.01f, -1.0f, 1.0f, "%.2f");
+      //  ImGui::ColorEdit3("Ambient", ambient.begin());
+      //  ImGui::ColorEdit3("Diffuse", diffuse.begin());
+      //  ImGui::ColorEdit3("Specular", specular.begin());
+      //  ImGui::PopID();
       //}
+
+      ImGui::Separator();
+      
+      // entities
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<LocalPosition, GlobalPosition, Rotation, Scale>())
+      {
+        auto entity_name = entity.GetComponent<std::string>();
+        auto& local_position = entity.GetComponent<LocalPosition>()->position;
+        auto& global_position = entity.GetComponent<GlobalPosition>()->position;
+        auto& rotation = entity.GetComponent<Rotation>()->rotation;
+        auto& scale = entity.GetComponent<Scale>()->scale;
+      
+        if (ImGui::CollapsingHeader(entity_name->c_str(), tree_node_flags))
+        {
+          ImGui::PushID(entity_name->c_str());
+          ImGui::DragFloat3("Global Position", global_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f");
+          ImGui::DragFloat3("Local Position", local_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f");
+          if (ImGui::DragFloat3("Rotation", rotation.begin(), 0.1f, -0.1f, 360.1f, "%.1f"))
+          {
+            // loop around
+            for (auto& value : rotation)
+            {
+              if (value > 360.0f) value -= 360.0f;
+              else if (value < 0.0f) value += 360.0f;
+            }
+          }
+          ImGui::DragFloat3("Scale", scale.begin(), 0.01f, 0.1f, 1000.0f, "%.2f");
+          ImGui::PopID();
+        }
+      }
 
       ImGui::End();
     }
@@ -307,20 +308,31 @@ namespace OpenGLRendering
     #pragma endregion
 
 
-    #pragma region Demo Rotation System
+    #pragma region Model Showcase System
 
-    #if 0
+    #if 1
     {
       // Rotate all entities in the scene (except cameras)
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Rotation>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<GlobalPosition, Rotation>())
       {
         if (entity.HasComponent<Camera>()) continue;
       
+        auto& global_position = entity.GetComponent<GlobalPosition>()->position;
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
       
         // rotate the entity
-        rotation.y += 0.5f;
+        rotation.y += 0.4f;
         if (rotation.y > 360.0f) rotation.y -= 360.0f;
+
+        // move the entity
+        Vector3 initial_position = { 0, 0, 0 };
+        Vector3 final_position = { 0, 0.035f, 0 };
+        // lerp bob up and down using sine wave
+        static float accumulator = 0.0f;
+        accumulator += Application::GetCurrentWindow()->GetDeltaTime();
+        if (accumulator > 2.0f * PIf) accumulator -= 2.0f * PIf;
+        float t = (sinf(accumulator) + 1.0f) / 2.0f;
+        global_position = Lerp(initial_position, final_position, t);
       }
     }
     #endif
@@ -342,15 +354,15 @@ namespace OpenGLRendering
         auto& transform = entity.GetComponent<Transform>()->transform;
 
         // calculate the transform
-        transform = Matrix4x4::Identity;
-        transform
-          .Translate(global_position)
-          .RotateZDeg(rotation.z)
-          .RotateYDeg(rotation.y)
-          .RotateXDeg(rotation.x)
-          .Scale(scale)
-          .Translate(local_position)
-        ;
+
+        Matrix4x4 local_translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, local_position);
+        Matrix4x4 global_translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, global_position);
+        Matrix4x4 rotation_matrix = Quaternion::FromEulerAnglesDeg(rotation).ToRotationMatrix();
+        Matrix4x4 scale_matrix = Matrix4x4::Scale(Matrix4x4::Identity, scale);
+        
+        // right to left
+        // local transforms apply first before placing it in the world
+        transform = global_translation_matrix * rotation_matrix * scale_matrix * local_translation_matrix;
       }
     }
     #endif
@@ -379,7 +391,7 @@ namespace OpenGLRendering
         camera->front.Normalize();
 
         // calculate the right vector
-        camera->right = Vector3::Normalize(Cross(camera->world_up, camera->front));
+        camera->right = Vector3::Normalize(Cross(camera->front, camera->world_up));
 
         // calculate the up vector
         camera->up = Vector3::Normalize(Cross(camera->right, camera->front));
@@ -420,36 +432,28 @@ namespace OpenGLRendering
     #pragma endregion
 
 
-    #pragma region Renderer System
+    #pragma region 2D Renderer System (Mesh + Material)
     
     #if 0
     {
       // cache camera
       auto camera = main_camera.GetComponent<Camera>();
+      // cache directional light
+      auto dir_light_pos = directional_light.GetComponent<GlobalPosition>();
+      auto dir_light = directional_light.GetComponent<DirectionalLight>();
 
       // Render all entities
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Transform, Mesh, Texture, Shader>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Transform, Mesh, Material, Shader>())
       {
         auto& transform = entity.GetComponent<Transform>()->transform;
-        auto mesh = entity.GetComponent<Mesh>();
-        auto& texture = entity.GetComponent<Texture>()->texture;
+        auto& mesh = entity.GetComponent<Mesh>()->mesh;
+        auto material = entity.GetComponent<Material>();
         auto& shader = entity.GetComponent<Shader>()->shader;
 
-        OpenGLRenderer::EnableDepthTest();
-        OpenGLRenderer::ClearFrameBuffer();
-
         // render mesh
-        std::unique_ptr<VertexArray> VAO;
-        std::unique_ptr<VertexBuffer> VBO;
-        std::unique_ptr<IndexBuffer> IBO;
-
-        VAO.reset(VertexArray::Create());
-        VBO.reset(VertexBuffer::Create(mesh->vertices.data(), mesh->vertices.size() * sizeof(Vertex)));
-        IBO.reset(IndexBuffer::Create(mesh->indices.data(), static_cast<GLsizei>(mesh->indices.size())));
-
-        VAO->Bind();
-        VBO->Bind();
-        IBO->Bind();
+        mesh.VAO->Bind();
+        mesh.VBO->Bind();
+        mesh.IBO->Bind();
 
         // shader setup
         auto& shader_asset = FLX_ASSET_GET(Asset::Shader, shader);
@@ -462,12 +466,30 @@ namespace OpenGLRendering
         shader_asset.SetUniform_mat4("u_view", camera->view);
         shader_asset.SetUniform_mat4("u_projection", camera->projection);
 
-        // setup texture
-        auto& texture_asset = FLX_ASSET_GET(Asset::Texture, texture);
-        texture_asset.Bind(shader_asset, "u_texture_diffuse", 0);
+        shader_asset.SetUniform_vec3("u_light_position", dir_light_pos->position);
+        shader_asset.SetUniform_vec3("u_light_ambient", dir_light->ambient);
+        shader_asset.SetUniform_vec3("u_light_diffuse", dir_light->diffuse);
+        shader_asset.SetUniform_vec3("u_light_specular", dir_light->specular);
+
+        // setup material
+        auto& diffuse = FLX_ASSET_GET(Asset::Texture, material->diffuse);
+        if (diffuse)
+        {
+          diffuse.Bind(shader_asset, "u_material_diffuse", 0);
+        }
+        auto specular_pair = material->specular;
+        auto& specular = FLX_ASSET_GET(Asset::Texture, specular_pair.first);
+        if (specular)
+        {
+          specular.Bind(shader_asset, "u_material_specular", 1);
+          shader_asset.SetUniform_float("u_material_shininess", specular_pair.second);
+        }
 
         // draw
-        OpenGLRenderer::Draw(IBO->GetCount());
+        OpenGLRenderer::Draw(mesh.IBO->GetCount());
+
+        // cleanup
+        mesh.VAO->Unbind();
       }
     }
     #endif
@@ -475,14 +497,18 @@ namespace OpenGLRendering
     #pragma endregion
 
 
-    #pragma region Updated Renderer System
+    #pragma region 3D Renderer System (Model)
 
     #if 1
     {
       // cache camera
       auto camera = main_camera.GetComponent<Camera>();
+      // cache point light
+      auto& pt_light_pos = point_light.GetComponent<GlobalPosition>()->position;
+      auto pt_light = point_light.GetComponent<PointLight>();
       // cache directional light
-      auto dir_light = directional_light.GetComponent<DirectionalLight>();
+      //auto dir_light_pos = directional_light.GetComponent<GlobalPosition>();
+      //auto dir_light = directional_light.GetComponent<DirectionalLight>();
 
       // Render all entities
       for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Transform, Model, Shader>())
@@ -491,9 +517,6 @@ namespace OpenGLRendering
         auto& model = entity.GetComponent<Model>()->model;
         auto& shader = entity.GetComponent<Shader>()->shader;
 
-        OpenGLRenderer::EnableDepthTest();
-        OpenGLRenderer::ClearFrameBuffer();
-
         // shader setup
         auto& shader_asset = FLX_ASSET_GET(Asset::Shader, shader);
         shader_asset.Use();
@@ -501,38 +524,31 @@ namespace OpenGLRendering
         shader_asset.SetUniform_mat4("u_view", camera->view);
         shader_asset.SetUniform_mat4("u_projection", camera->projection);
 
+        shader_asset.SetUniform_vec3("u_light_position", pt_light_pos);
+        shader_asset.SetUniform_vec3("u_light_ambient", pt_light->ambient);
+        shader_asset.SetUniform_vec3("u_light_diffuse", pt_light->diffuse);
+        shader_asset.SetUniform_vec3("u_light_specular", pt_light->specular);
+
+        //shader_asset.SetUniform_vec3("u_light_position", dir_light_pos->position);
+        //shader_asset.SetUniform_vec3("u_light_ambient", dir_light->ambient);
+        //shader_asset.SetUniform_vec3("u_light_diffuse", dir_light->diffuse);
+        //shader_asset.SetUniform_vec3("u_light_specular", dir_light->specular);
+
         // get model
         auto& model_asset = FLX_ASSET_GET(Asset::Model, model);
 
         // render all meshes
         for (auto& mesh : model_asset.meshes)
-        //for (auto& mesh : model)
         {
           // render mesh
-          std::unique_ptr<VertexArray> VAO;
-          std::unique_ptr<VertexBuffer> VBO;
-          std::unique_ptr<IndexBuffer> IBO;
-
-          VAO.reset(VertexArray::Create());
-          VBO.reset(VertexBuffer::Create(mesh.vertices.data(), mesh.vertices.size() * sizeof(Vertex)));
-          IBO.reset(IndexBuffer::Create(mesh.indices.data(), static_cast<GLsizei>(mesh.indices.size())));
-
-          VAO->Bind();
-          VBO->Bind();
-          IBO->Bind();
+          mesh.VAO->Bind();
+          mesh.VBO->Bind();
+          mesh.IBO->Bind();
 
           // TODO: accumulate transformations
           // local, global, parent, etc.
           Matrix4x4 model_transform = transform * mesh.transform;
-          //Matrix4x4 model_transform = transform;
           shader_asset.SetUniform_mat4("u_model", model_transform);
-
-          //auto textures = mesh.material.GetDiffuse();
-          //for (std::size_t i = 0; i < textures.size(); i++)
-          //{
-          //  std::string uniform_name = "u_texture_diffuse" + std::to_string(i);
-          //  textures[i]->Bind(shader_asset, uniform_name.c_str(), i);
-          //}
 
           //// hardcoded
           //auto& texture_asset = FLX_ASSET_GET(Asset::Texture, R"(\models\firetruck\Textures\colormap.png)");
@@ -548,10 +564,6 @@ namespace OpenGLRendering
           // second version
           // materials are stored in the model
           // material index is stored in the mesh
-          shader_asset.SetUniform_vec3("u_light_direction", dir_light->direction);
-          shader_asset.SetUniform_vec3("u_light_ambient", dir_light->ambient);
-          shader_asset.SetUniform_vec3("u_light_diffuse", dir_light->diffuse);
-          shader_asset.SetUniform_vec3("u_light_specular", dir_light->specular);
 
           if (mesh.material_index < model_asset.materials.size())
           {
@@ -570,7 +582,10 @@ namespace OpenGLRendering
           }
 
           // draw
-          OpenGLRenderer::Draw(IBO->GetCount());
+          OpenGLRenderer::Draw(mesh.IBO->GetCount());
+
+          // cleanup
+          mesh.VAO->Unbind();
         }
       }
     }

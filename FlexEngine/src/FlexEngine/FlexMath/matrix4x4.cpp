@@ -298,6 +298,11 @@ namespace FlexEngine
 
   Matrix4x4& Matrix4x4::Translate(const Vector3& translation)
   {
+    //m30 += translation.x;
+    //m31 += translation.y;
+    //m32 += translation.z;
+    //return *this;
+
     Matrix4x4 result = *this;
     m3 += m0 * translation.x + m1 * translation.y + m2 * translation.z;
     return *this;

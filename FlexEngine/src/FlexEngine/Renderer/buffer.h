@@ -25,7 +25,7 @@ namespace FlexEngine
     // Best practice to store the pointer in a unique_ptr or shared_ptr
     // Usage: std::unique_ptr<VertexArray> vertex_array;
     //        vertex_array.reset(VertexArray::Create());
-    static VertexArray* Create();
+    static VertexArray* Create(unsigned int binding_point = 0);
   };
 
   #pragma endregion
@@ -43,7 +43,7 @@ namespace FlexEngine
     // Best practice to store the pointer in a unique_ptr or shared_ptr
     // Usage: std::unique_ptr<VertexBuffer> vertex_buffer;
     //        vertex_buffer.reset(VertexBuffer::Create(vertices.data(), sizeof(vertices));
-    static VertexBuffer* Create(Vertex* vertices, std::size_t size);
+    static VertexBuffer* Create(Vertex* vertices, std::size_t size, unsigned int binding_point = 0);
   };
 
   #pragma endregion
@@ -63,7 +63,7 @@ namespace FlexEngine
     // Best practice to store the pointer in a unique_ptr or shared_ptr
     // Usage: std::unique_ptr<IndexBuffer> index_buffer;
     //        index_buffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(unsigned int)));
-    static IndexBuffer* Create(unsigned int* indices, GLsizei count);
+    static IndexBuffer* Create(unsigned int* indices, GLsizei count, unsigned int binding_point = 0);
   };
 
   #pragma endregion

@@ -48,20 +48,22 @@ namespace OpenGLRendering
     AssetKey texture;
   };
 
+  // For the mesh
   class Material
   { FLX_REFL_SERIALIZABLE
   public:
-    std::vector<AssetKey> diffuse;
-    std::vector<AssetKey> specular;
+    AssetKey diffuse;
+    std::pair<AssetKey, float> specular;
   };
 
+  // Programmable meshes
   class Mesh
   { FLX_REFL_SERIALIZABLE
   public:
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
+    Asset::Mesh mesh;
   };
 
+  // For imported models
   class Model
   { FLX_REFL_SERIALIZABLE
   public:
@@ -83,10 +85,18 @@ namespace OpenGLRendering
     float far = 100.0f;
   };
 
+  class PointLight
+  { FLX_REFL_SERIALIZABLE
+  public:
+    Vector3 ambient;
+    Vector3 diffuse;
+    Vector3 specular;
+  };
+
+
   class DirectionalLight
   { FLX_REFL_SERIALIZABLE
   public:
-    Vector3 direction;
     Vector3 ambient;
     Vector3 diffuse;
     Vector3 specular;

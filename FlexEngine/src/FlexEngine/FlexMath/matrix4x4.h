@@ -8,6 +8,11 @@
 namespace FlexEngine
 {
 
+  // FlexEngine::Matrix4x4 (along with glm and OpenGL) is column-major.
+  // | 0  4  8 12 |
+  // | 1  5  9 13 |
+  // | 2  6 10 14 |
+  // | 3  7 11 15 |
   struct __FLX_API Matrix4x4
   { FLX_REFL_SERIALIZABLE
 

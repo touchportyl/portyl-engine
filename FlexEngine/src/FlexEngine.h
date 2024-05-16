@@ -78,6 +78,7 @@
 // Contains conversion functions for degrees and radians.
 // Implements Vector2, Vector3, Vector4.
 // Implements Matrix4x4 for transformations.
+// Implements Quaternion for rotations.
 #include "FlexEngine/FlexMath/mathconstants.h"
 #include "FlexEngine/FlexMath/mathconversions.h"
 #include "FlexEngine/FlexMath/vector1.h"
@@ -86,6 +87,7 @@
 #include "FlexEngine/FlexMath/vector4.h"
 #include "FlexEngine/FlexMath/matrix1x1.h"
 #include "FlexEngine/FlexMath/matrix4x4.h"
+#include "FlexEngine/FlexMath/quaternion.h"
 
 // Used to manage states.
 // Make your own states by inheriting from FlexEngine::State.

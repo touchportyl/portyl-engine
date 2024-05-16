@@ -17,11 +17,11 @@ namespace FlexEngine
     // This follows the Phong lighting model instead of the PBR model
     class __FLX_API Material
     {
+    public:
       // This variant allows for the Material class to store either AssetKeys or Textures
       // 
       // This is useful for handling textures that are embedded in a model because they
       // won't have an AssetKey associated with them and are not stored in the AssetManager.
-    public:
       using TextureVariant = std::variant<AssetKey, Texture>;
 
     private:

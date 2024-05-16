@@ -45,7 +45,8 @@ namespace FlexEngine
       aiMesh* mesh,
       const aiScene* scene,
       Matrix4x4 mesh_transform,
-      std::vector<Asset::Material>* out_materials
+      std::vector<Asset::Material>* out_materials,
+      const std::string& node_name
     );
 
     static Asset::Material::TextureVariant Internal_ProcessMaterialTextures(

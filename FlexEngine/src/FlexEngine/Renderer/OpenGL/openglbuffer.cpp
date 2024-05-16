@@ -9,22 +9,23 @@ namespace FlexEngine
 
   #pragma region OpenGLVertexArray
 
-  OpenGLVertexArray::OpenGLVertexArray()
+  OpenGLVertexArray::OpenGLVertexArray(unsigned int binding_point)
+    : m_binding_point(binding_point)
   {
-    glGenVertexArrays(1, &m_renderer_id);
+    glGenVertexArrays(1, &m_binding_point);
   }
 
   OpenGLVertexArray::~OpenGLVertexArray()
   {
-    glDeleteVertexArrays(1, &m_renderer_id);
+    glDeleteVertexArrays(1, &m_binding_point);
   }
 
   void OpenGLVertexArray::Bind() const
   {
-    glBindVertexArray(m_renderer_id);
+    glBindVertexArray(m_binding_point);
 
     // Hardcoded vertex layout
-    Vertex::SetLayout();
+    //Vertex::SetLayout();
   }
 
   void OpenGLVertexArray::Unbind() const
@@ -36,21 +37,22 @@ namespace FlexEngine
 
   #pragma region OpenGLVertexBuffer
 
-  OpenGLVertexBuffer::OpenGLVertexBuffer(Vertex* vertices, std::size_t size)
+  OpenGLVertexBuffer::OpenGLVertexBuffer(Vertex* vertices, std::size_t size, unsigned int binding_point)
+    : m_binding_point(binding_point)
   {
-    glGenBuffers(1, &m_renderer_id);
-    glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id);
+    glGenBuffers(1, &m_binding_point);
+    glBindBuffer(GL_ARRAY_BUFFER, m_binding_point);
     glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
   }
 
   OpenGLVertexBuffer::~OpenGLVertexBuffer()
   {
-    glDeleteBuffers(1, &m_renderer_id);
+    glDeleteBuffers(1, &m_binding_point);
   }
 
   void OpenGLVertexBuffer::Bind() const
   {
-    glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id);
+    glBindBuffer(GL_ARRAY_BUFFER, m_binding_point);
   }
 
   void OpenGLVertexBuffer::Unbind() const
@@ -62,22 +64,22 @@ namespace FlexEngine
 
   #pragma region OpenGLIndexBuffer
 
-  OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int* indices, GLsizei count)
-    : m_count(count)
+  OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int* indices, GLsizei count, unsigned int binding_point)
+    : m_count(count), m_binding_point(binding_point)
   {
-    glGenBuffers(1, &m_renderer_id);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_renderer_id);
+    glGenBuffers(1, &m_binding_point);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_binding_point);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices, GL_STATIC_DRAW);
   }
 
   OpenGLIndexBuffer::~OpenGLIndexBuffer()
   {
-    glDeleteBuffers(1, &m_renderer_id);
+    glDeleteBuffers(1, &m_binding_point);
   }
 
   void OpenGLIndexBuffer::Bind() const
   {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_renderer_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_binding_point);
   }
 
   void OpenGLIndexBuffer::Unbind() const

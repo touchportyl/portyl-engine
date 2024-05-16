@@ -175,6 +175,9 @@
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmodel.cpp">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\FlexMath\quaternion.cpp">
+      <Filter>src\FlexEngine\FlexMath</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -332,6 +335,9 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\AssetManager\assetkey.h">
       <Filter>src\FlexEngine\AssetManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\FlexMath\quaternion.h">
+      <Filter>src\FlexEngine\FlexMath</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
