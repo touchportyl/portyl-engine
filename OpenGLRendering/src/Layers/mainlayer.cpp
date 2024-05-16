@@ -41,7 +41,7 @@ namespace OpenGLRendering
     object.AddComponent<Rotation>({ { 0, 0, 0 } });
     object.AddComponent<Scale>({ { 0.001f, 0.001f, 0.001f } });
     object.AddComponent<Transform>({});
-    object.AddComponent<Model>({ R"(\models\firetruck\firetruck.fbx)" });
+    object.AddComponent<Model>({ R"(\models\Kenney Car Kit\tractor.fbx)" });
     object.AddComponent<Shader>({ R"(\shaders\renderer)" });
 
     plane.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
