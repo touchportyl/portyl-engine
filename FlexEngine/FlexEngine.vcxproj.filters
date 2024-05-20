@@ -178,9 +178,6 @@
     <ClCompile Include="src\FlexEngine\FlexMath\quaternion.cpp">
       <Filter>src\FlexEngine\FlexMath</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\Wrapper\flexstring.cpp">
-      <Filter>src\FlexEngine\Wrapper</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -341,9 +338,6 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\FlexMath\quaternion.h">
       <Filter>src\FlexEngine\FlexMath</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\Wrapper\flexstring.h">
-      <Filter>src\FlexEngine\Wrapper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

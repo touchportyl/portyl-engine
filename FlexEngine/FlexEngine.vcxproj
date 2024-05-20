@@ -212,7 +212,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Wrapper\datetime.cpp" />
     <ClCompile Include="src\FlexEngine\Wrapper\file.cpp" />
     <ClCompile Include="src\FlexEngine\Wrapper\filelist.cpp" />
-    <ClCompile Include="src\FlexEngine\Wrapper\flexstring.cpp" />
     <ClCompile Include="src\FlexEngine\Wrapper\path.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -272,7 +271,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Wrapper\file.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\filelist.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\flexassert.h" />
-    <ClInclude Include="src\FlexEngine\Wrapper\flexstring.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\path.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\range.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\simd.h" />
