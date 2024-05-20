@@ -33,15 +33,15 @@ namespace OpenGLRendering
 
     directional_light.AddComponent<DirectionalLight>({
       { 0.0f, 0.9f, 0.35f },
-      { 0.5f, 0.5f, 0.5f },
-      { 1.0f, 1.0f, 1.0f },
+      { 0.2f, 0.2f, 0.2f },
+      { 0.7f, 0.7f, 0.7f },
       { 1.0f, 1.0f, 1.0f }
     });
 
     point_lights[0].AddComponent<GlobalPosition>({ { -2.0f, 0.0f, 0.0f } });
     point_lights[0].AddComponent<PointLight>({
       { 0.0f, 0.0f, 0.0f },
-      { 1.0f, 0.0f, 0.0f },
+      { 0.6f, 0.0f, 0.0f },
       { 1.0f, 0.0f, 0.0f }
     });
     point_lights[1].AddComponent<GlobalPosition>({ { 2.0f, 0.0f, 2.0f } });
@@ -69,7 +69,7 @@ namespace OpenGLRendering
     plane.AddComponent<Material>(
       { // Material
         scene->Internal_StringStorage_New(R"(\images\flexengine\flexengine_splash.png)"),
-        { // std::pair<AssetKey, float>
+        { // std::pair<StringIndex, float>
           scene->Internal_StringStorage_New(R"(\images\flexengine\flexengine_splash.png)"),
           32.0f
         }
@@ -481,7 +481,7 @@ namespace OpenGLRendering
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
       
         // rotate the entity
-        rotation.y += 0.4f;
+        rotation.y += 35.0f * Application::GetCurrentWindow()->GetDeltaTime();
         if (rotation.y > 360.0f) rotation.y -= 360.0f;
 
         // move the entity
