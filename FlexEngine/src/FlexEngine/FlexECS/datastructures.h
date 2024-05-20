@@ -101,8 +101,19 @@ namespace FlexEngine
 
 
     // Component table
+
+    // ComponentData<void> is a special internal type that can hold any component data.
+    // The void* it holds is type erased and must be cast to the correct type.
+    // The first sizeof(std::size_t) bytes are used to store the size of the data.
     template <typename T = void>
     using ComponentData = std::shared_ptr<T>;
+
+    // Create a new ComponentData<void>
+    __FLX_API ComponentData<void> Internal_CreateComponentData(std::size_t size, void* data);
+
+    // Get the size and data pointer from a ComponentData<void>
+    __FLX_API std::pair<std::size_t, void*> Internal_GetComponentData(ComponentData<void> data);
+
 
     using Column = std::vector<ComponentData<void>>;
     using Row = std::vector<Column>;
@@ -184,30 +195,63 @@ namespace FlexEngine
 
     public:
 
+      // Null scene for when the active scene is set to null
+      static Scene Null;
+
       // ECS data structures
 
       std::unordered_map<ComponentIDList, Archetype> archetype_index;
       std::unordered_map<EntityID, EntityRecord> entity_index;
       std::unordered_map<ComponentID, ArchetypeMap> component_index;
 
+      #pragma region String Storage
+
+    public:
+      using StringIndex = std::size_t;
+
+    private:
+      // String storage to prevent strings from being freed.
+      // Components that are strings should store the index of the string in this vector.
+      std::vector<std::string> string_storage;
+
+      // Strings that are removed from the string storage are added to this list.
+      // New strings will always use the first available index in this list.
+      std::vector<StringIndex> string_storage_free_list;
+
+    public:
+      std::string& Internal_StringStorage_Get(StringIndex index);
+
+      StringIndex Internal_StringStorage_New(const std::string& str);
+      void Internal_StringStorage_Delete(StringIndex index);
+
+      // Defragment the string storage by moving all strings to the front of the vector
+      // void Internal_StringStorage_Defragment();
+
+      #pragma endregion
+
+      #pragma region ECS View
+
+    public:
       // Returns an entity list based off the list of components
       template <typename... Ts>
       std::vector<Entity> View();
       //#define FLX_ECS_VIEW(...) for (FlexEngine::FlexECS::Entity& entity : FlexEngine::FlexECS::Scene::GetActiveScene()->View<__VA_ARGS__>())
 
-      // Null scene for when the active scene is set to null
+      #pragma endregion
 
-      static Scene Null;
+      #pragma region Scene management functions
 
-      // Scene management functions
-
+    public:
       static std::shared_ptr<Scene> CreateScene();
       static std::shared_ptr<Scene> GetActiveScene();
       static void SetActiveScene(Scene scene);
       static void SetActiveScene(std::shared_ptr<Scene> scene);
 
-      // Entity management functions
+      #pragma endregion
 
+      #pragma region Entity management functions
+
+    public:
       // Creates a new entity and gives it the default archetype which is for storing the entity's name.
       // Entities are registered this way. They are not stored in the scene, but in the actual ECS.
       static Entity CreateEntity(const std::string& name = "New Entity");
@@ -215,7 +259,11 @@ namespace FlexEngine
       // Removes an entity from the ECS
       static void DestroyEntity(EntityID entity);
 
-      // Scene serialization functions
+      #pragma endregion
+
+      #pragma region Scene serialization functions
+
+    public:
       // This is the interface for the reflection system to serialize and deserialize
       // the ECS data structures. Use this interface to save and load scenes.
 
@@ -223,7 +271,9 @@ namespace FlexEngine
       static Scene Load(File& file);
       static void SaveActiveScene(File& file);
 
-    //private:
+      #pragma endregion
+
+    private:
       // INTERNAL FUNCTION
       // After reconstructing the ECS from a saved state, the archetype pointers in the entity_index
       // need to be reconnected to the archetype_index.
@@ -271,13 +321,13 @@ namespace FlexEngine
 
       // Returns a nullptr if the component is not found
       template <typename T>
-      ComponentData<T> GetComponent();
+      T* GetComponent();
 
       // Specialization to get a component safely
       // out is not modified if the component is not found
       // Returns true if the component is found
       template <typename T>
-      bool TryGetComponent(ComponentData<T>& out);
+      bool TryGetComponent(T* out);
 
       // Add a component to an entity
       // Usage: entity.AddComponent<Transform>({ 1, 2, 3 });

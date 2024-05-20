@@ -28,7 +28,7 @@ bool FlexEngine::FlexECS::Entity::HasComponent()
 // Use the column and row to get the component data from the archetype_table.
 // This performs two lookups in the entity_index and two lookups in the component_index.
 template <typename T>
-FlexEngine::FlexECS::ComponentData<T> FlexEngine::FlexECS::Entity::GetComponent()
+T* FlexEngine::FlexECS::Entity::GetComponent()
 {
   // cache the entity id
   EntityID entity = entity_id;
@@ -58,11 +58,14 @@ FlexEngine::FlexECS::ComponentData<T> FlexEngine::FlexECS::Entity::GetComponent(
 
   // get the component data
   ArchetypeRecord& archetype_record = archetype_map[archetype.id];
-  return std::static_pointer_cast<T>(archetype.archetype_table[archetype_record.column][entity_record.row]);
+  ComponentData<void> component_data = archetype.archetype_table[archetype_record.column][entity_record.row];
+  void* data = Internal_GetComponentData(component_data).second;
+  T* out_component = reinterpret_cast<T*>(data);
+  return out_component;
 }
 
 template <typename T>
-bool FlexEngine::FlexECS::Entity::TryGetComponent(ComponentData<T>& out)
+bool FlexEngine::FlexECS::Entity::TryGetComponent(T* out)
 {
   // guard
   if (!HasComponent<T>()) return false;
@@ -92,7 +95,9 @@ void FlexEngine::FlexECS::Entity::AddComponent(const T& data)
   ComponentID component = Reflection::TypeResolver<T>::Get()->name;
 
   // type erasure
-  ComponentData<void> data_ptr = std::make_shared<T>(data);
+  T data_copy = data;
+  void* data_copy_ptr = reinterpret_cast<void*>(&data_copy);
+  ComponentData<void> data_ptr = Internal_CreateComponentData(sizeof(T), data_copy_ptr);
 
   // figure out the current archetype for the entity
   EntityRecord& entity_record = ENTITY_INDEX[entity];

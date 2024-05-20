@@ -10,6 +10,47 @@ namespace FlexEngine
     Scene Scene::Null = Scene();
 
 
+    #pragma region String Storage
+
+    std::string& Scene::Internal_StringStorage_Get(StringIndex index)
+    {
+      return string_storage[index];
+    }
+
+    Scene::StringIndex Scene::Internal_StringStorage_New(const std::string& str)
+    {
+      StringIndex index = 0;
+
+      // check if there are any free indices
+      if (!string_storage_free_list.empty())
+      {
+        index = string_storage_free_list.back();
+        string_storage_free_list.pop_back();
+
+        // store the string
+        string_storage[index] = str;
+      }
+      // get the next index
+      else
+      {
+        // store the string
+        string_storage.push_back(str);
+        index = string_storage.size() - 1;
+      }
+
+      // return the index
+      return index;
+    }
+
+    void Scene::Internal_StringStorage_Delete(StringIndex index)
+    {
+      // add the index to the free list
+      string_storage_free_list.push_back(index);
+    }
+
+    #pragma endregion
+
+
     #pragma region Scene Management Functions
 
     std::shared_ptr<Scene> Scene::CreateScene()
@@ -48,6 +89,8 @@ namespace FlexEngine
         Log::Warning("Attempted to set active scene to nullptr. Use the Scene::Null to set the scene to null instead.");
         return;
       }
+
+      s_active_scene = std::make_shared<Scene>(Scene::Null); // unsure as to why this is necessary
       s_active_scene = scene;
     }
 
@@ -56,16 +99,21 @@ namespace FlexEngine
 
     #pragma region Entity Management Functions
 
+    // Creates a new entity by giving it a name
     Entity Scene::CreateEntity(const std::string& name)
     {
       FLX_FLOW_FUNCTION();
 
+      using T = StringIndex;
+
       // manually register a name component
       // this is to register the entity in the entity index and archetype
-      ComponentID component = Reflection::TypeResolver<std::string>::Get()->name;
+      ComponentID component = Reflection::TypeResolver<T>::Get()->name;
 
       // type erasure
-      ComponentData<void> data_ptr = std::make_shared<std::string>(name);
+      T data_copy = Scene::GetActiveScene()->Internal_StringStorage_New(name);
+      void* data_copy_ptr = reinterpret_cast<void*>(&data_copy);
+      ComponentData<void> data_ptr = Internal_CreateComponentData(sizeof(T), data_copy_ptr);
 
       // Get the archetype for the entity
       ComponentIDList type = { component };
@@ -189,14 +237,16 @@ namespace FlexEngine
 
       // get scene data
       FlxFmtFile flxfmtfile = FlexFormatter::Parse(file, FlxFmtFileType::Scene);
-      if (flxfmtfile == FlxFmtFile::Null)
-      {
-        return Scene::Null;
-      }
+      if (flxfmtfile == FlxFmtFile::Null) return Scene::Null;
 
       // deserialize
       Document document;
       document.Parse(flxfmtfile.data.c_str());
+      if (document.HasParseError())
+      {
+        Log::Error("Failed to parse scene data.");
+        return Scene::Null;
+      }
 
       FlexECS::Scene deserialized_scene;
       type_desc->Deserialize(&deserialized_scene, document);
@@ -264,12 +314,10 @@ namespace FlexEngine
         Log::Debug("- Number of entities: " + std::to_string(archetype_storage.entities.size()));
         Log::Debug("- Number of components: " + std::to_string(archetype_storage.archetype_table.size()));
 
-        int i = 0;
-        for (auto& column : archetype_storage.archetype_table)
+        for (std::size_t i = 0; i < archetype_storage.archetype_table.size(); i++)
         {
           Log::Debug("  Component(" + std::to_string(i) + "): " + archetype_storage.type[i]);
-          Log::Debug("    Entities in component: " + std::to_string(column.size()));
-          i++;
+          //Log::Debug("    Entities in component: " + std::to_string(archetype_storage.archetype_table[i].size()));
         }
       }
       Log::Info("End of dump.");

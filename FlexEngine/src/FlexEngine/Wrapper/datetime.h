@@ -62,7 +62,7 @@ namespace FlexEngine
 
     #pragma region Stringify
 
-    // Converts the date to a string in the format: %Y-%m-%d
+    // Converts the date to a string in the format: yyyy-mm-dd
     std::string ToString() const;
 
     // Conversion operator to std::string

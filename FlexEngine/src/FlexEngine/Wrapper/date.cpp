@@ -1,5 +1,8 @@
 #include "datetime.h"
 
+#include <sstream>
+#include <iomanip>
+
 namespace FlexEngine
 {
 
@@ -65,10 +68,16 @@ namespace FlexEngine
 
   #pragma region Stringify
 
-  // Converts the date to a string in the format: %Y-%m-%d
+  // Converts the date to a string in the format: yyyy-mm-dd
   std::string Date::ToString() const
   {
-    return std::to_string(year) + "-" + std::to_string(month) + "-" + std::to_string(day);
+    std::stringstream ss;
+    ss
+      << std::setw(4) << std::setfill('0') << year  << "-"
+      << std::setw(2) << std::setfill('0') << month << "-"
+      << std::setw(2) << std::setfill('0') << day
+    ;
+    return ss.str();
   }
 
   Date::operator std::string() const

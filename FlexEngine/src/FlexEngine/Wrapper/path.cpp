@@ -81,12 +81,15 @@ namespace FlexEngine
 
   bool Path::is_file() const noexcept
   {
-    return !std::filesystem::is_directory(m_path);
+    // check if it has a . in the filename
+    return m_path.has_extension();
   }
 
   bool Path::is_directory() const noexcept
   {
-    return std::filesystem::is_directory(m_path);
+    // check if it has a . in the filename
+    return !m_path.has_extension();
+    //return std::filesystem::is_directory(m_path);
   }
 
   bool Path::exists() noexcept

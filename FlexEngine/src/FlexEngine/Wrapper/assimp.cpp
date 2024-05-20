@@ -66,11 +66,13 @@ namespace FlexEngine
     std::vector<Asset::Material>* out_materials
   )
   {
+    #if 0
     Log::Debug("Processing node...\n"
       "- Node: " + std::string(node->mName.C_Str()) + "\n" +
       "    Number of meshes: " + std::to_string(node->mNumMeshes) + "\n" +
       "    Number of children: " + std::to_string(node->mNumChildren) + "\n"
     );
+    #endif
 
     std::vector<Asset::Mesh> meshes;
 

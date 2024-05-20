@@ -9,10 +9,10 @@ FlexEngine is a work-in-progress game engine.
 - ImGui 1.90.1 (docking)
 - stb_image 2.29
 - RapidJSON 1.1.0
-- fmod 2.02
+- assimp 5.4.0
 
 ## working on implementation
-- assimp 5.4.0
+- fmod 2.02
 
 ## deprecating
 - fastgltf 0.6.1

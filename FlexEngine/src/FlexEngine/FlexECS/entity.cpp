@@ -34,8 +34,9 @@ namespace FlexEngine
     {
       // compare their names (in std::string component)
       // makes a copy because GetComponent is not const, gets the name component, and compares the strings
-      Entity lhs = *this; Entity rhs = other;
-      return *(lhs.GetComponent<std::string>().get()) < *(rhs.GetComponent<std::string>().get());
+      Entity lhs = *this;
+      Entity rhs = other;
+      return *(lhs.GetComponent<std::string>()) < *(rhs.GetComponent<std::string>());
     }
 
     Entity::operator EntityID() const
@@ -64,7 +65,7 @@ namespace FlexEngine
       // create a new archetype record for each component
       for (std::size_t i = 0; i < archetype.type.size(); i++)
       {
-        Log::Flow("Create new column (" + std::to_string(i) + ")");
+        //Log::Flow("Create new column (" + std::to_string(i) + ")");
         COMPONENT_INDEX[archetype.type[i]][archetype.id] = { i };
         archetype.archetype_table.push_back(Column()); // create a column for each component
       }

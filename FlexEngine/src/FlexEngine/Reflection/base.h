@@ -724,8 +724,25 @@ namespace FlexEngine
         const auto& shared_ptr = *reinterpret_cast<const std::shared_ptr<void>*>(obj);
         if (shared_ptr)
         {
+          // Obtain the raw pointer and serialize it
+          // 
+          // How this works:
+          // Since the shared_ptr is a void pointer, we can't get the size directly.
+          // The serialized_str needs to be constructed from the raw pointer which needs the full size.
+          // Thus, the shared_ptr stores the size of the data in the first sizeof(std::size_t) == 4 or 8 bytes.
+          // This allows us to get the size of the data, add sizeof(std::size_t), which gives us the full size.
+          // Implemented as FlexECS::Internal_GetComponentData.
+
+          void* ptr = shared_ptr.get();
+          
+          // Serialize the data as a string
+          std::string serialized_data(
+            reinterpret_cast<char*>(ptr),
+            sizeof(std::size_t) + *reinterpret_cast<std::size_t*>(ptr)
+          );
+
           // Serialize as a json string
-          os << R"({"type":")" << "std::shared_ptr<void>" << R"(","data":")" << shared_ptr.get() << R"("})";
+          os << R"({"type":")" << "std::shared_ptr<void>" << R"(","data":")" << serialized_data << R"("})";
         }
         else
         {
@@ -744,12 +761,12 @@ namespace FlexEngine
         {
           // Deserialize as a json string
           std::string data = value["data"].Get<std::string>();
-          std::stringstream ss;
-          void* ptr;
-          ss << std::hex << data;
-          ss >> ptr;
-          // convert it to a std::shared_ptr<void> using a custom deleter
-          std::shared_ptr<void> shared_ptr = std::shared_ptr<void>(reinterpret_cast<void*>(ptr), [](void*) { /* custom deleter */ });
+
+          char* data_ptr = const_cast<char*>(data.c_str());
+          void* void_ptr = reinterpret_cast<void*>(data_ptr);
+          
+          // Convert it to a std::shared_ptr<void>
+          std::shared_ptr<void> shared_ptr = std::shared_ptr<void>(void_ptr, [](void*) {});
           *reinterpret_cast<std::shared_ptr<void>*>(obj) = shared_ptr;
         }
       }

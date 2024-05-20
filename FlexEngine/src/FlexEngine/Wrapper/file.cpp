@@ -90,8 +90,9 @@ namespace FlexEngine
     std::ofstream file(path, std::ios::binary);
     if (!file.is_open())
     {
-      Log::Error("Failed to open file: " + std::to_string(path));
-      return;
+      Log::Info("Creating file: " + std::to_string(path));
+      auto new_path = Create(path.parent_path(), path.filename().string()); // this is unsafe
+      file.open(new_path, std::ios::binary);
     }
 
     data = _data;

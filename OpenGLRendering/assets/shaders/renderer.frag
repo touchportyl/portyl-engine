@@ -5,7 +5,7 @@ out vec4 fragment_color;
 in vec3 fragment_position;
 in vec3 color;
 in vec2 tex_coord;
-in vec3 normal;
+in vec3 normal; // normalized
 
 //uniform vec3 u_view_position;
 
@@ -16,10 +16,21 @@ uniform sampler2D u_material_specular0;
 uniform float u_material_shininess;
 
 // directional light
-uniform vec3 u_light_position;
-uniform vec3 u_light_ambient;
-uniform vec3 u_light_diffuse;
-uniform vec3 u_light_specular;
+uniform vec3 u_directional_light_direction;
+uniform vec3 u_directional_light_ambient;
+uniform vec3 u_directional_light_diffuse;
+uniform vec3 u_directional_light_specular;
+
+// point light
+uniform vec3 u_point_light_position0;
+uniform vec3 u_point_light_ambient0;
+uniform vec3 u_point_light_diffuse0;
+uniform vec3 u_point_light_specular0;
+
+uniform vec3 u_point_light_position1;
+uniform vec3 u_point_light_ambient1;
+uniform vec3 u_point_light_diffuse1;
+uniform vec3 u_point_light_specular1;
 
 void main()
 {
@@ -30,13 +41,23 @@ void main()
   //fragment_color = vec4(result, 1.0);
 
   // ambient
-  vec3 ambient = u_light_ambient * texture(u_material_diffuse0, tex_coord).rgb;
+  vec3 ambient = min(u_directional_light_ambient + u_point_light_ambient0 + u_point_light_ambient1, 1.0) * texture(u_material_diffuse0, tex_coord).rgb;
   
   // diffuse
-  vec3 norm = normalize(normal);
-  vec3 light_direction = normalize(u_light_position - fragment_position);
-  float diff = max(dot(norm, light_direction), 0.0);
-  vec3 diffuse = u_light_diffuse * diff * texture(u_material_diffuse0, tex_coord).rgb;
+  float directional_light_diff = max(dot(normal, u_directional_light_direction), 0.0);
+
+  vec3 point_light_direction0 = normalize(u_point_light_position0 - fragment_position);
+  float point_light_diff0 = max(dot(normal, point_light_direction0), 0.0);
+
+  vec3 point_light_direction1 = normalize(u_point_light_position1 - fragment_position);
+  float point_light_diff1 = max(dot(normal, point_light_direction1), 0.0);
+
+  vec3 diffuse = min(
+    (u_directional_light_diffuse * directional_light_diff) +
+    (u_point_light_diffuse0 * point_light_diff0) +
+    (u_point_light_diffuse1 * point_light_diff1),
+    1.0
+  ) * texture(u_material_diffuse0, tex_coord).rgb;
   
   //// specular
   //vec3 view_direction = normalize(u_view_position - fragment_position);

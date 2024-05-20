@@ -29,7 +29,7 @@ void main()
 
   // pass through data
   color = m_color;
-  normal = mat3(transpose(inverse(u_model))) * m_normal; // this is costly
+  normal = normalize(mat3(transpose(inverse(u_model))) * m_normal); // this is costly
   tex_coord = m_tex_coord;
   // flip textures vertically
   //tex_coord = vec2(m_tex_coord.x, 1.0 - m_tex_coord.y);

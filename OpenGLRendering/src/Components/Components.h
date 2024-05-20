@@ -6,6 +6,8 @@ using namespace FlexEngine;
 namespace OpenGLRendering
 {
 
+  using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
+
   class LocalPosition
   { FLX_REFL_SERIALIZABLE
   public:
@@ -39,21 +41,21 @@ namespace OpenGLRendering
   class Shader
   { FLX_REFL_SERIALIZABLE
   public:
-    AssetKey shader;
+    FlexECS::Scene::StringIndex shader;
   };
 
   class Texture
   { FLX_REFL_SERIALIZABLE
   public:
-    AssetKey texture;
+    FlexECS::Scene::StringIndex texture;
   };
 
   // For the mesh
   class Material
   { FLX_REFL_SERIALIZABLE
   public:
-    AssetKey diffuse;
-    std::pair<AssetKey, float> specular;
+    FlexECS::Scene::StringIndex diffuse;
+    std::pair<FlexECS::Scene::StringIndex, float> specular;
   };
 
   // Programmable meshes
@@ -67,7 +69,7 @@ namespace OpenGLRendering
   class Model
   { FLX_REFL_SERIALIZABLE
   public:
-    AssetKey model;
+    FlexECS::Scene::StringIndex model;
   };
 
   class Camera
@@ -85,16 +87,17 @@ namespace OpenGLRendering
     float far = 100.0f;
   };
 
-  class PointLight
-  { FLX_REFL_SERIALIZABLE
+  class DirectionalLight
+  {
+    FLX_REFL_SERIALIZABLE
   public:
+    Vector3 direction;
     Vector3 ambient;
     Vector3 diffuse;
     Vector3 specular;
   };
 
-
-  class DirectionalLight
+  class PointLight
   { FLX_REFL_SERIALIZABLE
   public:
     Vector3 ambient;

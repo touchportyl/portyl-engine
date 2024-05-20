@@ -15,6 +15,7 @@ namespace FlexEngine
   void AssetManager::Load()
   {
     FLX_FLOW_BEGINSCOPE();
+    FLX_SCOPED_TIMER("AssetManager");
 
     // load all assets
     FileList list = FileList::GetAllFilesInDirectoryRecursively(default_directory);
@@ -56,12 +57,12 @@ namespace FlexEngine
         {
           // create an asset key
           AssetKey key = file.path.string().substr(default_directory_length);
-
+          
           // load texture
           assets[key] = Asset::Texture::Null;
           Asset::Texture& texture = std::get<Asset::Texture>(assets[key]);
           texture.Load(file.path);
-          Log::Info(std::string("Loaded texture: ") + key);
+          Log::Info("Loaded texture: " + key);
         }
         else if (FLX_EXTENSIONS_CHECK_SAFETY("shader", file_extension.string()))
         {
@@ -105,11 +106,11 @@ namespace FlexEngine
           // load and save the model
           Log::Flow("Loading model: " + key);
           FLX_FLOW_BEGINSCOPE();
-          FLX_SCOPED_TIMER(std::string("Loaded model: ") + key);
+          FLX_SCOPED_TIMER("Loaded model: " + key);
           Asset::Model loaded_model = AssimpWrapper::LoadModel(file.path);
           if (loaded_model)
           {
-            Log::Info(std::string("Loaded model: ") + key);
+            //Log::Info("Loaded model: " + key);
             assets[key] = loaded_model;
           }
           FLX_FLOW_ENDSCOPE();
@@ -130,14 +131,15 @@ namespace FlexEngine
       }
 
       // create an asset key
-      AssetKey assetkey = files[0]->path.string().substr(default_directory_length);
-      assetkey = assetkey.substr(0, assetkey.find_last_of('.'));
+      std::string key_string = files[0]->path.string().substr(default_directory_length);
+      key_string = key_string.substr(0, key_string.find_last_of('.'));
+      AssetKey assetkey = key_string;
 
       // create a new shader
       assets[assetkey] = Asset::Shader();
       Asset::Shader& shader = std::get<Asset::Shader>(assets[assetkey]);
       shader.Create(files[Asset::Shader::Type::Vertex]->path, files[Asset::Shader::Type::Fragment]->path);
-      Log::Info(std::string("Loaded shader: ") + assetkey);
+      Log::Info("Loaded shader: " + assetkey);
     }
 
     FLX_FLOW_ENDSCOPE();

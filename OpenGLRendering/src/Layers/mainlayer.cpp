@@ -5,16 +5,25 @@
 namespace OpenGLRendering
 {
 
-  void MainLayer::OnAttach()
+  void MainLayer::CreateDefaultScene()
   {
-    FLX_FLOW_BEGINSCOPE();
+    auto scene = FlexECS::Scene::CreateScene();
+    FlexECS::Scene::SetActiveScene(scene);
 
-    // ECS Setup
+    // cleanup
 
-    FlexECS::Scene::CreateScene();
+    main_camera = FlexECS::Entity::Null;
+    directional_light = FlexECS::Entity::Null;
+    point_lights.clear();
+    plane = FlexECS::Entity::Null;
+    object = FlexECS::Entity::Null;
+
+    // create entities
+
     main_camera = FlexECS::Scene::CreateEntity("Main Camera");
-    point_light = FlexECS::Scene::CreateEntity("Point Light");
     directional_light = FlexECS::Scene::CreateEntity("Directional Light");
+    point_lights.push_back(FlexECS::Scene::CreateEntity("Point Light 1"));
+    point_lights.push_back(FlexECS::Scene::CreateEntity("Point Light 2"));
     object = FlexECS::Scene::CreateEntity("Object");
     plane = FlexECS::Scene::CreateEntity("Plane");
 
@@ -22,27 +31,33 @@ namespace OpenGLRendering
     main_camera.AddComponent<Rotation>({ { -12, -35, 0 } });
     main_camera.AddComponent<Camera>({});
 
-    point_light.AddComponent<GlobalPosition>({ { 0, 0.9f, 0.35f } });
-    point_light.AddComponent<PointLight>({
+    directional_light.AddComponent<DirectionalLight>({
+      { 0.0f, 0.9f, 0.35f },
       { 0.5f, 0.5f, 0.5f },
       { 1.0f, 1.0f, 1.0f },
       { 1.0f, 1.0f, 1.0f }
     });
 
-    //directional_light.AddComponent<GlobalPosition>({ { 0, 1, 0 } });
-    //directional_light.AddComponent<DirectionalLight>({
-    //  { 0.5f, 0.5f, 0.5f },
-    //  { 1.0f, 1.0f, 1.0f },
-    //  { 1.0f, 1.0f, 1.0f }
-    //});
+    point_lights[0].AddComponent<GlobalPosition>({ { -2.0f, 0.0f, 0.0f } });
+    point_lights[0].AddComponent<PointLight>({
+      { 0.0f, 0.0f, 0.0f },
+      { 1.0f, 0.0f, 0.0f },
+      { 1.0f, 0.0f, 0.0f }
+    });
+    point_lights[1].AddComponent<GlobalPosition>({ { 2.0f, 0.0f, 2.0f } });
+    point_lights[1].AddComponent<PointLight>({
+      { 0.0f, 0.0f, 0.0f },
+      { 0.4f, 0.2f, 1.0f },
+      { 0.4f, 0.2f, 1.0f }
+    });
 
     object.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
     object.AddComponent<LocalPosition>({ { 0, 0, 0 } });
     object.AddComponent<Rotation>({ { 0, 0, 0 } });
     object.AddComponent<Scale>({ { 0.001f, 0.001f, 0.001f } });
     object.AddComponent<Transform>({});
-    object.AddComponent<Model>({ R"(\models\Kenney Car Kit\tractor.fbx)" });
-    object.AddComponent<Shader>({ R"(\shaders\renderer)" });
+    object.AddComponent<Model>({ scene->Internal_StringStorage_New(R"(\models\Kenney Car Kit\tractor.fbx)") });
+    object.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\renderer)") });
 
     plane.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
     plane.AddComponent<LocalPosition>({ { 0, 0, 0 } });
@@ -51,18 +66,17 @@ namespace OpenGLRendering
     plane_scale *= 0.0f;
     plane.AddComponent<Scale>({ plane_scale });
     plane.AddComponent<Transform>({});
-    //plane.AddComponent<Texture>({ R"(\images\flexengine\flexengine_splash.png)" });
     plane.AddComponent<Material>(
       { // Material
-        R"(\images\flexengine\flexengine_splash.png)",
+        scene->Internal_StringStorage_New(R"(\images\flexengine\flexengine_splash.png)"),
         { // std::pair<AssetKey, float>
-          R"(\images\flexengine\flexengine_splash.png)",
+          scene->Internal_StringStorage_New(R"(\images\flexengine\flexengine_splash.png)"),
           32.0f
         }
       }
     );
-    plane.AddComponent<Shader>({ R"(\shaders\renderer)" });
-    
+    plane.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\renderer)") });
+
     // manually build a mesh
     plane.AddComponent<Mesh>({
       { // Mesh
@@ -81,6 +95,14 @@ namespace OpenGLRendering
 
     // manually create buffers
     plane.GetComponent<Mesh>()->mesh.Internal_CreateBuffers();
+  }
+
+  void MainLayer::OnAttach()
+  {
+    FLX_FLOW_BEGINSCOPE();
+
+    // ECS Setup
+    CreateDefaultScene();
 
     // Renderer Setup
 
@@ -95,6 +117,9 @@ namespace OpenGLRendering
   void MainLayer::Update()
   {
     OpenGLRenderer::ClearFrameBuffer();
+
+    FunctionQueue function_queue;
+
 
     #pragma region Title Bar
 
@@ -112,7 +137,7 @@ namespace OpenGLRendering
         ImGui::SetCursorPosY(cursor_y);
 
         // display the flexengine logo
-        Asset::Texture& flexengine_logo = FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_logo_white.png)");
+        Asset::Texture& flexengine_logo = FLX_ASSET_GET(Asset::Texture, AssetKey(R"(\images\flexengine\flexengine_logo_white.png)"));
         ImGui::Image(flexengine_logo.GetTextureImGui(), ImVec2((logo_scl / 7 * 20), logo_scl));
 
         // reset the cursor position
@@ -120,11 +145,47 @@ namespace OpenGLRendering
 
         if (ImGui::BeginMenu("File"))
         {
-          //if (ImGui::MenuItem("New", "Ctrl+N")) {}
-          //if (ImGui::MenuItem("Save", "Ctrl+S")) {}
+          if (ImGui::MenuItem("New", "Ctrl+N"))
+          {
+            function_queue.Insert({
+              [this]()
+              {
+                CreateDefaultScene();
+              }
+            });
+          }
+
+          if (ImGui::MenuItem("Open", "Ctrl+O"))
+          {
+            function_queue.Insert({
+              [this]()
+              {
+                //auto loaded_scene = ;
+                //loaded_scene.DumpArchetypeIndex();
+                FlexECS::Scene::SetActiveScene(FlexECS::Scene::Load(File::Open(current_save_path)));
+              }
+            });
+          }
+
+          if (ImGui::MenuItem("Save", "Ctrl+S"))
+          {
+            function_queue.Insert({
+              [this]()
+              {
+                FlexECS::Scene::SaveActiveScene(File::Open(current_save_path));
+                Log::Info("Saved scene to: " + current_save_path.string());
+              }
+            });
+          }
+
           //if (ImGui::MenuItem("Reload", "Ctrl+R")) {}
           //if (ImGui::MenuItem("Close", "Ctrl+W")) {}
-          if (ImGui::MenuItem("Exit", "Ctrl+Q")) { Application::Close(); }
+
+          if (ImGui::MenuItem("Exit", "Ctrl+Q"))
+          {
+            Application::Close();
+          }
+
           ImGui::EndMenu();
         }
 
@@ -134,6 +195,21 @@ namespace OpenGLRendering
         //  if (ImGui::MenuItem("Redo", "Ctrl+Y")) {}
         //  ImGui::EndMenu();
         //}
+         
+        if (ImGui::BeginMenu("View"))
+        {
+          if (ImGui::MenuItem("Center Window"))
+          {
+            function_queue.Insert({
+              [this]()
+              {
+                Application::GetCurrentWindow()->CenterWindow();
+              }
+            });
+          }
+
+          ImGui::EndMenu();
+        }
 
         ImGui::EndMainMenuBar();
       }
@@ -141,6 +217,7 @@ namespace OpenGLRendering
       ImGui::PopStyleVar(2);
 
       // Title bar window drag functionality
+      #pragma region Window Drag Functionality
 
       static bool is_dragging_window = false;
 
@@ -199,6 +276,9 @@ namespace OpenGLRendering
           }
         }
       }
+
+      #pragma endregion
+
     }
     #endif
 
@@ -212,6 +292,8 @@ namespace OpenGLRendering
       // hardcoded editor for testing
       ImGui::Begin("Properties");
       ImGuiTreeNodeFlags tree_node_flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnDoubleClick; // open by default
+      
+      ImGui::SeparatorText("Camera");
 
       // camera
       if (ImGui::CollapsingHeader("Main Camera", tree_node_flags))
@@ -227,64 +309,71 @@ namespace OpenGLRendering
           // loop around
           for (auto& value : rotation)
           {
-            if (value > 360.0f) value -= 360.0f;
-            else if (value < 0.0f) value += 360.0f;
+            if (value > 360.0f) value -= 359.0f;
+            else if (value < 0.0f) value += 359.0f;
           }
         }
-        ImGui::SeparatorText("Camera Settings");
         ImGui::Checkbox("Perspective", &camera->perspective);
-        ImGui::DragFloat("FOV", &camera->fov, 0.1f, 20.0f, 120.0f, "%.1f");
-        ImGui::DragFloat("Near Clip", &camera->near, 0.1f, 0.1f, 100.0f, "%.1f");
-        ImGui::DragFloat("Far Clip", &camera->far, 0.1f, 0.1f, 100.0f, "%.1f");
+        ImGui::DragFloat("FOV", &camera->fov, 0.1f, 10.0f, 150.0f, "%.1f");
+        ImGui::DragFloat("Near Clip", &camera->near, 0.01f, 0.01f, 200.0f, "%.2f");
+        ImGui::DragFloat("Far Clip", &camera->far, 0.01f, 0.01f, 200.0f, "%.2f");
         ImGui::PopID();
       }
 
-      // point light
-      if (ImGui::CollapsingHeader("Point Light", tree_node_flags))
-      {
-        auto& position = point_light.GetComponent<GlobalPosition>()->position;
-        auto& ambient = point_light.GetComponent<PointLight>()->ambient;
-        auto& diffuse = point_light.GetComponent<PointLight>()->diffuse;
-        auto& specular = point_light.GetComponent<PointLight>()->specular;
+      ImGui::SeparatorText("Lights");
 
-        ImGui::PushID("point_light");
-        ImGui::DragFloat3("Position", position.begin(), 0.01f, -100.0f, 100.0f, "%.2f");
+      // directional light
+      if (ImGui::CollapsingHeader("Directional Light", tree_node_flags))
+      {
+        auto& direction = directional_light.GetComponent<DirectionalLight>()->direction;
+        auto& ambient = directional_light.GetComponent<DirectionalLight>()->ambient;
+        auto& diffuse = directional_light.GetComponent<DirectionalLight>()->diffuse;
+        auto& specular = directional_light.GetComponent<DirectionalLight>()->specular;
+
+        ImGui::PushID("directional_light");
+        ImGui::DragFloat3("Direction", direction.begin(), 0.01f, -1.0f, 1.0f, "%.2f");
         ImGui::ColorEdit3("Ambient", ambient.begin());
         ImGui::ColorEdit3("Diffuse", diffuse.begin());
         ImGui::ColorEdit3("Specular", specular.begin());
         ImGui::PopID();
       }
 
-      // directional light
-      //if (ImGui::CollapsingHeader("Directional Light", tree_node_flags))
-      //{
-      //  auto& position = directional_light.GetComponent<GlobalPosition>()->position;
-      //  auto& ambient = directional_light.GetComponent<DirectionalLight>()->ambient;
-      //  auto& diffuse = directional_light.GetComponent<DirectionalLight>()->diffuse;
-      //  auto& specular = directional_light.GetComponent<DirectionalLight>()->specular;
-      //
-      //  ImGui::PushID("directional_light");
-      //  ImGui::DragFloat3("Position", position.begin(), 0.01f, -1.0f, 1.0f, "%.2f");
-      //  ImGui::ColorEdit3("Ambient", ambient.begin());
-      //  ImGui::ColorEdit3("Diffuse", diffuse.begin());
-      //  ImGui::ColorEdit3("Specular", specular.begin());
-      //  ImGui::PopID();
-      //}
+      // point light
+      for (std::size_t i = 0; i < point_lights.size(); i++)
+      {
+        auto& point_light = point_lights[i];
+        if (ImGui::CollapsingHeader(("Point Light " + std::to_string(i)).c_str(), tree_node_flags))
+        {
+          auto& position = point_light.GetComponent<GlobalPosition>()->position;
+          auto& ambient = point_light.GetComponent<PointLight>()->ambient;
+          auto& diffuse = point_light.GetComponent<PointLight>()->diffuse;
+          auto& specular = point_light.GetComponent<PointLight>()->specular;
 
-      ImGui::Separator();
-      
+          ImGui::PushID(("point_light" + std::to_string(i)).c_str());
+          ImGui::DragFloat3("Position", position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f");
+          ImGui::ColorEdit3("Ambient", ambient.begin());
+          ImGui::ColorEdit3("Diffuse", diffuse.begin());
+          ImGui::ColorEdit3("Specular", specular.begin());
+          ImGui::PopID();
+        }
+      }
+
+      ImGui::SeparatorText("Entities");
+
       // entities
       for (auto& entity : FlexECS::Scene::GetActiveScene()->View<LocalPosition, GlobalPosition, Rotation, Scale>())
       {
-        auto entity_name = entity.GetComponent<std::string>();
+        auto entity_name_component = entity.GetComponent<EntityName>();
         auto& local_position = entity.GetComponent<LocalPosition>()->position;
         auto& global_position = entity.GetComponent<GlobalPosition>()->position;
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
         auto& scale = entity.GetComponent<Scale>()->scale;
-      
-        if (ImGui::CollapsingHeader(entity_name->c_str(), tree_node_flags))
+
+        std::string& entity_name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component);
+
+        if (ImGui::CollapsingHeader(entity_name.c_str(), tree_node_flags))
         {
-          ImGui::PushID(entity_name->c_str());
+          ImGui::PushID(entity_name.c_str());
           ImGui::DragFloat3("Global Position", global_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f");
           ImGui::DragFloat3("Local Position", local_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f");
           if (ImGui::DragFloat3("Rotation", rotation.begin(), 0.1f, -0.1f, 360.1f, "%.1f"))
@@ -300,6 +389,77 @@ namespace OpenGLRendering
           ImGui::PopID();
         }
       }
+
+      ImGui::End();
+    }
+    #endif
+
+    #pragma endregion
+
+
+    #pragma region Model Picker
+
+    #if 1
+    {
+      ImGui::Begin("Model Picker");
+
+      static bool modelpicker_refresh = true;
+      static FileList modelpicker_files;
+
+      // get all files in the asset folder
+      if (modelpicker_refresh)
+      {
+        modelpicker_files = FileList::GetAllFilesInDirectoryRecursively(Path::current("assets")).find_if(
+          [](const Path& path)
+          {
+            return FLX_EXTENSIONS_CHECK_SAFETY("model", path.extension().string());
+          }
+        );
+        modelpicker_refresh = false;
+      }
+
+      ImGui::PushID("model_picker");
+
+      if (ImGui::Button("Refresh"))
+      {
+        modelpicker_refresh = true;
+      }
+
+      ImGui::SeparatorText("Models");
+
+      // display the files
+      for (const auto& file : modelpicker_files)
+      {
+        // convert file string to asset key
+        std::string key_string = file.string();
+        // remove default directory from the asset key
+        key_string.erase(0, AssetManager::DefaultDirectory().string().size());
+        AssetKey assetkey = key_string;
+
+        // prettify text for display
+        // Example: [Kenney Car Kit] tractor.fbx
+        std::string display_text = "[" + file.parent_path().filename().string() + "] " + file.filename().string();
+        ImGui::Text(display_text.c_str());
+
+        // get scene reference
+        auto scene = FlexECS::Scene::GetActiveScene();
+
+        // click to set the model
+        if (ImGui::IsItemClicked())
+        {
+          scene->Internal_StringStorage_Delete(object.GetComponent<Model>()->model);
+          // set the model
+          object.GetComponent<Model>()->model = scene->Internal_StringStorage_New(assetkey);
+        }
+
+        // model is active
+        if (scene->Internal_StringStorage_Get(object.GetComponent<Model>()->model) == assetkey)
+        {
+          ImGui::SameLine();
+          if (ImGui::SmallButton("Active")) {}
+        }
+      }
+      ImGui::PopID();
 
       ImGui::End();
     }
@@ -432,15 +592,22 @@ namespace OpenGLRendering
     #pragma endregion
 
 
-    #pragma region 2D Renderer System (Mesh + Material)
+    #pragma region 3D Renderer System (Mesh + Material)
     
-    #if 0
+    #if 1
     {
       // cache camera
       auto camera = main_camera.GetComponent<Camera>();
       // cache directional light
-      auto dir_light_pos = directional_light.GetComponent<GlobalPosition>();
       auto dir_light = directional_light.GetComponent<DirectionalLight>();
+      // cache point lights
+      std::vector<Vector3> pt_light_pos;
+      std::vector<PointLight*> pt_light;
+      for (auto& entity : point_lights)
+      {
+        pt_light_pos.push_back(entity.GetComponent<GlobalPosition>()->position);
+        pt_light.push_back(entity.GetComponent<PointLight>());
+      }
 
       // Render all entities
       for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Transform, Mesh, Material, Shader>())
@@ -456,7 +623,7 @@ namespace OpenGLRendering
         mesh.IBO->Bind();
 
         // shader setup
-        auto& shader_asset = FLX_ASSET_GET(Asset::Shader, shader);
+        auto& shader_asset = FLX_ASSET_GET(Asset::Shader, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(shader));
         shader_asset.Use();
 
         // TODO: accumulate transformations
@@ -466,19 +633,27 @@ namespace OpenGLRendering
         shader_asset.SetUniform_mat4("u_view", camera->view);
         shader_asset.SetUniform_mat4("u_projection", camera->projection);
 
-        shader_asset.SetUniform_vec3("u_light_position", dir_light_pos->position);
-        shader_asset.SetUniform_vec3("u_light_ambient", dir_light->ambient);
-        shader_asset.SetUniform_vec3("u_light_diffuse", dir_light->diffuse);
-        shader_asset.SetUniform_vec3("u_light_specular", dir_light->specular);
+        shader_asset.SetUniform_vec3("u_directional_light_direction", dir_light->direction);
+        shader_asset.SetUniform_vec3("u_directional_light_ambient", dir_light->ambient);
+        shader_asset.SetUniform_vec3("u_directional_light_diffuse", dir_light->diffuse);
+        shader_asset.SetUniform_vec3("u_directional_light_specular", dir_light->specular);
+
+        for (std::size_t i = 0; i < std::min(pt_light_pos.size(), pt_light.size()); i++)
+        {
+          shader_asset.SetUniform_vec3(("u_point_light_position" + std::to_string(i)).c_str(), pt_light_pos[i]);
+          shader_asset.SetUniform_vec3(("u_point_light_ambient"  + std::to_string(i)).c_str(), pt_light[i]->ambient);
+          shader_asset.SetUniform_vec3(("u_point_light_diffuse"  + std::to_string(i)).c_str(), pt_light[i]->diffuse);
+          shader_asset.SetUniform_vec3(("u_point_light_specular" + std::to_string(i)).c_str(), pt_light[i]->specular);
+        }
 
         // setup material
-        auto& diffuse = FLX_ASSET_GET(Asset::Texture, material->diffuse);
+        auto& diffuse = FLX_ASSET_GET(Asset::Texture, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(material->diffuse));
         if (diffuse)
         {
           diffuse.Bind(shader_asset, "u_material_diffuse", 0);
         }
         auto specular_pair = material->specular;
-        auto& specular = FLX_ASSET_GET(Asset::Texture, specular_pair.first);
+        auto& specular = FLX_ASSET_GET(Asset::Texture, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(specular_pair.first));
         if (specular)
         {
           specular.Bind(shader_asset, "u_material_specular", 1);
@@ -503,12 +678,16 @@ namespace OpenGLRendering
     {
       // cache camera
       auto camera = main_camera.GetComponent<Camera>();
-      // cache point light
-      auto& pt_light_pos = point_light.GetComponent<GlobalPosition>()->position;
-      auto pt_light = point_light.GetComponent<PointLight>();
       // cache directional light
-      //auto dir_light_pos = directional_light.GetComponent<GlobalPosition>();
-      //auto dir_light = directional_light.GetComponent<DirectionalLight>();
+      auto dir_light = directional_light.GetComponent<DirectionalLight>();
+      // cache point lights
+      std::vector<Vector3> pt_light_pos;
+      std::vector<PointLight*> pt_light;
+      for (auto& entity : point_lights)
+      {
+        pt_light_pos.push_back(entity.GetComponent<GlobalPosition>()->position);
+        pt_light.push_back(entity.GetComponent<PointLight>());
+      }
 
       // Render all entities
       for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Transform, Model, Shader>())
@@ -518,24 +697,27 @@ namespace OpenGLRendering
         auto& shader = entity.GetComponent<Shader>()->shader;
 
         // shader setup
-        auto& shader_asset = FLX_ASSET_GET(Asset::Shader, shader);
+        auto& shader_asset = FLX_ASSET_GET(Asset::Shader, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(shader));
         shader_asset.Use();
 
         shader_asset.SetUniform_mat4("u_view", camera->view);
         shader_asset.SetUniform_mat4("u_projection", camera->projection);
 
-        shader_asset.SetUniform_vec3("u_light_position", pt_light_pos);
-        shader_asset.SetUniform_vec3("u_light_ambient", pt_light->ambient);
-        shader_asset.SetUniform_vec3("u_light_diffuse", pt_light->diffuse);
-        shader_asset.SetUniform_vec3("u_light_specular", pt_light->specular);
+        shader_asset.SetUniform_vec3("u_directional_light_direction", dir_light->direction);
+        shader_asset.SetUniform_vec3("u_directional_light_ambient", dir_light->ambient);
+        shader_asset.SetUniform_vec3("u_directional_light_diffuse", dir_light->diffuse);
+        shader_asset.SetUniform_vec3("u_directional_light_specular", dir_light->specular);
 
-        //shader_asset.SetUniform_vec3("u_light_position", dir_light_pos->position);
-        //shader_asset.SetUniform_vec3("u_light_ambient", dir_light->ambient);
-        //shader_asset.SetUniform_vec3("u_light_diffuse", dir_light->diffuse);
-        //shader_asset.SetUniform_vec3("u_light_specular", dir_light->specular);
+        for (std::size_t i = 0; i < std::min(pt_light_pos.size(), pt_light.size()); i++)
+        {
+          shader_asset.SetUniform_vec3(("u_point_light_position" + std::to_string(i)).c_str(), pt_light_pos[i]);
+          shader_asset.SetUniform_vec3(("u_point_light_ambient" + std::to_string(i)).c_str(), pt_light[i]->ambient);
+          shader_asset.SetUniform_vec3(("u_point_light_diffuse" + std::to_string(i)).c_str(), pt_light[i]->diffuse);
+          shader_asset.SetUniform_vec3(("u_point_light_specular" + std::to_string(i)).c_str(), pt_light[i]->specular);
+        }
 
         // get model
-        auto& model_asset = FLX_ASSET_GET(Asset::Model, model);
+        auto& model_asset = FLX_ASSET_GET(Asset::Model, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(model));
 
         // render all meshes
         for (auto& mesh : model_asset.meshes)
@@ -592,6 +774,9 @@ namespace OpenGLRendering
     #endif
 
     #pragma endregion
+
+
+    function_queue.Flush();
 
   }
 
