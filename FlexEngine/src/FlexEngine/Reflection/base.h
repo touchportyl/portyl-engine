@@ -3,6 +3,7 @@
 #include "flx_api.h"
 
 #include "Wrapper/flexassert.h"
+#include "Wrapper/flexbase64.h"
 
 #include <rapidjson/document.h>
 using namespace rapidjson;
@@ -731,15 +732,21 @@ namespace FlexEngine
           // The serialized_str needs to be constructed from the raw pointer which needs the full size.
           // Thus, the shared_ptr stores the size of the data in the first sizeof(std::size_t) == 4 or 8 bytes.
           // This allows us to get the size of the data, add sizeof(std::size_t), which gives us the full size.
-          // Implemented as FlexECS::Internal_GetComponentData.
+          // Implemented in FlexECS::Internal_GetComponentData.
 
           void* ptr = shared_ptr.get();
+          std::size_t data_size = *static_cast<std::size_t*>(ptr);
+          BYTE* byte_ptr = static_cast<BYTE*>(ptr);
           
-          // Serialize the data as a string
-          std::string serialized_data(
-            reinterpret_cast<char*>(ptr),
-            sizeof(std::size_t) + *reinterpret_cast<std::size_t*>(ptr)
+          // Get the data as a std::vector<BYTE>
+          // We get everything to encode the full data
+          std::vector<BYTE> data(
+            byte_ptr,
+            byte_ptr + sizeof(std::size_t) + data_size
           );
+
+          // Encode the data
+          std::string serialized_data = Base64::Encode(data);
 
           // Serialize as a json string
           os << R"({"type":")" << "std::shared_ptr<void>" << R"(","data":")" << serialized_data << R"("})";
@@ -762,11 +769,29 @@ namespace FlexEngine
           // Deserialize as a json string
           std::string data = value["data"].Get<std::string>();
 
-          char* data_ptr = const_cast<char*>(data.c_str());
-          void* void_ptr = reinterpret_cast<void*>(data_ptr);
+          // Decode the string
+          // The decoded data will be in the format: std::size_t + data
+          std::vector<BYTE> decoded_data = Base64::Decode(data);
+          
+          // Get the size
+          void* void_ptr = reinterpret_cast<void*>(decoded_data.data());
+          std::size_t ptr_size = *static_cast<std::size_t*>(void_ptr);
+
+          // Allocate memory for the data
+          void* ptr = new char[sizeof(std::size_t) + ptr_size];
+
+          // Copy the data
+          memcpy(ptr, void_ptr, sizeof(std::size_t) + ptr_size);
           
           // Convert it to a std::shared_ptr<void>
-          std::shared_ptr<void> shared_ptr = std::shared_ptr<void>(void_ptr, [](void*) {});
+          std::shared_ptr<void> shared_ptr = std::shared_ptr<void>(
+            ptr,
+            [](void* ptr)
+            {
+              delete[] reinterpret_cast<char*>(ptr);
+            }
+          );
+
           *reinterpret_cast<std::shared_ptr<void>*>(obj) = shared_ptr;
         }
       }

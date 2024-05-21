@@ -104,6 +104,11 @@ namespace OpenGLRendering
     // ECS Setup
     CreateDefaultScene();
 
+    // Debugging mem leak
+    #if 1
+
+    #endif
+
     // Renderer Setup
 
     OpenGLRenderer::EnableDepthTest();

@@ -118,11 +118,34 @@ namespace FlexEngine
       }
       virtual void Serialize(const void* obj, std::ostream& os) const override
       {
-        os << R"({"type":")" << "std::string" << R"(","data":")" << *(const std::string*)obj << R"("})";
+        // Escape all `\` characters in the string.
+        std::string data = *(const std::string*)obj;
+        for (size_t i = 0; i < data.size(); ++i)
+        {
+          if (data[i] == '\\')
+          {
+            data.insert(i, "\\");
+            ++i;
+          }
+        }
+
+        // Serialize
+        os << R"({"type":")" << "std::string" << R"(","data":")" << data << R"("})";
       }
       virtual void Deserialize(void* obj, const json& value) const override
       {
-        std::string data = value["data"].Get<std::string>(); *(std::string*)obj = data;
+        std::string data = value["data"].Get<std::string>();
+
+        // Unescape all `\\` characters in the string.
+        for (size_t i = 0; i < data.size(); ++i)
+        {
+          if (data[i] == '\\' && i + 1 < data.size() && data[i + 1] == '\\')
+          {
+            data.erase(i, 1);
+          }
+        }
+
+        *(std::string*)obj = data;
       }
     };
     template <>
