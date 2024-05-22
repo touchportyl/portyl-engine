@@ -160,8 +160,28 @@ namespace OpenGLRendering
             function_queue.Insert({
               [this]()
               {
-                FlexECS::Scene::SetActiveScene(FlexECS::Scene::Load(File::Open(current_save_path)));
-                Log::Info("Opened scene from: " + current_save_path.string());
+                FileList files = FileList::Browse(
+                    "Open Scene",
+                    Path::current("saves"), "default.flxscene",
+                    L"FlexScene Files (*.flxscene)\0" L"*.flxscene\0",
+                    //L"All Files (*.*)\0" L"*.*\0",
+                    false,
+                    false
+                );
+
+                // cancel if no files were selected
+                if (files.empty()) return;
+
+                // open the scene
+                File& file = File::Open(files[0]);
+
+                // update the current save directory and name
+                current_save_directory = file.path.parent_path();
+                current_save_name = file.path.stem().string();
+
+                // load the scene
+                FlexECS::Scene::SetActiveScene(FlexECS::Scene::Load(file));
+                Log::Info("Loaded scene from: " + file.path.string());
               }
             });
           }
@@ -171,8 +191,48 @@ namespace OpenGLRendering
             function_queue.Insert({
               [this]()
               {
+                Path current_save_path = current_save_directory.append(current_save_name + ".flxscene");
                 FlexECS::Scene::SaveActiveScene(File::Open(current_save_path));
                 Log::Info("Saved scene to: " + current_save_path.string());
+              }
+            });
+          }
+
+          if (ImGui::MenuItem("Save As", "Ctrl+Shift+S"))
+          {
+            function_queue.Insert({
+              [this]()
+              {
+                FileList files = FileList::Browse(
+                    "Save Scene",
+                    current_save_directory, current_save_name + ".flxscene",
+                    L"FlexScene Files (*.flxscene)\0" L"*.flxscene\0"
+                    L"All Files (*.*)\0" L"*.*\0",
+                    true
+                );
+
+                // cancel if no files were selected
+                if (files.empty()) return;
+
+                // sanitize the file extension
+                std::string file_path = files[0];
+                auto it = file_path.find_last_of(".");
+                if (it != std::string::npos)
+                {
+                  file_path = file_path.substr(it);
+                }
+                file_path += ".flxscene";
+
+                // open the file
+                File& file = File::Open( Path(file_path) );
+
+                // save the scene
+                FlexECS::Scene::SaveActiveScene(file);
+                Log::Info("Saved scene to: " + file.path.string());
+
+                // update the current save directory and name
+                current_save_directory = file.path.parent_path();
+                current_save_name = file.path.stem().string();
               }
             });
           }

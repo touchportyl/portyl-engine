@@ -2,6 +2,8 @@
 
 #include "filelist.h"
 
+#include <shlobj.h> // OPENFILENAME
+
 namespace FlexEngine
 {
 
@@ -157,6 +159,101 @@ namespace FlexEngine
         continue;
       }
     }
+
+    return files;
+  }
+
+  FileList FileList::Browse(
+    const std::string& title,
+    const std::string& initial_directory,
+    const std::string& file_name,
+    const wchar_t* filter,
+    bool allow_file_create,
+    bool allow_multi_select,
+    DWORD max_file_count
+  )
+  {
+    // truncate all strings to 260 characters
+    std::wstring title_w = std::wstring(title.begin(), title.end());
+    std::wstring initial_directory_w = std::wstring(initial_directory.begin(), initial_directory.end());
+    std::wstring file_name_w = std::wstring(file_name.begin(), file_name.end());
+
+    // Initialize OPENFILENAME structure
+    OPENFILENAME ofn = { 0 };
+
+    // Sanitize input
+    if (filter == nullptr) filter = L"All Files (*.*)\0*.*\0";
+    if (!allow_multi_select || max_file_count == 0) max_file_count = 1;
+    else if (max_file_count > 100) max_file_count = 100;
+
+    // Initialize buffer for file name
+    
+    // The buffer is limited to 100 MAX_PATH files, which usually actually allows for more files
+    // 0.5f is an arbitrary factor, since most file names are shorter than MAX_PATH
+    DWORD file_name_buffer_size = static_cast<DWORD>(max_file_count * MAX_PATH * 0.5f);
+
+    // Allocate buffer on the heap because it can be quite large
+    wchar_t* file_name_buffer = new wchar_t[file_name_buffer_size];
+    ZeroMemory(file_name_buffer, file_name_buffer_size * sizeof(wchar_t));
+    wcscpy_s(file_name_buffer, file_name_buffer_size, file_name_w.c_str());
+
+    wchar_t initial_dir[MAX_PATH] = { 0 };
+    wcscpy_s(initial_dir, initial_directory_w.c_str());
+
+    ofn.lStructSize = sizeof(ofn);
+    ofn.lpstrTitle = title_w.c_str();
+    ofn.lpstrInitialDir = initial_dir;
+    ofn.lpstrFile = file_name_buffer;
+    ofn.nMaxFile = file_name_buffer_size;
+    ofn.lpstrFilter = filter;
+
+    ofn.Flags = OFN_EXPLORER;
+
+    if (!allow_file_create) ofn.Flags |= OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+    // Disable multi-select if file creation is allowed
+    else allow_multi_select = false;
+
+    if (allow_multi_select) ofn.Flags |= OFN_ALLOWMULTISELECT;
+
+    FileList files;
+
+    // Show the dialog and get the selected file(s)
+    if (GetOpenFileName(&ofn))
+    {
+      // Convert the buffer to a string
+      std::wstring file_name_buffer_w(file_name_buffer);
+
+      // Check if multiple files were selected
+      if (allow_multi_select && file_name_buffer_w.find_first_of(L'\0') != std::wstring::npos)
+      {
+        // The first string is the directory
+        // The rest are the files
+        // Example: C:\\selected\\directorypath\0file1.txt\0file2.txt\0file3.txt\0\0
+        std::vector<std::wstring> file_names;
+        size_t start = 0;
+        size_t end = file_name_buffer_w.find_first_of(L'\0');
+        while (end != std::wstring::npos)
+        {
+          file_names.push_back(file_name_buffer_w.substr(start, end - start));
+          start = end + 1;
+          end = file_name_buffer_w.find_first_of(L'\0', start);
+        }
+
+        // Get the files
+        for (size_t i = 1; i < file_names.size(); ++i)
+        {
+          files.push_back(Path(file_names[0] + file_names[i]));
+        }
+      }
+      else
+      {
+        // Single file was selected
+        files.push_back(Path(file_name_buffer_w));
+      }
+    }
+
+    // Cleanup
+    delete[] file_name_buffer;
 
     return files;
   }

@@ -16,6 +16,7 @@ namespace FlexEngine
   // Outside of the class, all the files are handled by references to the FileRegistry
   class __FLX_API File
   {
+    #pragma region File Registry
 
     // File Registry
     // Keeps track of all files, making sure there are no duplicates
@@ -23,11 +24,13 @@ namespace FlexEngine
     static FileRegistry s_file_registry;
     #define FILE_REGISTRY s_file_registry
 
+    #pragma endregion
+
   public:
     Path path;
     std::string data;
 
-    // File Registry Management Functions
+    #pragma region File Registry Management Functions
 
     // Adds a file to the registry if it doesn't exist
     // Otherwise, returns the existing file
@@ -38,7 +41,9 @@ namespace FlexEngine
     // This doesn't have to be called at all
     static void Close(const Path& path);
 
-    // File Management Functions
+    #pragma endregion
+
+    #pragma region File Management Functions
 
     std::string Read();
     void Write(const std::string& _data);
@@ -49,17 +54,23 @@ namespace FlexEngine
     // Note: No support for deleting directories because it's dangerous
     void Delete();
 
-    // Operator Overloads
+    #pragma endregion
+    
+    #pragma region Operator Overloads
 
     operator std::filesystem::path() const;
 
+    #pragma endregion
+
   };
 
-  // Operator Overloads
+  #pragma region Non-member Operator Overloads
 
   bool operator==(const File& lhs, const File& rhs);
   bool operator!=(const File& lhs, const File& rhs);
   bool operator<(const File& lhs, const File& rhs);
   bool operator>(const File& lhs, const File& rhs);
+
+  #pragma endregion
 
 }

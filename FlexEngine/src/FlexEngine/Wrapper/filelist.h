@@ -4,6 +4,7 @@
 
 #include "file.h" // <filesystem> <iostream> <string> <exception> <unordered_map> <set> <fstream>
 
+#include <windows.h> // DWORD
 #include <vector>
 #include <functional>
 
@@ -131,6 +132,17 @@ namespace FlexEngine
     // This recursively finds all the files in a directory,
     // including all the files in subdirectories.
     static FileList GetAllFilesInDirectoryRecursively(const Path& directory);
+
+    // Browse for a file using the file explorer
+    static FileList Browse(
+      const std::string& title = "Select a file.",
+      const std::string& initial_directory = Path::current(),
+      const std::string& file_name = "",
+      const wchar_t* filter = L"All Files (*.*)\0*.*\0",
+      bool allow_file_create = false,
+      bool allow_multi_select = true,
+      DWORD max_file_count = 100
+    );
 
   };
 

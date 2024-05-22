@@ -15,7 +15,10 @@ namespace OpenGLRendering
     FlexECS::Entity plane;
     FlexECS::Entity object;
 
-    Path current_save_path = Path::current("saves/default.flxscene");
+    const Path default_save_directory = Path::current("saves");
+    const std::string default_save_name = "default";
+    Path current_save_directory = default_save_directory;
+    std::string current_save_name = default_save_name;
 
   public:
     MainLayer() : Layer("Main Layer") {}
