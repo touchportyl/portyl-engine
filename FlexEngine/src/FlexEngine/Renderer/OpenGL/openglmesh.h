@@ -24,7 +24,7 @@ namespace FlexEngine
       std::vector<unsigned int> indices;
 
       // The transform matrix of the mesh which is used to offset the mesh from the origin.
-      Matrix4x4 transform;
+      Matrix4x4 transform = Matrix4x4::Identity;
 
       // The index of the material that the mesh uses.
       // The material is stored in the model's material list.
@@ -37,9 +37,9 @@ namespace FlexEngine
       // Using shared_ptr to avoid copying the buffers when copying the mesh.
       // The buffers are not reflected or serialized, make sure to run Internal_CreateBuffers() after deserialization.
 
-      std::shared_ptr<VertexArray> VAO;
-      std::shared_ptr<VertexBuffer> VBO;
-      std::shared_ptr<IndexBuffer> IBO;
+      std::shared_ptr<VertexArray> VAO = nullptr;
+      std::shared_ptr<VertexBuffer> VBO = nullptr;
+      std::shared_ptr<IndexBuffer> IBO = nullptr;
 
       #pragma region Constructors
 

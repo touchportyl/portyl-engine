@@ -44,7 +44,11 @@ T* FlexEngine::FlexECS::Entity::GetComponent()
   // guard: check if the component is in the index
   // provides an early exit because if it's not in the index, it's not in any archetype
   // this also prevents component_index[component] from creating a new entry
-  if (COMPONENT_INDEX.count(component) == 0) return nullptr;
+  if (COMPONENT_INDEX.count(component) == 0)
+  {
+    Log::Error("Component not found in the index");
+    return nullptr;
+  }
 
   // figure out the archetype for the entity
   EntityRecord& entity_record = ENTITY_INDEX[entity];
@@ -52,7 +56,11 @@ T* FlexEngine::FlexECS::Entity::GetComponent()
 
   // check if the component is in the archetype
   ArchetypeMap& archetype_map = COMPONENT_INDEX[component];
-  if (archetype_map.count(archetype.id) == 0) return nullptr;
+  if (archetype_map.count(archetype.id) == 0)
+  {
+    Log::Error("Component not found in the archetype");
+    return nullptr;
+  }
 
   #pragma endregion
 

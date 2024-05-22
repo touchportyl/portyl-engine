@@ -60,9 +60,13 @@ namespace FlexEngine
       // set itself as the active scene unless there is already an active scene
       if (s_active_scene == nullptr)
       {
-        s_active_scene = std::make_shared<Scene>();
+        s_active_scene = std::make_shared<Scene>(Scene::Null);
+        return s_active_scene;
       }
-      return s_active_scene;
+      else
+      {
+        return std::make_shared<Scene>(Scene::Null);
+      }
     }
 
     std::shared_ptr<Scene> Scene::GetActiveScene()
@@ -70,12 +74,13 @@ namespace FlexEngine
       // create a new scene if there isn't one
       if (s_active_scene == nullptr)
       {
+        Log::Warning("No active scene found. Creating a new scene.");
         CreateScene();
       }
       return s_active_scene;
     }
 
-    void Scene::SetActiveScene(Scene scene)
+    void Scene::SetActiveScene(const Scene& scene)
     {
       SetActiveScene(std::make_shared<Scene>(scene));
     }
@@ -86,11 +91,11 @@ namespace FlexEngine
       // guard
       if (scene == nullptr)
       {
-        Log::Warning("Attempted to set active scene to nullptr. Use the Scene::Null to set the scene to null instead.");
+        Log::Warning("Use the Scene::Null to set the scene to null instead.");
+        SetActiveScene(Scene::Null);
         return;
       }
 
-      s_active_scene = std::make_shared<Scene>(Scene::Null); // unsure as to why this is necessary
       s_active_scene = scene;
     }
 
@@ -231,13 +236,13 @@ namespace FlexEngine
     }
 
     // static function
-    Scene Scene::Load(File& file)
+    std::shared_ptr<Scene> Scene::Load(File& file)
     {
       Reflection::TypeDescriptor* type_desc = Reflection::TypeResolver<FlexECS::Scene>::Get();
 
       // get scene data
       FlxFmtFile flxfmtfile = FlexFormatter::Parse(file, FlxFmtFileType::Scene);
-      if (flxfmtfile == FlxFmtFile::Null) return Scene::Null;
+      if (flxfmtfile == FlxFmtFile::Null) return std::make_shared<Scene>(Scene::Null);
 
       // deserialize
       Document document;
@@ -245,14 +250,14 @@ namespace FlexEngine
       if (document.HasParseError())
       {
         Log::Error("Failed to parse scene data.");
-        return Scene::Null;
+        return std::make_shared<Scene>(Scene::Null);
       }
 
-      FlexECS::Scene deserialized_scene;
-      type_desc->Deserialize(&deserialized_scene, document);
+      std::shared_ptr<Scene> deserialized_scene = std::make_shared<Scene>();
+      type_desc->Deserialize(deserialized_scene.get(), document);
 
       // relink entity archetype pointers
-      deserialized_scene.Internal_RelinkEntityArchetypePointers();
+      deserialized_scene->Internal_RelinkEntityArchetypePointers();
 
       return deserialized_scene;
     }
@@ -275,7 +280,7 @@ namespace FlexEngine
       {
         auto it = std::find_if(
           archetype_index.begin(), archetype_index.end(),
-          [entity_record](auto& archetype_record)
+          [&entity_record](auto& archetype_record)
           {
             return archetype_record.second.id == entity_record.archetype_id;
           }

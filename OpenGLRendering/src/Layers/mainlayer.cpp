@@ -15,7 +15,7 @@ namespace OpenGLRendering
     main_camera = FlexECS::Entity::Null;
     directional_light = FlexECS::Entity::Null;
     point_lights.clear();
-    plane = FlexECS::Entity::Null;
+    //plane = FlexECS::Entity::Null;
     object = FlexECS::Entity::Null;
 
     // create entities
@@ -25,7 +25,7 @@ namespace OpenGLRendering
     point_lights.push_back(FlexECS::Scene::CreateEntity("Point Light 1"));
     point_lights.push_back(FlexECS::Scene::CreateEntity("Point Light 2"));
     object = FlexECS::Scene::CreateEntity("Object");
-    plane = FlexECS::Scene::CreateEntity("Plane");
+    //plane = FlexECS::Scene::CreateEntity("Plane");
 
     main_camera.AddComponent<GlobalPosition>({ { -0.4f, 0.24f, 0.44f } });
     main_camera.AddComponent<Rotation>({ { -12, -35, 0 } });
@@ -59,42 +59,42 @@ namespace OpenGLRendering
     object.AddComponent<Model>({ scene->Internal_StringStorage_New(R"(\models\Kenney Car Kit\tractor.fbx)") });
     object.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\renderer)") });
 
-    plane.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
-    plane.AddComponent<LocalPosition>({ { 0, 0, 0 } });
-    plane.AddComponent<Rotation>({ { 0, 0, 20 } });
-    Vector3 plane_scale = { 0.9f, 0.35f, 1 };
-    plane_scale *= 0.0f;
-    plane.AddComponent<Scale>({ plane_scale });
-    plane.AddComponent<Transform>({});
-    plane.AddComponent<Material>(
-      { // Material
-        scene->Internal_StringStorage_New(R"(\images\flexengine\flexengine_splash.png)"),
-        { // std::pair<StringIndex, float>
-          scene->Internal_StringStorage_New(R"(\images\flexengine\flexengine_splash.png)"),
-          32.0f
-        }
-      }
-    );
-    plane.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\renderer)") });
-
-    // manually build a mesh
-    plane.AddComponent<Mesh>({
-      { // Mesh
-        { // std::vector<Vertex>
-          Vertex(Vector3(1.0f,  1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector2(1.0f, 0.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
-          Vertex(Vector3(1.0f, -1.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(1.0f, 1.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
-          Vertex(Vector3(-1.0f, -1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector2(0.0f, 1.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
-          Vertex(Vector3(-1.0f,  1.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero)
-        },
-        { // std::vector<unsigned int>
-          0, 1, 3, // first triangle
-          1, 2, 3  // second triangle
-        }
-      }
-    });
-
-    // manually create buffers
-    plane.GetComponent<Mesh>()->mesh.Internal_CreateBuffers();
+    //plane.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
+    //plane.AddComponent<LocalPosition>({ { 0, 0, 0 } });
+    //plane.AddComponent<Rotation>({ { 0, 0, 20 } });
+    //Vector3 plane_scale = { 0.9f, 0.35f, 1 };
+    //plane_scale *= 0.0f;
+    //plane.AddComponent<Scale>({ plane_scale });
+    //plane.AddComponent<Transform>({});
+    //plane.AddComponent<Material>(
+    //  { // Material
+    //    scene->Internal_StringStorage_New(R"(\images\flexengine\flexengine_splash.png)"),
+    //    { // std::pair<StringIndex, float>
+    //      scene->Internal_StringStorage_New(R"(\images\flexengine\flexengine_splash.png)"),
+    //      32.0f
+    //    }
+    //  }
+    //);
+    //plane.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\renderer)") });
+    //
+    //// manually build a mesh
+    //plane.AddComponent<Mesh>({
+    //  { // Mesh
+    //    { // std::vector<Vertex>
+    //      Vertex(Vector3(1.0f,  1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector2(1.0f, 0.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
+    //      Vertex(Vector3(1.0f, -1.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(1.0f, 1.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
+    //      Vertex(Vector3(-1.0f, -1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector2(0.0f, 1.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero),
+    //      Vertex(Vector3(-1.0f,  1.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f), Vector3::Zero, Vector3::Zero, Vector3::Zero)
+    //    },
+    //    { // std::vector<unsigned int>
+    //      0, 1, 3, // first triangle
+    //      1, 2, 3  // second triangle
+    //    }
+    //  }
+    //});
+    //
+    //// manually create buffers
+    //plane.GetComponent<Mesh>()->mesh.Internal_CreateBuffers();
   }
 
   void MainLayer::OnAttach()
@@ -103,11 +103,6 @@ namespace OpenGLRendering
 
     // ECS Setup
     CreateDefaultScene();
-
-    // Debugging mem leak
-    #if 1
-
-    #endif
 
     // Renderer Setup
 
@@ -165,9 +160,8 @@ namespace OpenGLRendering
             function_queue.Insert({
               [this]()
               {
-                //auto loaded_scene = ;
-                //loaded_scene.DumpArchetypeIndex();
                 FlexECS::Scene::SetActiveScene(FlexECS::Scene::Load(File::Open(current_save_path)));
+                Log::Info("Opened scene from: " + current_save_path.string());
               }
             });
           }
@@ -446,19 +440,16 @@ namespace OpenGLRendering
         std::string display_text = "[" + file.parent_path().filename().string() + "] " + file.filename().string();
         ImGui::Text(display_text.c_str());
 
-        // get scene reference
-        auto scene = FlexECS::Scene::GetActiveScene();
-
         // click to set the model
         if (ImGui::IsItemClicked())
         {
-          scene->Internal_StringStorage_Delete(object.GetComponent<Model>()->model);
+          FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Delete(object.GetComponent<Model>()->model);
           // set the model
-          object.GetComponent<Model>()->model = scene->Internal_StringStorage_New(assetkey);
+          object.GetComponent<Model>()->model = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(assetkey);
         }
 
         // model is active
-        if (scene->Internal_StringStorage_Get(object.GetComponent<Model>()->model) == assetkey)
+        if (FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(object.GetComponent<Model>()->model) == assetkey)
         {
           ImGui::SameLine();
           if (ImGui::SmallButton("Active")) {}
@@ -599,7 +590,7 @@ namespace OpenGLRendering
 
     #pragma region 3D Renderer System (Mesh + Material)
     
-    #if 1
+    #if 0
     {
       // cache camera
       auto camera = main_camera.GetComponent<Camera>();

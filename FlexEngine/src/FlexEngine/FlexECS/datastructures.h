@@ -244,7 +244,7 @@ namespace FlexEngine
     public:
       static std::shared_ptr<Scene> CreateScene();
       static std::shared_ptr<Scene> GetActiveScene();
-      static void SetActiveScene(Scene scene);
+      static void SetActiveScene(const Scene& scene);
       static void SetActiveScene(std::shared_ptr<Scene> scene);
 
       #pragma endregion
@@ -268,7 +268,7 @@ namespace FlexEngine
       // the ECS data structures. Use this interface to save and load scenes.
 
       void Save(File& file);
-      static Scene Load(File& file);
+      static std::shared_ptr<Scene> Load(File& file);
       static void SaveActiveScene(File& file);
 
       #pragma endregion
