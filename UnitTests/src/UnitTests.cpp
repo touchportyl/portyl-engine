@@ -97,6 +97,46 @@ static void AreEqualVector(const glm::vec4& expected, const Vector4& actual, con
 #pragma endregion
 
 
+// Special functions for comparing Quaternion and glm::quat
+#pragma region AreEqualQuaternion
+
+static void AreEqualQuaternion(const Quaternion& expected, const Quaternion& actual)
+{
+  Assert::AreEqual(expected.x, actual.x);
+  Assert::AreEqual(expected.y, actual.y);
+  Assert::AreEqual(expected.z, actual.z);
+  Assert::AreEqual(expected.w, actual.w);
+}
+static void AreEqualQuaternion(const glm::quat& expected, const Quaternion& actual)
+{
+  Assert::AreEqual(expected.x, actual.x);
+  Assert::AreEqual(expected.y, actual.y);
+  Assert::AreEqual(expected.z, actual.z);
+  Assert::AreEqual(expected.w, actual.w);
+}
+
+#pragma endregion
+
+#pragma region AreEqualQuaternion (with float tolerance)
+
+static void AreEqualQuaternion(const Quaternion& expected, const Quaternion& actual, const float tolerance)
+{
+  Assert::AreEqual(expected.x, actual.x, tolerance);
+  Assert::AreEqual(expected.y, actual.y, tolerance);
+  Assert::AreEqual(expected.z, actual.z, tolerance);
+  Assert::AreEqual(expected.w, actual.w, tolerance);
+}
+static void AreEqualQuaternion(const glm::quat& expected, const Quaternion& actual, const float tolerance)
+{
+  Assert::AreEqual(expected.x, actual.x, tolerance);
+  Assert::AreEqual(expected.y, actual.y, tolerance);
+  Assert::AreEqual(expected.z, actual.z, tolerance);
+  Assert::AreEqual(expected.w, actual.w, tolerance);
+}
+
+#pragma endregion
+
+
 // Special functions for comparing Matrix4x4 and glm::mat4
 #pragma region AreEqualMatrix
 
@@ -1276,7 +1316,7 @@ namespace UnitTests_FlexMath
 
       TEST_METHOD(ToBool_EmptyVector)
       {
-        Assert::IsFalse((bool)Vector4(0, 0, 0));
+        Assert::IsFalse((bool)Vector4(0, 0, 0, 0));
       }
 
     };
@@ -2333,6 +2373,366 @@ namespace UnitTests_FlexMath
         glm_a = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
         a = Matrix4x4::Orthographic(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
         AreEqualMatrix(glm_a, a);
+      }
+
+    };
+
+  }
+
+  namespace UnitTests_Quaternion
+  {
+
+    TEST_CLASS(UnitTests_Constructors)
+    {
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(DefaultConstructor)
+      {
+        Quaternion a;
+        Assert::AreEqual(0.0f, a.x);
+        Assert::AreEqual(0.0f, a.y);
+        Assert::AreEqual(0.0f, a.z);
+        Assert::AreEqual(0.0f, a.w);
+      }
+
+      TEST_METHOD(ValueConstructor)
+      {
+        Quaternion a = Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+        Assert::AreEqual(1.0f, a.x);
+        Assert::AreEqual(2.0f, a.y);
+        Assert::AreEqual(3.0f, a.z);
+        Assert::AreEqual(4.0f, a.w);
+      }
+
+      TEST_METHOD(CopyConstructor)
+      {
+        Quaternion a = Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+        Quaternion b = Quaternion(a);
+        Assert::AreEqual(1.0f, b.x);
+        Assert::AreEqual(2.0f, b.y);
+        Assert::AreEqual(3.0f, b.z);
+        Assert::AreEqual(4.0f, b.w);
+      }
+
+      TEST_METHOD(Vector4Constructor)
+      {
+        Vector4 a = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
+        Quaternion b = Quaternion(a);
+        Assert::AreEqual(1.0f, b.x);
+        Assert::AreEqual(2.0f, b.y);
+        Assert::AreEqual(3.0f, b.z);
+        Assert::AreEqual(4.0f, b.w);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_Accessors)
+    {
+      Quaternion a;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f, 3.0f, 4.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(XYZW)
+      {
+        Assert::AreEqual(1.0f, a.x);
+        Assert::AreEqual(2.0f, a.y);
+        Assert::AreEqual(3.0f, a.z);
+        Assert::AreEqual(4.0f, a.w);
+      }
+
+      TEST_METHOD(Array)
+      {
+        Assert::AreEqual(1.0f, a[0]);
+        Assert::AreEqual(2.0f, a[1]);
+        Assert::AreEqual(3.0f, a[2]);
+        Assert::AreEqual(4.0f, a[3]);
+      }
+
+      TEST_METHOD(DataArray)
+      {
+        Assert::AreEqual(1.0f, a.data[0]);
+        Assert::AreEqual(2.0f, a.data[1]);
+        Assert::AreEqual(3.0f, a.data[2]);
+        Assert::AreEqual(4.0f, a.data[3]);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_ConversionOperators)
+    {
+      Quaternion a;
+      glm::quat glm_a;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        // Rotation 1 radian, axis (0.4, 0.5, 0.6)
+        a = { 0.2185424f, 0.2731781f, 0.3278137f, 0.8775826f };
+        glm_a = { 0.2185424f, 0.2731781f, 0.3278137f, 0.8775826f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(ToVector3)
+      {
+        // Converts to euler angles
+        glm::vec3 glm_euler = glm::eulerAngles(glm_a);
+        AreEqualVector(glm_euler, (Vector3)a);
+      }
+
+      TEST_METHOD(ToMatrix4x4)
+      {
+        // Convert to rotation matrix
+        glm::mat4 glm_rot = glm::mat4_cast(glm_a);
+        AreEqualMatrix(glm_rot, (Matrix4x4)a);
+      }
+
+      TEST_METHOD(ToBool)
+      {
+        Assert::IsTrue((bool)a);
+      }
+
+      TEST_METHOD(ToBool_EmptyVector)
+      {
+        Assert::IsFalse((bool)Quaternion(0, 0, 0, 0));
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_UnaryOperators)
+    {
+      Quaternion a, b;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f, 3.0f, 4.0f };
+        b = { 5.0f, 6.0f, 7.0f, 8.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(Negation)
+      {
+        AreEqualQuaternion(Quaternion(-a.x, -a.y, -a.z, -a.w), -a);
+      }
+
+      TEST_METHOD(Comparison_Equality)
+      {
+        Assert::IsTrue(a == Quaternion(1.0f, 2.0f, 3.0f, 4.0f));
+        Assert::IsFalse(a == Quaternion(5.0f, 6.0f, 7.0f, 8.0f));
+      }
+
+      TEST_METHOD(Comparison_Inequality)
+      {
+        Assert::IsFalse(a != Quaternion(1.0f, 2.0f, 3.0f, 4.0f));
+        Assert::IsTrue(a != Quaternion(5.0f, 6.0f, 7.0f, 8.0f));
+      }
+
+      TEST_METHOD(Addition_Quaternion)
+      {
+        a += b;
+        AreEqualQuaternion(Quaternion(6.0f, 8.0f, 10.0f, 12.0f), a);
+      }
+
+      TEST_METHOD(Addition_Value)
+      {
+        a += 4.0f;
+        AreEqualQuaternion(Quaternion(5.0f, 6.0f, 7.0f, 8.0f), a);
+      }
+
+      TEST_METHOD(Subtraction_Quaternion)
+      {
+        a -= b;
+        AreEqualQuaternion(Quaternion(-4.0f, -4.0f, -4.0f, -4.0f), a);
+      }
+
+      TEST_METHOD(Subtraction_Value)
+      {
+        a -= 4.0f;
+        AreEqualQuaternion(Quaternion(-3.0f, -2.0f, -1.0f, 0.0f), a);
+      }
+
+      TEST_METHOD(Multiplication_Quaternion)
+      {
+        a *= b;
+        AreEqualQuaternion(Quaternion(5.0f, 12.0f, 21.0f, 32.0f), a);
+      }
+
+      TEST_METHOD(Multiplication_Value)
+      {
+        a *= 4.0f;
+        AreEqualQuaternion(Quaternion(4.0f, 8.0f, 12.0f, 16.0f), a);
+      }
+
+      TEST_METHOD(Division_Quaternion)
+      {
+        a /= b;
+        AreEqualQuaternion(Quaternion(1.0f / 5.0f, 2.0f / 6.0f, 3.0f / 7.0f, 4.0f / 8.0f), a);
+      }
+
+      TEST_METHOD(Division_Value)
+      {
+        a /= 4.0f;
+        AreEqualQuaternion(Quaternion(1.0f / 4.0f, 2.0f / 4.0f, 3.0f / 4.0f, 4.0f / 4.0f), a);
+      }
+
+      TEST_METHOD(Division_ValueZero)
+      {
+        a /= 0.0f;
+        AreEqualQuaternion(Quaternion(1.0f, 2.0f, 3.0f, 4.0f), a);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_BinaryOperators)
+    {
+      Quaternion a, b;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        a = { 1.0f, 2.0f, 3.0f, 4.0f };
+        b = { 5.0f, 6.0f, 7.0f, 8.0f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(Addition_QuaternionToQuaternion)
+      {
+        AreEqualQuaternion(Quaternion(6.0f, 8.0f, 10.0f, 12.0f), a + b);
+      }
+
+      TEST_METHOD(Addition_QuaternionToValue)
+      {
+        AreEqualQuaternion(Quaternion(5.0f, 6.0f, 7.0f, 8.0f), a + 4.0f);
+      }
+
+      TEST_METHOD(Addition_ValueToQuaternion)
+      {
+        AreEqualQuaternion(Quaternion(5.0f, 6.0f, 7.0f, 8.0f), 4.0f + a);
+      }
+
+      TEST_METHOD(Subtraction_QuaternionToQuaternion)
+      {
+        AreEqualQuaternion(Quaternion(-4.0f, -4.0f, -4.0f, -4.0f), a - b);
+      }
+
+      TEST_METHOD(Subtraction_QuaternionToValue)
+      {
+        AreEqualQuaternion(Quaternion(-3.0f, -2.0f, -1.0f, 0.0f), a - 4.0f);
+      }
+
+      TEST_METHOD(Subtraction_ValueToQuaternion)
+      {
+        AreEqualQuaternion(Quaternion(3.0f, 2.0f, 1.0f, 0.0f), 4.0f - a);
+      }
+
+      TEST_METHOD(Multiplication_QuaternionToValue)
+      {
+        AreEqualQuaternion(Quaternion(4.0f, 8.0f, 12.0f, 16.0f), a * 4.0f);
+      }
+
+      TEST_METHOD(Multiplication_ValueToQuaternion)
+      {
+        AreEqualQuaternion(Quaternion(4.0f, 8.0f, 12.0f, 16.0f), 4.0f * a);
+      }
+
+      TEST_METHOD(Division_QuaternionToValue)
+      {
+        AreEqualQuaternion(Quaternion(1.0f / 4.0f, 2.0f / 4.0f, 3.0f / 4.0f, 4.0f / 4.0f), a / 4.0f);
+      }
+
+      TEST_METHOD(Division_ValueToQuaternion)
+      {
+        AreEqualQuaternion(Quaternion(4.0f / 1.0f, 4.0f / 2.0f, 4.0f / 3.0f, 4.0f / 4.0f), 4.0f / a);
+      }
+
+    };
+
+    TEST_CLASS(UnitTests_Functions)
+    {
+      Quaternion a, b;
+      glm::quat glm_a, glm_b;
+
+    public:
+
+      TEST_METHOD_INITIALIZE(Initialize)
+      {
+        // Rotation 1 radian, axis (0.4, 0.5, 0.6)
+        a = { 0.2185424f, 0.2731781f, 0.3278137f, 0.8775826f };
+        glm_a = { 0.2185424f, 0.2731781f, 0.3278137f, 0.8775826f };
+
+        // Rotation 2 radians, axis (0.6, 0.7, 0.8)
+        b = { 0.4136159f, 0.4825519f, 0.5514879f, 0.5403023f };
+        glm_b = { 0.4136159f, 0.4825519f, 0.5514879f, 0.5403023f };
+      }
+
+      TEST_METHOD_CLEANUP(Cleanup)
+      {
+      }
+
+      TEST_METHOD(Magnitude_LengthParity)
+      {
+        Assert::IsTrue(a.Magnitude() == a.Length());
+      }
+
+      TEST_METHOD(Magnitude_LengthSqrParity)
+      {
+        Assert::IsTrue(a.Length() == sqrt(a.LengthSqr()));
+      }
+
+      TEST_METHOD(Magnitude_Calculation)
+      {
+        Assert::AreEqual(glm::length(glm_a), a.Length());
+      }
+
+      TEST_METHOD(Normalize_StaticParity)
+      {
+        Quaternion my_normalize_static = Quaternion::Normalize(a);
+        Quaternion my_normalize = a.Normalize();
+        Assert::IsTrue(my_normalize == my_normalize_static);
+      }
+
+      TEST_METHOD(Normalize_LengthCheck)
+      {
+        Assert::AreEqual(1.0f, Quaternion::Normalize(a).Length(), EPSILONf);
+      }
+
+      TEST_METHOD(Normalize_Calculation)
+      {
+        AreEqualQuaternion(glm::normalize(glm_a), Quaternion::Normalize(a), EPSILONf);
+      }
+
+      TEST_METHOD(LinearInterpolation)
+      {
+        AreEqualQuaternion(glm::mix(glm_a, glm_b, 0.5f), Lerp(a, b, 0.5f));
       }
 
     };

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "flx_api.h"
+#include "flx_windows.h" // DWORD
 
 #include "file.h" // <filesystem> <iostream> <string> <exception> <unordered_map> <set> <fstream>
 
-#include <windows.h> // DWORD
 #include <vector>
 #include <functional>
 

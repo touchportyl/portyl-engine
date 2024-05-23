@@ -1,12 +1,7 @@
 #pragma once
 
 #include "flx_api.h"
-
-#include "windows.h" // BYTE
-#undef near
-#undef far
-#undef min
-#undef max
+#include "flx_windows.h" // BYTE
 
 #include <string>
 #include <vector>

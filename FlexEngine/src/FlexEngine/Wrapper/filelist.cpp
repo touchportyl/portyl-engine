@@ -2,8 +2,6 @@
 
 #include "filelist.h"
 
-#include <shlobj.h> // OPENFILENAME
-
 namespace FlexEngine
 {
 

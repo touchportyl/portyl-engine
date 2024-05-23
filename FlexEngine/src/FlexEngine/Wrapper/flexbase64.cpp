@@ -2,7 +2,7 @@
 
 #include "flexbase64.h"
 
-#include "wincrypt.h" // CryptBinaryToStringA, CryptStringToBinaryA
+#include <wincrypt.h> // CryptBinaryToStringA, CryptStringToBinaryA
 
 namespace FlexEngine
 {

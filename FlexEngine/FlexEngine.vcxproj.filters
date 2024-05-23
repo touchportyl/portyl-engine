@@ -345,6 +345,9 @@
     <ClInclude Include="src\FlexEngine\Wrapper\flexbase64.h">
       <Filter>src\FlexEngine\Wrapper</Filter>
     </ClInclude>
+    <ClInclude Include="src\flx_windows.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\FlexEngine\FlexECS\entity.inl">
