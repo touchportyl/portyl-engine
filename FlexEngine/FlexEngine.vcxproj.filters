@@ -181,6 +181,12 @@
     <ClCompile Include="src\FlexEngine\Wrapper\flexbase64.cpp">
       <Filter>src\FlexEngine\Wrapper</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\FlexMath\mathfunctions.cpp">
+      <Filter>src\FlexEngine\FlexMath</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlexEngine\flexid.cpp">
+      <Filter>src\FlexEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -267,9 +273,6 @@
     <ClInclude Include="src\FlexEngine\Wrapper\path.h">
       <Filter>src\FlexEngine\Wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Wrapper\range.h">
-      <Filter>src\FlexEngine\Wrapper</Filter>
-    </ClInclude>
     <ClInclude Include="src\FlexEngine\Wrapper\datetime.h">
       <Filter>src\FlexEngine\Wrapper</Filter>
     </ClInclude>
@@ -347,6 +350,15 @@
     </ClInclude>
     <ClInclude Include="src\flx_windows.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\FlexMath\mathfunctions.h">
+      <Filter>src\FlexEngine\FlexMath</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\flexid.h">
+      <Filter>src\FlexEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\DataStructures\range.h">
+      <Filter>src\FlexEngine\DataStructures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

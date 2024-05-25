@@ -2,6 +2,7 @@
 
 #include "flx_api.h"
 
+#include "mathfunctions.h"
 #include "vector4.h"
 #include "matrix4x4.h"
 
@@ -179,9 +180,14 @@ namespace FlexEngine
   __FLX_API std::istream& operator>>(std::istream& is, Quaternion& point);
   __FLX_API std::ostream& operator<<(std::ostream& os, const Quaternion& point);
 
+  __FLX_API Quaternion::value_type Dot(const Quaternion& a, const Quaternion& b);
+  __FLX_API Quaternion Cross(const Quaternion& a, const Quaternion& b);
+
   // Uses spherical linear interpolation to interpolate between two quaternions
   __FLX_API Quaternion Lerp(const Quaternion& a, const Quaternion& b, Quaternion::const_value_type t);
   __FLX_API Quaternion RotateTowards(const Quaternion& from, const Quaternion& to, Quaternion::const_value_type max_angle);
+
+  __FLX_API bool IsSameRotation(const Quaternion& a, const Quaternion& b, Quaternion::const_value_type epsilon = EPSILONf);
 
 #pragma endregion
 

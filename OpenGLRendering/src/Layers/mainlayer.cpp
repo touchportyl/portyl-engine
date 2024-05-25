@@ -27,6 +27,14 @@ namespace OpenGLRendering
     object = FlexECS::Scene::CreateEntity("Object");
     //plane = FlexECS::Scene::CreateEntity("Plane");
 
+    FlexECS::Scene::SetEntityFlags(main_camera.Get(), ID::Flag_IsActive);
+    FlexECS::Scene::SetEntityFlags(directional_light.Get(), ID::Flag_IsActive);
+    for (auto& entity : point_lights) FlexECS::Scene::SetEntityFlags(entity.Get(), ID::Flag_IsActive);
+    FlexECS::Scene::SetEntityFlags(object.Get(), ID::Flag_IsActive);
+    //FlexECS::Scene::SetEntityFlags(plane.Get(), ID::Flag_IsActive);
+
+    // add components
+
     main_camera.AddComponent<GlobalPosition>({ { -0.4f, 0.24f, 0.44f } });
     main_camera.AddComponent<Rotation>({ { -12, -35, 0 } });
     main_camera.AddComponent<Camera>({});

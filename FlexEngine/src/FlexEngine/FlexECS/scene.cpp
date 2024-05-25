@@ -129,13 +129,16 @@ namespace FlexEngine
         Entity::Internal_CreateArchetype(type);
       }
 
+      // create entity id
+      EntityID entity_id = ID::Create(ID::Flags::Flag_None, Scene::GetActiveScene()->_flx_id_next, Scene::GetActiveScene()->_flx_id_unused);
+
       // update entity vector
       Archetype& archetype = ARCHETYPE_INDEX[type];
-      archetype.entities.push_back(Scene::GetActiveScene()->next_entity_id);
+      archetype.entities.push_back(entity_id);
 
       // update entity records
       EntityRecord entity_record = { &archetype, archetype.id, archetype.entities.size() - 1 };
-      ENTITY_INDEX[Scene::GetActiveScene()->next_entity_id] = entity_record;
+      ENTITY_INDEX[entity_id] = entity_record;
 
       // store the component data in the archetype
       //ArchetypeMap& archetype_map = COMPONENT_INDEX[component];
@@ -143,7 +146,7 @@ namespace FlexEngine
       //archetype.archetype_table[archetype_record.column].push_back(data_ptr);
       archetype.archetype_table[0].push_back(data_ptr); // there is only one component in this archetype
 
-      return Scene::GetActiveScene()->next_entity_id++;
+      return entity_id;
     }
 
     void Scene::DestroyEntity(EntityID entity)
@@ -161,16 +164,16 @@ namespace FlexEngine
       // The entity's archetype and row are needed to remove the entity from the archetype
       EntityRecord& entity_record = ENTITY_INDEX[entity];
       Archetype& archetype = *entity_record.archetype;
-      size_t row = entity_record.row;
+      std::size_t row = entity_record.row;
 
       // Remove the entity from the source archetype's columns and entities vector
       // The same code is being used in Internal_MoveEntity
-      size_t last_row_index = archetype.archetype_table[0].size() - 1;
+      std::size_t last_row_index = archetype.archetype_table[0].size() - 1;
 
       // Handle the case where the entity is the last entity in the archetype
       if (row == last_row_index)
       {
-        for (size_t i = 0; i < archetype.archetype_table.size(); i++)
+        for (std::size_t i = 0; i < archetype.archetype_table.size(); i++)
         {
           archetype.archetype_table[i].pop_back();
         }
@@ -181,7 +184,7 @@ namespace FlexEngine
         // Using swap-and-pop is more performant than erase() since it requires shifting
         // all subsequent elements forward.
         // O(1) complexity for swap-and-pop vs O(n) complexity for erase()
-        for (size_t i = 0; i < archetype.archetype_table.size(); i++)
+        for (std::size_t i = 0; i < archetype.archetype_table.size(); i++)
         {
           std::swap(archetype.archetype_table[i][row], archetype.archetype_table[i][last_row_index]);
           archetype.archetype_table[i].pop_back();
@@ -203,6 +206,27 @@ namespace FlexEngine
 
       // Remove the entity from the entity index
       ENTITY_INDEX.erase(entity);
+
+      // Destroy the entity id
+      ID::Destroy(entity, Scene::GetActiveScene()->_flx_id_unused);
+    }
+
+    void Scene::SetEntityFlags(EntityID& entity, const uint8_t flags)
+    {
+      EntityID updated_entity = entity;
+      ID::SetFlags(updated_entity, flags);
+
+      // update the entity in the archetype entity vector
+      EntityRecord& entity_record = ENTITY_INDEX[entity];
+      Archetype& archetype = *entity_record.archetype;
+      std::size_t row = entity_record.row;
+      archetype.entities[row] = updated_entity;
+
+      // move the entity record to the new key
+      ENTITY_INDEX[updated_entity] = entity_record;
+      ENTITY_INDEX.erase(entity);
+
+      entity = updated_entity;
     }
 
     #pragma endregion

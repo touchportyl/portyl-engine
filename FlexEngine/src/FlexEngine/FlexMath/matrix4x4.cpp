@@ -159,7 +159,8 @@ namespace FlexEngine
 
   Matrix4x4& Matrix4x4::operator/=(const_value_type value)
   {
-    return *this = *this / value;
+    const_value_type inv = 1.0f / value;
+    return *this = *this * inv;
   }
 
   bool Matrix4x4::operator==(const Matrix4x4& other) const
@@ -298,11 +299,6 @@ namespace FlexEngine
 
   Matrix4x4& Matrix4x4::Translate(const Vector3& translation)
   {
-    //m30 += translation.x;
-    //m31 += translation.y;
-    //m32 += translation.z;
-    //return *this;
-
     Matrix4x4 result = *this;
     m3 += m0 * translation.x + m1 * translation.y + m2 * translation.z;
     return *this;
@@ -634,11 +630,12 @@ namespace FlexEngine
   Matrix4x4 operator/(const Matrix4x4& matrix, Matrix4x4::const_value_type value)
   {
     if (value == 0) return Matrix4x4::Zero;
+    Matrix4x4::const_value_type inv = 1.0f / value;
     return {
-      matrix.m00 / value, matrix.m01 / value, matrix.m02 / value, matrix.m03 / value,
-      matrix.m10 / value, matrix.m11 / value, matrix.m12 / value, matrix.m13 / value,
-      matrix.m20 / value, matrix.m21 / value, matrix.m22 / value, matrix.m23 / value,
-      matrix.m30 / value, matrix.m31 / value, matrix.m32 / value, matrix.m33 / value
+      matrix.m00 * inv, matrix.m01 * inv, matrix.m02 * inv, matrix.m03 * inv,
+      matrix.m10 * inv, matrix.m11 * inv, matrix.m12 * inv, matrix.m13 * inv,
+      matrix.m20 * inv, matrix.m21 * inv, matrix.m22 * inv, matrix.m23 * inv,
+      matrix.m30 * inv, matrix.m31 * inv, matrix.m32 * inv, matrix.m33 * inv
     };
   }
 

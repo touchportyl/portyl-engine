@@ -1,22 +1,23 @@
 #include "quaternion.h"
 
+// used for rotate towards
 #define QUAT_EPSILONf 0.0001f
 
 namespace FlexEngine
 {
 
-#pragma region Reflection
+  #pragma region Reflection
 
   FLX_REFL_REGISTER_START(Quaternion)
     FLX_REFL_REGISTER_PROPERTY(x)
     FLX_REFL_REGISTER_PROPERTY(y)
     FLX_REFL_REGISTER_PROPERTY(z)
     FLX_REFL_REGISTER_PROPERTY(w)
-  FLX_REFL_REGISTER_END;
+    FLX_REFL_REGISTER_END;
 
-#pragma endregion
-  
-#pragma region Standard Functions
+  #pragma endregion
+
+  #pragma region Standard Functions
 
   const Quaternion Quaternion::Zero = { 0, 0, 0, 0 };
   const Quaternion Quaternion::Identity = { 0, 0, 0, 1 };
@@ -24,9 +25,11 @@ namespace FlexEngine
   Quaternion::operator bool() const { return *this != Zero; }
 
   Quaternion::operator Vector3() const { return ToEulerAngles(); }
-  // Follows the wikipedia article on conversion from quaternion to euler angles
+  // Returns pitch, yaw, roll in radians, following glm::eulerAngles
   Vector3 Quaternion::ToEulerAngles() const
   {
+    // Follows the wikipedia article on conversion from quaternion to euler angles
+    #if 0
     // early out if the quaternion is identity or zero
     if (*this == Quaternion::Identity || *this == Quaternion::Zero) return { 0, 0, 0 };
 
@@ -59,11 +62,52 @@ namespace FlexEngine
       };
     }
 
+    // pitch yaw roll
     return {
       atan2(2.0f * q.y * q.w - 2.0f * q.x * q.z, sqx - sqy - sqz + sqw),
       asin(2.0f * test / unit),
       atan2(2.0f * q.x * q.w - 2.0f * q.y * q.z, -sqx + sqy - sqz + sqw)
     };
+    #else
+    // Follows glm::eulerAngles
+
+    using T = Quaternion::value_type;
+
+    Vector3 result = Vector3::Zero;
+
+    // pitch
+    const_value_type pitch_y = static_cast<T>(2) * (y * z + w * x);
+    const_value_type pitch_x = w * w - x * x - y * y + z * z;
+
+    // handle singularity: atan(0, 0)
+    if (std::abs(pitch_y) < EPSILONf && std::abs(pitch_x) < EPSILONf)
+    {
+      result.x = static_cast<T>(0);
+    }
+    else
+    {
+      result.x = static_cast<T>(std::atan2(pitch_y, pitch_x));
+    }
+
+    // yaw
+    result.y = std::asin(FlexMath::Clamp<T>(static_cast<T>(-2) * (x * z - w * y), static_cast<T>(-1), static_cast<T>(1)));
+
+    // roll
+    const_value_type roll_y = static_cast<T>(2) * (x * y + w * z);
+    const_value_type roll_x = w * w + x * x - y * y - z * z;
+
+    // handle singularity: atan(0, 0)
+    if (std::abs(roll_y) < EPSILONf && std::abs(roll_x) < EPSILONf)
+    {
+      result.z = static_cast<T>(0);
+    }
+    else
+    {
+      result.z = static_cast<T>(std::atan2(roll_y, roll_x));
+    }
+
+    return result;
+    #endif
   }
 
   Quaternion::operator Matrix4x4() const { return ToRotationMatrix(); }
@@ -248,14 +292,12 @@ namespace FlexEngine
 
   bool Quaternion::operator==(const Quaternion& other) const
   {
-    if constexpr (std::is_same_v<value_type, float>)
-    {
-      return abs(Dot(*this, other) - 1.0f) < QUAT_EPSILONf;
-    }
-    else if constexpr (std::is_same_v<value_type, double>)
-    {
-      return abs(Dot(*this, other) - 1.0) < QUAT_EPSILONf;
-    }
+    return
+      (std::abs(x - other.x) < EPSILONf) &&
+      (std::abs(y - other.y) < EPSILONf) &&
+      (std::abs(z - other.z) < EPSILONf) &&
+      (std::abs(w - other.w) < EPSILONf)
+    ;
   }
 
   bool Quaternion::operator!=(const Quaternion& other) const
@@ -281,8 +323,9 @@ namespace FlexEngine
   Quaternion& Quaternion::Normalize()
   {
     const_value_type length = Magnitude();
-    if (length == 0) return *this;
-    return *this /= length;
+    if (length <= EPSILONf) return *this = Quaternion::Identity;
+    const_value_type inv_length = 1.0f / length;
+    return *this *= inv_length;
   }
 
   Quaternion Quaternion::Normalize(const Quaternion& other)
@@ -400,6 +443,21 @@ namespace FlexEngine
     return os;
   }
 
+  Quaternion::value_type Dot(const Quaternion& a, const Quaternion& b)
+  {
+    return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+  }
+
+  Quaternion Cross(const Quaternion& a, const Quaternion& b)
+  {
+    return Quaternion(
+      a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+      a.w * b.y + a.y * b.w + a.z * b.x - a.x * b.z,
+      a.w * b.z + a.z * b.w + a.x * b.y - a.y * b.x,
+      a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z
+    );
+  }
+
   Quaternion Lerp(const Quaternion& a, const Quaternion& b, Quaternion::const_value_type t)
   {
     Quaternion::value_type angle = acos(Dot(a, b));
@@ -436,6 +494,18 @@ namespace FlexEngine
     angle = max_angle;
 
     return Quaternion::Normalize( (from * sin(angle * (1 - t)) + target * sin(angle * t)) / sin(angle) );
+  }
+
+  bool IsSameRotation(const Quaternion& a, const Quaternion& b, Quaternion::const_value_type epsilon)
+  {
+    if constexpr (std::is_same_v<Quaternion::value_type, float>)
+    {
+      return std::abs(Dot(a, b) - 1.0f) < epsilon;
+    }
+    else if constexpr (std::is_same_v<Quaternion::value_type, double>)
+    {
+      return std::abs(Dot(a, b) - 1.0) < epsilon;
+    }
   }
 
 #pragma endregion

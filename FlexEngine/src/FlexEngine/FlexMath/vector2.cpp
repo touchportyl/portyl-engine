@@ -67,10 +67,10 @@ namespace FlexEngine
   }
 
   Vector2::Vector2(const Vector2& other)
-    {
-      x = other.x;
-      y = other.y;
-    }
+  {
+    x = other.x;
+    y = other.y;
+  }
 
 #pragma endregion
 
@@ -88,66 +88,67 @@ namespace FlexEngine
 
   Vector2& Vector2::operator=(const Vector2& other)
   {
-    this->x = other.x;
-    this->y = other.y;
+    x = other.x;
+    y = other.y;
     return *this;
   }
 
   Vector2& Vector2::operator+=(const Vector2& other)
   {
-    this->x += other.x;
-    this->y += other.y;
+    x += other.x;
+    y += other.y;
     return *this;
   }
 
   Vector2& Vector2::operator+=(const_value_type value)
   {
-    this->x += value;
-    this->y += value;
+    x += value;
+    y += value;
     return *this;
   }
 
   Vector2& Vector2::operator-=(const Vector2& other)
   {
-    this->x -= other.x;
-    this->y -= other.y;
+    x -= other.x;
+    y -= other.y;
     return *this;
   }
 
   Vector2& Vector2::operator-=(const_value_type value)
   {
-    this->x -= value;
-    this->y -= value;
+    x -= value;
+    y -= value;
     return *this;
   }
 
   Vector2& Vector2::operator*=(const Vector2& other)
   {
-    this->x *= other.x;
-    this->y *= other.y;
+    x *= other.x;
+    y *= other.y;
     return *this;
   }
 
   Vector2& Vector2::operator*=(const_value_type value)
   {
-    this->x *= value;
-    this->y *= value;
+    x *= value;
+    y *= value;
     return *this;
   }
 
   Vector2& Vector2::operator/=(const Vector2& other)
   {
     if (other.x == 0 || other.y == 0) return *this;
-    this->x /= other.x;
-    this->y /= other.y;
+    x /= other.x;
+    y /= other.y;
     return *this;
   }
 
-  Vector2& Vector2::operator/=(const_reference& value)
+  Vector2& Vector2::operator/=(const_value_type value)
   {
     if (value == 0) return *this;
-    this->x /= value;
-    this->y /= value;
+    const_value_type inv = 1 / value;
+    x *= inv;
+    y *= inv;
     return *this;
   }
 
@@ -199,7 +200,8 @@ namespace FlexEngine
   {
     const_value_type length = Magnitude();
     if (length == 0) return *this;
-    return *this /= length;
+    const_value_type inv = 1 / length;
+    return *this *= inv;
   }
 
   Vector2 Vector2::Normalize(const Vector2& other)
@@ -301,7 +303,8 @@ namespace FlexEngine
   Vector2 operator/(const Vector2& point, Vector2::const_value_type value)
   {
     if (value == 0) return { 0, 0 };
-    return { point.x / value, point.y / value };
+    Vector2::const_value_type inv = 1 / value;
+    return { point.x * inv, point.y * inv };
   }
 
   // Cross product of two vectors

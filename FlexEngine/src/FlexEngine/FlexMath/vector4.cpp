@@ -142,84 +142,85 @@ namespace FlexEngine
 
   Vector4& Vector4::operator=(const Vector4& other)
   {
-    this->x = other.x;
-    this->y = other.y;
-    this->z = other.z;
-    this->w = other.w;
+    x = other.x;
+    y = other.y;
+    z = other.z;
+    w = other.w;
     return *this;
   }
 
   Vector4& Vector4::operator+=(const Vector4& other)
   {
-    this->x += other.x;
-    this->y += other.y;
-    this->z += other.z;
-    this->w += other.w;
+    x += other.x;
+    y += other.y;
+    z += other.z;
+    w += other.w;
     return *this;
   }
 
   Vector4& Vector4::operator+=(const_value_type value)
   {
-    this->x += value;
-    this->y += value;
-    this->z += value;
-    this->w += value;
+    x += value;
+    y += value;
+    z += value;
+    w += value;
     return *this;
   }
 
   Vector4& Vector4::operator-=(const Vector4& other)
   {
-    this->x -= other.x;
-    this->y -= other.y;
-    this->z -= other.z;
-    this->w -= other.w;
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
+    w -= other.w;
     return *this;
   }
 
   Vector4& Vector4::operator-=(const_value_type value)
   {
-    this->x -= value;
-    this->y -= value;
-    this->z -= value;
-    this->w -= value;
+    x -= value;
+    y -= value;
+    z -= value;
+    w -= value;
     return *this;
   }
 
   Vector4& Vector4::operator*=(const Vector4& other)
   {
-    this->x *= other.x;
-    this->y *= other.y;
-    this->z *= other.z;
-    this->w *= other.w;
+    x *= other.x;
+    y *= other.y;
+    z *= other.z;
+    w *= other.w;
     return *this;
   }
 
   Vector4& Vector4::operator*=(const_value_type& value)
   {
-    this->x *= value;
-    this->y *= value;
-    this->z *= value;
-    this->w *= value;
+    x *= value;
+    y *= value;
+    z *= value;
+    w *= value;
     return *this;
   }
 
   Vector4& Vector4::operator/=(const Vector4& other)
   {
     if (other.x == 0 || other.y == 0 || other.z == 0 || other.w == 0) return *this;
-    this->x /= other.x;
-    this->y /= other.y;
-    this->z /= other.z;
-    this->w /= other.w;
+    x /= other.x;
+    y /= other.y;
+    z /= other.z;
+    w /= other.w;
     return *this;
   }
 
   Vector4& Vector4::operator/=(const_value_type value)
   {
     if (value == 0) return *this;
-    this->x /= value;
-    this->y /= value;
-    this->z /= value;
-    this->w /= value;
+    const_value_type inv = 1 / value;
+    x *= inv;
+    y *= inv;
+    z *= inv;
+    w *= inv;
     return *this;
   }
 
@@ -259,7 +260,8 @@ namespace FlexEngine
   {
     const_value_type length = Magnitude();
     if (length == 0) return *this;
-    return *this /= length;
+    const_value_type inv = 1 / length;
+    return *this *= inv;
   }
 
   Vector4 Vector4::Normalize(const Vector4& other)
@@ -355,7 +357,8 @@ namespace FlexEngine
   Vector4 operator/(const Vector4& point, Vector4::const_value_type value)
   {
     if (value == 0) return { 0, 0, 0, 0 };
-    return { point.x / value, point.y / value, point.z / value, point.w / value };
+    Vector4::const_value_type inv = 1 / value;
+    return { point.x * inv, point.y * inv, point.z * inv, point.w * inv };
   }
 
   std::istream& operator>>(std::istream& is, Vector4& point)

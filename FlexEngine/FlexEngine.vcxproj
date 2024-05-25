@@ -186,11 +186,13 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\FlexECS\scene.cpp" />
     <ClCompile Include="src\FlexEngine\flexformatter.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\mathconversions.cpp" />
+    <ClCompile Include="src\FlexEngine\FlexMath\mathfunctions.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\matrix4x4.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\quaternion.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\vector2.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\vector3.cpp" />
     <ClCompile Include="src\FlexEngine\FlexMath\vector4.cpp" />
+    <ClCompile Include="src\FlexEngine\flexid.cpp" />
     <ClCompile Include="src\FlexEngine\input.cpp" />
     <ClCompile Include="src\FlexEngine\flexlogger.cpp" />
     <ClCompile Include="src\FlexEngine\Loader\fmodstudio.cpp" />
@@ -236,9 +238,11 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Core\layerstack.h" />
     <ClInclude Include="src\FlexEngine\DataStructures\freequeue.h" />
     <ClInclude Include="src\FlexEngine\DataStructures\functionqueue.h" />
+    <ClInclude Include="src\FlexEngine\DataStructures\range.h" />
     <ClInclude Include="src\FlexEngine\FlexECS\datastructures.h" />
     <ClInclude Include="src\FlexEngine\flexformatter.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\mathconversions.h" />
+    <ClInclude Include="src\FlexEngine\FlexMath\mathfunctions.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\matrix1x1.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\matrix4x4.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\mathconstants.h" />
@@ -247,6 +251,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\FlexMath\vector2.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\vector3.h" />
     <ClInclude Include="src\FlexEngine\FlexMath\vector4.h" />
+    <ClInclude Include="src\FlexEngine\flexid.h" />
     <ClInclude Include="src\FlexEngine\input.h" />
     <ClInclude Include="src\FlexEngine\Loader\fmodstudio.h" />
     <ClInclude Include="src\FlexEngine\Loader\gltf.h" />
@@ -274,7 +279,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Wrapper\filelist.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\flexassert.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\path.h" />
-    <ClInclude Include="src\FlexEngine\Wrapper\range.h" />
     <ClInclude Include="src\FlexEngine\Wrapper\simd.h" />
     <ClInclude Include="src\flx_api.h" />
     <ClInclude Include="src\flx_windows.h" />

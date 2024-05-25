@@ -26,7 +26,8 @@ namespace FlexEngine
     FLX_REFL_REGISTER_END;
 
     FLX_REFL_REGISTER_START(Scene)
-      FLX_REFL_REGISTER_PROPERTY(next_entity_id)
+      FLX_REFL_REGISTER_PROPERTY(_flx_id_next)
+      FLX_REFL_REGISTER_PROPERTY(_flx_id_unused)
       FLX_REFL_REGISTER_PROPERTY(archetype_index)
       FLX_REFL_REGISTER_PROPERTY(entity_index)
       FLX_REFL_REGISTER_PROPERTY(component_index)
@@ -39,7 +40,6 @@ namespace FlexEngine
     __FLX_API ComponentData<void> Internal_CreateComponentData(std::size_t size, void* data)
     {
       // Create a new data structure
-      //void* ptr = malloc(sizeof(std::size_t) + size);
       void* ptr = new char[sizeof(std::size_t) + size];
       if (!ptr)
       {
@@ -53,7 +53,6 @@ namespace FlexEngine
       // Copy the data
       memcpy(reinterpret_cast<std::size_t*>(ptr) + 1, data, size);
 
-      //return ComponentData<void>(ptr, free);
       return ComponentData<void>(ptr, [](void* ptr) { delete[] reinterpret_cast<char*>(ptr); });
     }
 

@@ -76,11 +76,13 @@
 // Math functions and constants.
 // Contains constants like PI and EPSILON.
 // Contains conversion functions for degrees and radians.
+// Contains math functions for common operations like clamp.
 // Implements Vector2, Vector3, Vector4.
 // Implements Matrix4x4 for transformations.
 // Implements Quaternion for rotations.
 #include "FlexEngine/FlexMath/mathconstants.h"
 #include "FlexEngine/FlexMath/mathconversions.h"
+#include "FlexEngine/FlexMath/mathfunctions.h"
 #include "FlexEngine/FlexMath/vector1.h"
 #include "FlexEngine/FlexMath/vector2.h"
 #include "FlexEngine/FlexMath/vector3.h"
@@ -120,12 +122,6 @@
 #include "FlexEngine/Wrapper/path.h"
 #include "FlexEngine/Wrapper/file.h"
 #include "FlexEngine/Wrapper/filelist.h"
-
-// Wrapper for a range of values.
-// Use Get() to generate random values within the range.
-// The number that is generated is inclusive of the min and max values.
-// Can also be used to store a range of values by getting min and max.
-#include "FlexEngine/Wrapper/range.h"
 
 
 /* |-----------------------------| */
@@ -178,3 +174,9 @@
 // Specialized function queue for storing and executing functions for freeing
 // heap objects after execution.
 #include "FlexEngine/DataStructures/freequeue.h"
+
+// Data structure for a range of values.
+// Use Get() to generate random values within the range.
+// The number that is generated is inclusive of the min and max values.
+// Can also be used to store a range of values by getting min and max.
+#include "FlexEngine/DataStructures/range.h"

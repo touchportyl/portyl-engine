@@ -18,6 +18,11 @@ namespace FlexEngine
     {
     }
 
+    EntityID& Entity::Get()
+    {
+      return entity_id;
+    }
+
     #pragma region Operator Overloads
 
     bool Entity::operator==(const Entity& other) const

@@ -5,7 +5,7 @@
 namespace FlexEngine
 {
 
-  // Wrapper for a range of values.
+  // Data structure for a range of values.
   // Use Get() to generate random values within the range.
   // The number that is generated is inclusive of the min and max values.
   // Can also be used to store a range of values by calling Min() and Max().

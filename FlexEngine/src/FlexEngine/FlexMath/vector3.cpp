@@ -111,75 +111,76 @@ namespace FlexEngine
 
   Vector3& Vector3::operator=(const Vector3& other)
   {
-    this->x = other.x;
-    this->y = other.y;
-    this->z = other.z;
+    x = other.x;
+    y = other.y;
+    z = other.z;
     return *this;
   }
 
   Vector3& Vector3::operator+=(const Vector3& other)
   {
-    this->x += other.x;
-    this->y += other.y;
-    this->z += other.z;
+    x += other.x;
+    y += other.y;
+    z += other.z;
     return *this;
   }
 
   Vector3& Vector3::operator+=(const_value_type value)
   {
-    this->x += value;
-    this->y += value;
-    this->z += value;
+    x += value;
+    y += value;
+    z += value;
     return *this;
   }
 
   Vector3& Vector3::operator-=(const Vector3& other)
   {
-    this->x -= other.x;
-    this->y -= other.y;
-    this->z -= other.z;
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
     return *this;
   }
 
   Vector3& Vector3::operator-=(const_value_type value)
   {
-    this->x -= value;
-    this->y -= value;
-    this->z -= value;
+    x -= value;
+    y -= value;
+    z -= value;
     return *this;
   }
 
   Vector3& Vector3::operator*=(const Vector3& other)
   {
-    this->x *= other.x;
-    this->y *= other.y;
-    this->z *= other.z;
+    x *= other.x;
+    y *= other.y;
+    z *= other.z;
     return *this;
   }
 
   Vector3& Vector3::operator*=(const_value_type value)
   {
-    this->x *= value;
-    this->y *= value;
-    this->z *= value;
+    x *= value;
+    y *= value;
+    z *= value;
     return *this;
   }
 
   Vector3& Vector3::operator/=(const Vector3& other)
   {
     if (other.x == 0 || other.y == 0 || other.z == 0) return *this;
-    this->x /= other.x;
-    this->y /= other.y;
-    this->z /= other.z;
+    x /= other.x;
+    y /= other.y;
+    z /= other.z;
     return *this;
   }
 
   Vector3& Vector3::operator/=(const_value_type value)
   {
     if (value == 0) return *this;
-    this->x /= value;
-    this->y /= value;
-    this->z /= value;
+    const_value_type inv = 1 / value;
+    x *= inv;
+    y *= inv;
+    z *= inv;
     return *this;
   }
 
@@ -219,7 +220,8 @@ namespace FlexEngine
   {
     const_value_type length = Magnitude();
     if (length == 0) return *this;
-    return *this /= length;
+    const_value_type inv = 1 / length;
+    return *this *= inv;
   }
 
   Vector3 Vector3::Normalize(const Vector3& other)
@@ -320,7 +322,8 @@ namespace FlexEngine
   Vector3 operator/(const Vector3& point, Vector3::const_value_type value)
   {
     if (value == 0) return { 0, 0, 0 };
-    return { point.x / value, point.y / value, point.z / value };
+    Vector3::const_value_type inv = 1 / value;
+    return { point.x * inv, point.y * inv, point.z * inv };
   }
 
   Vector3 Cross(const Vector3& a, const Vector3& b)

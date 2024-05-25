@@ -190,6 +190,8 @@ static void AreEqualMatrix(const glm::mat4& expected, const Matrix4x4& actual, c
 namespace UnitTests_FlexMath
 {
 
+  #pragma region Vector2
+
   namespace UnitTests_Vector2
   {
 
@@ -578,6 +580,10 @@ namespace UnitTests_FlexMath
     };
 
   }
+
+  #pragma endregion
+
+  #pragma region Vector3
 
   namespace UnitTests_Vector3
   {
@@ -1107,6 +1113,10 @@ namespace UnitTests_FlexMath
     };
 
   }
+
+  #pragma endregion
+
+  #pragma region Vector4
 
   namespace UnitTests_Vector4
   {
@@ -1840,6 +1850,10 @@ namespace UnitTests_FlexMath
 
   }
 
+  #pragma endregion
+
+  #pragma region Matrix4x4
+
   namespace UnitTests_Matrix4x4
   {
 
@@ -2379,6 +2393,10 @@ namespace UnitTests_FlexMath
 
   }
 
+  #pragma endregion
+
+  #pragma region Quaternion
+
   namespace UnitTests_Quaternion
   {
 
@@ -2486,7 +2504,7 @@ namespace UnitTests_FlexMath
       {
         // Rotation 1 radian, axis (0.4, 0.5, 0.6)
         a = { 0.2185424f, 0.2731781f, 0.3278137f, 0.8775826f };
-        glm_a = { 0.2185424f, 0.2731781f, 0.3278137f, 0.8775826f };
+        glm_a = { 0.8775826f, 0.2185424f, 0.2731781f, 0.3278137f }; // wxyz
       }
 
       TEST_METHOD_CLEANUP(Cleanup)
@@ -2512,7 +2530,7 @@ namespace UnitTests_FlexMath
         Assert::IsTrue((bool)a);
       }
 
-      TEST_METHOD(ToBool_EmptyVector)
+      TEST_METHOD(ToBool_EmptyQuaternion)
       {
         Assert::IsFalse((bool)Quaternion(0, 0, 0, 0));
       }
@@ -2687,15 +2705,23 @@ namespace UnitTests_FlexMath
       {
         // Rotation 1 radian, axis (0.4, 0.5, 0.6)
         a = { 0.2185424f, 0.2731781f, 0.3278137f, 0.8775826f };
-        glm_a = { 0.2185424f, 0.2731781f, 0.3278137f, 0.8775826f };
+        glm_a = { 0.8775826f, 0.2185424f, 0.2731781f, 0.3278137f }; // wxyz
 
         // Rotation 2 radians, axis (0.6, 0.7, 0.8)
         b = { 0.4136159f, 0.4825519f, 0.5514879f, 0.5403023f };
-        glm_b = { 0.4136159f, 0.4825519f, 0.5514879f, 0.5403023f };
+        glm_b = { 0.5403023f, 0.4136159f, 0.4825519f, 0.5514879f }; // wxyz
       }
 
       TEST_METHOD_CLEANUP(Cleanup)
       {
+      }
+
+      TEST_METHOD(EulerAngles)
+      {
+        // Converts to euler angles
+        Vector3 a_euler = a.ToEulerAngles();
+        glm::vec3 glm_euler = glm::eulerAngles(glm_a);
+        AreEqualVector(glm_euler, a_euler);
       }
 
       TEST_METHOD(Magnitude_LengthParity)
@@ -2732,11 +2758,23 @@ namespace UnitTests_FlexMath
 
       TEST_METHOD(LinearInterpolation)
       {
-        AreEqualQuaternion(glm::mix(glm_a, glm_b, 0.5f), Lerp(a, b, 0.5f));
+        AreEqualQuaternion(glm::mix(glm_a, glm_b, 0.5f), Lerp(a, b, 0.5f), EPSILONf);
+      }
+
+      TEST_METHOD(DotProduct)
+      {
+        Assert::AreEqual(glm::dot(glm_a, glm_b), Dot(a, b));
+      }
+
+      TEST_METHOD(CrossProduct)
+      {
+        AreEqualQuaternion(glm::cross(glm_a, glm_b), Cross(a, b), EPSILONf);
       }
 
     };
 
   }
+
+  #pragma endregion
 
 }

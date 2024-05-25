@@ -2,13 +2,13 @@
 
 #include "flx_api.h"
 
+#include "flexid.h" // <cstdint>
 #include "flexformatter.h"  // "Wrapper/datetime.h" "Wrapper/file.h" <sstream>
                             // <RapidJSON/document.h> <RapidJSON/istreamwrapper.h> <RapidJSON/ostreamwrapper.h>
                             // <RapidJSON/writer.h> <RapidJSON/prettywriter.h>
 #include "flexlogger.h" // <filesystem> <fstream> <string>
 #include "Reflection/base.h"  // "Wrapper/flexassert.h" <rapidjson/document.h>
                               // <cstddef> <iostream> <string> <sstream> <vector> <map> <unordered_map> <functional>
-#include "uuid.h" // <functional> <string>
 #include "Wrapper/file.h" // "Wrapper/path.h" <fstream>
 
 #include <algorithm> // std::sort
@@ -42,11 +42,18 @@ namespace FlexEngine
 
     // Unique identifiers for entities, components, and archetypes
     // Incremented each time a new entity, component, or archetype is created
-    // TODO: Implement loaded entity ids to store lifetime, flags, and functionality to reuse ids
 
-    using EntityID = std::size_t;
-    using ComponentID = std::string; // Use TYPE_DESCRIPTOR_LOOKUP to get the TypeDescriptor
-    using ArchetypeID = std::size_t;
+    // Loaded unique identifier.
+    // The first 32 bits are the ID, the next 28 bits are the generation, and the last 4 bits are the flags.
+    // Use FlexECS::ID functions to manage the ID
+    using EntityID = uint64_t;
+
+    // Stringified type descriptor for components
+    // Use TYPE_DESCRIPTOR_LOOKUP to convert the string back to the TypeDescriptor
+    using ComponentID = std::string;
+
+    // Just a unique identifier for an archetype counting up from 0
+    using ArchetypeID = uint64_t;
 
 
     // A vector of ComponentIDs
@@ -186,10 +193,10 @@ namespace FlexEngine
 
     // The scene holds all the entities and components.
     class __FLX_API Scene
-    { FLX_REFL_SERIALIZABLE
+    { FLX_REFL_SERIALIZABLE FLX_ID_SETUP
 
       // TODO: Implement reusing entity ids
-      EntityID next_entity_id = 0;
+      //EntityID next_entity_id = 0;
 
       static std::shared_ptr<Scene> s_active_scene;
 
@@ -259,6 +266,10 @@ namespace FlexEngine
       // Removes an entity from the ECS
       static void DestroyEntity(EntityID entity);
 
+      // Passthrough functions to edit the entity's flags.
+      // They only work on the current active scene.
+      static void SetEntityFlags(EntityID& entity, const uint8_t flags);
+
       #pragma endregion
 
       #pragma region Scene serialization functions
@@ -304,6 +315,8 @@ namespace FlexEngine
       Entity();
       Entity(EntityID id);
 
+      EntityID& Get();
+
       #pragma region Operator Overloads
 
       bool operator==(const Entity& other) const;
@@ -314,6 +327,8 @@ namespace FlexEngine
       operator EntityID() const;
 
       #pragma endregion
+
+      #pragma region Component Management
 
       // Checks if an entity has a component
       template <typename T>
@@ -339,6 +354,8 @@ namespace FlexEngine
       // Usage: entity.RemoveComponent<Transform>();
       template <typename T>
       void RemoveComponent();
+
+      #pragma endregion
 
     private:
       // Allow the scene class to access internal functions

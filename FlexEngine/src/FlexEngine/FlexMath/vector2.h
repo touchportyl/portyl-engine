@@ -24,9 +24,9 @@ namespace FlexEngine
     using const_value_type = const value_type;
     using size_type = std::size_t;
     using reference = value_type&;
-    using const_reference = const value_type&;
+    using const_reference = const_value_type&;
     using pointer = value_type*;
-    using const_pointer = const value_type*;
+    using const_pointer = const_value_type*;
     using iterator = pointer;
     using const_iterator = const_pointer;
     using reverse_iterator = iterator;
@@ -101,22 +101,22 @@ namespace FlexEngine
     Vector2& operator=(const Vector2& other);
 
     Vector2& operator+=(const Vector2& other);
-    Vector2& operator+=(const value_type value);
+    Vector2& operator+=(const_value_type value);
 
     Vector2& operator-=(const Vector2& other);
-    Vector2& operator-=(const value_type value);
+    Vector2& operator-=(const_value_type value);
 
     Vector2& operator*=(const Vector2& other);
-    Vector2& operator*=(const value_type value);
+    Vector2& operator*=(const_value_type value);
 
     Vector2& operator/=(const Vector2& other);
-    Vector2& operator/=(const value_type& value);
+    Vector2& operator/=(const_value_type value);
 
     bool operator==(const Vector2& other) const;
     bool operator!=(const Vector2& other) const;
 
-    Vector2 Rotate(const value_type radians) const;
-    Vector2 RotateDeg(const value_type degrees) const;
+    Vector2 Rotate(const_value_type radians) const;
+    Vector2 RotateDeg(const_value_type degrees) const;
 
     value_type Magnitude() const;
     value_type Length() const;
