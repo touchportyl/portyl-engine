@@ -22,7 +22,7 @@ namespace FlexEngine
 
     float GetDeltaTime() const;
     unsigned int GetFPS() const;
-    void SetTargetFPS(unsigned int fps);
+    void SetTargetFPS(unsigned int fps = 0);
 
     #pragma endregion
   };

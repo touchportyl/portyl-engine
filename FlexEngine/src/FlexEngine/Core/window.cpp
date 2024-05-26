@@ -200,6 +200,11 @@ namespace FlexEngine
     glfwSetWindowIcon(m_glfwwindow, 1, &image);
   }
 
+  void Window::SetVSync(bool enabled) const
+  {
+    glfwSwapInterval(enabled ? 1 : 0);
+  }
+
   #pragma endregion
 
 }

@@ -26,6 +26,8 @@ namespace FlexEngine
 
   void FramerateController::EndFrame()
   {
+    if (m_target_fps == 0) return;
+
     // Limit FPS
     if (m_frame_counter >= m_target_fps)
     {

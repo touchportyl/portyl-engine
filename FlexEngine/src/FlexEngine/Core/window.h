@@ -112,12 +112,14 @@ namespace FlexEngine
 
     void SetIcon(const Asset::Texture& icon) const;
 
+    void SetVSync(bool enabled = 0) const;
+
     // passthrough functions for the framerate controller
 
     float GetDeltaTime() const { return m_frameratecontroller.GetDeltaTime(); }
     unsigned int GetFPS() const { return m_frameratecontroller.GetFPS(); }
 
-    void SetTargetFPS(unsigned int fps) { m_frameratecontroller.SetTargetFPS(fps); }
+    void SetTargetFPS(unsigned int fps = 0) { m_frameratecontroller.SetTargetFPS(fps); }
 
     // passthrough functions for the layer stack
 

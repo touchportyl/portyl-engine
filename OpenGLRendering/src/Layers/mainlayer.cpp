@@ -262,29 +262,29 @@ namespace OpenGLRendering
           ImGui::EndMenu();
         }
 
-        //if (ImGui::BeginMenu("Edit"))
-        //{
-        //  if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
-        //  if (ImGui::MenuItem("Redo", "Ctrl+Y")) {}
-        //  ImGui::EndMenu();
-        //}
-         
-        if (ImGui::BeginMenu("View"))
-        {
-          if (ImGui::MenuItem("Center Window"))
-          {
-            function_queue.Insert({
-              [this]()
-              {
-                Application::GetCurrentWindow()->CenterWindow();
-              }
-            });
-          }
+//if (ImGui::BeginMenu("Edit"))
+//{
+//  if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
+//  if (ImGui::MenuItem("Redo", "Ctrl+Y")) {}
+//  ImGui::EndMenu();
+//}
 
-          ImGui::EndMenu();
-        }
+if (ImGui::BeginMenu("View"))
+{
+  if (ImGui::MenuItem("Center Window"))
+  {
+    function_queue.Insert({
+      [this]()
+      {
+        Application::GetCurrentWindow()->CenterWindow();
+      }
+    });
+  }
 
-        ImGui::EndMainMenuBar();
+  ImGui::EndMenu();
+}
+
+ImGui::EndMainMenuBar();
       }
 
       ImGui::PopStyleVar(2);
@@ -296,7 +296,7 @@ namespace OpenGLRendering
 
       ImGuiIO& io = ImGui::GetIO();
       ImVec2 mouse_pos = io.MousePos;
-      
+
       // The main menu bar height is 30 pixels
       ImGuiViewport* viewport = ImGui::GetMainViewport();
       ImVec2 top_left = viewport->Pos;
@@ -318,7 +318,7 @@ namespace OpenGLRendering
       {
         is_dragging_window = false;
       }
-      
+
       // Dragging the window
       if (is_dragging_window)
       {
@@ -330,7 +330,7 @@ namespace OpenGLRendering
 
           // We can't use Input::GetCursorPositionDelta() because it only handles within the glfw window
           // ImGui's IO MousePos is in global screen coordinates
-          
+
           //Vector2 mouse_delta = Input::GetCursorPositionDelta();
           //if (mouse_delta.x != 0.0f || mouse_delta.y != 0.0f)
           //{
@@ -352,6 +352,43 @@ namespace OpenGLRendering
 
       #pragma endregion
 
+    }
+    #endif
+
+    #pragma endregion
+
+
+    #pragma region Statistics Panel
+
+    #if 1
+    {
+      ImGui::Begin("Statistics");
+      ImGuiTreeNodeFlags tree_node_flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnDoubleClick; // open by default
+
+      if (ImGui::CollapsingHeader("Window", tree_node_flags))
+      {
+        auto window = Application::GetCurrentWindow();
+        int win_pos_x, win_pos_y;
+        window->GetWindowPosition(&win_pos_x, &win_pos_y);
+        ImGui::Text("Window Position: %d, %d", win_pos_x, win_pos_y);
+        ImGui::Text("Window Size: %d x %d", window->GetWidth(), window->GetHeight());
+        ImGui::Text("FPS: %d", window->GetFPS());
+        ImGui::Text("Delta Time: %.3f ms", window->GetDeltaTime());
+      }
+
+      if (ImGui::CollapsingHeader("Scene", tree_node_flags))
+      {
+        ImGui::Text("Active Scene: %s", current_save_name.c_str());
+        ImGui::Text("Entities: %d", FlexECS::Scene::GetActiveScene()->View<EntityName>().size());
+        ImGui::Text("Archetypes: %d", ARCHETYPE_INDEX.size());
+      }
+
+      if (ImGui::CollapsingHeader("Renderer", tree_node_flags))
+      {
+        ImGui::Text("Draw Calls: %d", OpenGLRenderer::GetDrawCallsLastFrame());
+      }
+
+      ImGui::End();
     }
     #endif
 
@@ -595,7 +632,7 @@ namespace OpenGLRendering
     #pragma endregion
 
 
-    #pragma region Model Showcase System
+    #pragma region Model Showcase
 
     #if 1
     {
@@ -632,7 +669,7 @@ namespace OpenGLRendering
     #pragma endregion
 
 
-    #pragma region Transform Calculation System
+    #pragma region Transform Updater
 
     #if 1
     {
@@ -666,7 +703,7 @@ namespace OpenGLRendering
     #pragma endregion
 
 
-    #pragma region Camera System
+    #pragma region Camera Updater
 
     #if 1
     {
@@ -730,7 +767,7 @@ namespace OpenGLRendering
     #pragma endregion
 
 
-    #pragma region 3D Renderer System (Mesh + Material)
+    #pragma region 3D Renderer (Mesh + Material)
     
     #if 0
     {
@@ -810,7 +847,7 @@ namespace OpenGLRendering
     #pragma endregion
 
 
-    #pragma region 3D Renderer System (Model)
+    #pragma region 3D Renderer (Model)
 
     #if 1
     {

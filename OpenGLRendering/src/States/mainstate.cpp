@@ -25,9 +25,10 @@ namespace OpenGLRendering
     AssetManager::Load();
     FreeQueue::Push(std::bind(&AssetManager::Unload), "OpenGLRendering AssetManager");
 
+    window->SetTargetFPS();
+    window->SetVSync(false);
     window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_icon_white.png)"));
     window->PushLayer(std::make_shared<MainLayer>());
-    window->SetTargetFPS(60);
   }
 
   void MainState::OnExit()
