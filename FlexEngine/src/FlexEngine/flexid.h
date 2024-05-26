@@ -27,17 +27,17 @@ namespace FlexEngine
     // IsSleeping: The entity is sleeping to save resources, only performing minor calculations.
     #pragma region Flags
 
-    #define __FLX_ECS_ID_FLAG_ONE     IsDirty
-    #define __FLX_ECS_ID_FLAG_ONE_    is_dirty
+    #define _FLX_ECS_ID_FLAG_ONE     IsDirty
+    #define _FLX_ECS_ID_FLAG_ONE_    is_dirty
 
-    #define __FLX_ECS_ID_FLAG_TWO     IsActive
-    #define __FLX_ECS_ID_FLAG_TWO_    is_active
+    #define _FLX_ECS_ID_FLAG_TWO     IsActive
+    #define _FLX_ECS_ID_FLAG_TWO_    is_active
 
-    #define __FLX_ECS_ID_FLAG_THREE   IsActiveSelf
-    #define __FLX_ECS_ID_FLAG_THREE_  is_active_self
+    #define _FLX_ECS_ID_FLAG_THREE   IsActiveSelf
+    #define _FLX_ECS_ID_FLAG_THREE_  is_active_self
 
-    #define __FLX_ECS_ID_FLAG_FOUR    IsSleeping
-    #define __FLX_ECS_ID_FLAG_FOUR_   is_sleeping
+    #define _FLX_ECS_ID_FLAG_FOUR    IsSleeping
+    #define _FLX_ECS_ID_FLAG_FOUR_   is_sleeping
 
     #pragma endregion
 
@@ -67,18 +67,18 @@ namespace FlexEngine
     enum Flags : uint8_t
     {
       FLAG(None)                    = 0,
-      FLAG(__FLX_ECS_ID_FLAG_ONE)   = 1 << 0,
-      FLAG(__FLX_ECS_ID_FLAG_TWO)   = 1 << 1,
-      FLAG(__FLX_ECS_ID_FLAG_THREE) = 1 << 2,
-      FLAG(__FLX_ECS_ID_FLAG_FOUR)  = 1 << 3
+      FLAG(_FLX_ECS_ID_FLAG_ONE)   = 1 << 0,
+      FLAG(_FLX_ECS_ID_FLAG_TWO)   = 1 << 1,
+      FLAG(_FLX_ECS_ID_FLAG_THREE) = 1 << 2,
+      FLAG(_FLX_ECS_ID_FLAG_FOUR)  = 1 << 3
     };
 
     // Explicitly define the flag functions for easy access.
 
-    __FLX_API bool __FLX_ECS_ID_FLAG_ONE(uint64_t id);
-    __FLX_API bool __FLX_ECS_ID_FLAG_TWO(uint64_t id);
-    __FLX_API bool __FLX_ECS_ID_FLAG_THREE(uint64_t id);
-    __FLX_API bool __FLX_ECS_ID_FLAG_FOUR(uint64_t id);
+    __FLX_API bool _FLX_ECS_ID_FLAG_ONE(uint64_t id);
+    __FLX_API bool _FLX_ECS_ID_FLAG_TWO(uint64_t id);
+    __FLX_API bool _FLX_ECS_ID_FLAG_THREE(uint64_t id);
+    __FLX_API bool _FLX_ECS_ID_FLAG_FOUR(uint64_t id);
 
     #pragma endregion
 
@@ -86,10 +86,10 @@ namespace FlexEngine
 
     __FLX_API uint64_t Create(const uint8_t flags, uint64_t& next_id, std::vector<uint64_t>& unused_ids);
     __FLX_API uint64_t Create(
-      const bool __FLX_ECS_ID_FLAG_ONE_,
-      const bool __FLX_ECS_ID_FLAG_TWO_,
-      const bool __FLX_ECS_ID_FLAG_THREE_,
-      const bool __FLX_ECS_ID_FLAG_FOUR_,
+      const bool _FLX_ECS_ID_FLAG_ONE_,
+      const bool _FLX_ECS_ID_FLAG_TWO_,
+      const bool _FLX_ECS_ID_FLAG_THREE_,
+      const bool _FLX_ECS_ID_FLAG_FOUR_,
       uint64_t& next_id,
       std::vector<uint64_t>& unused_ids
     );
@@ -117,10 +117,10 @@ namespace FlexEngine
     __FLX_API void SetFlags(uint64_t& id, const uint8_t value);
     __FLX_API void SetFlags(
       uint64_t& id,
-      const bool __FLX_ECS_ID_FLAG_ONE_,
-      const bool __FLX_ECS_ID_FLAG_TWO_ = false,
-      const bool __FLX_ECS_ID_FLAG_THREE_ = false,
-      const bool __FLX_ECS_ID_FLAG_FOUR_ = false
+      const bool _FLX_ECS_ID_FLAG_ONE_,
+      const bool _FLX_ECS_ID_FLAG_TWO_ = false,
+      const bool _FLX_ECS_ID_FLAG_THREE_ = false,
+      const bool _FLX_ECS_ID_FLAG_FOUR_ = false
     );
 
     #pragma endregion

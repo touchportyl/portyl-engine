@@ -6,6 +6,8 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #include <FlexEngine.h>
 using namespace FlexEngine;
 
+#pragma warning(disable: 4189) // local variable is initialized but not referenced
+
 
 #pragma region Helper Functions
 
@@ -187,15 +189,15 @@ static void AreEqualMatrix(const glm::mat4& expected, const Matrix4x4& actual, c
 #pragma endregion
 
 
-namespace UnitTests_FlexMath
+namespace T_FlexMath
 {
 
   #pragma region Vector2
 
-  namespace UnitTests_Vector2
+  namespace T_Vector2
   {
 
-    TEST_CLASS(UnitTests_Constructors)
+    TEST_CLASS(T_Constructors)
     {
     public:
 
@@ -231,7 +233,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Accessors)
+    TEST_CLASS(T_Accessors)
     {
       Vector2 a;
 
@@ -284,7 +286,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_ConversionOperators)
+    TEST_CLASS(T_ConversionOperators)
     {
       Vector2 a;
 
@@ -326,9 +328,9 @@ namespace UnitTests_FlexMath
 
     };
 
-    //TEST_CLASS(UnitTests_Swizzling)
+    //TEST_CLASS(T_Swizzling)
 
-    TEST_CLASS(UnitTests_UnaryOperators)
+    TEST_CLASS(T_UnaryOperators)
     {
       Vector2 a, b;
 
@@ -417,7 +419,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_BinaryOperators)
+    TEST_CLASS(T_BinaryOperators)
     {
       Vector2 a, b;
 
@@ -485,7 +487,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Functions)
+    TEST_CLASS(T_Functions)
     {
       Vector2 a, b;
       glm::vec2 glm_a, glm_b;
@@ -550,7 +552,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_ConversionOverloads)
+    TEST_CLASS(T_ConversionOverloads)
     {
       Vector2 a;
       glm::vec2 glm_a;
@@ -585,10 +587,10 @@ namespace UnitTests_FlexMath
 
   #pragma region Vector3
 
-  namespace UnitTests_Vector3
+  namespace T_Vector3
   {
 
-    TEST_CLASS(UnitTests_Constructors)
+    TEST_CLASS(T_Constructors)
     {
     public:
 
@@ -645,7 +647,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Accessors)
+    TEST_CLASS(T_Accessors)
     {
       Vector3 a;
 
@@ -704,7 +706,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_ConversionOperators)
+    TEST_CLASS(T_ConversionOperators)
     {
       Vector3 a;
 
@@ -746,7 +748,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Swizzling)
+    TEST_CLASS(T_Swizzling)
     {
       Vector3 a;
 
@@ -858,7 +860,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_UnaryOperators)
+    TEST_CLASS(T_UnaryOperators)
     {
       Vector3 a, b;
 
@@ -947,7 +949,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_BinaryOperators)
+    TEST_CLASS(T_BinaryOperators)
     {
       Vector3 a, b;
 
@@ -1015,7 +1017,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Functions)
+    TEST_CLASS(T_Functions)
     {
       Vector3 a, b;
       glm::vec3 glm_a, glm_b;
@@ -1083,7 +1085,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_ConversionOverloads)
+    TEST_CLASS(T_ConversionOverloads)
     {
       Vector3 a;
       glm::vec3 glm_a;
@@ -1118,10 +1120,10 @@ namespace UnitTests_FlexMath
 
   #pragma region Vector4
 
-  namespace UnitTests_Vector4
+  namespace T_Vector4
   {
 
-    TEST_CLASS(UnitTests_Constructors)
+    TEST_CLASS(T_Constructors)
     {
     public:
 
@@ -1224,7 +1226,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Accessors)
+    TEST_CLASS(T_Accessors)
     {
       Vector4 a;
 
@@ -1289,7 +1291,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_ConversionOperators)
+    TEST_CLASS(T_ConversionOperators)
     {
       Vector4 a;
 
@@ -1331,7 +1333,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Swizzling)
+    TEST_CLASS(T_Swizzling)
     {
       Vector4 a;
 
@@ -1604,7 +1606,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_UnaryOperators)
+    TEST_CLASS(T_UnaryOperators)
     {
       Vector4 a, b;
 
@@ -1693,7 +1695,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_BinaryOperators)
+    TEST_CLASS(T_BinaryOperators)
     {
       Vector4 a, b;
 
@@ -1761,7 +1763,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Functions)
+    TEST_CLASS(T_Functions)
     {
       Vector4 a, b;
       glm::vec4 glm_a, glm_b;
@@ -1819,7 +1821,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_ConversionOverloads)
+    TEST_CLASS(T_ConversionOverloads)
     {
       Vector4 a;
       glm::vec4 glm_a;
@@ -1854,10 +1856,10 @@ namespace UnitTests_FlexMath
 
   #pragma region Matrix4x4
 
-  namespace UnitTests_Matrix4x4
+  namespace T_Matrix4x4
   {
 
-    TEST_CLASS(UnitTests_Accessors)
+    TEST_CLASS(T_Accessors)
     {
       Matrix4x4 a;
       glm::mat4 glm_a;
@@ -1977,7 +1979,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_UnaryOperators)
+    TEST_CLASS(T_UnaryOperators)
     {
       Matrix4x4 a, b, c;
       glm::mat4 glm_a, glm_b, glm_c;
@@ -2077,7 +2079,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_BinaryOperators)
+    TEST_CLASS(T_BinaryOperators)
     {
       Matrix4x4 a, b;
       glm::mat4 glm_a, glm_b;
@@ -2148,7 +2150,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Functions)
+    TEST_CLASS(T_Functions)
     {
       Matrix4x4 a;
       glm::mat4 glm_a;
@@ -2192,7 +2194,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Transformations_StaticParity)
+    TEST_CLASS(T_Transformations_StaticParity)
     {
       Matrix4x4 a;
       glm::mat4 glm_a;
@@ -2271,7 +2273,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Transformations_Common)
+    TEST_CLASS(T_Transformations_Common)
     {
       Matrix4x4 a;
       glm::mat4 glm_a;
@@ -2350,7 +2352,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Transformations_Others)
+    TEST_CLASS(T_Transformations_Others)
     {
       Matrix4x4 a;
       glm::mat4 glm_a;
@@ -2397,10 +2399,10 @@ namespace UnitTests_FlexMath
 
   #pragma region Quaternion
 
-  namespace UnitTests_Quaternion
+  namespace T_Quaternion
   {
 
-    TEST_CLASS(UnitTests_Constructors)
+    TEST_CLASS(T_Constructors)
     {
     public:
 
@@ -2452,7 +2454,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Accessors)
+    TEST_CLASS(T_Accessors)
     {
       Quaternion a;
 
@@ -2493,7 +2495,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_ConversionOperators)
+    TEST_CLASS(T_ConversionOperators)
     {
       Quaternion a;
       glm::quat glm_a;
@@ -2537,7 +2539,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_UnaryOperators)
+    TEST_CLASS(T_UnaryOperators)
     {
       Quaternion a, b;
 
@@ -2626,7 +2628,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_BinaryOperators)
+    TEST_CLASS(T_BinaryOperators)
     {
       Quaternion a, b;
 
@@ -2694,7 +2696,7 @@ namespace UnitTests_FlexMath
 
     };
 
-    TEST_CLASS(UnitTests_Functions)
+    TEST_CLASS(T_Functions)
     {
       Quaternion a, b;
       glm::quat glm_a, glm_b;
@@ -2776,5 +2778,205 @@ namespace UnitTests_FlexMath
   }
 
   #pragma endregion
+
+}
+
+namespace T_FlexID
+{
+
+  TEST_CLASS(T_Create)
+  {
+    FLX_ID_SETUP;
+  public:
+
+    TEST_METHOD_INITIALIZE(Initialize)
+    {
+      _flx_id_next = 1;
+      _flx_id_unused.clear();
+    }
+
+    TEST_METHOD_CLEANUP(Cleanup)
+    {
+    }
+
+    TEST_METHOD(T_Create_None)
+    {
+      uint64_t id = ID::Create(ID::Flag_None, _flx_id_next, _flx_id_unused);
+      // 0000   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0001
+      Assert::AreEqual((uint64_t)4294967297, id);
+    }
+
+    TEST_METHOD(T_Create_Next)
+    {
+      uint64_t id = ID::Create(ID::Flag_None, _flx_id_next, _flx_id_unused);
+      Assert::AreEqual((size_t)2, _flx_id_next);
+    }
+
+    TEST_METHOD(T_Create_Increment)
+    {
+      uint64_t id1 = ID::Create(ID::Flag_None, _flx_id_next, _flx_id_unused);
+      uint64_t id2 = ID::Create(ID::Flag_None, _flx_id_next, _flx_id_unused);
+      // 0000   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0010
+      Assert::AreEqual((uint64_t)4294967298, id2);
+    }
+
+    TEST_METHOD(T_Create_Parity)
+    {
+      uint64_t id1 = ID::Create(ID::Flag_None, _flx_id_next, _flx_id_unused);
+      _flx_id_next--;
+      uint64_t id2 = ID::Create(false, false, false, false, _flx_id_next, _flx_id_unused);
+      Assert::AreEqual(id1, id2);
+    }
+
+    TEST_METHOD(T_Create_Flag1)
+    {
+      uint64_t id = ID::Create(true, false, false, false, _flx_id_next, _flx_id_unused);
+      // 0001   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0001
+      Assert::AreEqual((uint64_t)1152921508901814273, id);
+    }
+
+    TEST_METHOD(T_Create_Flag2)
+    {
+      uint64_t id = ID::Create(false, true, false, false, _flx_id_next, _flx_id_unused);
+      // 0010   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0001
+      Assert::AreEqual((uint64_t)2305843013508661249, id);
+    }
+
+    TEST_METHOD(T_Create_Flag3)
+    {
+      uint64_t id = ID::Create(false, false, true, false, _flx_id_next, _flx_id_unused);
+      // 0100   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0001
+      Assert::AreEqual((uint64_t)4611686022722355201, id);
+    }
+
+    TEST_METHOD(T_Create_Flag4)
+    {
+      uint64_t id = ID::Create(false, false, false, true, _flx_id_next, _flx_id_unused);
+      // 1000   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0001
+      Assert::AreEqual((uint64_t)9223372041149743105, id);
+    }
+
+    TEST_METHOD(T_Create_Flags)
+    {
+      uint64_t id;
+      id = ID::Create(false, false, true, true, _flx_id_next, _flx_id_unused);
+      // 1100   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0001
+      Assert::AreEqual((uint64_t)13835058059577131009, id);
+
+      id = ID::Create(false, true, false, true, _flx_id_next, _flx_id_unused);
+      // 1010   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0010
+      Assert::AreEqual((uint64_t)11529215050363437058, id);
+
+      id = ID::Create(true, false, true, false, _flx_id_next, _flx_id_unused);
+      // 0101   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0011
+      Assert::AreEqual((uint64_t)5764607527329202179, id);
+
+      id = ID::Create(true, true, true, true, _flx_id_next, _flx_id_unused);
+      // 1111   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0100
+      Assert::AreEqual((uint64_t)17293822573397671940, id);
+    }
+
+  };
+  
+  TEST_CLASS(T_Get)
+  {
+    // 0110   0000 0000 0000 0000 0000 0000 0011   0000 0000 0000 0000 0000 0000 0000 0101
+    uint64_t id = 6917529040525983749U;
+  public:
+
+    TEST_METHOD_INITIALIZE(Initialize)
+    {
+      // 0110   0000 0000 0000 0000 0000 0000 0011   0000 0000 0000 0000 0000 0000 0000 0101
+      id = 6917529040525983749U;
+    }
+
+    TEST_METHOD_CLEANUP(Cleanup)
+    {
+    }
+
+    TEST_METHOD(T_Get_ID)
+    {
+      Assert::AreEqual((uint32_t)5, ID::GetID(id));
+    }
+
+    TEST_METHOD(T_Get_Generation)
+    {
+      Assert::AreEqual((uint32_t)3, ID::GetGeneration(id));
+    }
+
+    TEST_METHOD(T_Get_Flag)
+    {
+      Assert::AreEqual((uint8_t)6, ID::GetFlags(id));
+    }
+
+    TEST_METHOD(T_Get_Flag_Individual)
+    {
+      Assert::IsFalse(ID::_FLX_ECS_ID_FLAG_ONE   (id));
+      Assert::IsTrue (ID::_FLX_ECS_ID_FLAG_TWO   (id));
+      Assert::IsTrue (ID::_FLX_ECS_ID_FLAG_THREE (id));
+      Assert::IsFalse(ID::_FLX_ECS_ID_FLAG_FOUR  (id));
+    }
+
+    TEST_METHOD(T_Decompose)
+    {
+      uint32_t id_out;
+      uint32_t generation_out;
+      uint8_t flags_out;
+      ID::Decompose(id, &id_out, &generation_out, &flags_out);
+
+      Assert::AreEqual((uint32_t)5, id_out);
+      Assert::AreEqual((uint32_t)3, generation_out);
+      Assert::AreEqual((uint8_t)6, flags_out);
+    }
+
+  };
+
+  TEST_CLASS(T_Destroy)
+  {
+    FLX_ID_SETUP;
+  public:
+
+    TEST_METHOD_INITIALIZE(Initialize)
+    {
+      _flx_id_next = 1;
+      _flx_id_unused.clear();
+    }
+
+    TEST_METHOD_CLEANUP(Cleanup)
+    {
+    }
+
+    TEST_METHOD(T_Destroy_None)
+    {
+      uint64_t id = ID::Create(ID::Flag_None, _flx_id_next, _flx_id_unused);
+      ID::Destroy(id, _flx_id_unused);
+
+      Assert::AreEqual((size_t)2, _flx_id_next);
+      Assert::AreEqual((size_t)1, _flx_id_unused.size());
+      // 0000   0000 0000 0000 0000 0000 0000 0001   0000 0000 0000 0000 0000 0000 0000 0001
+      Assert::AreEqual((uint64_t)4294967297, _flx_id_unused.back());
+    }
+
+    TEST_METHOD(T_Destroy_Reuse)
+    {
+      uint64_t id = ID::Create(2, _flx_id_next, _flx_id_unused);
+      ID::Destroy(id, _flx_id_unused);
+      id = ID::Create(false, false, true, false, _flx_id_next, _flx_id_unused);
+
+      Assert::AreEqual((size_t)2, _flx_id_next);
+      Assert::AreEqual((size_t)0, _flx_id_unused.size());
+      // 0100   0000 0000 0000 0000 0000 0000 0010   0000 0000 0000 0000 0000 0000 0000 0001
+      Assert::AreEqual((uint64_t)4611686027017322497, id);
+
+      ID::Destroy(id, _flx_id_unused);
+      id = ID::Create(false, false, true, false, _flx_id_next, _flx_id_unused);
+
+      Assert::AreEqual((size_t)2, _flx_id_next);
+      Assert::AreEqual((size_t)0, _flx_id_unused.size());
+      // 0100   0000 0000 0000 0000 0000 0000 0011   0000 0000 0000 0000 0000 0000 0000 0001
+      Assert::AreEqual((uint64_t)4611686031312289793, id);
+    }
+
+  };
 
 }

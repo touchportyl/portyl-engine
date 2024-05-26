@@ -69,6 +69,10 @@
 // UUID class for generating unique identifiers.
 #include "FlexEngine/uuid.h"
 
+// FlexID class for generating special unique identifiers.
+// The first 32 bits are the ID, the next 28 bits are the generation, and the last 4 bits are the flags.
+#include "FlexEngine/flexid.h"
+
 // Scoped timer to measure time taken by functions.
 // Macros are provided to measure the time taken by a function.
 #include "FlexEngine/timer.h"

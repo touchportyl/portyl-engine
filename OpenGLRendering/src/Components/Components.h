@@ -8,6 +8,12 @@ namespace OpenGLRendering
 
   using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
 
+  class IsActive
+  { FLX_REFL_SERIALIZABLE
+  public:
+    bool is_active;
+  };
+
   class LocalPosition
   { FLX_REFL_SERIALIZABLE
   public:
@@ -35,6 +41,7 @@ namespace OpenGLRendering
   class Transform
   { FLX_REFL_SERIALIZABLE
   public:
+    bool is_dirty = true;
     Matrix4x4 transform;
   };
 
@@ -75,6 +82,7 @@ namespace OpenGLRendering
   class Camera
   { FLX_REFL_SERIALIZABLE
   public:
+    bool is_dirty = true;
     Vector3 front;
     Vector3 right;
     Vector3 up;

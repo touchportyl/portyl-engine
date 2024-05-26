@@ -15,8 +15,8 @@ namespace OpenGLRendering
     main_camera = FlexECS::Entity::Null;
     directional_light = FlexECS::Entity::Null;
     point_lights.clear();
-    //plane = FlexECS::Entity::Null;
     object = FlexECS::Entity::Null;
+    //plane = FlexECS::Entity::Null;
 
     // create entities
 
@@ -27,11 +27,17 @@ namespace OpenGLRendering
     object = FlexECS::Scene::CreateEntity("Object");
     //plane = FlexECS::Scene::CreateEntity("Plane");
 
-    FlexECS::Scene::SetEntityFlags(main_camera.Get(), ID::Flag_IsActive);
-    FlexECS::Scene::SetEntityFlags(directional_light.Get(), ID::Flag_IsActive);
-    for (auto& entity : point_lights) FlexECS::Scene::SetEntityFlags(entity.Get(), ID::Flag_IsActive);
-    FlexECS::Scene::SetEntityFlags(object.Get(), ID::Flag_IsActive);
-    //FlexECS::Scene::SetEntityFlags(plane.Get(), ID::Flag_IsActive);
+    //FlexECS::Scene::SetEntityFlags(main_camera.Get(), ID::Flag_IsActive);
+    //FlexECS::Scene::SetEntityFlags(directional_light.Get(), ID::Flag_IsActive);
+    //for (auto& entity : point_lights) FlexECS::Scene::SetEntityFlags(entity.Get(), ID::Flag_IsActive);
+    //FlexECS::Scene::SetEntityFlags(object.Get(), ID::Flag_IsActive);
+    ////FlexECS::Scene::SetEntityFlags(plane.Get(), ID::Flag_IsActive);
+
+    main_camera.AddComponent<IsActive>({ true });
+    directional_light.AddComponent<IsActive>({ true });
+    for (auto& entity : point_lights) entity.AddComponent<IsActive>({ true });
+    object.AddComponent<IsActive>({ true });
+    //plane.AddComponent<IsActive>({ true });
 
     // add components
 
@@ -370,9 +376,16 @@ namespace OpenGLRendering
         auto camera = main_camera.GetComponent<Camera>();
 
         ImGui::PushID("camera");
-        ImGui::DragFloat3("Global Position", global_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f");
+
+        if (ImGui::DragFloat3("Global Position", global_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f"))
+        {
+          camera->is_dirty = true;
+        }
+
         if (ImGui::DragFloat3("Rotation", rotation.begin(), 0.1f, -0.1f, 360.1f, "%.1f"))
         {
+          camera->is_dirty = true;
+
           // loop around
           for (auto& value : rotation)
           {
@@ -380,10 +393,27 @@ namespace OpenGLRendering
             else if (value < 0.0f) value += 359.0f;
           }
         }
-        ImGui::Checkbox("Perspective", &camera->perspective);
-        ImGui::DragFloat("FOV", &camera->fov, 0.1f, 10.0f, 150.0f, "%.1f");
-        ImGui::DragFloat("Near Clip", &camera->near, 0.01f, 0.01f, 200.0f, "%.2f");
-        ImGui::DragFloat("Far Clip", &camera->far, 0.01f, 0.01f, 200.0f, "%.2f");
+
+        if (ImGui::Checkbox("Perspective", &camera->perspective))
+        {
+          camera->is_dirty = true;
+        }
+
+        if (ImGui::DragFloat("FOV", &camera->fov, 0.1f, 10.0f, 150.0f, "%.1f"))
+        {
+          camera->is_dirty = true;
+        }
+
+        if (ImGui::DragFloat("Near Clip", &camera->near, 0.01f, 0.01f, 200.0f, "%.2f"))
+        {
+          camera->is_dirty = true;
+        }
+
+        if (ImGui::DragFloat("Far Clip", &camera->far, 0.01f, 0.01f, 200.0f, "%.2f"))
+        {
+          camera->is_dirty = true;
+        }
+
         ImGui::PopID();
       }
 
@@ -411,16 +441,22 @@ namespace OpenGLRendering
         auto& point_light = point_lights[i];
         if (ImGui::CollapsingHeader(("Point Light " + std::to_string(i)).c_str(), tree_node_flags))
         {
+          auto is_active = &point_light.GetComponent<IsActive>()->is_active;
           auto& position = point_light.GetComponent<GlobalPosition>()->position;
           auto& ambient = point_light.GetComponent<PointLight>()->ambient;
           auto& diffuse = point_light.GetComponent<PointLight>()->diffuse;
           auto& specular = point_light.GetComponent<PointLight>()->specular;
 
           ImGui::PushID(("point_light" + std::to_string(i)).c_str());
+
+          ImGui::Checkbox("Active", is_active);
+          ImGui::BeginDisabled(!(*is_active));
           ImGui::DragFloat3("Position", position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f");
           ImGui::ColorEdit3("Ambient", ambient.begin());
           ImGui::ColorEdit3("Diffuse", diffuse.begin());
           ImGui::ColorEdit3("Specular", specular.begin());
+          ImGui::EndDisabled();
+
           ImGui::PopID();
         }
       }
@@ -428,23 +464,43 @@ namespace OpenGLRendering
       ImGui::SeparatorText("Entities");
 
       // entities
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<LocalPosition, GlobalPosition, Rotation, Scale>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, LocalPosition, GlobalPosition, Rotation, Scale, Transform>())
       {
         auto entity_name_component = entity.GetComponent<EntityName>();
+        auto is_active = &entity.GetComponent<IsActive>()->is_active;
         auto& local_position = entity.GetComponent<LocalPosition>()->position;
         auto& global_position = entity.GetComponent<GlobalPosition>()->position;
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
         auto& scale = entity.GetComponent<Scale>()->scale;
+        auto transform = entity.GetComponent<Transform>();
 
         std::string& entity_name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component);
 
         if (ImGui::CollapsingHeader(entity_name.c_str(), tree_node_flags))
         {
           ImGui::PushID(entity_name.c_str());
-          ImGui::DragFloat3("Global Position", global_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f");
-          ImGui::DragFloat3("Local Position", local_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f");
+
+          if (ImGui::Checkbox("Active", is_active))
+          {
+            transform->is_dirty = true;
+          }
+
+          ImGui::BeginDisabled(!(*is_active));
+
+          if (ImGui::DragFloat3("Global Position", global_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f"))
+          {
+            transform->is_dirty = true;
+          }
+
+          if (ImGui::DragFloat3("Local Position", local_position.begin(), 0.01f, -1000.0f, 1000.0f, "%.2f"))
+          {
+            transform->is_dirty = true;
+          }
+
           if (ImGui::DragFloat3("Rotation", rotation.begin(), 0.1f, -0.1f, 360.1f, "%.1f"))
           {
+            transform->is_dirty = true;
+
             // loop around
             for (auto& value : rotation)
             {
@@ -452,7 +508,14 @@ namespace OpenGLRendering
               else if (value < 0.0f) value += 360.0f;
             }
           }
-          ImGui::DragFloat3("Scale", scale.begin(), 0.01f, 0.1f, 1000.0f, "%.2f");
+
+          if (ImGui::DragFloat3("Scale", scale.begin(), 0.01f, 0.1f, 1000.0f, "%.2f"))
+          {
+            transform->is_dirty = true;
+          }
+
+          ImGui::EndDisabled();
+
           ImGui::PopID();
         }
       }
@@ -537,12 +600,14 @@ namespace OpenGLRendering
     #if 1
     {
       // Rotate all entities in the scene (except cameras)
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<GlobalPosition, Rotation>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, GlobalPosition, Rotation, Transform>())
       {
         if (entity.HasComponent<Camera>()) continue;
-      
+        if (!entity.GetComponent<IsActive>()->is_active) continue;
+
         auto& global_position = entity.GetComponent<GlobalPosition>()->position;
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
+        auto transform = entity.GetComponent<Transform>();
       
         // rotate the entity
         rotation.y += 35.0f * Application::GetCurrentWindow()->GetDeltaTime();
@@ -557,6 +622,9 @@ namespace OpenGLRendering
         if (accumulator > 2.0f * PIf) accumulator -= 2.0f * PIf;
         float t = (sinf(accumulator) + 1.0f) / 2.0f;
         global_position = Lerp(initial_position, final_position, t);
+
+        // set dirty
+        transform->is_dirty = true;
       }
     }
     #endif
@@ -569,13 +637,17 @@ namespace OpenGLRendering
     #if 1
     {
       // Updates the transform component
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<LocalPosition, GlobalPosition, Rotation, Scale, Transform>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, LocalPosition, GlobalPosition, Rotation, Scale, Transform>())
       {
+        if (!entity.GetComponent<IsActive>()->is_active) continue;
+
+        auto transform = entity.GetComponent<Transform>();
+        if (!transform->is_dirty) continue;
+
         auto& local_position = entity.GetComponent<LocalPosition>()->position;
         auto& global_position = entity.GetComponent<GlobalPosition>()->position;
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
         auto& scale = entity.GetComponent<Scale>()->scale;
-        auto& transform = entity.GetComponent<Transform>()->transform;
 
         // calculate the transform
 
@@ -586,7 +658,7 @@ namespace OpenGLRendering
         
         // right to left
         // local transforms apply first before placing it in the world
-        transform = global_translation_matrix * rotation_matrix * scale_matrix * local_translation_matrix;
+        transform->transform = global_translation_matrix * rotation_matrix * scale_matrix * local_translation_matrix;
       }
     }
     #endif
@@ -604,6 +676,8 @@ namespace OpenGLRendering
         auto& global_position = entity.GetComponent<GlobalPosition>()->position;
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
         auto camera = entity.GetComponent<Camera>();
+        if (!camera->is_dirty) continue;
+        else camera->is_dirty = false;
 
         // update the camera
 
@@ -742,6 +816,7 @@ namespace OpenGLRendering
     {
       // cache camera
       auto camera = main_camera.GetComponent<Camera>();
+      auto projection_view_matrix = camera->projection * camera->view;
       // cache directional light
       auto dir_light = directional_light.GetComponent<DirectionalLight>();
       // cache point lights
@@ -749,13 +824,17 @@ namespace OpenGLRendering
       std::vector<PointLight*> pt_light;
       for (auto& entity : point_lights)
       {
+        if (!entity.GetComponent<IsActive>()->is_active) continue;
+
         pt_light_pos.push_back(entity.GetComponent<GlobalPosition>()->position);
         pt_light.push_back(entity.GetComponent<PointLight>());
       }
 
       // Render all entities
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Transform, Model, Shader>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform, Model, Shader>())
       {
+        if (!entity.GetComponent<IsActive>()->is_active) continue;
+
         auto& transform = entity.GetComponent<Transform>()->transform;
         auto& model = entity.GetComponent<Model>()->model;
         auto& shader = entity.GetComponent<Shader>()->shader;
@@ -764,20 +843,31 @@ namespace OpenGLRendering
         auto& shader_asset = FLX_ASSET_GET(Asset::Shader, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(shader));
         shader_asset.Use();
 
-        shader_asset.SetUniform_mat4("u_view", camera->view);
-        shader_asset.SetUniform_mat4("u_projection", camera->projection);
+        //shader_asset.SetUniform_mat4("u_view", camera->view);
+        //shader_asset.SetUniform_mat4("u_projection", camera->projection);
+        shader_asset.SetUniform_mat4("u_projection_view", projection_view_matrix);
 
         shader_asset.SetUniform_vec3("u_directional_light_direction", dir_light->direction);
         shader_asset.SetUniform_vec3("u_directional_light_ambient", dir_light->ambient);
         shader_asset.SetUniform_vec3("u_directional_light_diffuse", dir_light->diffuse);
         shader_asset.SetUniform_vec3("u_directional_light_specular", dir_light->specular);
 
-        for (std::size_t i = 0; i < std::min(pt_light_pos.size(), pt_light.size()); i++)
+        for (std::size_t i = 0; i < 2; i++)
         {
-          shader_asset.SetUniform_vec3(("u_point_light_position" + std::to_string(i)).c_str(), pt_light_pos[i]);
-          shader_asset.SetUniform_vec3(("u_point_light_ambient" + std::to_string(i)).c_str(), pt_light[i]->ambient);
-          shader_asset.SetUniform_vec3(("u_point_light_diffuse" + std::to_string(i)).c_str(), pt_light[i]->diffuse);
-          shader_asset.SetUniform_vec3(("u_point_light_specular" + std::to_string(i)).c_str(), pt_light[i]->specular);
+          if (i < std::min(pt_light_pos.size(), pt_light.size()))
+          {
+            shader_asset.SetUniform_vec3(("u_point_light_position" + std::to_string(i)).c_str(), pt_light_pos[i]);
+            shader_asset.SetUniform_vec3(("u_point_light_ambient" + std::to_string(i)).c_str(), pt_light[i]->ambient);
+            shader_asset.SetUniform_vec3(("u_point_light_diffuse" + std::to_string(i)).c_str(), pt_light[i]->diffuse);
+            shader_asset.SetUniform_vec3(("u_point_light_specular" + std::to_string(i)).c_str(), pt_light[i]->specular);
+          }
+          else
+          {
+            shader_asset.SetUniform_vec3(("u_point_light_position" + std::to_string(i)).c_str(), Vector3::Zero);
+            shader_asset.SetUniform_vec3(("u_point_light_ambient" + std::to_string(i)).c_str(), Vector3::Zero);
+            shader_asset.SetUniform_vec3(("u_point_light_diffuse" + std::to_string(i)).c_str(), Vector3::Zero);
+            shader_asset.SetUniform_vec3(("u_point_light_specular" + std::to_string(i)).c_str(), Vector3::Zero);
+          }
         }
 
         // get model
@@ -796,21 +886,7 @@ namespace OpenGLRendering
           Matrix4x4 model_transform = transform * mesh.transform;
           shader_asset.SetUniform_mat4("u_model", model_transform);
 
-          //// hardcoded
-          //auto& texture_asset = FLX_ASSET_GET(Asset::Texture, R"(\models\firetruck\Textures\colormap.png)");
-          //texture_asset.Bind(shader_asset, "u_texture_diffuse", 0);
-
-          //// first version
-          //// materials are stored in the mesh
-          //mesh.material.GetDiffuse()->Bind(shader_asset, "u_texture_diffuse", 0);
-          //auto specular = mesh.material.GetSpecular();
-          //specular.first->Bind(shader_asset, "u_texture_specular", 0);
-          //shader_asset.SetUniform_float("u_shininess", specular.second);
-
-          // second version
-          // materials are stored in the model
-          // material index is stored in the mesh
-
+          // set materials
           if (mesh.material_index < model_asset.materials.size())
           {
             auto& material = model_asset.materials[mesh.material_index];

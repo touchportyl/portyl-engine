@@ -9,9 +9,15 @@ namespace FlexEngine
 
     #pragma region Internal Functions
 
+    static void Internal_SetGeneration(uint64_t& id, const uint32_t value)
+    {
+      id &= ~(static_cast<uint64_t>(MASK_GENERATION) << SHIFT_GENERATION);
+      id |= (static_cast<uint64_t>(value) << SHIFT_GENERATION);
+    }
+
     static void Internal_IncrementGeneration(uint64_t& id)
     {
-      id += (static_cast<uint64_t>(1) << SHIFT_GENERATION);
+      Internal_SetGeneration(id, GetGeneration(id) + 1);
     }
 
     static void Internal_ResetFlags(uint64_t& id)
@@ -25,43 +31,41 @@ namespace FlexEngine
 
     __FLX_API uint64_t Create(const uint8_t flags, uint64_t& next_id, std::vector<uint64_t>& unused_ids)
     {
+      uint64_t id = 0;
+
       // If there are any unused IDs, use them first.
       if (!unused_ids.empty())
       {
-        uint64_t id = unused_ids.back();
+        id = unused_ids.back();
         unused_ids.pop_back();
-
-        // Increment the generation and reset the flags.
-        Internal_IncrementGeneration(id);
-        Internal_ResetFlags(id);
-
-        return id;
+      }
+      // Otherwise, create a new ID.
+      else
+      {
+        id = next_id++;
       }
 
-      // Otherwise, create a new ID.
-      uint64_t id = 0;
-      id |= (next_id << SHIFT_ID);
+      // Increment the generation and set the flags.
       Internal_IncrementGeneration(id);
       SetFlags(id, flags);
 
-      next_id++;
       return id;
     }
 
     __FLX_API uint64_t Create(
-      const bool __FLX_ECS_ID_FLAG_ONE_,
-      const bool __FLX_ECS_ID_FLAG_TWO_,
-      const bool __FLX_ECS_ID_FLAG_THREE_,
-      const bool __FLX_ECS_ID_FLAG_FOUR_,
+      const bool _FLX_ECS_ID_FLAG_ONE_,
+      const bool _FLX_ECS_ID_FLAG_TWO_,
+      const bool _FLX_ECS_ID_FLAG_THREE_,
+      const bool _FLX_ECS_ID_FLAG_FOUR_,
       uint64_t& next_id,
       std::vector<uint64_t>& unused_ids
     )
     {
       return Create(
-        (__FLX_ECS_ID_FLAG_ONE_   ? FLAG(__FLX_ECS_ID_FLAG_ONE)   : FLAG(None)) |
-        (__FLX_ECS_ID_FLAG_TWO_   ? FLAG(__FLX_ECS_ID_FLAG_TWO)   : FLAG(None)) |
-        (__FLX_ECS_ID_FLAG_THREE_ ? FLAG(__FLX_ECS_ID_FLAG_THREE) : FLAG(None)) |
-        (__FLX_ECS_ID_FLAG_FOUR_  ? FLAG(__FLX_ECS_ID_FLAG_FOUR)  : FLAG(None)),
+        (_FLX_ECS_ID_FLAG_ONE_   ? FLAG(_FLX_ECS_ID_FLAG_ONE)   : FLAG(None)) |
+        (_FLX_ECS_ID_FLAG_TWO_   ? FLAG(_FLX_ECS_ID_FLAG_TWO)   : FLAG(None)) |
+        (_FLX_ECS_ID_FLAG_THREE_ ? FLAG(_FLX_ECS_ID_FLAG_THREE) : FLAG(None)) |
+        (_FLX_ECS_ID_FLAG_FOUR_  ? FLAG(_FLX_ECS_ID_FLAG_FOUR)  : FLAG(None)),
         next_id, unused_ids
       );
     }
@@ -85,17 +89,17 @@ namespace FlexEngine
 
     __FLX_API uint32_t GetID(const uint64_t id)
     {
-      return (id & MASK_ID) >> SHIFT_ID;
+      return (id & MASK_ID);
     }
 
     __FLX_API uint32_t GetGeneration(const uint64_t id)
     {
-      return (id & MASK_GENERATION) >> SHIFT_GENERATION;
+      return (id & (static_cast<uint64_t>(MASK_GENERATION) << SHIFT_GENERATION)) >> SHIFT_GENERATION;
     }
 
     __FLX_API uint8_t GetFlags(const uint64_t id)
     {
-      return (id & MASK_FLAGS) >> SHIFT_FLAGS;
+      return (id & (static_cast<uint64_t>(MASK_FLAGS) << SHIFT_FLAGS)) >> SHIFT_FLAGS;
     }
 
     #pragma endregion
@@ -110,18 +114,18 @@ namespace FlexEngine
 
     __FLX_API void SetFlags(
       uint64_t& id,
-      const bool __FLX_ECS_ID_FLAG_ONE_,
-      const bool __FLX_ECS_ID_FLAG_TWO_,
-      const bool __FLX_ECS_ID_FLAG_THREE_,
-      const bool __FLX_ECS_ID_FLAG_FOUR_)
+      const bool _FLX_ECS_ID_FLAG_ONE_,
+      const bool _FLX_ECS_ID_FLAG_TWO_,
+      const bool _FLX_ECS_ID_FLAG_THREE_,
+      const bool _FLX_ECS_ID_FLAG_FOUR_)
     {
       SetFlags(
         id,
         static_cast<uint8_t>(
-          (__FLX_ECS_ID_FLAG_ONE_   ? FLAG(__FLX_ECS_ID_FLAG_ONE)   : FLAG(None)) |
-          (__FLX_ECS_ID_FLAG_TWO_   ? FLAG(__FLX_ECS_ID_FLAG_TWO)   : FLAG(None)) |
-          (__FLX_ECS_ID_FLAG_THREE_ ? FLAG(__FLX_ECS_ID_FLAG_THREE) : FLAG(None)) |
-          (__FLX_ECS_ID_FLAG_FOUR_  ? FLAG(__FLX_ECS_ID_FLAG_FOUR)  : FLAG(None))
+          (_FLX_ECS_ID_FLAG_ONE_   ? FLAG(_FLX_ECS_ID_FLAG_ONE)   : FLAG(None)) |
+          (_FLX_ECS_ID_FLAG_TWO_   ? FLAG(_FLX_ECS_ID_FLAG_TWO)   : FLAG(None)) |
+          (_FLX_ECS_ID_FLAG_THREE_ ? FLAG(_FLX_ECS_ID_FLAG_THREE) : FLAG(None)) |
+          (_FLX_ECS_ID_FLAG_FOUR_  ? FLAG(_FLX_ECS_ID_FLAG_FOUR)  : FLAG(None))
         )
       );
     }
@@ -130,10 +134,10 @@ namespace FlexEngine
 
     #pragma region Flag Checkers
 
-    __FLX_API bool __FLX_ECS_ID_FLAG_ONE    (uint64_t id) { return (id & FLAG(__FLX_ECS_ID_FLAG_ONE   )) != 0; }
-    __FLX_API bool __FLX_ECS_ID_FLAG_TWO    (uint64_t id) { return (id & FLAG(__FLX_ECS_ID_FLAG_TWO   )) != 0; }
-    __FLX_API bool __FLX_ECS_ID_FLAG_THREE  (uint64_t id) { return (id & FLAG(__FLX_ECS_ID_FLAG_THREE )) != 0; }
-    __FLX_API bool __FLX_ECS_ID_FLAG_FOUR   (uint64_t id) { return (id & FLAG(__FLX_ECS_ID_FLAG_FOUR  )) != 0; }
+    __FLX_API bool _FLX_ECS_ID_FLAG_ONE    (uint64_t id) { return (id & ( static_cast<uint64_t>( FLAG(_FLX_ECS_ID_FLAG_ONE)   ) << SHIFT_FLAGS )) != 0; }
+    __FLX_API bool _FLX_ECS_ID_FLAG_TWO    (uint64_t id) { return (id & ( static_cast<uint64_t>( FLAG(_FLX_ECS_ID_FLAG_TWO)   ) << SHIFT_FLAGS )) != 0; }
+    __FLX_API bool _FLX_ECS_ID_FLAG_THREE  (uint64_t id) { return (id & ( static_cast<uint64_t>( FLAG(_FLX_ECS_ID_FLAG_THREE) ) << SHIFT_FLAGS )) != 0; }
+    __FLX_API bool _FLX_ECS_ID_FLAG_FOUR   (uint64_t id) { return (id & ( static_cast<uint64_t>( FLAG(_FLX_ECS_ID_FLAG_FOUR)  ) << SHIFT_FLAGS )) != 0; }
 
     #pragma endregion
 
