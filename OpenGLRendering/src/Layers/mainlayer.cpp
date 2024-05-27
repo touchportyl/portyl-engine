@@ -134,6 +134,11 @@ namespace OpenGLRendering
 
     FunctionQueue function_queue;
 
+    // setup dockspace
+    ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_NoDockingInCentralNode;
+    #pragma warning(suppress: 4189) // local variable is initialized but not referenced
+    ImGuiID dockspace_main_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), dockspace_flags);
+    
 
     #pragma region Title Bar
 
@@ -233,7 +238,7 @@ namespace OpenGLRendering
                 auto it = file_path.find_last_of(".");
                 if (it != std::string::npos)
                 {
-                  file_path = file_path.substr(it);
+                  file_path = file_path.substr(0, it);
                 }
                 file_path += ".flxscene";
 
