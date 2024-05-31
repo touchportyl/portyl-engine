@@ -3,6 +3,8 @@
 // FlexEngine: Pre-compiled Header File
 // https://en.cppreference.com/w/cpp/header
 
+#include <cstdint>                          // Fixed-size integer types
+
 #include <iostream>                         // Several standard stream objects
 #include <string>                           // std::basic_string class template
 #include <sstream>                          // std::basic_stringstream, std::basic_istringstream, std::basic_ostringstream class templates and several typedefs
