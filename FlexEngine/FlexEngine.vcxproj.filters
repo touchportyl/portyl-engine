@@ -204,9 +204,6 @@
     <ClInclude Include="src\FlexEngine\Core\entrypoint.h">
       <Filter>src\FlexEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Loader\gltf.h">
-      <Filter>src\FlexEngine\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="src\FlexEngine\playerprefs.h">
       <Filter>src\FlexEngine</Filter>
     </ClInclude>

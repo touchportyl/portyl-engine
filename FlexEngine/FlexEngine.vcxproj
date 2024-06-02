@@ -254,7 +254,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\flexid.h" />
     <ClInclude Include="src\FlexEngine\input.h" />
     <ClInclude Include="src\FlexEngine\Loader\fmodstudio.h" />
-    <ClInclude Include="src\FlexEngine\Loader\gltf.h" />
     <ClInclude Include="src\FlexEngine\flexlogger.h" />
     <ClInclude Include="src\FlexEngine\playerprefs.h" />
     <ClInclude Include="src\FlexEngine\Reflection\base.h" />
