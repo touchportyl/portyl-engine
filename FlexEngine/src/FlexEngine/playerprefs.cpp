@@ -15,7 +15,7 @@ namespace FlexEngine
   // static members
   Document PlayerPrefs::m_document;
 
-  void PlayerPrefs::Create()
+  void PlayerPrefs::Internal_Create()
   {
     FLX_FLOW_FUNCTION();
 
@@ -55,7 +55,7 @@ namespace FlexEngine
       std::cerr << "Failed to open PlayerPrefs" << std::endl;
 
       // default error handling
-      Create();
+      Internal_Create();
 
       return;
     }
@@ -111,54 +111,17 @@ namespace FlexEngine
     m_document.RemoveAllMembers();
   }
 
-  void PlayerPrefs::DeleteKey(std::string const& key)
-  {
-    m_document.RemoveMember(key.c_str());
-  }
-
   bool PlayerPrefs::HasKey(std::string const& key)
   {
     return m_document.HasMember(key.c_str());
   }
 
-  void PlayerPrefs::SetFloat(std::string const& key, float const& value)
+  void PlayerPrefs::DeleteKey(std::string const& key)
   {
-    m_document.AddMember(
-      Value(key.c_str(), m_document.GetAllocator()).Move(),
-      Value(value).Move(),
-      m_document.GetAllocator()
-    );
+    m_document.RemoveMember(key.c_str());
   }
 
-  void PlayerPrefs::SetInt(std::string const& key, int const& value)
-  {
-    m_document.AddMember(
-      Value(key.c_str(), m_document.GetAllocator()).Move(),
-      Value(value).Move(),
-      m_document.GetAllocator()
-    );
-  }
-
-  void PlayerPrefs::SetString(std::string const& key, std::string const& value)
-  {
-    Value value_string;
-    value_string.SetString(value.c_str(), static_cast<SizeType>(value.length()), m_document.GetAllocator());
-
-    m_document.AddMember(
-      Value(key.c_str(), m_document.GetAllocator()).Move(),
-      value_string.Move(),
-      m_document.GetAllocator()
-    );
-  }
-
-  void PlayerPrefs::SetBool(std::string const& key, bool const& value)
-  {
-    m_document.AddMember(
-      Value(key.c_str(), m_document.GetAllocator()).Move(),
-      Value(value).Move(),
-      m_document.GetAllocator()
-    );
-  }
+  #pragma region Getters
 
   float PlayerPrefs::GetFloat(std::string const& key, float const& default_value)
   {
@@ -207,5 +170,50 @@ namespace FlexEngine
       return m_document[key.c_str()].GetBool();
     }
   }
+
+  #pragma endregion
+
+  #pragma region Setters
+
+  void PlayerPrefs::SetFloat(std::string const& key, float const& value)
+  {
+    m_document.AddMember(
+      Value(key.c_str(), m_document.GetAllocator()).Move(),
+      Value(value).Move(),
+      m_document.GetAllocator()
+    );
+  }
+
+  void PlayerPrefs::SetInt(std::string const& key, int const& value)
+  {
+    m_document.AddMember(
+      Value(key.c_str(), m_document.GetAllocator()).Move(),
+      Value(value).Move(),
+      m_document.GetAllocator()
+    );
+  }
+
+  void PlayerPrefs::SetString(std::string const& key, std::string const& value)
+  {
+    Value value_string;
+    value_string.SetString(value.c_str(), static_cast<SizeType>(value.length()), m_document.GetAllocator());
+
+    m_document.AddMember(
+      Value(key.c_str(), m_document.GetAllocator()).Move(),
+      value_string.Move(),
+      m_document.GetAllocator()
+    );
+  }
+
+  void PlayerPrefs::SetBool(std::string const& key, bool const& value)
+  {
+    m_document.AddMember(
+      Value(key.c_str(), m_document.GetAllocator()).Move(),
+      Value(value).Move(),
+      m_document.GetAllocator()
+    );
+  }
+
+  #pragma endregion
 
 }

@@ -187,6 +187,9 @@
     <ClCompile Include="src\FlexEngine\flexid.cpp">
       <Filter>src\FlexEngine</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\flexprefs.cpp">
+      <Filter>src\FlexEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -356,6 +359,9 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\DataStructures\range.h">
       <Filter>src\FlexEngine\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\flexprefs.h">
+      <Filter>src\FlexEngine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
