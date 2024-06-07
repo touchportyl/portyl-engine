@@ -28,6 +28,7 @@ namespace OpenGLRendering
     window->SetTargetFPS();
     window->SetVSync(false);
     window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_icon_white.png)"));
+    //window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine-256.png)"));
     window->PushLayer(std::make_shared<MainLayer>());
   }
 

@@ -34,6 +34,8 @@
   <ItemGroup>
     <None Include="assets\shaders\renderer.frag" />
     <None Include="assets\shaders\renderer.vert" />
+    <None Include="assets\shaders\texture.frag" />
+    <None Include="assets\shaders\texture.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

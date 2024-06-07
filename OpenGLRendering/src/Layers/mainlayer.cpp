@@ -958,6 +958,33 @@ ImGui::EndMainMenuBar();
     #pragma endregion
 
 
+    {
+      WindowProps window_props = Application::GetCurrentWindow()->GetProps();
+      Renderer2DProps props;
+      props.texture = R"(\images\flexengine\flexengine-256.png)";
+      props.position = { 100.0f, 100.0f };
+      props.scale = { 100.0f, 100.0f };
+      props.window_size = { static_cast<float>(window_props.width), static_cast<float>(window_props.height) };
+      props.alignment = Renderer2DProps::Alignment_TopLeft;
+
+      // push settings
+
+      bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
+      if (depth_test) OpenGLRenderer::DisableDepthTest();
+
+      bool blending = OpenGLRenderer::IsBlendingEnabled();
+      if (!blending) OpenGLRenderer::EnableBlending();
+
+      // draw call
+      OpenGLRenderer::DrawTexture2D(props);
+
+      // pop settings
+
+      if (depth_test) OpenGLRenderer::EnableDepthTest();
+      if (!blending) OpenGLRenderer::DisableBlending();
+    }
+
+
     function_queue.Flush();
 
   }

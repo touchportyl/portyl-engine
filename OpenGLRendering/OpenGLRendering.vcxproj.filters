@@ -61,5 +61,11 @@
     <None Include="assets\shaders\renderer.vert">
       <Filter>assets\shaders</Filter>
     </None>
+    <None Include="assets\shaders\texture.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\texture.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
