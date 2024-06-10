@@ -10,9 +10,9 @@
 namespace FlexEngine
 {
 
-  struct Renderer2DProps
+  struct __FLX_API Renderer2DProps
   {
-    enum Alignment
+    enum __FLX_API Alignment
     {
       Alignment_Center = 0,
       Alignment_TopLeft = 1,

@@ -19,7 +19,7 @@ namespace FlexEngine
 
     Scene::StringIndex Scene::Internal_StringStorage_New(const std::string& str)
     {
-      StringIndex index = 0;
+      StringIndex index = 1;
 
       // check if there are any free indices
       if (!string_storage_free_list.empty())

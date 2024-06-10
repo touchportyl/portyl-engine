@@ -304,7 +304,8 @@ namespace FlexEngine
     // but it does not store anything other than the entity id,
     // which is used to look up the entity in the ECS.
     class __FLX_API Entity
-    {
+    { FLX_REFL_SERIALIZABLE
+
       EntityID entity_id;
 
     public:

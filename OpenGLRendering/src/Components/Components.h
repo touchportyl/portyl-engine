@@ -51,25 +51,36 @@ namespace OpenGLRendering
     FlexECS::Scene::StringIndex shader;
   };
 
-  class Texture
+  //class Texture
+  //{ FLX_REFL_SERIALIZABLE
+  //public:
+  //  FlexECS::Scene::StringIndex texture;
+  //};
+
+  // For the mesh
+  //class Material
+  //{ FLX_REFL_SERIALIZABLE
+  //public:
+  //  FlexECS::Scene::StringIndex diffuse;
+  //  std::pair<FlexECS::Scene::StringIndex, float> specular;
+  //};
+
+  // Programmable meshes
+  //class Mesh
+  //{ FLX_REFL_SERIALIZABLE
+  //public:
+  //  Asset::Mesh mesh;
+  //};
+
+  // For 2D sprites
+  class Sprite
   { FLX_REFL_SERIALIZABLE
   public:
     FlexECS::Scene::StringIndex texture;
-  };
-
-  // For the mesh
-  class Material
-  { FLX_REFL_SERIALIZABLE
-  public:
-    FlexECS::Scene::StringIndex diffuse;
-    std::pair<FlexECS::Scene::StringIndex, float> specular;
-  };
-
-  // Programmable meshes
-  class Mesh
-  { FLX_REFL_SERIALIZABLE
-  public:
-    Asset::Mesh mesh;
+    Vector3 color = Vector3(1.0f, 0.0f, 1.0f);
+    Vector3 color_to_add = Vector3(0.0f, 0.0f, 0.0f);
+    Vector3 color_to_multiply = Vector3(1.0f, 1.0f, 1.0f);
+    int alignment = Renderer2DProps::Alignment_Center;
   };
 
   // For imported models

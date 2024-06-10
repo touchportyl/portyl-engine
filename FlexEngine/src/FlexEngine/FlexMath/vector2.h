@@ -169,10 +169,10 @@ namespace FlexEngine
   __FLX_API Vector2 operator-(Vector2::const_value_type value, const Vector2& point);
   __FLX_API Vector2 operator-(const Vector2& point, Vector2::const_value_type value);
 
-  //__FLX_API Vector2 operator*(const Vector2& point_a, const Vector2& point_b);
-
   // Dot product of two vectors
   __FLX_API Vector2::value_type Dot(const Vector2& a, const Vector2& b);
+
+  __FLX_API Vector2 operator*(const Vector2& point_a, const Vector2& point_b);
   __FLX_API Vector2 operator*(const Vector2& point, Vector2::const_value_type value);
   __FLX_API Vector2 operator*(Vector2::const_value_type value, const Vector2& point);
 

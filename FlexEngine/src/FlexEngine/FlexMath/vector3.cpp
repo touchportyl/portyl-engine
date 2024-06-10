@@ -288,14 +288,14 @@ namespace FlexEngine
     return { value - point.x, value - point.y, value - point.z };
   }
 
-  //Vector3 operator*(const Vector3& point_a, const Vector3& point_b)
-  //{
-  //  return { point_a.x * point_b.x, point_a.y * point_b.y, point_a.z * point_b.z };
-  //}
-
   Vector3::value_type Dot(const Vector3& point_a, const Vector3& point_b)
   {
     return point_a.x * point_b.x + point_a.y * point_b.y + point_a.z * point_b.z;
+  }
+
+  Vector3 operator*(const Vector3& point_a, const Vector3& point_b)
+  {
+    return { point_a.x * point_b.x, point_a.y * point_b.y, point_a.z * point_b.z };
   }
 
   Vector3 operator*(Vector3::const_value_type value, const Vector3& point)

@@ -5,6 +5,14 @@ namespace FlexEngine
   namespace FlexECS
   {
 
+    #pragma region Reflection
+
+    FLX_REFL_REGISTER_START(Entity)
+      FLX_REFL_REGISTER_PROPERTY(entity_id)
+    FLX_REFL_REGISTER_END;
+
+    #pragma endregion
+
     // static member initialization
     Entity Entity::Null = Entity();
 

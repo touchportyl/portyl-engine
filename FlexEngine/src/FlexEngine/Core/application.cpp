@@ -60,6 +60,10 @@ namespace FlexEngine
 
     auto window = std::make_shared<Window>(props);
     m_windows.push_back(window);
+
+    // if this is the first window, set it as the current window
+    if (m_windows.size() == 1) Internal_SetCurrentWindow(window.get());
+
     return window;
   }
 

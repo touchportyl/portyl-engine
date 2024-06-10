@@ -167,8 +167,8 @@ namespace FlexEngine
   __FLX_API Vector3 operator-(Vector3::const_value_type value, const Vector3& point);
   __FLX_API Vector3 operator-(const Vector3& point, Vector3::const_value_type value);
 
-  //__FLX_API Vector3 operator*(const Vector3& point_a, const Vector3& point_b);
   __FLX_API Vector3::value_type Dot(const Vector3& point_a, const Vector3& point_b);
+  __FLX_API Vector3 operator*(const Vector3& point_a, const Vector3& point_b);
   __FLX_API Vector3 operator*(Vector3::const_value_type value, const Vector3& point);
   __FLX_API Vector3 operator*(const Vector3& point, Vector3::const_value_type value);
 

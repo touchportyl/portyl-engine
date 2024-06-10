@@ -268,15 +268,15 @@ namespace FlexEngine
     return { point.x - value, point.y - value };
   }
 
-  //Vector2 operator*(const Vector2& point_a, const Vector2& point_b)
-  //{
-  //  return { point_a.x * point_b.x, point_a.y * point_b.y };
-  //}
-
   // Dot product of two vectors
   Vector2::value_type Dot(const Vector2& a, const Vector2& b)
   {
     return a.x * b.x + a.y * b.y;
+  }
+
+  Vector2 operator*(const Vector2& point_a, const Vector2& point_b)
+  {
+    return { point_a.x * point_b.x, point_a.y * point_b.y };
   }
 
   Vector2 operator*(const Vector2& point, Vector2::const_value_type value)
