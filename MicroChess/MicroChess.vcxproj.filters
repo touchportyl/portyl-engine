@@ -24,6 +24,9 @@
     <Filter Include="src\Renderer">
       <UniqueIdentifier>{de033ccb-f665-4504-b871-5b98b31ecd15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Physics">
+      <UniqueIdentifier>{239557ac-711e-401c-ae1f-b024dff647f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\texture.frag">
@@ -61,6 +64,9 @@
     <ClInclude Include="src\Renderer\sprite2d.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Physics\box2d.h">
+      <Filter>src\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -86,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="src\Renderer\sprite2d.cpp">
       <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\box2d.cpp">
+      <Filter>src\Physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

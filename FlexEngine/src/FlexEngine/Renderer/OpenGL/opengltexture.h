@@ -36,7 +36,7 @@ namespace FlexEngine
       // For creating textures from memory
       // Useful for creating textures from procedural generation or loading
       // embedded textures.
-      Texture(unsigned char* texture_data, int width, int height);
+      Texture(unsigned char* texture_data, int width, int height = 0);
 
       ~Texture();
 
@@ -45,7 +45,7 @@ namespace FlexEngine
 
       static const Texture Null;
       static const Texture None;
-      static const Texture Default;
+      static Texture Default();
 
       #pragma region Texture Management Functions
 

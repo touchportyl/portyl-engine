@@ -151,6 +151,7 @@
     <ClInclude Include="src\Layers\base.h" />
     <ClInclude Include="src\Layers\board.h" />
     <ClInclude Include="src\Layers\menu.h" />
+    <ClInclude Include="src\Physics\box2d.h" />
     <ClInclude Include="src\Renderer\sprite2d.h" />
     <ClInclude Include="src\States.h" />
     <ClInclude Include="src\States\mainstate.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="src\Layers\board.cpp" />
     <ClCompile Include="src\Layers\menu.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Physics\box2d.cpp" />
     <ClCompile Include="src\Renderer\sprite2d.cpp" />
     <ClCompile Include="src\States\mainstate.cpp" />
   </ItemGroup>

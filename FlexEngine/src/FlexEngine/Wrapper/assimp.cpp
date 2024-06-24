@@ -4,6 +4,8 @@
 
 #include "FlexMath/vector3.h"
 #include "AssetManager/assetmanager.h"
+#include "Renderer/OpenGL/opengltexture.h"
+#include "DataStructures/freequeue.h"
 
 namespace
 {
@@ -196,7 +198,8 @@ namespace FlexEngine
     const aiScene* scene
   )
   {
-    Asset::Material::TextureVariant textures = Asset::Texture::Default;
+    Asset::Material::TextureVariant textures = Asset::Texture::None;
+    //Asset::Material::TextureVariant textures = Asset::Texture::Default();
 
     // process the material
     if (material->GetTextureCount(type) > 0)
@@ -207,34 +210,52 @@ namespace FlexEngine
       const aiTexture* texture = scene->GetEmbeddedTexture(texture_path.C_Str());
       if (texture)
       {
-        // guard: texture is compressed
+
+        // guard: texture is compressed if the height is 0
+        // the width represents the size of the compressed texture
         if (texture->mHeight == 0)
         {
+          #if 1
+
           Log::Error("AssimpWrapper: Embedded textures are compressed, decompression is not supported.");
           return textures;
+
+          #else
+
+          // decompress the texture
+          Asset::Texture embedded_texture(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth);
+
+          // add the texture to the list of textures
+          textures = embedded_texture;
+
+          #endif
         }
-
-        // create a buffer for the texture data
-        std::size_t size = texture->mWidth * texture->mHeight * 4;
-        unsigned char* data = new unsigned char[size];
-
-        // ARGB -> RGBA
-        for (std::size_t j = 0; j < size; j += 4)
+        // no decompression needed
+        else
         {
-          data[j + 0] = texture->pcData[j].r;
-          data[j + 1] = texture->pcData[j].g;
-          data[j + 2] = texture->pcData[j].b;
-          data[j + 3] = texture->pcData[j].a;
+          // create a buffer for the texture data
+          std::size_t size = static_cast<std::size_t>(texture->mWidth * texture->mHeight * 4);
+          unsigned char* data = new unsigned char[size];
+
+          // ARGB -> RGBA
+          for (std::size_t j = 0; j < size; j += 4)
+          {
+            data[j + 0] = texture->pcData[j].r;
+            data[j + 1] = texture->pcData[j].g;
+            data[j + 2] = texture->pcData[j].b;
+            data[j + 3] = texture->pcData[j].a;
+          }
+
+          // create the texture
+          Asset::Texture embedded_texture(data, texture->mWidth, texture->mHeight);
+
+          // cleanup
+          delete[] data;
+
+          // add the texture to the list of textures
+          textures = embedded_texture;
         }
 
-        // embed the texture
-        Asset::Texture embedded_texture(data, texture->mWidth, texture->mHeight);
-
-        // cleanup
-        delete[] data;
-
-        // add the texture to the list of textures
-        textures = embedded_texture;
       }
       else
       {

@@ -105,54 +105,84 @@ namespace FlexEngine
     return true;
   }
 
+  static bool Internal_LoadTextureFromMemory(const unsigned char* texture_data, int size, unsigned char** out_texture_data, unsigned int* out_texture, int* out_width, int* out_height)
+  {
+    // Decompress the texture
+    int channels;
+    unsigned char* image_data = stbi_load_from_memory(texture_data, size, out_width, out_height, &channels, 4);
+    if (!image_data)
+    {
+      Log::Error("Could not decompress texture data!");
+      return false;
+    }
+
+    // Save the image data
+    std::size_t texture_size = (*out_width) * (*out_height) * 4;
+    *out_texture_data = new unsigned char[texture_size];
+    if (!(*out_texture_data))
+    {
+      Log::Error("Could not allocate memory for texture data!");
+      stbi_image_free(image_data);
+      return false;
+    }
+    memcpy(*out_texture_data, image_data, texture_size);
+
+    // Bind the texture
+    Internal_LoadTextureForOpenGL(out_texture, *out_texture_data, *out_width, *out_height);
+
+    stbi_image_free(image_data);
+
+    return true;
+  }
+
   #pragma endregion
   
   namespace Asset
   {
 
     // static member initialization
-    const Texture Texture::Null = Default;
-    const Texture Texture::None = Default;
-    const Texture Texture::Default = Texture();
+    const Texture Texture::Null = Texture();
+    const Texture Texture::None = Null;
+
+    Texture Texture::Default()
+    {
+      Texture texture;
+      texture.Load();
+      return texture;
+    }
 
     Texture::Texture(unsigned char* texture_data, int width, int height)
-      : m_texture_data(texture_data), m_width(width), m_height(height)
+      : m_texture_data(nullptr), m_width(width), m_height(height)
     {
-      m_texture_data = new unsigned char[width * height * 4];
-      if (!m_texture_data)
+      // decompress the texture
+      if (height == 0)
       {
-        Log::Error("Could not allocate memory for texture data!");
-        return;
+        bool success = Internal_LoadTextureFromMemory(texture_data, width, &m_texture_data, &m_texture, &m_width, &m_height);
+        // if no texture is loaded, bind the default texture
+        if (!success || !m_texture || !m_width || !m_height)
+        {
+          Load();
+        }
       }
-      memcpy(m_texture_data, texture_data, width * height * 4);
-      
-      Internal_LoadTextureForOpenGL(&m_texture, m_texture_data, m_width, m_height);
+      // no decompression needed
+      else
+      {
+        m_texture_data = new unsigned char[width * height * 4];
+        if (!m_texture_data)
+        {
+          Log::Error("Could not allocate memory for texture data!");
+          return;
+        }
+        memcpy(m_texture_data, texture_data, width * height * 4);
+        
+        Internal_LoadTextureForOpenGL(&m_texture, m_texture_data, m_width, m_height);
+      }
     }
 
     Texture::~Texture()
     {
       Unload();
     }
-
-    #pragma region Binding functions for OpenGL
-
-    void Texture::Bind(const Shader& shader, const char* name, unsigned int texture_unit) const
-    {
-      glActiveTexture(GL_TEXTURE0 + texture_unit);
-      
-      std::string texture_name = name;
-      texture_name += std::to_string(texture_unit);
-      glUniform1i(glGetUniformLocation(shader.Get(), texture_name.c_str()), texture_unit);
-      
-      glBindTexture(GL_TEXTURE_2D, m_texture);
-    }
-
-    void Texture::Unbind() const
-    {
-      glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    #pragma endregion
 
     #pragma region Texture Management Functions
 
@@ -194,6 +224,26 @@ namespace FlexEngine
       }
 
       m_width = m_height = 0;
+    }
+
+    #pragma endregion
+
+    #pragma region Binding functions for OpenGL
+
+    void Texture::Bind(const Shader& shader, const char* name, unsigned int texture_unit) const
+    {
+      glActiveTexture(GL_TEXTURE0 + texture_unit);
+
+      std::string texture_name = name;
+      texture_name += std::to_string(texture_unit);
+      glUniform1i(glGetUniformLocation(shader.Get(), texture_name.c_str()), texture_unit);
+
+      glBindTexture(GL_TEXTURE_2D, m_texture);
+    }
+
+    void Texture::Unbind() const
+    {
+      glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     #pragma endregion

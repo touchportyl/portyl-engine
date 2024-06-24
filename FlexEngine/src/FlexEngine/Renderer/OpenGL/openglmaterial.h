@@ -31,8 +31,8 @@ namespace FlexEngine
 
     public:
       Material(
-        TextureVariant _diffuse = Texture::Default,
-        TextureVariant _specular = Texture::Default,
+        TextureVariant _diffuse = Texture::Null,
+        TextureVariant _specular = Texture::Null,
         float _shininess = 32.0f
       );
 
