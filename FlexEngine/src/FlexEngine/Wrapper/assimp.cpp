@@ -215,7 +215,7 @@ namespace FlexEngine
         // the width represents the size of the compressed texture
         if (texture->mHeight == 0)
         {
-          #if 1
+          #if 0
 
           Log::Error("AssimpWrapper: Embedded textures are compressed, decompression is not supported.");
           return textures;

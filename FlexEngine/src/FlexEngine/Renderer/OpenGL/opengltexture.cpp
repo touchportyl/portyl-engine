@@ -151,18 +151,48 @@ namespace FlexEngine
       return texture;
     }
 
+    Texture::Texture(const Texture& other)
+    {
+      *this = other;
+    }
+
+    Texture& Texture::operator=(const Texture& other)
+    {
+      // deep copy
+      m_texture = other.m_texture;
+      m_width = other.m_width;
+      m_height = other.m_height;
+      std::size_t size = m_width * m_height * 4;
+      if (size)
+      {
+        m_texture_data = new unsigned char[size];
+        memcpy(m_texture_data, other.m_texture_data, size);
+      }
+      else
+      {
+        m_texture_data = nullptr;
+      }
+
+      return *this;
+    }
+
     Texture::Texture(unsigned char* texture_data, int width, int height)
       : m_texture_data(nullptr), m_width(width), m_height(height)
     {
       // decompress the texture
       if (height == 0)
       {
-        bool success = Internal_LoadTextureFromMemory(texture_data, width, &m_texture_data, &m_texture, &m_width, &m_height);
-        // if no texture is loaded, bind the default texture
-        if (!success || !m_texture || !m_width || !m_height)
-        {
-          Load();
-        }
+        //bool success = Internal_LoadTextureFromMemory(texture_data, width, &m_texture_data, &m_texture, &m_width, &m_height);
+        //// if no texture is loaded, bind the default texture
+        //if (!success || !m_texture || !m_width || !m_height)
+        //{
+        //  Load();
+        //}
+
+        Log::Error("AssimpWrapper: Embedded textures are compressed, decompression is not supported.");
+        Load();
+
+        Log::Debug("Loaded: " + std::to_string(m_texture));
       }
       // no decompression needed
       else

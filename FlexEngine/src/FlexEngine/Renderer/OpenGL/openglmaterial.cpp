@@ -10,8 +10,26 @@ namespace FlexEngine
   {
 
     Material::Material(TextureVariant _diffuse, TextureVariant _specular, float _shininess)
-      : diffuse(_diffuse), specular(_specular), shininess(_shininess)
+      : shininess(_shininess)
     {
+      // perform deep copy of the texture data
+      if (std::holds_alternative<Texture>(_diffuse))
+      {
+        diffuse = std::get<Texture>(_diffuse);
+      }
+      else
+      {
+        diffuse = std::get<AssetKey>(_diffuse);
+      }
+
+      if (std::holds_alternative<Texture>(_specular))
+      {
+        specular = std::get<Texture>(_specular);
+      }
+      else
+      {
+        specular = std::get<AssetKey>(_specular);
+      }
     }
 
     #pragma region Getter Functions

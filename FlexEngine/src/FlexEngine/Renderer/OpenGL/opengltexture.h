@@ -33,6 +33,10 @@ namespace FlexEngine
 
       Texture() = default;
 
+      // deep copy constructor
+      Texture(const Texture& other);
+      Texture& operator=(const Texture& other);
+
       // For creating textures from memory
       // Useful for creating textures from procedural generation or loading
       // embedded textures.
