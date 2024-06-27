@@ -948,11 +948,22 @@ ImGui::EndMainMenuBar();
             {
               diffuse->Bind(shader_asset, "u_material_diffuse", 0);
             }
+            else
+            {
+              static const Asset::Texture default_texture = Asset::Texture::Default();
+              default_texture.Bind(shader_asset, "u_material_diffuse", 0);
+            }
             auto specular = material.GetSpecular();
             if (specular.first)
             {
               specular.first->Bind(shader_asset, "u_material_specular", 1);
               shader_asset.SetUniform_float("u_material_shininess", specular.second);
+            }
+            else
+            {
+              static const Asset::Texture default_texture = Asset::Texture::Default();
+              default_texture.Bind(shader_asset, "u_material_specular", 1);
+              shader_asset.SetUniform_float("u_material_shininess", 32.0f);
             }
           }
 

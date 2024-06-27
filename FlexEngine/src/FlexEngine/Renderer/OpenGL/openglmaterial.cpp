@@ -18,65 +18,25 @@ namespace FlexEngine
 
     const Texture* Material::GetDiffuse() const
     {
-      if (std::holds_alternative<AssetKey>(diffuse))
+      // guard
+      if (diffuse.empty())
       {
-        return &FLX_ASSET_GET(Asset::Texture, std::get<AssetKey>(diffuse));
+        return nullptr;
       }
-      else
-      {
-        return &std::get<Texture>(diffuse);
-      }
+
+      return &FLX_ASSET_GET(Asset::Texture, diffuse);
     }
 
     std::pair<const Texture*, float> Material::GetSpecular() const
     {
-      if (std::holds_alternative<AssetKey>(specular))
+      // guard
+      if (specular.empty())
       {
-        return { &FLX_ASSET_GET(Asset::Texture, std::get<AssetKey>(specular)), shininess };
+        return { nullptr, 0 };
       }
-      else
-      {
-        return { &std::get<Texture>(specular), shininess };
-      }
+
+      return { &FLX_ASSET_GET(Asset::Texture, specular), shininess };
     }
-
-    //std::vector<const Texture*> Material::GetDiffuse() const
-    //{
-    //  std::vector<const Texture*> textures;
-    //
-    //  for (const auto& variant : diffuse)
-    //  {
-    //    if (std::holds_alternative<AssetKey>(variant))
-    //    {
-    //      textures.push_back(&FLX_ASSET_GET(Asset::Texture, std::get<AssetKey>(variant)));
-    //    }
-    //    else
-    //    {
-    //      textures.push_back(&std::get<Texture>(variant));
-    //    }
-    //  }
-    //
-    //  return textures;
-    //}
-
-    //std::vector<const Texture*> Material::GetSpecular() const
-    //{
-    //  std::vector<const Texture*> textures;
-    //
-    //  for (const auto& variant : specular)
-    //  {
-    //    if (std::holds_alternative<AssetKey>(variant))
-    //    {
-    //      textures.push_back(&FLX_ASSET_GET(Asset::Texture, std::get<AssetKey>(variant)));
-    //    }
-    //    else
-    //    {
-    //      textures.push_back(&std::get<Texture>(variant));
-    //    }
-    //  }
-    //
-    //  return textures;
-    //}
 
     #pragma endregion
 
@@ -84,7 +44,7 @@ namespace FlexEngine
 
     bool Material::operator==(const Material& other) const
     {
-      return diffuse == other.diffuse && specular == other.specular;
+      return diffuse == other.diffuse && specular == other.specular && shininess == other.shininess;
     }
 
     bool Material::operator!=(const Material& other) const

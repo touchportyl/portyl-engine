@@ -22,7 +22,8 @@ namespace FlexEngine
       // 
       // This is useful for handling textures that are embedded in a model because they
       // won't have an AssetKey associated with them and are not stored in the AssetManager.
-      using TextureVariant = std::variant<AssetKey, Texture>;
+      //using TextureVariant = std::variant<AssetKey, Texture>;
+      using TextureVariant = AssetKey;
 
     private:
       TextureVariant diffuse;
@@ -31,8 +32,8 @@ namespace FlexEngine
 
     public:
       Material(
-        TextureVariant _diffuse = Texture::Null,
-        TextureVariant _specular = Texture::Null,
+        TextureVariant _diffuse,
+        TextureVariant _specular,
         float _shininess = 32.0f
       );
 

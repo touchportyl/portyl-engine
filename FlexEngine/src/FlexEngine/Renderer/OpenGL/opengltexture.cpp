@@ -192,7 +192,7 @@ namespace FlexEngine
         Log::Error("AssimpWrapper: Embedded textures are compressed, decompression is not supported.");
         Load();
 
-        Log::Debug("Loaded: " + std::to_string(m_texture));
+        //Log::Debug("Loaded: " + std::to_string(m_texture));
       }
       // no decompression needed
       else

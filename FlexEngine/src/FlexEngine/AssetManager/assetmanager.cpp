@@ -12,6 +12,24 @@ namespace FlexEngine
   std::unordered_map<AssetKey, AssetVariant> AssetManager::assets;
 
 
+  AssetKey AssetManager::AddTexture(const std::string& assetkey, const Asset::Texture& texture)
+  {
+    // create assetkey
+    AssetKey key = R"(\internal)" + std::string((assetkey[0] == '\\') ? "" : "\\") + assetkey;
+
+    // guard: asset already exists
+    if (assets.count(key) != 0)
+    {
+      Log::Warning(std::string("AssetManager: Asset already exists: ") + key);
+      return key;
+    }
+
+    // add texture to assets
+    assets[key] = texture;
+    Log::Info(std::string("AssetManager: Added texture: ") + key);
+    return key;
+  }
+
   void AssetManager::Load()
   {
     FLX_FLOW_BEGINSCOPE();

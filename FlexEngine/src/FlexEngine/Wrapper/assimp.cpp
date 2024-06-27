@@ -17,6 +17,15 @@ namespace
   static FlexEngine::Path internal_current_working_directory = FlexEngine::Path::current();
   #define CURRENT_WORKING_DIRECTORY internal_current_working_directory
 
+  struct Internal_Context
+  {
+    FlexEngine::Path path;
+    std::string local_path; // the path of the model file relative to the current working directory
+    const aiScene* scene;
+    std::string node_name;
+  };
+  static Internal_Context internal_ctx;
+
   // Internal functions
 
   // Transforms an aiMatrix4x4 to a FlexEngine::Matrix4x4.
@@ -53,9 +62,16 @@ namespace FlexEngine
     // set the current working directory
     CURRENT_WORKING_DIRECTORY = path.parent_path();
 
+    // update internal context
+    internal_ctx.path = path;
+    std::string temp = path.string();
+    internal_ctx.local_path = temp.substr(Path::current().string().length());
+    internal_ctx.scene = scene;
+    internal_ctx.node_name = "";
+
     // process the scene
     std::vector<Asset::Material> materials{};
-    std::vector<Asset::Mesh> meshes = Internal_ProcessNode(scene->mRootNode, scene, Matrix4x4::Identity, &materials);
+    std::vector<Asset::Mesh> meshes = Internal_ProcessNode(scene->mRootNode, Matrix4x4::Identity, &materials);
     materials.shrink_to_fit();
     meshes.shrink_to_fit();
     return Asset::Model(meshes, materials);
@@ -63,7 +79,6 @@ namespace FlexEngine
 
   std::vector<Asset::Mesh> AssimpWrapper::Internal_ProcessNode(
     aiNode* node,
-    const aiScene* scene,
     Matrix4x4 parent_transform,
     std::vector<Asset::Material>* out_materials
   )
@@ -84,14 +99,15 @@ namespace FlexEngine
     // process all the meshes in the node
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
-      aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-      meshes.push_back( Internal_ProcessMesh(mesh, scene, transform, out_materials, node->mName.C_Str()) );
+      aiMesh* mesh = internal_ctx.scene->mMeshes[node->mMeshes[i]];
+      internal_ctx.node_name = node->mName.C_Str();
+      meshes.push_back( Internal_ProcessMesh(mesh, transform, out_materials) );
     }
 
     // process all the children of the node
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
-      std::vector<Asset::Mesh> child( Internal_ProcessNode(node->mChildren[i], scene, transform, out_materials) );
+      std::vector<Asset::Mesh> child( Internal_ProcessNode(node->mChildren[i], transform, out_materials) );
       meshes.insert(meshes.end(), child.begin(), child.end());
     }
 
@@ -100,10 +116,8 @@ namespace FlexEngine
 
   Asset::Mesh AssimpWrapper::Internal_ProcessMesh(
     aiMesh* mesh,
-    const aiScene* scene,
     Matrix4x4 mesh_transform,
-    std::vector<Asset::Material>* out_materials,
-    const std::string& node_name
+    std::vector<Asset::Material>* out_materials
   )
   {
     #pragma region Vertex Processing
@@ -162,12 +176,12 @@ namespace FlexEngine
 
     #pragma region Material Processing
 
-    aiMaterial* ai_material = scene->mMaterials[mesh->mMaterialIndex];
+    aiMaterial* ai_material = internal_ctx.scene->mMaterials[mesh->mMaterialIndex];
 
     // parse material
     Asset::Material material = Asset::Material(
-      Internal_ProcessMaterialTextures(ai_material, aiTextureType_DIFFUSE , scene),
-      Internal_ProcessMaterialTextures(ai_material, aiTextureType_SPECULAR, scene)
+      Internal_ProcessMaterialTextures(ai_material, aiTextureType_DIFFUSE ),
+      Internal_ProcessMaterialTextures(ai_material, aiTextureType_SPECULAR)
     );
     std::size_t material_index = out_materials->size();
 
@@ -188,17 +202,17 @@ namespace FlexEngine
     #pragma endregion
 
     // create the mesh
-    return Asset::Mesh(vertices, indices, mesh_transform, material_index, node_name);
+    return Asset::Mesh(vertices, indices, mesh_transform, material_index, internal_ctx.node_name);
   }
 
   // Only supports diffuse and specular textures, one of each
   Asset::Material::TextureVariant AssimpWrapper::Internal_ProcessMaterialTextures(
     aiMaterial* material,
-    aiTextureType type,
-    const aiScene* scene
+    aiTextureType type
   )
   {
-    Asset::Material::TextureVariant textures = Asset::Texture::None;
+    Asset::Material::TextureVariant textures = "";
+    //Asset::Material::TextureVariant textures = Asset::Texture::None;
     //Asset::Material::TextureVariant textures = Asset::Texture::Default();
 
     // process the material
@@ -207,9 +221,14 @@ namespace FlexEngine
       aiString texture_path;
       material->GetTexture(type, 0, &texture_path);
 
-      const aiTexture* texture = scene->GetEmbeddedTexture(texture_path.C_Str());
+      const aiTexture* texture = internal_ctx.scene->GetEmbeddedTexture(texture_path.C_Str());
       if (texture)
       {
+        // create custom name for embedded textures
+        std::string texture_name =
+          std::string(internal_ctx.local_path) + "\\" +
+          internal_ctx.node_name + "_" + std::to_string(type)
+        ;
 
         // guard: texture is compressed if the height is 0
         // the width represents the size of the compressed texture
@@ -223,10 +242,11 @@ namespace FlexEngine
           #else
 
           // decompress the texture
-          Asset::Texture embedded_texture(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth);
+          //Asset::Texture embedded_texture(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth);
+          Asset::Texture embedded_texture = Asset::Texture::Default();
 
           // add the texture to the list of textures
-          textures = embedded_texture;
+          textures = AssetManager::AddTexture(texture_name, embedded_texture);
 
           #endif
         }
@@ -253,7 +273,7 @@ namespace FlexEngine
           delete[] data;
 
           // add the texture to the list of textures
-          textures = embedded_texture;
+          textures = AssetManager::AddTexture(texture_name, embedded_texture);
         }
 
       }

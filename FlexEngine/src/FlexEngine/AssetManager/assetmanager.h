@@ -46,6 +46,10 @@ namespace FlexEngine
   public:
     static std::unordered_map<AssetKey, AssetVariant> assets;
 
+    // Add a custom texture asset
+    // Saves it to a custom root path (/internal)
+    static AssetKey AddTexture(const std::string &assetkey, const Asset::Texture& texture);
+
     // Load all assets in the directory
     static void Load();
 
