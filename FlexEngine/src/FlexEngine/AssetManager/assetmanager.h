@@ -48,7 +48,7 @@ namespace FlexEngine
 
     // Add a custom texture asset
     // Saves it to a custom root path (/internal)
-    static AssetKey AddTexture(const std::string &assetkey, const Asset::Texture& texture);
+    static AssetKey AddTexture(const std::string& assetkey, const Asset::Texture& texture);
 
     // Load all assets in the directory
     static void Load();

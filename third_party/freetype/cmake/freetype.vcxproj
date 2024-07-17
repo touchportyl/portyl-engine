@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{56AED40F-606E-304A-ACDE-B5F10C4A324C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>freetype</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\GitHub\FlexEngine\third_party\freetype\cmake\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">freetype.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">freetyped</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\GitHub\FlexEngine\third_party\freetype\cmake\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">freetype.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">freetype</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\GitHub\FlexEngine\third_party\freetype\cmake\include;E:\GitHub\FlexEngine\third_party\freetype\ft2132\include;E:\GitHub\FlexEngine\third_party\freetype\cmake\include\freetype\config;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;FT2_BUILD_LIBRARY;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;FT2_BUILD_LIBRARY;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\GitHub\FlexEngine\third_party\freetype\cmake\include;E:\GitHub\FlexEngine\third_party\freetype\ft2132\include;E:\GitHub\FlexEngine\third_party\freetype\cmake\include\freetype\config;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\GitHub\FlexEngine\third_party\freetype\cmake\include;E:\GitHub\FlexEngine\third_party\freetype\ft2132\include;E:\GitHub\FlexEngine\third_party\freetype\cmake\include\freetype\config;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\GitHub\FlexEngine\third_party\freetype\cmake\include;E:\GitHub\FlexEngine\third_party\freetype\ft2132\include;E:\GitHub\FlexEngine\third_party\freetype\cmake\include\freetype\config;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FT2_BUILD_LIBRARY;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FT2_BUILD_LIBRARY;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\GitHub\FlexEngine\third_party\freetype\cmake\include;E:\GitHub\FlexEngine\third_party\freetype\ft2132\include;E:\GitHub\FlexEngine\third_party\freetype\cmake\include\freetype\config;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\GitHub\FlexEngine\third_party\freetype\cmake\include;E:\GitHub\FlexEngine\third_party\freetype\ft2132\include;E:\GitHub\FlexEngine\third_party\freetype\cmake\include\freetype\config;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule E:/GitHub/FlexEngine/third_party/freetype/ft2132/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"E:\Program Files\CMake\bin\cmake.exe" -SE:/GitHub/FlexEngine/third_party/freetype/ft2132 -BE:/GitHub/FlexEngine/third_party/freetype/cmake --check-stamp-file E:/GitHub/FlexEngine/third_party/freetype/cmake/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\GitHub\FlexEngine\third_party\freetype\cmake\CMakeFiles\3.28.2\CMakeCCompiler.cmake;E:\GitHub\FlexEngine\third_party\freetype\cmake\CMakeFiles\3.28.2\CMakeRCCompiler.cmake;E:\GitHub\FlexEngine\third_party\freetype\cmake\CMakeFiles\3.28.2\CMakeSystem.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\BasicConfigVersion-SameMajorVersion.cmake.in;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeCInformation.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeCommonLanguageInclude.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeDependentOption.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeGenericSystem.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeInitializeConfigs.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeLanguageInformation.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakePackageConfigHelpers.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeRCInformation.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeSystemSpecificInformation.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeSystemSpecificInitialize.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CPack.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CPackComponent.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CheckIncludeFile.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Compiler\CMakeCommonCompilerMacros.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Compiler\MSVC-C.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Compiler\MSVC.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\FindPackageHandleStandardArgs.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\FindPackageMessage.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\FindPkgConfig.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\GNUInstallDirs.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Platform\Windows-Initialize.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Platform\Windows-MSVC-C.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Platform\Windows-MSVC.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Platform\Windows.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Platform\WindowsPaths.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\WriteBasicConfigVersionFile.cmake;E:\Program Files\CMake\share\cmake-3.28\Templates\CPackConfig.cmake.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\GitHub\FlexEngine\third_party\freetype\cmake\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule E:/GitHub/FlexEngine/third_party/freetype/ft2132/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"E:\Program Files\CMake\bin\cmake.exe" -SE:/GitHub/FlexEngine/third_party/freetype/ft2132 -BE:/GitHub/FlexEngine/third_party/freetype/cmake --check-stamp-file E:/GitHub/FlexEngine/third_party/freetype/cmake/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\GitHub\FlexEngine\third_party\freetype\cmake\CMakeFiles\3.28.2\CMakeCCompiler.cmake;E:\GitHub\FlexEngine\third_party\freetype\cmake\CMakeFiles\3.28.2\CMakeRCCompiler.cmake;E:\GitHub\FlexEngine\third_party\freetype\cmake\CMakeFiles\3.28.2\CMakeSystem.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\BasicConfigVersion-SameMajorVersion.cmake.in;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeCInformation.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeCommonLanguageInclude.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeDependentOption.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeGenericSystem.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeInitializeConfigs.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeLanguageInformation.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakePackageConfigHelpers.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeRCInformation.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeSystemSpecificInformation.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CMakeSystemSpecificInitialize.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CPack.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CPackComponent.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\CheckIncludeFile.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Compiler\CMakeCommonCompilerMacros.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Compiler\MSVC-C.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Compiler\MSVC.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\FindPackageHandleStandardArgs.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\FindPackageMessage.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\FindPkgConfig.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\GNUInstallDirs.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Platform\Windows-Initialize.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Platform\Windows-MSVC-C.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Platform\Windows-MSVC.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Platform\Windows.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\Platform\WindowsPaths.cmake;E:\Program Files\CMake\share\cmake-3.28\Modules\WriteBasicConfigVersionFile.cmake;E:\Program Files\CMake\share\cmake-3.28\Templates\CPackConfig.cmake.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\GitHub\FlexEngine\third_party\freetype\cmake\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\freetype.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftadvanc.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftbbox.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftbdf.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftbitmap.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftbzip2.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftcache.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftchapters.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftcid.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftcolor.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftdriver.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\fterrdef.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\fterrors.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftfntfmt.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftgasp.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftglyph.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftgxval.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftgzip.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftimage.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftincrem.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftlcdfil.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftlist.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftlogging.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftlzw.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftmac.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftmm.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftmodapi.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftmoderr.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftotval.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftoutln.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftparams.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftpfr.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftrender.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftsizes.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftsnames.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftstroke.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftsynth.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftsystem.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\fttrigon.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\fttypes.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ftwinfnt.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\otsvg.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\t1tables.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\ttnameid.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\tttables.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\tttags.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\ft2build.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\config\ftconfig.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\config\ftheader.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\config\ftmodule.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\config\ftoption.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\config\ftstdlib.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\config\integer-types.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\config\mac-support.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\config\public-macros.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\autohint.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\cffotypes.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\cfftypes.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\compiler-macros.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftcalc.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftdebug.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftdrv.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftgloadr.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\fthash.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftmemory.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftmmtypes.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftobjs.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftpsprop.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftrfork.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftserv.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftstream.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\fttrace.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\ftvalid.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\psaux.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\pshints.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\sfnt.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\svginterface.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\t1types.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\tttypes.h" />
+    <ClInclude Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\include\freetype\internal\wofftypes.h" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\autofit\autofit.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftbase.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftbbox.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftbdf.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftbitmap.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftcid.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftfstype.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftgasp.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftglyph.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftgxval.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftinit.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftmm.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftotval.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftpatent.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftpfr.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftstroke.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftsynth.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\fttype1.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftwinfnt.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\bdf\bdf.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\bzip2\ftbzip2.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\cache\ftcache.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\cff\cff.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\cid\type1cid.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\gzip\ftgzip.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\lzw\ftlzw.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\pcf\pcf.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\pfr\pfr.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\psaux\psaux.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\pshinter\pshinter.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\psnames\psnames.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\raster\raster.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\sdf\sdf.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\sfnt\sfnt.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\smooth\smooth.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\svg\svg.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\truetype\truetype.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\type1\type1.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\type42\type42.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\winfonts\winfnt.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\builds\windows\ftsystem.c" />
+    <ClCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\builds\windows\ftdebug.c" />
+    <ResourceCompile Include="E:\GitHub\FlexEngine\third_party\freetype\ft2132\src\base\ftver.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="E:\GitHub\FlexEngine\third_party\freetype\cmake\ZERO_CHECK.vcxproj">
+      <Project>{07E51586-1AC3-31DB-8CED-84C272A0304F}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

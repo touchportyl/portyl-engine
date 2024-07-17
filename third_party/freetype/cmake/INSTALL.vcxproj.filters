@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\GitHub\FlexEngine\third_party\freetype\cmake\CMakeFiles\698db707b3ad224d3fcb2eeb9aaa725b\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6375CA10-039E-3675-A140-3D25FC610BDF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
