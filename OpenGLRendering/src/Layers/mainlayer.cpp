@@ -70,7 +70,8 @@ namespace OpenGLRendering
     object.AddComponent<Rotation>({ { 0, 0, 0 } });
     object.AddComponent<Scale>({ { 0.001f, 0.001f, 0.001f } });
     object.AddComponent<Transform>({});
-    object.AddComponent<Model>({ scene->Internal_StringStorage_New(R"(\models\Kenney Car Kit\tractor.fbx)") });
+    //object.AddComponent<Model>({ scene->Internal_StringStorage_New(R"(\models\Kenney Car Kit\tractor.fbx)") });
+    object.AddComponent<Model>({ scene->Internal_StringStorage_New(R"(\models\FlexEngine Test.fbx)") });
     object.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\renderer)") });
 
     sprite.AddComponent<GlobalPosition>({ { 100.0f, 100.0f } });
