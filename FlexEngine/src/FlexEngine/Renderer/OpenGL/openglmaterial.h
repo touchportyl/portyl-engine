@@ -25,7 +25,7 @@ namespace FlexEngine
       //using TextureVariant = std::variant<AssetKey, Texture>;
       using TextureVariant = AssetKey;
 
-    private:
+    public:
       TextureVariant diffuse;
       TextureVariant specular;
       float shininess;

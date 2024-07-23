@@ -518,7 +518,7 @@ ImGui::EndMainMenuBar();
       ImGui::SeparatorText("Entities");
 
       // entities
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, LocalPosition, GlobalPosition, Rotation, Scale, Transform>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, LocalPosition, GlobalPosition, Rotation, Scale, Transform, Model>())
       {
         auto entity_name_component = entity.GetComponent<EntityName>();
         auto is_active = &entity.GetComponent<IsActive>()->is_active;
@@ -527,6 +527,7 @@ ImGui::EndMainMenuBar();
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
         auto& scale = entity.GetComponent<Scale>()->scale;
         auto transform = entity.GetComponent<Transform>();
+        auto& model = entity.GetComponent<Model>()->model;
 
         std::string& entity_name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component);
 
@@ -569,6 +570,60 @@ ImGui::EndMainMenuBar();
           }
 
           ImGui::EndDisabled();
+
+          // model material texture list
+          if (ImGui::CollapsingHeader("Materials", tree_node_flags))
+          {
+            ImGui::PushID("materials");
+
+            // display the model
+            std::string& model_name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(model);
+            auto& model_asset = FLX_ASSET_GET(Asset::Model, model_name);
+            
+            // list all materials
+            for (std::size_t i = 0; i < model_asset.materials.size(); i++)
+            {
+              auto& material = model_asset.materials[i];
+              std::string material_name = "Material " + std::to_string(i);
+
+              if (ImGui::CollapsingHeader(material_name.c_str(), tree_node_flags))
+              {
+                ImGui::PushID(material_name.c_str());
+
+                static const Asset::Texture default_texture = Asset::Texture::Default();
+
+                // get textures
+                auto diffuse_texture = material.GetDiffuse();
+                auto specular_texture = material.GetSpecular().first;
+
+                std::string diffuse_path = diffuse_texture ? material.diffuse : "None";
+                std::string specular_path = specular_texture ? material.specular : "None";
+
+                if (!diffuse_texture)
+                {
+                  diffuse_texture = &default_texture;
+                }
+                if (!specular_texture)
+                {
+                  specular_texture = &default_texture;
+                }
+
+                // display the texture
+                ImGui::Text("Diffuse");
+                ImGui::Text(diffuse_path.c_str());
+                ImGui::Image(diffuse_texture->GetTextureImGui(), ImVec2(64, 64));
+
+                ImGui::Text("Specular");
+                ImGui::Text(specular_path.c_str());
+                ImGui::Text(std::to_string(material.shininess).c_str());
+                ImGui::Image(specular_texture->GetTextureImGui(), ImVec2(64, 64));
+
+                ImGui::PopID();
+              }
+            }
+
+            ImGui::PopID();
+          }
 
           ImGui::PopID();
         }
@@ -943,6 +998,8 @@ ImGui::EndMainMenuBar();
           // set materials
           if (mesh.material_index < model_asset.materials.size())
           {
+            static const Asset::Texture default_texture = Asset::Texture::Default();
+
             auto& material = model_asset.materials[mesh.material_index];
             auto diffuse = material.GetDiffuse();
             if (diffuse)
@@ -951,7 +1008,6 @@ ImGui::EndMainMenuBar();
             }
             else
             {
-              static const Asset::Texture default_texture = Asset::Texture::Default();
               default_texture.Bind(shader_asset, "u_material_diffuse", 0);
             }
             auto specular = material.GetSpecular();
@@ -962,7 +1018,6 @@ ImGui::EndMainMenuBar();
             }
             else
             {
-              static const Asset::Texture default_texture = Asset::Texture::Default();
               default_texture.Bind(shader_asset, "u_material_specular", 1);
               shader_asset.SetUniform_float("u_material_shininess", 32.0f);
             }

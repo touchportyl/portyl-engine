@@ -49,6 +49,8 @@ namespace FlexEngine
   Assimp::Importer AssimpWrapper::importer;
   unsigned int AssimpWrapper::import_flags = aiProcess_ValidateDataStructure | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
 
+  // Each model holds a list of meshes and materials
+  // Each mesh has a material index that points to the material in the list of materials
   Asset::Model AssimpWrapper::LoadModel(const Path& path)
   {
     // load the model
@@ -205,7 +207,7 @@ namespace FlexEngine
     return Asset::Mesh(vertices, indices, mesh_transform, material_index, internal_ctx.node_name);
   }
 
-  // Only supports diffuse and specular textures, one of each
+  // Only supports diffuse and specular textures, for now
   Asset::Material::TextureVariant AssimpWrapper::Internal_ProcessMaterialTextures(
     aiMaterial* material,
     aiTextureType type
