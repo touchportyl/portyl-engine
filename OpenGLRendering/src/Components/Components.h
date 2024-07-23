@@ -83,6 +83,15 @@ namespace OpenGLRendering
     int alignment = Renderer2DProps::Alignment_Center;
   };
 
+  // For displaying text
+  class Text
+  { FLX_REFL_SERIALIZABLE
+  public:
+    FlexECS::Scene::StringIndex font;
+    float font_size;
+    std::string text;
+  };
+
   // For imported models
   class Model
   { FLX_REFL_SERIALIZABLE

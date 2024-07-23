@@ -14,6 +14,7 @@ namespace OpenGLRendering
 
     FlexECS::Entity object;
     FlexECS::Entity sprite;
+    FlexECS::Entity text;
 
     const Path default_save_directory = Path::current("saves");
     const std::string default_save_name = "default";

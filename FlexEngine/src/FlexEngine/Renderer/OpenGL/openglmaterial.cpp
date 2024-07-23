@@ -21,7 +21,8 @@ namespace FlexEngine
       // guard
       if (diffuse.empty())
       {
-        return nullptr;
+        static const Texture default_texture = Texture::Default();
+        return &default_texture;
       }
 
       return &FLX_ASSET_GET(Asset::Texture, diffuse);
@@ -32,7 +33,8 @@ namespace FlexEngine
       // guard
       if (specular.empty())
       {
-        return { nullptr, 0 };
+        static const Texture default_texture = Texture::Default();
+        return { &default_texture, 0.0f };
       }
 
       return { &FLX_ASSET_GET(Asset::Texture, specular), shininess };

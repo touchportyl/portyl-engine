@@ -17,6 +17,7 @@ namespace OpenGLRendering
     point_lights.clear();
     object = FlexECS::Entity::Null;
     sprite = FlexECS::Entity::Null;
+    text = FlexECS::Entity::Null;
 
     // create entities
 
@@ -26,6 +27,7 @@ namespace OpenGLRendering
     point_lights.push_back(FlexECS::Scene::CreateEntity("Point Light 2"));
     object = FlexECS::Scene::CreateEntity("Object");
     sprite = FlexECS::Scene::CreateEntity("Sprite");
+    text = FlexECS::Scene::CreateEntity("Text");
 
     //FlexECS::Scene::SetEntityFlags(main_camera.Get(), ID::Flag_IsActive);
     //FlexECS::Scene::SetEntityFlags(directional_light.Get(), ID::Flag_IsActive);
@@ -38,6 +40,7 @@ namespace OpenGLRendering
     for (auto& entity : point_lights) entity.AddComponent<IsActive>({ true });
     object.AddComponent<IsActive>({ true });
     sprite.AddComponent<IsActive>({ true });
+    text.AddComponent<IsActive>({ true });
 
     // add components
 
@@ -84,6 +87,12 @@ namespace OpenGLRendering
       Renderer2DProps::Alignment_TopLeft
     });
     sprite.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+
+    text.AddComponent<Text>({ 
+      scene->Internal_StringStorage_New(R"(\fonts\Closeness/Closeness.ttf)"),
+      32.0f,
+      "Hello world!"
+    });
 
     //plane.AddComponent<GlobalPosition>({ { 0, 0, 0 } });
     //plane.AddComponent<LocalPosition>({ { 0, 0, 0 } });
