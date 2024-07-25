@@ -95,6 +95,7 @@ namespace MicroChess
       piece.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
       piece.AddComponent<BoundingBox2D>({ Vector2::One });
       piece.AddComponent<OnHover>({});
+      piece.AddComponent<OnClick>({});
     }
 
   }
@@ -127,6 +128,21 @@ namespace MicroChess
       if (on_hover->on_enter) scale *= Vector2(1.5f, 1.5f);
       if (on_hover->on_exit) scale /= Vector2(1.5f, 1.5f);
     }
+
+    // remove the piece when clicked
+    FunctionQueue destroy_queue;
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, OnClick>())
+    {
+      if (!entity.GetComponent<IsActive>()->is_active) continue;
+    
+      auto on_click = entity.GetComponent<OnClick>();
+    
+      if (on_click->is_clicked)
+      {
+        destroy_queue.Insert({ [entity]() { FlexECS::Scene::GetActiveScene()->DestroyEntity(entity); }, "", 0 });
+      }
+    }
+    destroy_queue.Flush();
 
     RendererSprite2D();
   }
