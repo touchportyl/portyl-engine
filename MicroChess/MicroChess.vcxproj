@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\game.h" />
+    <ClInclude Include="src\Components\physics.h" />
     <ClInclude Include="src\Components\rendering.h" />
     <ClInclude Include="src\Layers.h" />
     <ClInclude Include="src\Layers\base.h" />
@@ -158,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Components\game.cpp" />
+    <ClCompile Include="src\Components\physics.cpp" />
     <ClCompile Include="src\Components\rendering.cpp" />
     <ClCompile Include="src\Layers\base.cpp" />
     <ClCompile Include="src\Layers\board.cpp" />

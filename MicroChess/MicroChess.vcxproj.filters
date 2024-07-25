@@ -67,6 +67,9 @@
     <ClInclude Include="src\Physics\box2d.h">
       <Filter>src\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="src\Components\physics.h">
+      <Filter>src\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -95,6 +98,9 @@
     </ClCompile>
     <ClCompile Include="src\Physics\box2d.cpp">
       <Filter>src\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\physics.cpp">
+      <Filter>src\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -3,9 +3,11 @@
 #include "States.h"
 #include "Layers.h"
 
-#include "Components/rendering.h"
 #include "Components/game.h"
+#include "Components/physics.h"
+#include "Components/rendering.h"
 
+#include "Physics/box2d.h"
 #include "Renderer/sprite2d.h"
 
 namespace MicroChess
@@ -91,6 +93,8 @@ namespace MicroChess
         Renderer2DProps::Alignment_Center
       });
       piece.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+      piece.AddComponent<BoundingBox2D>({ Vector2::One });
+      piece.AddComponent<OnHover>({});
     }
 
   }
@@ -110,6 +114,20 @@ namespace MicroChess
 
   void BoardLayer::Update()
   {
+    Box2D();
+
+    // make the piece bigger when hovered
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, OnHover, Scale>())
+    {
+      if (!entity.GetComponent<IsActive>()->is_active) continue;
+    
+      auto on_hover = entity.GetComponent<OnHover>();
+      auto& scale = entity.GetComponent<Scale>()->scale;
+    
+      if (on_hover->on_enter) scale *= Vector2(1.5f, 1.5f);
+      if (on_hover->on_exit) scale /= Vector2(1.5f, 1.5f);
+    }
+
     RendererSprite2D();
   }
 
