@@ -186,6 +186,11 @@ namespace FlexEngine
     glfwSetWindowPos(m_glfwwindow, x, y);
   }
 
+  bool Window::IsFocused() const
+  {
+    return glfwGetWindowAttrib(m_glfwwindow, GLFW_FOCUSED);
+  }
+
   void Window::SetIcon(const Asset::Texture& icon) const
   {
     FLX_FLOW_FUNCTION();

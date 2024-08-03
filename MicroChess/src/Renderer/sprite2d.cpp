@@ -14,13 +14,25 @@ namespace MicroChess
     FunctionQueue render_queue;
 
     // Render all entities
-    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Parent, Position, Scale, Shader, Sprite>())
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Position, Scale, Shader, Sprite>())
     {
       if (!entity.GetComponent<IsActive>()->is_active) continue;
 
-      auto& parent = entity.GetComponent<Parent>()->parent;
-      auto global_position = parent.HasComponent<Position>() ? parent.GetComponent<Position>()->position : Vector2::Zero;
-      auto global_scale = parent.HasComponent<Scale>() ? parent.GetComponent<Scale>()->scale : Vector2::One;
+      Vector2 global_position = Vector2::Zero;
+      Vector2 global_scale = Vector2::One;
+
+      if (entity.HasComponent<Parent>())
+      {
+        auto& parent = entity.GetComponent<Parent>()->parent;
+        if (parent.HasComponent<Position>())
+        {
+          global_position = parent.GetComponent<Position>()->position;
+        }
+        if (parent.HasComponent<Scale>())
+        {
+          global_scale = parent.GetComponent<Scale>()->scale;
+        }
+      }
 
       auto& z_index = entity.GetComponent<ZIndex>()->z;
       auto& position = entity.GetComponent<Position>()->position;

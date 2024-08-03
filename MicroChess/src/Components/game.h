@@ -6,6 +6,25 @@ using namespace FlexEngine;
 namespace MicroChess
 {
 
+  enum CursorType : int
+  {
+    CURSORTYPE_NONE = -1,
+    CURSORTYPE_DEFAULT = 0,
+    CURSORTYPE_POINTER,
+    CURSORTYPE_DISABLED,
+    CURSORTYPE_DRAG_HOVER,
+    CURSORTYPE_DRAG_CLICK,
+    CURSORTYPE_CROSS,
+    CURSORTYPE_BUSY,
+    CURSORTYPE_HELP
+  };
+
+  class CustomCursor
+  { FLX_REFL_SERIALIZABLE
+  public:
+    int type = CURSORTYPE_DEFAULT;
+  };
+
   class IsWhite
   { FLX_REFL_SERIALIZABLE
   public:

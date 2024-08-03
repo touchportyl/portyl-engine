@@ -110,6 +110,8 @@ namespace FlexEngine
     void GetWindowPosition(int* out_x, int* out_y) const;
     void SetWindowPosition(int x, int y) const;
 
+    bool IsFocused() const;
+
     void SetIcon(const Asset::Texture& icon) const;
 
     void SetVSync(bool enabled = 0) const;

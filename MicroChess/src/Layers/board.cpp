@@ -15,8 +15,7 @@ namespace MicroChess
 
   void BoardLayer::SetupBoard()
   {
-    auto scene = FlexECS::Scene::CreateScene();
-    FlexECS::Scene::SetActiveScene(scene);
+    auto scene = FlexECS::Scene::GetActiveScene();
 
     // constants
 
@@ -105,6 +104,27 @@ namespace MicroChess
     FLX_FLOW_BEGINSCOPE();
 
     // ECS Setup
+    auto scene = FlexECS::Scene::CreateScene();
+    FlexECS::Scene::SetActiveScene(scene);
+
+    // Custom cursor
+    // IsActive, ZIndex, Parent, Position, Scale, Shader, Sprite
+    FlexECS::Entity cursor = FlexECS::Scene::CreateEntity("Custom Cursor");
+    cursor.AddComponent<CustomCursor>({ CURSORTYPE_DEFAULT });
+    cursor.AddComponent<IsActive>({ true });
+    cursor.AddComponent<ZIndex>({ 100 });
+    cursor.AddComponent<Position>({ { 0, 0 } });
+    cursor.AddComponent<Scale>({ { 32, 32 } });
+    cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+    cursor.AddComponent<Sprite>({
+      scene->Internal_StringStorage_New(R"(\images\cursor\cursor_none.png)"),
+      Vector3::One,
+      Vector3::Zero,
+      Vector3::One,
+      Renderer2DProps::Alignment_Center
+    });
+
+    // Setup the board
     SetupBoard();
   }
 
@@ -115,6 +135,60 @@ namespace MicroChess
 
   void BoardLayer::Update()
   {
+    // display a custom cursor
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, CustomCursor, Position, Sprite>())
+    {
+      auto& is_active = entity.GetComponent<IsActive>()->is_active;
+      auto& cursor = entity.GetComponent<CustomCursor>()->type;
+      auto& position = entity.GetComponent<Position>()->position;
+      auto& texture = entity.GetComponent<Sprite>()->texture;
+      auto window = Application::GetCurrentWindow();
+
+      if (
+        Input::GetKey(GLFW_KEY_LEFT_ALT) || Input::GetKey(GLFW_KEY_RIGHT_ALT) ||  // override key
+        !window->IsFocused() ||                                                   // window not in focus
+        ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)                       // imgui window override
+      )
+      {
+        cursor = CURSORTYPE_NONE;
+      }
+      else
+      {
+        cursor = CURSORTYPE_DEFAULT;
+      }
+
+      if (cursor == CURSORTYPE_NONE)
+      {
+        is_active = false;
+        ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
+        continue;
+      }
+      else
+      {
+        is_active = true;
+        ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+      }
+
+      std::string texture_path = R"(\images\cursor\cursor_none.png)";
+
+      switch (cursor)
+      {
+      case CURSORTYPE_DEFAULT: texture_path = R"(\images\cursor\cursor_none.png)"; break;
+      case CURSORTYPE_POINTER: texture_path = R"(\images\cursor\hand_point.png)"; break;
+      case CURSORTYPE_DISABLED: texture_path = R"(\images\cursor\disabled.png)"; break;
+      case CURSORTYPE_DRAG_HOVER: texture_path = R"(\images\cursor\hand_open.png)"; break;
+      case CURSORTYPE_DRAG_CLICK: texture_path = R"(\images\cursor\hand_closed.png)"; break;
+      case CURSORTYPE_CROSS: texture_path = R"(\images\cursor\cross_small.png)"; break;
+      case CURSORTYPE_BUSY: texture_path = R"(\images\cursor\busy_circle_fade.png)"; break;
+      case CURSORTYPE_HELP: texture_path = R"(\images\cursor\cursor_help.png)"; break;
+      default: break;
+      }
+
+      texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(texture_path);
+
+      position = Input::GetCursorPosition() + Vector2(7, 12);
+    }
+
     Box2D();
 
     // make the piece bigger when hovered
