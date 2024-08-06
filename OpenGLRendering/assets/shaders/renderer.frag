@@ -32,6 +32,12 @@ uniform vec3 u_point_light_ambient1;
 uniform vec3 u_point_light_diffuse1;
 uniform vec3 u_point_light_specular1;
 
+// Quantize function to create cel-shading effect
+float quantize(float value, float steps)
+{
+  return floor(value * steps) / steps;
+}
+
 void main()
 {
   //fragment_color = vec4(1.0, 0.0, 1.0, 1.0);
@@ -45,12 +51,15 @@ void main()
   
   // diffuse
   float directional_light_diff = max(dot(normal, u_directional_light_direction), 0.0);
+  //directional_light_diff = quantize(directional_light_diff, 4.0); // cel shading
 
   vec3 point_light_direction0 = normalize(u_point_light_position0 - fragment_position);
   float point_light_diff0 = max(dot(normal, point_light_direction0), 0.0);
+  //point_light_diff0 = quantize(point_light_diff0, 4.0); // cel shading
 
   vec3 point_light_direction1 = normalize(u_point_light_position1 - fragment_position);
   float point_light_diff1 = max(dot(normal, point_light_direction1), 0.0);
+  //point_light_diff1 = quantize(point_light_diff1, 4.0); // cel shading
 
   vec3 diffuse = min(
     (u_directional_light_diffuse * directional_light_diff) +

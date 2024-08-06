@@ -715,7 +715,7 @@ ImGui::EndMainMenuBar();
 
     #pragma region Model Showcase
 
-    #if 1
+    #if 0
     {
       // Rotate all entities in the scene (except cameras)
       for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, GlobalPosition, Rotation, Transform>())
