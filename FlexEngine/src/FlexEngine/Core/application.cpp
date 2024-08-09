@@ -121,6 +121,9 @@ namespace FlexEngine
       {
         Application::Internal_Close();
       }
+
+      // input cleanup (updates key states and mouse delta for the next frame)
+      Input::Cleanup();
     }
   }
 

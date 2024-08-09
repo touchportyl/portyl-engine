@@ -750,6 +750,101 @@ ImGui::EndMainMenuBar();
     #pragma endregion
 
 
+    #pragma region Camera Movement
+
+    #if 1
+    {
+      // move the camera with WASD
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Camera, GlobalPosition, Rotation>())
+      {
+        auto& global_position = entity.GetComponent<GlobalPosition>()->position;
+        auto& rotation = entity.GetComponent<Rotation>()->rotation;
+        auto camera = entity.GetComponent<Camera>();
+        auto window = Application::GetCurrentWindow();
+
+        // move the camera
+        static float camera_speed = 0.005f;
+        if (Input::GetKey(GLFW_KEY_W))
+        {
+          global_position += camera->front * camera_speed;
+          camera->is_dirty = true;
+        }
+        if (Input::GetKey(GLFW_KEY_S))
+        {
+          global_position -= camera->front * camera_speed;
+          camera->is_dirty = true;
+        }
+        if (Input::GetKey(GLFW_KEY_A))
+        {
+          global_position -= camera->right * camera_speed;
+          camera->is_dirty = true;
+        }
+        if (Input::GetKey(GLFW_KEY_D))
+        {
+          global_position += camera->right * camera_speed;
+          camera->is_dirty = true;
+        }
+        if (Input::GetKey(GLFW_KEY_Q))
+        {
+          global_position += camera->world_up * camera_speed;
+          camera->is_dirty = true;
+        }
+        if (Input::GetKey(GLFW_KEY_Z))
+        {
+          global_position -= camera->world_up * camera_speed;
+          camera->is_dirty = true;
+        }
+
+        // rotate the camera with mouse
+        static bool camera_mouse_enabled = false;
+
+        auto expected = window->GetGLFWWindow();
+        auto current = glfwGetCurrentContext();
+        glfwMakeContextCurrent(window->GetGLFWWindow());
+        auto current_ = glfwGetCurrentContext();
+
+        if (Input::GetMouseButton(GLFW_MOUSE_BUTTON_LEFT))
+        {
+          camera_mouse_enabled = true;
+          glfwSetInputMode(window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+
+        if (
+          !Application::GetCurrentWindow()->IsFocused() ||
+          Input::GetKey(GLFW_KEY_LEFT_ALT)
+        )
+        {
+          camera_mouse_enabled = false;
+          glfwSetInputMode(window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
+
+        // set mouse cursor visibility
+        //ImGui::SetMouseCursor(camera_mouse_enabled ? ImGuiMouseCursor_None : ImGuiMouseCursor_Arrow);
+
+        // move the camera with mouse
+        if (camera_mouse_enabled)
+        {
+          Vector2 mouse_delta = Input::GetMousePositionDelta();
+          if (mouse_delta != Vector2::Zero)
+          {
+            static float sensitivity = 0.05f;
+            rotation.x += mouse_delta.y * sensitivity;
+            rotation.y -= mouse_delta.x * sensitivity;
+
+            // clamp the rotation
+            if (rotation.x > 89.0f) rotation.x = 89.0f;
+            if (rotation.x < -89.0f) rotation.x = -89.0f;
+
+            // set dirty
+            camera->is_dirty = true;
+          }
+        }
+
+      }
+    }
+    #endif
+
+
     #pragma region Transform Updater
 
     #if 1

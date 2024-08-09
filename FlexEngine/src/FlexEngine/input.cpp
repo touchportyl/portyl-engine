@@ -17,13 +17,26 @@ namespace FlexEngine
 
   #pragma endregion
 
+  void Input::Cleanup()
+  {
+    m_key_down.fill(false);
+    m_key_up.fill(false);
+    m_mouse_button_down.fill(false);
+    m_mouse_button_up.fill(false);
+    m_scroll_offset = Vector2::Zero;
+
+    m_cursor_position_delta = Vector2::Zero;
+    m_cursor_position_delta = m_cursor_position - m_last_cursor_position;
+    m_last_cursor_position = m_cursor_position;
+  }
+
   #pragma warning(push) // C4100 unused parameters
   #pragma warning(disable:4100) // push warning settings as opposed to using the UNREFERENCED_PARAMETER macro
 
   void Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
   {
-    m_key_down.fill(false);
-    m_key_up.fill(false);
+    //m_key_down.fill(false);
+    //m_key_up.fill(false);
 
     switch (action)
     {
@@ -42,15 +55,15 @@ namespace FlexEngine
 
   void Input::CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
   {
-    m_last_cursor_position = m_cursor_position;
+    //m_last_cursor_position = m_cursor_position;
     m_cursor_position = { static_cast<float>(xpos), static_cast<float>(ypos) };
-    m_cursor_position_delta = m_cursor_position - m_last_cursor_position;
+    //m_cursor_position_delta = m_cursor_position - m_last_cursor_position;
   }
 
   void Input::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
   {
-    m_mouse_button_down.fill(false);
-    m_mouse_button_up.fill(false);
+    //m_mouse_button_down.fill(false);
+    //m_mouse_button_up.fill(false);
 
     switch (action)
     {

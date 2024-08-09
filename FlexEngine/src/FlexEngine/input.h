@@ -18,6 +18,8 @@ namespace FlexEngine
   {
   // public functions
   public:
+    static void Cleanup(); // cleans the input state, should be called once per frame at the end
+
     static bool GetKeyDown(int key)             { return m_key_down[key]; }
     static bool GetKeyUp(int key)               { return m_key_up[key]; }
     static bool GetKey(int key)                 { return m_key[key]; }
