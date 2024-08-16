@@ -50,6 +50,10 @@ namespace FlexEngine
     FLX_NULLPTR_ASSERT(m_glfwwindow, "Failed to create GLFW window");
     glfwMakeContextCurrent(m_glfwwindow);
 
+    auto test = glfwGetCurrentContext();
+
+    glfwSetInputMode(m_glfwwindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     // load all OpenGL function pointers (glad)
     FLX_CORE_ASSERT(gladLoadGL(), "Failed to initialize GLAD!");
 

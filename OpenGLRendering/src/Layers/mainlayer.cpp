@@ -827,9 +827,9 @@ ImGui::EndMainMenuBar();
           Vector2 mouse_delta = Input::GetMousePositionDelta();
           if (mouse_delta != Vector2::Zero)
           {
-            static float sensitivity = 0.05f;
-            rotation.x += mouse_delta.y * sensitivity;
-            rotation.y -= mouse_delta.x * sensitivity;
+            static float sensitivity = 0.04f;
+            rotation.x -= mouse_delta.y * sensitivity;
+            rotation.y += mouse_delta.x * sensitivity;
 
             // clamp the rotation
             if (rotation.x > 89.0f) rotation.x = 89.0f;
