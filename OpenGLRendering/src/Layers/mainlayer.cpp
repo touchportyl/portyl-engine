@@ -750,9 +750,9 @@ ImGui::EndMainMenuBar();
     #pragma endregion
 
 
-    #pragma region Camera Movement
+    #pragma region WASD Camera Movement
 
-    #if 1
+    #if 0
     {
       // move the camera with WASD
       for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Camera, GlobalPosition, Rotation>())
@@ -843,6 +843,74 @@ ImGui::EndMainMenuBar();
       }
     }
     #endif
+
+    #pragma endregion
+
+
+    #pragma region Mouse Camera Orbit Movement
+
+    #if 1
+    {
+      // move the camera with mouse (orbiting)
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Camera, GlobalPosition, Rotation>())
+      {
+        auto& global_position = entity.GetComponent<GlobalPosition>()->position;
+        auto& rotation = entity.GetComponent<Rotation>()->rotation;
+        auto camera = entity.GetComponent<Camera>();
+        //auto window = Application::GetCurrentWindow();
+
+        // rotate the camera with mouse
+        static bool camera_mouse_enabled = false;
+
+        camera_mouse_enabled = (
+          Application::GetCurrentWindow()->IsFocused() &&
+          Input::GetKey(GLFW_KEY_LEFT_ALT) &&
+          Input::GetMouseButton(GLFW_MOUSE_BUTTON_LEFT)
+        );
+
+        // move the camera with mouse
+        if (camera_mouse_enabled)
+        {
+          Vector2 mouse_delta = Input::GetMousePositionDelta();
+          if (mouse_delta != Vector2::Zero)
+          {
+            // orbit the camera around the model
+            static float orbit_radius = 0.0f;
+            static float orbit_speed = 0.5f;
+            static float orbit_angle = 0.0f;
+
+            orbit_radius = Distance(global_position, Vector3::Zero);
+            orbit_angle = atan2f(global_position.z, global_position.x);
+
+            // calculate the orbit delta
+            float delta_x = mouse_delta.x * orbit_speed;
+            float delta_y = mouse_delta.y * orbit_speed;
+
+            // calculate the new position and rotation of the camera
+            float x = orbit_radius * cos(orbit_angle + delta_x);
+            float z = orbit_radius * sin(orbit_angle + delta_x);
+            float y = global_position.y + delta_y;
+
+            // set the camera position
+            global_position = { x, y, z };
+
+            // look at the center
+            rotation = {
+              0.0f,
+              90.0f - degrees(atan2f(global_position.z, global_position.x)),
+              0.0f
+            };
+
+            // set dirty
+            camera->is_dirty = true;
+          }
+        }
+
+      }
+    }
+    #endif
+
+    #pragma endregion
 
 
     #pragma region Transform Updater

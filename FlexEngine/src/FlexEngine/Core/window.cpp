@@ -52,7 +52,7 @@ namespace FlexEngine
 
     auto test = glfwGetCurrentContext();
 
-    glfwSetInputMode(m_glfwwindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(m_glfwwindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // load all OpenGL function pointers (glad)
     FLX_CORE_ASSERT(gladLoadGL(), "Failed to initialize GLAD!");
