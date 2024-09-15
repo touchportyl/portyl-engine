@@ -49,7 +49,7 @@ namespace MicroChess
       props.color_to_multiply = sprite->color_to_multiply;
       props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
 
-      render_queue.Insert({ [props]() { OpenGLRenderer::DrawTexture2D(props); }, "", z_index });
+      render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
     }
 
     // push settings
