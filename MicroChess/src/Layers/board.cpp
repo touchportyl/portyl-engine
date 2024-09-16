@@ -53,7 +53,7 @@ namespace MicroChess
           Vector3::One,
           Renderer2DProps::Alignment_Center
         });
-        tile.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+        tile.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\bloom_bright_extraction)") });
       }
     }
 
@@ -91,7 +91,7 @@ namespace MicroChess
         (i >= 8) ? Vector3::One : Vector3::Zero,
         Renderer2DProps::Alignment_Center
       });
-      piece.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+      piece.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\bloom_bright_extraction)") });
       piece.AddComponent<BoundingBox2D>({ Vector2::One });
       piece.AddComponent<OnHover>({});
       piece.AddComponent<OnClick>({});
@@ -115,7 +115,8 @@ namespace MicroChess
     cursor.AddComponent<ZIndex>({ 100 });
     cursor.AddComponent<Position>({ { 0, 0 } });
     cursor.AddComponent<Scale>({ { 32, 32 } });
-    cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+    cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\bloom_bright_extraction)") });
+    //cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
     cursor.AddComponent<Sprite>({
       scene->Internal_StringStorage_New(R"(\images\cursor\cursor_none.png)"),
       Vector3::One,

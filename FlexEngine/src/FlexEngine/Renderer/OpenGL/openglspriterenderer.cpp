@@ -12,6 +12,12 @@ namespace FlexEngine
   bool OpenGLSpriteRenderer::m_depth_test = false;
   bool OpenGLSpriteRenderer::m_blending = false;
 
+  GLuint OpenGLSpriteRenderer::m_fbo = 0;
+  GLuint OpenGLSpriteRenderer::m_colorBuffer = 0;
+  GLuint OpenGLSpriteRenderer::m_brightBuffer = 0;
+  GLuint OpenGLSpriteRenderer::m_pingpongFBO[2] = {};
+  GLuint OpenGLSpriteRenderer::m_pingpongBuffer[2] = {};
+
   uint32_t OpenGLSpriteRenderer::GetDrawCalls()
   {
     return m_draw_calls;
@@ -67,6 +73,40 @@ namespace FlexEngine
     glClearColor(color.x, color.y, color.z, color.w);
     m_draw_calls_last_frame = m_draw_calls;
     m_draw_calls = 0;
+  }
+
+  void OpenGLSpriteRenderer::InitBloomFBO()
+  {
+      // Create FBO for bloom effect
+      glGenFramebuffers(1, &m_fbo);
+      glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+
+      // Color buffer for normal rendering
+      glGenTextures(1, &m_colorBuffer);
+      glBindTexture(GL_TEXTURE_2D, m_colorBuffer);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorBuffer, 0);
+
+      // Brightness buffer for bloom
+      glGenTextures(1, &m_brightBuffer);
+      glBindTexture(GL_TEXTURE_2D, m_brightBuffer);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_brightBuffer, 0);
+
+      // Tell OpenGL to render to both color buffers
+      GLuint attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+      glDrawBuffers(2, attachments);
+
+      // Ping-pong FBOs for Gaussian blur
+      glGenFramebuffers(2, m_pingpongFBO);
+      glGenTextures(2, m_pingpongBuffer);
+      for (GLuint i = 0; i < 2; i++)
+      {
+          glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[i]);
+          glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[i]);
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+          glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongBuffer[i], 0);
+      }
   }
 
   void OpenGLSpriteRenderer::DrawTexture2D(const Renderer2DProps& props)
@@ -164,5 +204,149 @@ namespace FlexEngine
     m_draw_calls++;
 
     glBindVertexArray(0);
+  }
+
+  void OpenGLSpriteRenderer::DrawTexture2DWithBloom(const Renderer2DProps& props)
+  {
+      // unit square
+      // Flipped UVs for OpenGL
+      static const float vertices[] = {
+          // Position        // TexCoords
+          -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // Bottom-left
+           0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // Bottom-right
+           0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
+           0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
+          -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // Top-left
+          -0.5f, -0.5f, 0.0f,   1.0f, 0.0f  // Bottom-left
+      };
+
+      // 1. Render to Framebuffer (offscreen rendering)
+      glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+      ClearFrameBuffer();  // Clear color and depth buffers
+
+      // Ensure the VAO and shader are bound
+      static GLuint vao = 0, vbo = 0;
+      if (vao == 0)
+      {
+          glGenVertexArrays(1, &vao);
+          glGenBuffers(1, &vbo);
+
+          glBindVertexArray(vao);
+          glBindBuffer(GL_ARRAY_BUFFER, vbo);
+          glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+          glEnableVertexAttribArray(0);
+          glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+          glEnableVertexAttribArray(1);
+          glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+          glBindVertexArray(0);
+
+          // free in freequeue
+          FreeQueue::Push(
+            [=]()
+          {
+              glDeleteBuffers(1, &vbo);
+              glDeleteVertexArrays(1, &vao);
+          }
+          );
+      }
+
+      // guard
+      if (vao == 0 || props.shader == "" || props.scale == Vector2::Zero) return;
+
+      glBindVertexArray(vao);
+      auto& asset_shader = FLX_ASSET_GET(Asset::Shader, props.shader);
+      asset_shader.Use();
+
+      // Bind texture or color
+      if (!props.texture.empty()) {
+          asset_shader.SetUniform_bool("u_use_texture", true);
+          auto& asset_texture = FLX_ASSET_GET(Asset::Texture, props.texture);
+          asset_texture.Bind(asset_shader, "u_texture", 0);
+      }
+      else if (props.color != Vector3::Zero) {
+          asset_shader.SetUniform_bool("u_use_texture", false);
+          asset_shader.SetUniform_vec3("u_color", props.color);
+      }
+      else {
+          Log::Fatal("No texture or color specified for shader.");
+      }
+
+      // Set additional uniforms (e.g., color to add/multiply)
+      asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
+      asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
+
+      // Set up alignment and transformations
+      Vector2 position = props.position;
+      if (props.alignment == Renderer2DProps::Alignment_TopLeft) {
+          position += props.scale * 0.5f;
+      }
+      Matrix4x4 model = Matrix4x4::Identity;
+      model = model.Translate(Vector3(-position.x, position.y, 0.0f)).Scale(Vector3(props.scale.x, props.scale.y, 1.0f));
+      asset_shader.SetUniform_mat4("u_model", model);
+
+      // Set projection and view matrices
+      static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
+      Matrix4x4 projection_view = Matrix4x4::Orthographic(0.0f, props.window_size.x, props.window_size.y, 0.0f, -2.0f, 2.0f) * view_matrix;
+      asset_shader.SetUniform_mat4("u_projection_view", projection_view);
+
+      // Draw the sprite
+      glDrawArrays(GL_TRIANGLES, 0, 6);
+      m_draw_calls++;
+
+      // 2. Apply Bloom Effect
+      ApplyBloomEffect();  // Perform bright extraction and Gaussian blur
+
+      // 3. Bind back to default framebuffer and apply final composition
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+      auto& finalShader = FLX_ASSET_GET(Asset::Shader, AssetKey(R"(\shader\bloom\bloom_final_composite.frag)"));
+      finalShader.Use();
+
+      // Bind the texture and the bloom texture (blurred bright areas)
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, m_colorBuffer);  // Original scene texture
+      finalShader.SetUniform_int("scene", 0);
+
+      glActiveTexture(GL_TEXTURE1);
+      glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[1]);  // Blurred bloom texture
+      finalShader.SetUniform_int("bloomBlur", 1);
+
+      // Final draw combining original texture and bloom effect
+      glDrawArrays(GL_TRIANGLES, 0, 6);
+
+      // Unbind the VAO
+      glBindVertexArray(0);
+  }
+
+  void OpenGLSpriteRenderer::ApplyBloomEffect()
+  {
+      bool horizontal = true, first_iteration = true;
+      int amount = 10;  // Number of blur passes
+      auto& blurHorizontalShader = FLX_ASSET_GET(Asset::Shader, AssetKey(R"(\shader\bloom\bloom_blur_horizontal.frag)"));
+      auto& blurVerticalShader = FLX_ASSET_GET(Asset::Shader, AssetKey(R"(\shader\bloom\bloom_blur_vertical.frag)"));
+
+      for (int i = 0; i < amount; i++)
+      {
+          glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[horizontal]);
+          if (horizontal)
+              blurHorizontalShader.Use();
+          else
+              blurVerticalShader.Use();
+
+          glBindTexture(GL_TEXTURE_2D, first_iteration ? m_brightBuffer : m_pingpongBuffer[!horizontal]);  // First iteration uses brightness buffer
+          glDrawArrays(GL_TRIANGLES, 0, 6);
+
+          horizontal = !horizontal;
+          if (first_iteration) first_iteration = false;
+      }
+
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);  // Back to default framebuffer
+
+      // 3. Combine original scene with blurred bright areas
+      auto& finalShader = FLX_ASSET_GET(Asset::Shader, AssetKey(R"(\shader\bloom\bloom_final_composite.frag)"));
+      finalShader.Use();
+      glDrawArrays(GL_TRIANGLES, 0, 6);  // Composite final scene with bloom
   }
 }

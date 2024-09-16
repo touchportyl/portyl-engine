@@ -1,60 +1,70 @@
 #pragma once
 
 #include "flx_api.h"
-
 #include "FlexMath/vector4.h"
 #include "opengltexture.h"
-
 #include <glad/glad.h>
 
 namespace FlexEngine
 {
-
-  struct __FLX_API Renderer2DProps
-  {
-    enum __FLX_API Alignment
+    struct __FLX_API Renderer2DProps
     {
-      Alignment_Center = 0,
-      Alignment_TopLeft = 1,
+        enum __FLX_API Alignment
+        {
+            Alignment_Center = 0,
+            Alignment_TopLeft = 1,
+        };
+
+        std::string shader = R"(/shaders/texture)";
+        std::string texture = R"(/images/flexengine/flexengine-256.png)";
+        Vector3 color = Vector3(1.0f, 0.0f, 1.0f);
+        Vector3 color_to_add = Vector3(0.0f, 0.0f, 0.0f);
+        Vector3 color_to_multiply = Vector3(1.0f, 1.0f, 1.0f);
+        Vector2 position = Vector2(0.0f, 0.0f);
+        Vector2 scale = Vector2(1.0f, 1.0f);
+        Vector2 window_size = Vector2(800.0f, 600.0f);
+        Alignment alignment = Alignment_Center;
     };
 
-    std::string shader = R"(/shaders/texture)";
-    std::string texture = R"(/images/flexengine/flexengine-256.png)";
-    Vector3 color = Vector3(1.0f, 0.0f, 1.0f);
-    Vector3 color_to_add = Vector3(0.0f, 0.0f, 0.0f);
-    Vector3 color_to_multiply = Vector3(1.0f, 1.0f, 1.0f);
-    Vector2 position = Vector2(0.0f, 0.0f);
-    Vector2 scale = Vector2(1.0f, 1.0f);
-    Vector2 window_size = Vector2(800.0f, 600.0f);
-    Alignment alignment = Alignment_Center;
-  };
+    class __FLX_API OpenGLSpriteRenderer
+    {
+        static uint32_t m_draw_calls;
+        static uint32_t m_draw_calls_last_frame;
+        static bool m_depth_test;
+        static bool m_blending;
 
-  class __FLX_API OpenGLSpriteRenderer
-  {
-    static uint32_t m_draw_calls;
-    static uint32_t m_draw_calls_last_frame;
-    static bool m_depth_test;
-    static bool m_blending;
-  public:
+        // FBOs and textures for bloom pass
+        static GLuint m_fbo;
+        static GLuint m_colorBuffer;
+        static GLuint m_brightBuffer;
+        static GLuint m_pingpongFBO[2];
+        static GLuint m_pingpongBuffer[2];
 
-    static uint32_t GetDrawCalls();
-    static uint32_t GetDrawCallsLastFrame();
+    public:
+        static uint32_t GetDrawCalls();
+        static uint32_t GetDrawCallsLastFrame();
 
-    static bool IsDepthTestEnabled();
-    static void EnableDepthTest();
-    static void DisableDepthTest();
+        static bool IsDepthTestEnabled();
+        static void EnableDepthTest();
+        static void DisableDepthTest();
 
-    static bool IsBlendingEnabled();
-    static void EnableBlending();
-    static void DisableBlending();
+        static bool IsBlendingEnabled();
+        static void EnableBlending();
+        static void DisableBlending();
 
-    static void ClearFrameBuffer();
-    static void ClearColor(const Vector4& color);
+        static void ClearFrameBuffer();
+        static void ClearColor(const Vector4& color);
 
-    // Standalone helper function to draw a texture.
-    // Uses an internal unit square mesh to draw the texture.
-    // Pass in a shader that supports the texture and color uniforms.
-    static void DrawTexture2D(const Renderer2DProps& props = {});
-  };
+        // Initialize FBOs for bloom
+        static void InitBloomFBO();
 
+        // Draw the texture
+        static void DrawTexture2D(const Renderer2DProps& props = {});
+
+        // Draw the texture with bloom applied
+        static void DrawTexture2DWithBloom(const Renderer2DProps& props = {});
+
+        // Apply bloom (pass bright areas through shader and apply blur)
+        static void ApplyBloomEffect();
+    };
 }
