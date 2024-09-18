@@ -33,10 +33,20 @@ namespace FlexEngine
         static bool m_depth_test;
         static bool m_blending;
 
+
+        // Everything below is still testing (ignore if not proper nametypes)
+        // Number of samples per pixel for MSAA anti-aliasing for pixel blend - remove jaggedness
+        static GLuint samples;
+        // Controls the gamma function
+        static float gamma; //might be useful for brightening transitioning
         // FBOs and textures for bloom pass
-        static GLuint m_fbo;
+        static GLuint m_rectVAO;
+        static GLuint m_rectVBO;
+        static GLuint m_postProcessingFBO;
         static GLuint m_colorBuffer;
         static GLuint m_brightBuffer;
+        static GLuint bloomTexture;
+        static GLuint postProcessingTexture;
         static GLuint m_pingpongFBO[2];
         static GLuint m_pingpongBuffer[2];
 

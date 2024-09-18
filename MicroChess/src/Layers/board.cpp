@@ -97,7 +97,7 @@ namespace MicroChess
       piece.AddComponent<OnClick>({});
     }
 
-    //TEST (REMOVE AFTER DONE)
+    //TEST (REMOVE AFTER DONE) 
     scene->Internal_StringStorage_New(R"(\images\normal.png)");
     FlexECS::Entity test = FlexECS::Scene::CreateEntity("test");
     test.AddComponent<IsActive>({ true });
