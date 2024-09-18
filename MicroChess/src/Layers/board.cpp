@@ -43,7 +43,7 @@ namespace MicroChess
         tile.AddComponent<ZIndex>({ 10 });
         tile.AddComponent<BoardTile>({});
         tile.AddComponent<Parent>({ board });
-        tile.AddComponent<Position>({ { j * 100.0f, i * 100.0f } });
+        tile.AddComponent<Position>({ { 300.0f+j * 100.0f, i * 100.0f } });
         tile.AddComponent<Scale>({ { 100, 100 } });
         tile.AddComponent<Sprite>({
           //scene->Internal_StringStorage_New(R"(\images\chess_king.png)"),
@@ -53,7 +53,7 @@ namespace MicroChess
           Vector3::One,
           Renderer2DProps::Alignment_Center
         });
-        tile.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\bloom_bright_extraction)") });
+        tile.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
       }
     }
 
@@ -82,7 +82,7 @@ namespace MicroChess
       piece.AddComponent<Parent>({ board });
       //Vector2 pos = { static_cast<int>(i / 4), i % 4 };
       //piece.AddComponent<PiecePosition>({ pos });
-      piece.AddComponent<Position>({ { (i % 4) * 100.0f, (i / 4) * 100.0f } });
+      piece.AddComponent<Position>({ { 300.0f+(i % 4) * 100.0f, (i / 4) * 100.0f } });
       piece.AddComponent<Scale>({ { 50, 50 } });
       piece.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(piece_asset[i]),
@@ -91,12 +91,27 @@ namespace MicroChess
         (i >= 8) ? Vector3::One : Vector3::Zero,
         Renderer2DProps::Alignment_Center
       });
-      piece.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\bloom_bright_extraction)") });
+      piece.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
       piece.AddComponent<BoundingBox2D>({ Vector2::One });
       piece.AddComponent<OnHover>({});
       piece.AddComponent<OnClick>({});
     }
 
+    //TEST (REMOVE AFTER DONE)
+    scene->Internal_StringStorage_New(R"(\images\normal.png)");
+    FlexECS::Entity test = FlexECS::Scene::CreateEntity("test");
+    test.AddComponent<IsActive>({ true });
+    test.AddComponent<ZIndex>({ 20 });
+    test.AddComponent<Position>({ { 400.0f, 400.0f } });
+    test.AddComponent<Scale>({ { 500, 500 } });
+    test.AddComponent<Sprite>({
+      scene->Internal_StringStorage_New(R"(\images\diffuse.png)"),
+      Vector3::One,
+      Vector3::Zero,
+      Vector3::One, //What does this do?
+      Renderer2DProps::Alignment_Center
+    });
+    test.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
   }
 
   void BoardLayer::OnAttach()
@@ -115,7 +130,7 @@ namespace MicroChess
     cursor.AddComponent<ZIndex>({ 100 });
     cursor.AddComponent<Position>({ { 0, 0 } });
     cursor.AddComponent<Scale>({ { 32, 32 } });
-    cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\bloom_bright_extraction)") });
+    cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
     //cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
     cursor.AddComponent<Sprite>({
       scene->Internal_StringStorage_New(R"(\images\cursor\cursor_none.png)"),
