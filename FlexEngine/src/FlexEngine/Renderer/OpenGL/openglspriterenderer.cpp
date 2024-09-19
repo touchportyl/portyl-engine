@@ -124,17 +124,27 @@ namespace FlexEngine
 
       // unit square
        // Flipped UVs for OpenGL
+      //const float vertices[] = {
+      //    //  Coords   // texCoords
+      //     1.0f, -1.0f,  1.0f, 0.0f,
+      //    -1.0f, -1.0f,  0.0f, 0.0f,
+      //    -1.0f,  1.0f,  0.0f, 1.0f,
+
+      //     1.0f,  1.0f,  1.0f, 1.0f,
+      //     1.0f, -1.0f,  1.0f, 0.0f,
+      //    -1.0f,  1.0f,  0.0f, 1.0f
+      //}; //Move this outside
+
       const float vertices[] = {
-          //  Coords   // texCoords
-           1.0f, -1.0f,  1.0f, 0.0f,
-          -1.0f, -1.0f,  0.0f, 0.0f,
-          -1.0f,  1.0f,  0.0f, 1.0f,
-
-           1.0f,  1.0f,  1.0f, 1.0f,
-           1.0f, -1.0f,  1.0f, 0.0f,
-          -1.0f,  1.0f,  0.0f, 1.0f
-      }; //Move this outside
-
+          // Position        // TexCoords
+          -1.0f, -1.f, 0.0f,   0.0f, 0.0f, // Bottom-left
+           1.0f, -1.f, 0.0f,   1.0f, 0.0f, // Bottom-right
+           1.0f,  1.f, 0.0f,   1.0f, 1.0f, // Top-right
+           1.0f,  1.f, 0.0f,   1.0f, 1.0f, // Top-right
+          -1.0f,  1.f, 0.0f,   0.0f, 1.0f, // Top-left
+          -1.0f, -1.f, 0.0f,   0.0f, 0.0f  // Bottom-left
+      };
+      //Change to 1,
       //Disable for now
       {
 
@@ -152,15 +162,19 @@ namespace FlexEngine
           //glFrontFace(GL_CCW);
       }
 
+      // Set up VAO and VBO
       glGenVertexArrays(1, &m_rectVAO);
       glGenBuffers(1, &m_rectVBO);
       glBindVertexArray(m_rectVAO);
       glBindBuffer(GL_ARRAY_BUFFER, m_rectVBO);
-      glBufferData(GL_ARRAY_BUFFER, sizeof(/*rectangleVertices*/vertices), &/*rectangleVertices*/vertices, GL_STATIC_DRAW);
-      glEnableVertexAttribArray(3);
-      glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-      glEnableVertexAttribArray(4);
-      glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+      // Correct the usage of vertices in glBufferData
+      glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+      // Position attribute (3 floats: x, y, z)
+      glEnableVertexAttribArray(0);
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // 5 * sizeof(float) is correct for the stride.
+      // Texture coordinates attribute (2 floats: u, v), starting after the position
+      glEnableVertexAttribArray(1);
+      glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))); // Offset to the 4th element (3 floats).
 
       // Create Frame Buffer Object
       glGenFramebuffers(1, &m_postProcessingFBO);
@@ -168,7 +182,9 @@ namespace FlexEngine
 
       // Create Framebuffer Texture
       int width, height;
-      width = height = 800;
+      Renderer2DProps temp;
+      width = temp.window_size.x;
+      height = temp.window_size.y;
       glGenTextures(1, &postProcessingTexture);
       glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -195,7 +211,7 @@ namespace FlexEngine
       // Error checking framebuffer
       auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
       if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
-          std::cout << "Post-Processing Framebuffer error: " << fboStatus << std::endl;
+          Log::Fatal("Post-Processing Framebuffer error: " + fboStatus);
 
       // Create Ping Pong Framebuffers for repetitive blurring
       glGenFramebuffers(2, m_pingpongFBO);
@@ -213,7 +229,7 @@ namespace FlexEngine
 
           fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
           if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
-              std::cout << "Ping-Pong Framebuffer error: " << fboStatus << std::endl;
+              Log::Fatal("Ping-Pong Framebuffer error: " + fboStatus);
       }
 
       //Unbind frame buffer
@@ -320,6 +336,8 @@ namespace FlexEngine
 
   void OpenGLSpriteRenderer::DrawTexture2DWithBloom(const Renderer2DProps& props)
   {
+      //Not used
+      {
       //// 1. Render to Framebuffer (offscreen rendering)
       //glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
       //ClearFrameBuffer();  // Clear color and depth buffers
@@ -418,29 +436,53 @@ namespace FlexEngine
 
       //// Unbind the VAO
       //glBindVertexArray(0);
-
+  }
       // Bind the custom framebuffer
       glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);
-      // Specify the color of the background
-      glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
       // Clean the back buffer and depth buffer
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       // Enable depth testing since it's disabled when drawing the framebuffer rectangle
       glEnable(GL_DEPTH_TEST);
 
-      auto& asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/framebuffer)");
-      asset_shader.Use();
+      //Drawing objects
+      DrawTexture2D(props);
+
+      Vector2 position = Vector2(props.position.x, props.position.y);
+      switch (props.alignment)
+      {
+      case Renderer2DProps::Alignment_TopLeft:
+          position += props.scale * 0.5f;
+          break;
+      case Renderer2DProps::Alignment_Center:
+      default:
+          break;
+      }
+      Matrix4x4 model = Matrix4x4::Identity;
+      static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
+      Matrix4x4 projection_view = Matrix4x4::Orthographic(
+        0.0f, props.window_size.x,
+        props.window_size.y, 0.0f,
+        -2.0f, 2.0f
+      ) * view_matrix;
+
+      //Unbind frame buffer
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+      //auto& asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/framebuffer)");
+      //asset_shader.Use();
       //IMPLEMENT LATER LAH YOU IM TIRED
       //normalMap.Bind();
       //glUniform1i(glGetUniformLocation(shaderProgram.ID, "normal0"), 1);
       //displacementMap.Bind();
       //glUniform1i(glGetUniformLocation(shaderProgram.ID, "displacement0"), 2);
+      // ////////////////////////////////////////////////////////////////////////////////
       // Bounce the image data around to blur multiple times
       bool horizontal = true, first_iteration = true;
       // Amount of time to bounce the blur
       int amount = 2;
-      asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/blur)");
+      auto& asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/blur)");
       asset_shader.Use();
+      //asset_shader.SetUniform_mat4("u_model", model.Translate(Vector3(-position.x, position.y, 0.0f)).Scale(Vector3(props.scale.x, props.scale.y, 1.0f)));
+      //asset_shader.SetUniform_mat4("u_projection_view", projection_view);
       for (unsigned int i = 0; i < amount; i++)
       {
           glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[horizontal]);
@@ -470,9 +512,12 @@ namespace FlexEngine
 
       // Bind the default framebuffer
       glBindFramebuffer(GL_FRAMEBUFFER, 0);
+      //}
       // Draw the framebuffer rectangle
-      asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/framebuffer)");
+      /*auto&*/ asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/framebuffer)");
       asset_shader.Use();
+      //asset_shader.SetUniform_mat4("u_model", model.Translate(Vector3(-position.x, position.y, 0.0f)).Scale(Vector3(props.scale.x, props.scale.y, 1.0f)));
+      //asset_shader.SetUniform_mat4("u_projection_view", projection_view);
       glBindVertexArray(m_rectVAO);
       glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
       glActiveTexture(GL_TEXTURE0);
@@ -481,6 +526,7 @@ namespace FlexEngine
       glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[!horizontal]);
       glDrawArrays(GL_TRIANGLES, 0, 6);
 
+      glBindVertexArray(0);
       //Might be important i think
       // Swap the back buffer with the front buffer
       //glfwSwapBuffers(window);
