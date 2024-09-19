@@ -157,9 +157,9 @@ namespace FlexEngine
       glBindVertexArray(m_rectVAO);
       glBindBuffer(GL_ARRAY_BUFFER, m_rectVBO);
       glBufferData(GL_ARRAY_BUFFER, sizeof(/*rectangleVertices*/vertices), &/*rectangleVertices*/vertices, GL_STATIC_DRAW);
-      glEnableVertexAttribArray(0);
+      glEnableVertexAttribArray(3);
       glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-      glEnableVertexAttribArray(1);
+      glEnableVertexAttribArray(4);
       glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
       // Create Frame Buffer Object
@@ -215,6 +215,9 @@ namespace FlexEngine
           if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
               std::cout << "Ping-Pong Framebuffer error: " << fboStatus << std::endl;
       }
+
+      //Unbind frame buffer
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
   void OpenGLSpriteRenderer::DrawTexture2D(const Renderer2DProps& props)

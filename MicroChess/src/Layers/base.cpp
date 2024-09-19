@@ -27,7 +27,7 @@ namespace MicroChess
     // Renderer Setup
 
     OpenGLRenderer::EnableBlending();
-    //OpenGLSpriteRenderer::InitBloomFBO(); //(Breaks - need check code)
+    OpenGLSpriteRenderer::InitBloomFBO();
   }
 
   void BaseLayer::OnDetach()
