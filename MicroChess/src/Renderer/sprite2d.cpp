@@ -14,7 +14,6 @@ namespace MicroChess
     FunctionQueue render_queue;
     //Added in to test (TODO)
     //OpenGLSpriteRenderer::EnablePostProcessing();
-    OpenGLSpriteRenderer::ClearFrameBuffer();
     // Render all entities
     for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Position, Scale, Shader, Sprite>())
     {
@@ -53,7 +52,7 @@ namespace MicroChess
 
       render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2DWithBloom(props); }, "", z_index });
     }
-
+    
     // push settings
 
     bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
