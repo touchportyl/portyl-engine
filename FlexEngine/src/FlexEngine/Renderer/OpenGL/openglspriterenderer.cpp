@@ -347,69 +347,86 @@ namespace FlexEngine
 
   void OpenGLSpriteRenderer::DrawTexture2DWithBloom(const Renderer2DProps& props)
   {
+      // Step 1: Full-screen quad vertices for post-processing (unchanged)
       static const float vertices[] = {
-          // Position        // TexCoords
-          -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // Bottom-left
-           0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // Bottom-right
-           0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
-           0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
-          -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // Top-left
-          -0.5f, -0.5f, 0.0f,   1.0f, 0.0f  // Bottom-left
+          -0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
+           0.5f, -0.5f, 0.0f,   0.0f, 0.0f,
+           0.5f,  0.5f, 0.0f,   0.0f, 1.0f,
+           0.5f,  0.5f, 0.0f,   0.0f, 1.0f,
+          -0.5f,  0.5f, 0.0f,   1.0f, 1.0f,
+          -0.5f, -0.5f, 0.0f,   1.0f, 0.0f
       };
-      // Step 1: Render to Framebuffer (offscreen rendering)
-      glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);
-      //ClearFrameBuffer();  // Clear color and depth buffers
 
+      // Step 2: Render the texture (offscreen rendering)
+      glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);
+      //ClearFrameBuffer();
       DrawTexture2D(props);
 
-      // Step 2: Apply Bloom Effect (Gaussian blur)
-      bool horizontal = true;
-      int amount = 2;  // Number of blur passes
-      auto& blur_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/blur)");
-      blur_shader.Use();
+      //// Optional: Only proceed with bloom if enabled
+      //if (apply_bloom)
+      //{
+          // Step 3: Brightness Pass - Extract bright areas
+          auto& brightness_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/brightness)");
+          brightness_shader.Use();
+          brightness_shader.SetUniform_float("u_Threshold", 1.0f);
 
-      for (unsigned int i = 0; i < amount; i++)
-      {
-          glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[horizontal]);
-          glUniform1i(glGetUniformLocation(blur_shader.Get(), "horizontal"), horizontal);
+          glActiveTexture(GL_TEXTURE0);
+          glBindTexture(GL_TEXTURE_2D, bloomTexture); // The texture rendered in the previous step
+          brightness_shader.SetUniform_int("scene", 0);
 
-          // Bind the texture for the current iteration
-          if (i == 0) {
-              glBindTexture(GL_TEXTURE_2D, bloomTexture);
-          }
-          else {
-              glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[!horizontal]);
-          }
-
-          // Render the image
+          // Render brightness to first ping-pong buffer
+          glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[0]);
           glBindVertexArray(m_rectVAO);
-          glDisable(GL_DEPTH_TEST);  // Disable depth test for full-screen quad
+          glDisable(GL_DEPTH_TEST);
           glDrawArrays(GL_TRIANGLES, 0, 6);
           m_draw_calls++;
 
-          // Switch between horizontal and vertical blurring
-          horizontal = !horizontal;
-      }
+          // Step 4: Gaussian Blur Pass
+          auto& blur_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/blur)");
+          blur_shader.Use();
 
-      // Step 3: Bind the default framebuffer and apply final composition
-      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+          bool horizontal = true;
+          int blur_passes = 2;
 
-      // Draw the final result
-      auto& final_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/framebuffer)");
-      final_shader.Use();
+          for (int i = 0; i < blur_passes; ++i)
+          {
+              glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[horizontal]);
+              blur_shader.SetUniform_int("horizontal", horizontal);
 
-      // Set up the final shader with the appropriate textures
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, bloomTexture); //WHY IS REMOVING THIS MAKING IT HAVE MORE BLOOM????
-      glActiveTexture(GL_TEXTURE1);
-      glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[!horizontal]);
+              if (i == 0) {
+                  glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[0]);
+              }
+              else {
+                  glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[!horizontal]);
+              }
 
-      // Draw the full-screen quad for final composition
-      glBindVertexArray(m_rectVAO);
-      glDrawArrays(GL_TRIANGLES, 0, 6);
-      m_draw_calls++;
+              glBindVertexArray(m_rectVAO);
+              glDisable(GL_DEPTH_TEST);
+              glDrawArrays(GL_TRIANGLES, 0, 6);
+              m_draw_calls++;
+              horizontal = !horizontal;
+          }
 
-      // Clean up
+          // Step 5: Final Composition
+          glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind default framebuffer
+
+          auto& final_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/framebuffer)");
+          final_shader.Use();
+
+          glActiveTexture(GL_TEXTURE0);
+          glBindTexture(GL_TEXTURE_2D, postProcessingTexture); // Original scene texture
+          final_shader.SetUniform_int("scene", 0);
+
+          glActiveTexture(GL_TEXTURE1);
+          glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[!horizontal]); // Final blurred texture
+          final_shader.SetUniform_int("bloomBlur", 1);
+
+          glBindVertexArray(m_rectVAO);
+          glDrawArrays(GL_TRIANGLES, 0, 6);
+          m_draw_calls++;
+      //}
+
+      // Clean-up
       glBindVertexArray(0);
   }
 
