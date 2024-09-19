@@ -62,6 +62,9 @@ namespace FlexEngine
         static void EnableBlending();
         static void DisableBlending();
 
+        static void EnablePostProcessing();
+        static void DisablePostProcessing();
+
         static void ClearFrameBuffer();
         static void ClearColor(const Vector4& color);
 

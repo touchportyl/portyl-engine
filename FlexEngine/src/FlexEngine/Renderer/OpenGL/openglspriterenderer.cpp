@@ -39,6 +39,16 @@ namespace FlexEngine
     return m_depth_test;
   }
 
+  void OpenGLSpriteRenderer::EnablePostProcessing()
+  {
+      glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);
+  }
+
+  void OpenGLSpriteRenderer::DisablePostProcessing()
+  {
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  }
+
   void OpenGLSpriteRenderer::EnableDepthTest()
   {
     m_depth_test = true;
@@ -440,9 +450,9 @@ namespace FlexEngine
       // Bind the custom framebuffer
       glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);
       // Clean the back buffer and depth buffer
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       // Enable depth testing since it's disabled when drawing the framebuffer rectangle
-      glEnable(GL_DEPTH_TEST);
+      //glEnable(GL_DEPTH_TEST);
 
       //Drawing objects
       DrawTexture2D(props);
@@ -504,7 +514,7 @@ namespace FlexEngine
           glBindVertexArray(m_rectVAO);
           glDisable(GL_DEPTH_TEST);
           glDrawArrays(GL_TRIANGLES, 0, 6);
-
+          m_draw_calls++;
           // Switch between vertical and horizontal blurring
           horizontal = !horizontal;
       }
@@ -516,8 +526,8 @@ namespace FlexEngine
       // Draw the framebuffer rectangle
       /*auto&*/ asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/framebuffer)");
       asset_shader.Use();
-      //asset_shader.SetUniform_mat4("u_model", model.Translate(Vector3(-position.x, position.y, 0.0f)).Scale(Vector3(props.scale.x, props.scale.y, 1.0f)));
-      //asset_shader.SetUniform_mat4("u_projection_view", projection_view);
+      asset_shader.SetUniform_mat4("u_model", model.Translate(Vector3(-position.x, position.y, 0.0f)).Scale(Vector3(props.scale.x, props.scale.y, 1.0f)));
+      asset_shader.SetUniform_mat4("u_projection_view", projection_view);
       glBindVertexArray(m_rectVAO);
       glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
       glActiveTexture(GL_TEXTURE0);

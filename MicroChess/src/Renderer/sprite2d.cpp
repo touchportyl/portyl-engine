@@ -12,7 +12,9 @@ namespace MicroChess
     props.window_size = { static_cast<float>(window_props.width), static_cast<float>(window_props.height) };
 
     FunctionQueue render_queue;
-
+    //Added in to test (TODO)
+    //OpenGLSpriteRenderer::EnablePostProcessing();
+    OpenGLSpriteRenderer::ClearFrameBuffer();
     // Render all entities
     for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Position, Scale, Shader, Sprite>())
     {
