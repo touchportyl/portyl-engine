@@ -145,27 +145,39 @@
     <None Include="assets\shaders\texture.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Battle\turnorderdisplay.h" />
+    <ClInclude Include="src\Battle\targetingsystem.h" />
+    <ClInclude Include="src\CharacterMoves\moves.h" />
+    <ClInclude Include="src\Components\battlecomponents.h" />
     <ClInclude Include="src\Components\game.h" />
     <ClInclude Include="src\Components\physics.h" />
     <ClInclude Include="src\Components\rendering.h" />
     <ClInclude Include="src\Layers.h" />
     <ClInclude Include="src\Layers\base.h" />
+    <ClInclude Include="src\Layers\battle.h" />
     <ClInclude Include="src\Layers\board.h" />
     <ClInclude Include="src\Layers\menu.h" />
     <ClInclude Include="src\Physics\box2d.h" />
+    <ClInclude Include="src\Renderer\battledisplay.h" />
     <ClInclude Include="src\Renderer\sprite2d.h" />
     <ClInclude Include="src\States.h" />
     <ClInclude Include="src\States\mainstate.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Battle\turnorderdisplay.cpp" />
+    <ClCompile Include="src\Battle\targetingsystem.cpp" />
+    <ClCompile Include="src\CharacterMoves\moves.cpp" />
+    <ClCompile Include="src\Components\battlecomponents.cpp" />
     <ClCompile Include="src\Components\game.cpp" />
     <ClCompile Include="src\Components\physics.cpp" />
     <ClCompile Include="src\Components\rendering.cpp" />
     <ClCompile Include="src\Layers\base.cpp" />
+    <ClCompile Include="src\Layers\battle.cpp" />
     <ClCompile Include="src\Layers\board.cpp" />
     <ClCompile Include="src\Layers\menu.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Physics\box2d.cpp" />
+    <ClCompile Include="src\Renderer\battledisplay.cpp" />
     <ClCompile Include="src\Renderer\sprite2d.cpp" />
     <ClCompile Include="src\States\mainstate.cpp" />
   </ItemGroup>
