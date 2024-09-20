@@ -234,10 +234,6 @@ namespace MicroChess
     }
     destroy_queue.Flush();
 
-    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Position, Sprite>())
-    {
-        entity.GetComponent<Position>()->position.x+=0.1f;
-    }
     RendererSprite2D();
   }
 

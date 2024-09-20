@@ -69,13 +69,13 @@ namespace FlexEngine
         static void ClearColor(const Vector4& color);
 
         // Initialize FBOs for bloom
-        static void InitBloomFBO();
+        static void InitBloomFBO(const Vector2& windowSize);
 
         // Draw the texture
         static void DrawTexture2D(const Renderer2DProps& props = {});
 
-        // Draw the texture with bloom applied
-        static void DrawTexture2DWithBloom(/*const Renderer2DProps& props = {}*/);
+        // Draw Post Processing Layer
+        static void DrawPostProcessingLayer();
 
         // Apply bloom (pass bright areas through shader and apply blur)
         static void ApplyBloomEffect();

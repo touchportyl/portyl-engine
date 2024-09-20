@@ -1,7 +1,7 @@
 #version 330 core
 out vec4 FragColor;
   
-in vec2 texCoords;
+in vec2 tex_coord;
 
 uniform sampler2D screenTexture;
 uniform bool horizontal;
@@ -53,5 +53,4 @@ void main()
             result += texture(screenTexture, texCoords - vec2(0.0, tex_offset.y * i)).rgb * weights[i];
         }
     }
-    FragColor = vec4(result, 1.0f);
 }

@@ -12,7 +12,8 @@ namespace MicroChess
     props.window_size = { static_cast<float>(window_props.width), static_cast<float>(window_props.height) };
 
     FunctionQueue render_queue;
-    //Added in to test (TODO)
+
+    //Put in if case once done
     OpenGLSpriteRenderer::EnablePostProcessing();
     OpenGLSpriteRenderer::ClearFrameBuffer();
     // Render all entities
@@ -67,9 +68,9 @@ namespace MicroChess
     // render
 
     render_queue.Flush();
+
     OpenGLSpriteRenderer::DisablePostProcessing();
-    
-    OpenGLSpriteRenderer::DrawTexture2DWithBloom();
+    OpenGLSpriteRenderer::DrawPostProcessingLayer();
 
     // pop settings
 
