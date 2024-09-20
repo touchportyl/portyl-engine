@@ -109,6 +109,7 @@ namespace FlexEngine
 
     // clear screen
     OpenGLRenderer::ClearColor({ 0.1f, 0.2f, 0.3f, 1.0f });
+    OpenGLRenderer::ClearFrameBuffer();
 
     m_frameratecontroller.BeginFrame();
     ImGuiWrapper::BeginFrame();

@@ -13,6 +13,9 @@ namespace MicroChess
 
     FunctionQueue render_queue;
 
+    //Put in if case once done
+    OpenGLSpriteRenderer::EnablePostProcessing();
+    OpenGLSpriteRenderer::ClearFrameBuffer();
     // Render all entities
     for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Position, Scale, Shader, Sprite>())
     {
@@ -49,11 +52,13 @@ namespace MicroChess
       props.color_to_multiply = sprite->color_to_multiply;
       props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
 
-      render_queue.Insert({ [props]() { OpenGLRenderer::DrawTexture2D(props); }, "", z_index });
+      render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
     }
+   
+    //Then render it all on a prop (here do post-processing (TODO)
+    //render_queue.Insert({ [props]() {  }, "", 0 });
 
     // push settings
-
     bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
     if (depth_test) OpenGLRenderer::DisableDepthTest();
 
@@ -63,6 +68,9 @@ namespace MicroChess
     // render
 
     render_queue.Flush();
+
+    OpenGLSpriteRenderer::DisablePostProcessing();
+    OpenGLSpriteRenderer::DrawPostProcessingLayer();
 
     // pop settings
 
