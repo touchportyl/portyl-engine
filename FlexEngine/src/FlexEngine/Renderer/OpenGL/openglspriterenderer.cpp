@@ -345,7 +345,7 @@ namespace FlexEngine
     glBindVertexArray(0);
   }
 
-  void OpenGLSpriteRenderer::DrawTexture2DWithBloom(const Renderer2DProps& props)
+  void OpenGLSpriteRenderer::DrawTexture2DWithBloom(/*const Renderer2DProps& props*/)
   {
       // Step 1: Full-screen quad vertices for post-processing (unchanged)
       static const float vertices[] = {
@@ -356,11 +356,13 @@ namespace FlexEngine
           -0.5f,  0.5f, 0.0f,   1.0f, 1.0f,
           -0.5f, -0.5f, 0.0f,   1.0f, 0.0f
       };
-
+      
       // Step 2: Render the texture (offscreen rendering)
       glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);
       //ClearFrameBuffer();
-      DrawTexture2D(props);
+      //
+
+      //DrawTexture2D(props);//Draw the centralised texture
 
       //// Optional: Only proceed with bloom if enabled
       //if (apply_bloom)

@@ -75,7 +75,7 @@ namespace FlexEngine
         static void DrawTexture2D(const Renderer2DProps& props = {});
 
         // Draw the texture with bloom applied
-        static void DrawTexture2DWithBloom(const Renderer2DProps& props = {});
+        static void DrawTexture2DWithBloom(/*const Renderer2DProps& props = {}*/);
 
         // Apply bloom (pass bright areas through shader and apply blur)
         static void ApplyBloomEffect();
