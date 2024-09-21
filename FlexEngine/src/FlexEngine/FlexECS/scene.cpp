@@ -228,6 +228,88 @@ namespace FlexEngine
 
       entity = updated_entity;
     }
+    
+    /*!
+      \brief Clones entity via archetype row copy.
+      \param entity_to_copy Entity to clone.
+      \return EntityID of the cloned entity.
+    */
+    EntityID Scene::CloneEntity(EntityID entity_to_copy)
+    {
+      // Get the archetype of the entity to copy
+      EntityRecord& entity_record = ENTITY_INDEX[entity_to_copy];
+      Archetype& archetype = *entity_record.archetype;
+
+      // First we need to assign this new entity an ID
+      EntityID new_entity = ID::Create(ID::Flags::Flag_None, Scene::GetActiveScene()->_flx_id_next, Scene::GetActiveScene()->_flx_id_unused);
+      
+      // Secondly, we update the scene's archetype by telling it we want to add one more entity of this index...
+      archetype.entities.push_back(new_entity);
+
+      // ... then update entity records of this new entity
+      EntityRecord new_entity_record = { &archetype, archetype.id, archetype.entities.size() - 1 };
+      ENTITY_INDEX[new_entity] = new_entity_record;
+
+      // Now, after the setup is complete, we copy the entire row over
+      for (std::size_t i{}; i < archetype.archetype_table.size(); i++)
+      {
+        // Perform deep copy, after all, the data inside is actually just a pointer, so we need to reserve memory to store the new one.
+        std::pair<size_t, void*> old_data = Internal_GetComponentData(archetype.archetype_table[i][entity_record.row]);
+        ComponentData<void> new_data_instance = Internal_CreateComponentData(old_data.first, old_data.second);
+        archetype.archetype_table[i].push_back(new_data_instance);
+      }
+
+      return new_entity;
+    }
+
+    /*!
+      \brief Saves an entity as a .flxprefab file
+      \param entityToSave ID of entity to save as prefab.
+      \param prefabName Name of the prefab file.
+    */
+    void Scene::SaveEntityAsPrefab(EntityID entityToSave, const std::string& prefabName)
+    {
+      // Get the current entity to write to prefab
+      EntityRecord& entity_record = ENTITY_INDEX[entityToSave];
+      Archetype& archetype = *entity_record.archetype;
+
+      // Create a new prefab file in asset manager directory, then open this file
+      std::string file_name = prefabName + ".flxprefab";
+      Path dir = Path::current("assets/prefabs");
+      Path prefab_path = File::Create(dir, file_name);
+      File& prefab_file = File::Open(prefab_path);
+      
+      // TODO: Structure the information
+
+      // Wrap data in formatter
+      FlxFmtFile formatter = FlexFormatter::Create("data_to_write", true);
+      std::string file_contents = formatter.Save();
+      prefab_file.Write(file_contents);
+
+      // ... and close the file
+      File::Close(prefab_path);
+    }
+
+    /*!
+      \brief Spawns an entity with configurations from a prefab file.
+      \param prefabName Name of the prefab file.
+    */
+    void Scene::SpawnEntityFromPrefab(const std::string& prefabName)
+    {
+      // Open the prefab file
+      std::string file_name = prefabName + ".flxprefab";
+      Path prefab_path = Path::current("assets/prefabs" + file_name);
+      File& prefab_file = File::Open(prefab_path);
+
+      // Formatter to parse metadata first, then deserialize the prefab data
+      FlxFmtFile formatter = FlexFormatter::Parse(prefab_file, FlxFmtFileType::Prefab);
+      std::string contents = formatter.data;
+
+      // TODO: Deserialize the prefab data from contents and spawn the entity with components
+
+      // Close the file
+      File::Close(prefab_path);
+    }
 
     #pragma endregion
 
