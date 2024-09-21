@@ -145,8 +145,9 @@
     <None Include="assets\shaders\texture.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Battle\turnorderdisplay.h" />
-    <ClInclude Include="src\Battle\targetingsystem.h" />
+    <ClInclude Include="src\BattleSystems\battlesystem.h" />
+    <ClInclude Include="src\BattleSystems\targetingsystem.h" />
+    <ClInclude Include="src\BattleSystems\turnorderdisplay.h" />
     <ClInclude Include="src\CharacterMoves\moves.h" />
     <ClInclude Include="src\Components\battlecomponents.h" />
     <ClInclude Include="src\Components\game.h" />
@@ -164,8 +165,9 @@
     <ClInclude Include="src\States\mainstate.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Battle\turnorderdisplay.cpp" />
-    <ClCompile Include="src\Battle\targetingsystem.cpp" />
+    <ClCompile Include="src\BattleSystems\battlesystem.cpp" />
+    <ClCompile Include="src\BattleSystems\targetingsystem.cpp" />
+    <ClCompile Include="src\BattleSystems\turnorderdisplay.cpp" />
     <ClCompile Include="src\CharacterMoves\moves.cpp" />
     <ClCompile Include="src\Components\battlecomponents.cpp" />
     <ClCompile Include="src\Components\game.cpp" />

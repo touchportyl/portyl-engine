@@ -30,7 +30,7 @@
     <Filter Include="src\CharacterMoves">
       <UniqueIdentifier>{7932477a-3799-4ec1-ab14-d913069f8143}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Battle">
+    <Filter Include="src\BattleSystems">
       <UniqueIdentifier>{61a2e2be-1880-4d04-bfd6-b8a5dcd4c6b9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -88,11 +88,14 @@
     <ClInclude Include="src\Renderer\battledisplay.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Battle\targetingsystem.h">
-      <Filter>src\Battle</Filter>
+    <ClInclude Include="src\BattleSystems\battlesystem.h">
+      <Filter>src\BattleSystems</Filter>
     </ClInclude>
-    <ClInclude Include="src\Battle\turnorderdisplay.h">
-      <Filter>src\Battle</Filter>
+    <ClInclude Include="src\BattleSystems\targetingsystem.h">
+      <Filter>src\BattleSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BattleSystems\turnorderdisplay.h">
+      <Filter>src\BattleSystems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -138,11 +141,14 @@
     <ClCompile Include="src\Renderer\battledisplay.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Battle\targetingsystem.cpp">
-      <Filter>src\Battle</Filter>
+    <ClCompile Include="src\BattleSystems\battlesystem.cpp">
+      <Filter>src\BattleSystems</Filter>
     </ClCompile>
-    <ClCompile Include="src\Battle\turnorderdisplay.cpp">
-      <Filter>src\Battle</Filter>
+    <ClCompile Include="src\BattleSystems\targetingsystem.cpp">
+      <Filter>src\BattleSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BattleSystems\turnorderdisplay.cpp">
+      <Filter>src\BattleSystems</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
