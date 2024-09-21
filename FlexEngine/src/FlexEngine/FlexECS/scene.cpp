@@ -229,15 +229,18 @@ namespace FlexEngine
       entity = updated_entity;
     }
     
-    // Clones entity via archetype row copy.
+    /*!
+      \brief Clones entity via archetype row copy.
+      \param entity_to_copy Entity to clone.
+      \return EntityID of the cloned entity.
+    */
     EntityID Scene::CloneEntity(EntityID entity_to_copy)
     {
       // Get the archetype of the entity to copy
       EntityRecord& entity_record = ENTITY_INDEX[entity_to_copy];
       Archetype& archetype = *entity_record.archetype;
 
-      // Create a new entity 
-      // First we need to assign this "object" an ID
+      // First we need to assign this new entity an ID
       EntityID new_entity = ID::Create(ID::Flags::Flag_None, Scene::GetActiveScene()->_flx_id_next, Scene::GetActiveScene()->_flx_id_unused);
       
       // Secondly, we update the scene's archetype by telling it we want to add one more entity of this index...
@@ -259,6 +262,11 @@ namespace FlexEngine
       return new_entity;
     }
 
+    /*!
+      \brief Saves an entity as a .flxprefab file
+      \param entityToSave ID of entity to save as prefab.
+      \param prefabName Name of the prefab file.
+    */
     void Scene::SaveEntityAsPrefab(EntityID entityToSave, const std::string& prefabName)
     {
       // Get the current entity to write to prefab
@@ -282,6 +290,10 @@ namespace FlexEngine
       File::Close(prefab_path);
     }
 
+    /*!
+      \brief Spawns an entity with configurations from a prefab file.
+      \param prefabName Name of the prefab file.
+    */
     void Scene::SpawnEntityFromPrefab(const std::string& prefabName)
     {
       // Open the prefab file
