@@ -77,8 +77,5 @@ namespace FlexEngine
 
         // Draw Post Processing Layer
         static void DrawPostProcessingLayer();
-
-        // Apply bloom (pass bright areas through shader and apply blur)
-        static void ApplyBloomEffect();
     };
 }

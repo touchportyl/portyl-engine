@@ -52,9 +52,9 @@ namespace MicroChess
       auto& rotation = entity.GetComponent<Rotation>()->rotation;
       auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
       auto sprite = entity.GetComponent<Sprite>();
-
+      
       props.shader = shader;
-      props.position = global_position + position;
+      props.position = global_position + position/*.RotateDeg(props.rotation.z)*/;
       props.scale = global_scale * scale;
       props.rotation = global_rotation + rotation;
       props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
