@@ -32,6 +32,7 @@ namespace MicroChess
       (static_cast<float>(window->GetHeight()) * 0.5f) - (4 * 0.5f * 100.f) + (100.f * 0.5f)
     } });
     board.AddComponent<Scale>({ { 1, 1 } });
+    board.AddComponent<Rotation>({ { 0.f, 0.f, 90.0f } });
 
     for (std::size_t i = 0; i < 4; i++) // rows -
     {
@@ -45,6 +46,7 @@ namespace MicroChess
         tile.AddComponent<Parent>({ board });
         tile.AddComponent<Position>({ { 300.0f+j * 100.0f, i * 100.0f } });
         tile.AddComponent<Scale>({ { 100, 100 } });
+        tile.AddComponent<Rotation>({ { 0.f,0.f, 0.0f } });
         tile.AddComponent<Sprite>({
           //scene->Internal_StringStorage_New(R"(\images\chess_king.png)"),
           scene->Internal_StringStorage_New(R"()"),
@@ -84,6 +86,7 @@ namespace MicroChess
       //piece.AddComponent<PiecePosition>({ pos });
       piece.AddComponent<Position>({ { 300.0f+(i % 4) * 100.0f, (i / 4) * 100.0f } });
       piece.AddComponent<Scale>({ { 50, 50 } });
+      piece.AddComponent<Rotation>({ { 0.f,0.f, 90.0f } });
       piece.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(piece_asset[i]),
         Vector3::One,
@@ -104,6 +107,7 @@ namespace MicroChess
     test.AddComponent<ZIndex>({ 20 });
     test.AddComponent<Position>({ { 400.0f, 400.0f } });
     test.AddComponent<Scale>({ { 500, 500 } });
+    test.AddComponent<Rotation>({ { 0.f,0.f, 240.0f } });
     test.AddComponent<Sprite>({
       scene->Internal_StringStorage_New(R"(\images\diffuse.png)"),
       Vector3::One,
@@ -130,6 +134,7 @@ namespace MicroChess
     cursor.AddComponent<ZIndex>({ 100 });
     cursor.AddComponent<Position>({ { 0, 0 } });
     cursor.AddComponent<Scale>({ { 32, 32 } });
+    cursor.AddComponent<Rotation>({ { 0.f,0.f,0.f } });
     cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
     //cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
     cursor.AddComponent<Sprite>({

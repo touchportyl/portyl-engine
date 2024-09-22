@@ -328,8 +328,9 @@ namespace FlexEngine
       break;
     }
 
+    Vector3 rotationAxis = props.rotation;
     Matrix4x4 model = Matrix4x4::Identity;
-    asset_shader.SetUniform_mat4("u_model", model.Translate(Vector3(-position.x, position.y, 0.0f)).Scale(Vector3(props.scale.x, props.scale.y, 1.0f)));
+    asset_shader.SetUniform_mat4("u_model", model.Translate(Vector3(-position.x, position.y, 0.0f)).Scale(Vector3(props.scale.x, props.scale.y, 1.0f)).Rotate(radians(props.rotation.Length()), rotationAxis.Normalize()));
     static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
     Matrix4x4 projection_view = Matrix4x4::Orthographic(
       0.0f, props.window_size.x,
