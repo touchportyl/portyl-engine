@@ -4,6 +4,7 @@
 #include "Layers.h"
 
 #include "Components/battlecomponents.h"
+#include "Components/charactercomponents.h"
 #include "Components/physics.h"
 #include "Components/rendering.h"
 
@@ -88,28 +89,28 @@ namespace ChronoShift {
     }
   }
 
-  void BattleSystem::SetMovesForCharacter(FlexECS::Entity character)
+  void BattleSystem::SetMovesForWeapon(FlexECS::Entity weapon)
   {
     //this is just here to cleanify code.... to remove..... thanks.....
     FlexECS::Entity move1 = FlexECS::Scene::CreateEntity();
     FlexECS::Entity move2 = FlexECS::Scene::CreateEntity();
     FlexECS::Entity move3 = FlexECS::Scene::CreateEntity();
-    FlexECS::Entity move4 = FlexECS::Scene::CreateEntity();
+    //FlexECS::Entity move4 = FlexECS::Scene::CreateEntity();
     move1.AddComponent<MoveID>({});
     move2.AddComponent<MoveID>({});
     move3.AddComponent<MoveID>({});
-    move4.AddComponent<MoveID>({});
+    //move4.AddComponent<MoveID>({});
 
-    auto movelist = character.GetComponent<MoveList>();
-    movelist->move_one = move1;
-    movelist->move_two = move2;
-    movelist->move_three = move3;
-    movelist->move_four = move4;
+    auto movelist = weapon.GetComponent<Weapon>();
+    movelist->weapon_move_one = move1;
+    movelist->weapon_move_two = move2;
+    movelist->weapon_move_three = move3;
+    //movelist->weapon_move_four = move4;
   }
 
   void BattleSystem::AddCharacter(FlexECS::Entity character, int position)
   {
-    SetMovesForCharacter(character);
+    //SetMovesForCharacter(character);
     m_characters.push_back(character);
     m_slots[position].GetComponent<BattleSlot>()->character = character;
 
@@ -174,7 +175,8 @@ namespace ChronoShift {
       PlayerMoveSelection();
     }
     else if (battle_phase == BP_ENEMY_TURN) {
-      m_speedstack.front().GetComponent<Action>()->move_to_use = m_speedstack.front().GetComponent<MoveList>()->move_one;
+      m_speedstack.front().GetComponent<Action>()->move_to_use = 
+        static_cast<FlexECS::Entity>(m_speedstack.front().GetComponent<CharacterWeapon>()->equipped_weapon).GetComponent<Weapon>()->weapon_move_one;
       battle_state.GetComponent<BattleState>()->current_target_count = 1;
       battle_state.GetComponent<BattleState>()->target_one = 0;
       battle_state.GetComponent<BattleState>()->phase = BP_MOVE_EXECUTION;
@@ -203,16 +205,16 @@ namespace ChronoShift {
       {
         switch (entity.GetComponent<MoveButton>()->move_number) {
         case 0:
-          move_to_use = m_speedstack.front().GetComponent<MoveList>()->move_one;
+          move_to_use = static_cast<FlexECS::Entity>(m_speedstack.front().GetComponent<CharacterWeapon>()->equipped_weapon).GetComponent<Weapon>()->weapon_move_one;
           break;
         case 1:
-          move_to_use = m_speedstack.front().GetComponent<MoveList>()->move_two;
+          move_to_use = static_cast<FlexECS::Entity>(m_speedstack.front().GetComponent<CharacterWeapon>()->equipped_weapon).GetComponent<Weapon>()->weapon_move_two;
           break;
         case 2:
-          move_to_use = m_speedstack.front().GetComponent<MoveList>()->move_three;
+          move_to_use = static_cast<FlexECS::Entity>(m_speedstack.front().GetComponent<CharacterWeapon>()->equipped_weapon).GetComponent<Weapon>()->weapon_move_three;
           break;
         case 3:
-          move_to_use = m_speedstack.front().GetComponent<MoveList>()->move_four;
+          //move_to_use = m_speedstack.front().GetComponent<MoveList>()->move_four;
           break;
         }
       }

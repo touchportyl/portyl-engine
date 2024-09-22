@@ -97,6 +97,9 @@
     <ClInclude Include="src\BattleSystems\turnorderdisplay.h">
       <Filter>src\BattleSystems</Filter>
     </ClInclude>
+    <ClInclude Include="src\Components\charactercomponents.h">
+      <Filter>src\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -149,6 +152,9 @@
     </ClCompile>
     <ClCompile Include="src\BattleSystems\turnorderdisplay.cpp">
       <Filter>src\BattleSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\charactercomponents.cpp">
+      <Filter>src\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

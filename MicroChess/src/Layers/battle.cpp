@@ -4,6 +4,7 @@
 #include "Layers.h"
 
 #include "Components/battlecomponents.h"
+#include "Components/charactercomponents.h"
 #include "Components/physics.h"
 #include "Components/rendering.h"
 
@@ -26,45 +27,45 @@ namespace ChronoShift {
     m_battlesystem.InitializeBattleSlots();
 
     #pragma region Character Components
-    FlexECS::Entity player1 = FlexECS::Scene::CreateEntity("Renkoooo");
-    player1.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Renkoooo") });
+    FlexECS::Entity player1 = FlexECS::Scene::CreateEntity("White Queen");
+    player1.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("White Queen") });
     player1.AddComponent<IsPlayer>({ true });
     player1.AddComponent<CharacterHealth>({ 20, 20 });
     player1.AddComponent<CharacterSpeed>({ 5,5 });
     player1.AddComponent<Action>({});
-    player1.AddComponent<MoveList>({});
+    player1.AddComponent<CharacterWeapon>({});
 
-    FlexECS::Entity player2 = FlexECS::Scene::CreateEntity("Cutemoew");
-    player2.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Cutemoew") });
+    FlexECS::Entity player2 = FlexECS::Scene::CreateEntity("White King");
+    player2.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("White King") });
     player2.AddComponent<IsPlayer>({ true });
     player2.AddComponent<CharacterHealth>({ 10, 10 });
     player2.AddComponent<CharacterSpeed>({ 10,10 });
     player2.AddComponent<Action>({});
-    player2.AddComponent<MoveList>({});
+    player2.AddComponent<CharacterWeapon>({});
 
-    FlexECS::Entity enemy1 = FlexECS::Scene::CreateEntity("Voidling");
-    enemy1.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Voidling") });
+    FlexECS::Entity enemy1 = FlexECS::Scene::CreateEntity("Black Knight");
+    enemy1.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Black Knight") });
     enemy1.AddComponent<IsPlayer>({ false });
     enemy1.AddComponent<CharacterHealth>({ 6, 6 });
     enemy1.AddComponent<CharacterSpeed>({ 7, 7 });
     enemy1.AddComponent<Action>({});
-    enemy1.AddComponent<MoveList>({});
+    enemy1.AddComponent<CharacterWeapon>({});
 
-    FlexECS::Entity enemy2 = FlexECS::Scene::CreateEntity("Frogling");
-    enemy2.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Frogling") });
+    FlexECS::Entity enemy2 = FlexECS::Scene::CreateEntity("Black Bishop");
+    enemy2.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Black Bishop") });
     enemy2.AddComponent<IsPlayer>({ false });
     enemy2.AddComponent<CharacterHealth>({ 6, 6 });
     enemy2.AddComponent<CharacterSpeed>({ 8, 8 });
     enemy2.AddComponent<Action>({});
-    enemy2.AddComponent<MoveList>({});
+    enemy2.AddComponent<CharacterWeapon>({});
 
-    FlexECS::Entity enemy3 = FlexECS::Scene::CreateEntity("Slimling");
-    enemy3.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Slimling") });
+    FlexECS::Entity enemy3 = FlexECS::Scene::CreateEntity("Black Pawn");
+    enemy3.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Black Pawn") });
     enemy3.AddComponent<IsPlayer>({ false });
     enemy3.AddComponent<CharacterHealth>({ 6, 6 });
     enemy3.AddComponent<CharacterSpeed>({ 9, 9 });
     enemy3.AddComponent<Action>({});
-    enemy3.AddComponent<MoveList>({});
+    enemy3.AddComponent<CharacterWeapon>({});
 
     m_battlesystem.AddCharacter(player1, 0);
     m_battlesystem.AddCharacter(player2, 1);
@@ -75,24 +76,51 @@ namespace ChronoShift {
 
     #pragma region Moves
 
-    //ADding moves
-    static_cast<FlexECS::Entity>(player1.GetComponent<MoveList>()->move_one).GetComponent<MoveID>()->move_name = "Dual Strike";
-    static_cast<FlexECS::Entity>(player1.GetComponent<MoveList>()->move_two).GetComponent<MoveID>()->move_name = "Whirlwind";
-    static_cast<FlexECS::Entity>(player1.GetComponent<MoveList>()->move_three).GetComponent<MoveID>()->move_name = "Block";
-    static_cast<FlexECS::Entity>(player1.GetComponent<MoveList>()->move_four).GetComponent<MoveID>()->move_name = "";
+    //Adding moves
+    FlexECS::Entity plasma_blade = FlexECS::Scene::CreateEntity("Plasma Blade");\
+    plasma_blade.AddComponent<Weapon>({});
+    plasma_blade.GetComponent<Weapon>()->weapon_description = scene->Internal_StringStorage_New("Blade made of plasma");
+    plasma_blade.GetComponent<Weapon>()->weapon_name = scene->Internal_StringStorage_New("Plasma Blade");
+    plasma_blade.GetComponent<Weapon>()->weapon_type = WT_MELEE;
+    m_battlesystem.SetMovesForWeapon(plasma_blade);
+
+    static_cast<FlexECS::Entity>(plasma_blade.GetComponent<Weapon>()->weapon_move_one).GetComponent<MoveID>()->move_name = "Dual Strike";
+    static_cast<FlexECS::Entity>(plasma_blade.GetComponent<Weapon>()->weapon_move_two).GetComponent<MoveID>()->move_name = "Whirlwind";
+    static_cast<FlexECS::Entity>(plasma_blade.GetComponent<Weapon>()->weapon_move_three).GetComponent<MoveID>()->move_name = "Block";
+
+    player1.GetComponent<CharacterWeapon>()->equipped_weapon = plasma_blade;
+
     //p2
-    static_cast<FlexECS::Entity>(player2.GetComponent<MoveList>()->move_one).GetComponent<MoveID>()->move_name = "Rift Surge";
-    static_cast<FlexECS::Entity>(player2.GetComponent<MoveList>()->move_two).GetComponent<MoveID>()->move_name = "Flashbang";
-    static_cast<FlexECS::Entity>(player2.GetComponent<MoveList>()->move_three).GetComponent<MoveID>()->move_name = "Temporal Wave";
-    static_cast<FlexECS::Entity>(player2.GetComponent<MoveList>()->move_four).GetComponent<MoveID>()->move_name = "";
+    FlexECS::Entity electric_railgun = FlexECS::Scene::CreateEntity("Electric Railgun");
+    electric_railgun.AddComponent<Weapon>({});
+    electric_railgun.GetComponent<Weapon>()->weapon_description = scene->Internal_StringStorage_New("Railgun that uses electromagnetic force");
+    electric_railgun.GetComponent<Weapon>()->weapon_name = scene->Internal_StringStorage_New("Electric Railgun");
+    electric_railgun.GetComponent<Weapon>()->weapon_type = WT_RANGED;
+    m_battlesystem.SetMovesForWeapon(electric_railgun);
 
-    //enemeies
-    static_cast<FlexECS::Entity>(enemy1.GetComponent<MoveList>()->move_one).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy1.GetComponent<MoveList>()->move_two).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy1.GetComponent<MoveList>()->move_three).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy1.GetComponent<MoveList>()->move_four).GetComponent<MoveID>()->move_name = "";
+    static_cast<FlexECS::Entity>(electric_railgun.GetComponent<Weapon>()->weapon_move_one).GetComponent<MoveID>()->move_name = "Rift Surge";
+    static_cast<FlexECS::Entity>(electric_railgun.GetComponent<Weapon>()->weapon_move_two).GetComponent<MoveID>()->move_name = "Flashbang";
+    static_cast<FlexECS::Entity>(electric_railgun.GetComponent<Weapon>()->weapon_move_three).GetComponent<MoveID>()->move_name = "Temporal Wave";
+    
+    player2.GetComponent<CharacterWeapon>()->equipped_weapon = electric_railgun;
 
-    static_cast<FlexECS::Entity>(enemy2.GetComponent<MoveList>()->move_one).GetComponent<MoveID>()->move_name = "Poke";
+    //enemies
+    FlexECS::Entity enemy_weapon = FlexECS::Scene::CreateEntity("Enemy Weapon");
+    enemy_weapon.AddComponent<Weapon>({});
+    enemy_weapon.GetComponent<Weapon>()->weapon_description = scene->Internal_StringStorage_New("Dummy Weapon");
+    enemy_weapon.GetComponent<Weapon>()->weapon_name = scene->Internal_StringStorage_New("Enemy Weapon");
+    enemy_weapon.GetComponent<Weapon>()->weapon_type = WT_RANGED;
+    m_battlesystem.SetMovesForWeapon(enemy_weapon);
+
+    static_cast<FlexECS::Entity>(enemy_weapon.GetComponent<Weapon>()->weapon_move_one).GetComponent<MoveID>()->move_name = "Poke";
+    static_cast<FlexECS::Entity>(enemy_weapon.GetComponent<Weapon>()->weapon_move_two).GetComponent<MoveID>()->move_name = "Poke";
+    static_cast<FlexECS::Entity>(enemy_weapon.GetComponent<Weapon>()->weapon_move_three).GetComponent<MoveID>()->move_name = "Poke";
+
+    enemy1.GetComponent<CharacterWeapon>()->equipped_weapon = enemy_weapon;
+    enemy2.GetComponent<CharacterWeapon>()->equipped_weapon = enemy_weapon;
+    enemy3.GetComponent<CharacterWeapon>()->equipped_weapon = enemy_weapon;
+
+    /*static_cast<FlexECS::Entity>(enemy2.GetComponent<MoveList>()->move_one).GetComponent<MoveID>()->move_name = "Poke";
     static_cast<FlexECS::Entity>(enemy2.GetComponent<MoveList>()->move_two).GetComponent<MoveID>()->move_name = "Poke";
     static_cast<FlexECS::Entity>(enemy2.GetComponent<MoveList>()->move_three).GetComponent<MoveID>()->move_name = "Poke";
     static_cast<FlexECS::Entity>(enemy2.GetComponent<MoveList>()->move_four).GetComponent<MoveID>()->move_name = "";
@@ -100,7 +128,7 @@ namespace ChronoShift {
     static_cast<FlexECS::Entity>(enemy3.GetComponent<MoveList>()->move_one).GetComponent<MoveID>()->move_name = "Poke";
     static_cast<FlexECS::Entity>(enemy3.GetComponent<MoveList>()->move_two).GetComponent<MoveID>()->move_name = "Poke";
     static_cast<FlexECS::Entity>(enemy3.GetComponent<MoveList>()->move_three).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy3.GetComponent<MoveList>()->move_four).GetComponent<MoveID>()->move_name = "";
+    static_cast<FlexECS::Entity>(enemy3.GetComponent<MoveList>()->move_four).GetComponent<MoveID>()->move_name = "";*/
     #pragma endregion
 
     #pragma region Rendering Components

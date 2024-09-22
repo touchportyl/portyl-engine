@@ -1,4 +1,5 @@
 #include "CharacterMoves/moves.h"
+#include "Components/charactercomponents.h"
 #include "Components/battlecomponents.h"
 namespace ChronoShift 
 {

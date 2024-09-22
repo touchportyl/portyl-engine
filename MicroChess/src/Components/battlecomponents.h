@@ -99,7 +99,6 @@ namespace ChronoShift
     FlexECS::EntityID move_to_use;   //ID of move in movelist
   };
 
-
   //Attach these components to move entity
   class MoveID
   { FLX_REFL_SERIALIZABLE
@@ -119,36 +118,15 @@ namespace ChronoShift
     int move_cooldown;
   };
 
-  class MoveList 
+  /*class MoveList 
   { FLX_REFL_SERIALIZABLE
   public:
     FlexECS::EntityID move_one;
     FlexECS::EntityID move_two;
     FlexECS::EntityID move_three;
-    FlexECS::EntityID move_four;
-  };
-
+  };*/
 
   //Stats for battling character
-  class CharacterName
-  { FLX_REFL_SERIALIZABLE
-  public:
-    FlexECS::Scene::StringIndex character_name;
-  };
-
-  class CharacterHealth 
-  { FLX_REFL_SERIALIZABLE
-  public:
-    int base_health;
-    int current_health;
-  };
-
-  class CharacterSpeed
-  { FLX_REFL_SERIALIZABLE
-  public:
-    int base_speed;
-    int current_speed;
-  };
 
   struct EffectValues
   { FLX_REFL_SERIALIZABLE
@@ -162,13 +140,6 @@ namespace ChronoShift
     EffectValues strength;
     EffectValues speed;
   };
-
-  class IsPlayer 
-  { FLX_REFL_SERIALIZABLE
-  public:
-    bool is_player = true;
-  };
-
 
   //Battling components
   
@@ -231,4 +202,46 @@ namespace ChronoShift
   };
   #endif
 
+  class ChronoGear
+  { FLX_REFL_SERIALIZABLE
+  public:
+    FlexECS::Scene::StringIndex chrono_gear_name;
+    FlexECS::Scene::StringIndex chrono_gear_description;
+    FlexECS::EntityID main_stat;
+    FlexECS::EntityID sub_stat_one;
+    FlexECS::EntityID sub_stat_two;
+    FlexECS::EntityID sub_stat_three;
+  };
+
+  class Stat
+  { FLX_REFL_SERIALIZABLE
+  public:
+    FlexECS::Scene::StringIndex stat_name;
+    int base_stat_value;
+    int current_stat_value;
+  };
+
+  enum WeaponType : int {
+    WT_RANGED,   // Ranged Combat
+    WT_MELEE,    // Close Combat
+    WT_DEFENSIVE, // Defense
+  };
+
+  class Weapon
+  { FLX_REFL_SERIALIZABLE
+  public:
+    FlexECS::Scene::StringIndex weapon_name;
+    FlexECS::Scene::StringIndex weapon_description;
+    int weapon_type;
+    FlexECS::EntityID weapon_move_one;
+    FlexECS::EntityID weapon_move_two;
+    FlexECS::EntityID weapon_move_three;
+  };
+
+  class CharacterStatus
+  { FLX_REFL_SERIALIZABLE
+  public:
+    // Status Effects
+    FlexECS::Scene::StringIndex character_status;
+  };
 }

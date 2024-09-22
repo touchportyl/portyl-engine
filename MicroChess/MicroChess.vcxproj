@@ -150,6 +150,7 @@
     <ClInclude Include="src\BattleSystems\turnorderdisplay.h" />
     <ClInclude Include="src\CharacterMoves\moves.h" />
     <ClInclude Include="src\Components\battlecomponents.h" />
+    <ClInclude Include="src\Components\charactercomponents.h" />
     <ClInclude Include="src\Components\game.h" />
     <ClInclude Include="src\Components\physics.h" />
     <ClInclude Include="src\Components\rendering.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="src\BattleSystems\turnorderdisplay.cpp" />
     <ClCompile Include="src\CharacterMoves\moves.cpp" />
     <ClCompile Include="src\Components\battlecomponents.cpp" />
+    <ClCompile Include="src\Components\charactercomponents.cpp" />
     <ClCompile Include="src\Components\game.cpp" />
     <ClCompile Include="src\Components\physics.cpp" />
     <ClCompile Include="src\Components\rendering.cpp" />

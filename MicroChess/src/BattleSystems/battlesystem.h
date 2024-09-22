@@ -13,7 +13,7 @@ namespace ChronoShift
     ~BattleSystem();
 
     void InitializeBattleSlots();
-    void SetMovesForCharacter(FlexECS::Entity character);
+    void SetMovesForWeapon(FlexECS::Entity weapon);
     void AddCharacter(FlexECS::Entity character, int position);
 
     void BeginBattle();
