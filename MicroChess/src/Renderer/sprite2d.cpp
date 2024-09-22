@@ -54,9 +54,6 @@ namespace MicroChess
 
       render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
     }
-   
-    //Then render it all on a prop (here do post-processing (TODO)
-    //render_queue.Insert({ [props]() {  }, "", 0 });
 
     // push settings
     bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
