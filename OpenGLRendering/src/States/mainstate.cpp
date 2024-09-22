@@ -23,6 +23,7 @@ namespace OpenGLRendering
 
     // load assets only after the window has been created
     AssetManager::Load();
+    
     FreeQueue::Push(std::bind(&AssetManager::Unload), "OpenGLRendering AssetManager");
 
     window->SetTargetFPS();

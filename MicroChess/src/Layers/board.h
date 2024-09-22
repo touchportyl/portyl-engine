@@ -18,6 +18,9 @@ namespace MicroChess
 
   private:
     void SetupBoard();
+
+    static float m_ScaleDebugTest;
+    static Vector3 m_RotateDebugTest;
   };
 
 }
