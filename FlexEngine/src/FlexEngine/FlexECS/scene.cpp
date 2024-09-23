@@ -275,14 +275,23 @@ namespace FlexEngine
 
       // Create a new prefab file in asset manager directory, then open this file
       std::string file_name = prefabName + ".flxprefab";
-      Path dir = Path::current("assets/prefabs");
+      Path dir = Path::current("assets\\prefabs");
       Path prefab_path = File::Create(dir, file_name);
       File& prefab_file = File::Open(prefab_path);
       
-      // TODO: Structure the information
+      // Concat in sstream before writing it to the formatter.
+      std::stringstream data_stream; 
+      for (std::size_t i{}; i < archetype.archetype_table.size(); i++) // For component in the archetype...
+      {
+        // Automatic serialization as long as a type is provided.
+        Reflection::TypeDescriptor* type = TYPE_DESCRIPTOR_LOOKUP[archetype.type[i]];
+        type->Serialize(Internal_GetComponentData(archetype.archetype_table[i][entity_record.row]).second, data_stream);
+        
+        if (i != archetype.archetype_table.size() - 1) data_stream << ","; // Add a comma to separate components.
+      }
 
       // Wrap data in formatter
-      FlxFmtFile formatter = FlexFormatter::Create("data_to_write", true);
+      FlxFmtFile formatter = FlexFormatter::Create(data_stream.str(), true);
       std::string file_contents = formatter.Save();
       prefab_file.Write(file_contents);
 
@@ -298,14 +307,46 @@ namespace FlexEngine
     {
       // Open the prefab file
       std::string file_name = prefabName + ".flxprefab";
-      Path prefab_path = Path::current("assets/prefabs" + file_name);
+      Path prefab_path = Path::current("assets\\prefabs\\" + file_name);
       File& prefab_file = File::Open(prefab_path);
 
       // Formatter to parse metadata first, then deserialize the prefab data
       FlxFmtFile formatter = FlexFormatter::Parse(prefab_file, FlxFmtFileType::Prefab);
       std::string contents = formatter.data;
+      
+      // Make it a valid JSON object in the form of an array
+      contents.append("]");
+      contents.insert(0, "[");
 
-      // TODO: Deserialize the prefab data from contents and spawn the entity with components
+      // Passing it into rapidjson to make life easier
+      Document document;
+      document.Parse(contents.c_str());
+      if (document.HasParseError())
+      {
+        Log::Error("Failed to parse prefab data.");
+      }
+
+      if (document.IsArray())
+      {
+        Entity new_entity = CreateEntity("PrefabEntity"); // Should be safe to create a new entity with this name now
+
+        // Loop through each member
+        for (auto& member : document.GetArray())
+        {
+          if (member.IsObject())
+          {
+            if (member["type"].IsString())
+            {
+              std::string component_name = member["type"].GetString();
+              Reflection::TypeDescriptor* type = TYPE_DESCRIPTOR_LOOKUP[component_name];
+              ComponentData<void>* data = nullptr;
+              type->Deserialize(data, member);
+
+              new_entity.AddComponent(data);
+            }
+          }
+        }
+      }
 
       // Close the file
       File::Close(prefab_path);
