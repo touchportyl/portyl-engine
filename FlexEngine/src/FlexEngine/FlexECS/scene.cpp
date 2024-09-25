@@ -4,7 +4,6 @@ namespace FlexEngine
 {
   namespace FlexECS
   {
-
     // static member initialization
     std::shared_ptr<Scene> Scene::s_active_scene = nullptr;
     Scene Scene::Null = Scene();
@@ -296,59 +295,6 @@ namespace FlexEngine
       prefab_file.Write(file_contents);
 
       // ... and close the file
-      File::Close(prefab_path);
-    }
-
-    /*!
-      \brief Spawns an entity with configurations from a prefab file.
-      \param prefabName Name of the prefab file.
-    */
-    void Scene::SpawnEntityFromPrefab(const std::string& prefabName)
-    {
-      // Open the prefab file
-      std::string file_name = prefabName + ".flxprefab";
-      Path prefab_path = Path::current("assets\\prefabs\\" + file_name);
-      File& prefab_file = File::Open(prefab_path);
-
-      // Formatter to parse metadata first, then deserialize the prefab data
-      FlxFmtFile formatter = FlexFormatter::Parse(prefab_file, FlxFmtFileType::Prefab);
-      std::string contents = formatter.data;
-      
-      // Make it a valid JSON object in the form of an array
-      contents.append("]");
-      contents.insert(0, "[");
-
-      // Passing it into rapidjson to make life easier
-      Document document;
-      document.Parse(contents.c_str());
-      if (document.HasParseError())
-      {
-        Log::Error("Failed to parse prefab data.");
-      }
-
-      if (document.IsArray())
-      {
-        Entity new_entity = CreateEntity("PrefabEntity"); // Should be safe to create a new entity with this name now
-
-        // Loop through each member
-        for (auto& member : document.GetArray())
-        {
-          if (member.IsObject())
-          {
-            if (member["type"].IsString())
-            {
-              std::string component_name = member["type"].GetString();
-              Reflection::TypeDescriptor* type = TYPE_DESCRIPTOR_LOOKUP[component_name];
-              ComponentData<void>* data = nullptr;
-              type->Deserialize(data, member);
-
-              new_entity.AddComponent(data);
-            }
-          }
-        }
-      }
-
-      // Close the file
       File::Close(prefab_path);
     }
 
