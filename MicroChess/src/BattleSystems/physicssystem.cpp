@@ -11,14 +11,18 @@
 
 namespace ChronoShift
 {
-	struct Collision
+	std::vector<std::pair<FlexECS::Entity, FlexECS::Entity>> collisions {};
+
+	void RecomputeBounds(FlexECS::Entity entity) 
 	{
-		FlexECS::Entity a;
-		FlexECS::Entity b;
-	};
-	std::vector<Collision> g_collisions {};
-
-
+		auto& position = entity.GetComponent<Position>()->position;
+		auto& scale = entity.GetComponent<Scale>()->scale;
+		auto& size = entity.GetComponent<BoundingBox2D>()->size;
+		entity.GetComponent<BoundingBox2D>()->max.x = position.x + scale.x / 2 * size.x;
+		entity.GetComponent<BoundingBox2D>()->max.y = position.y + scale.y / 2 * size.y;
+		entity.GetComponent<BoundingBox2D>()->min.x = position.x - scale.x / 2 * size.x;
+		entity.GetComponent<BoundingBox2D>()->min.y = position.y - scale.y / 2 * size.y;
+	}
 
 	void UpdatePositions() 
 	{
@@ -50,7 +54,7 @@ namespace ChronoShift
 
 	void FindCollisions() 
 	{
-		g_collisions.clear();
+		collisions.clear();
 		
 		for (auto& entity_a : FlexECS::Scene::GetActiveScene()->View<Position, Scale, Rigidbody, BoundingBox2D>())
 		{
@@ -68,7 +72,7 @@ namespace ChronoShift
 
 				//AABB check
 				if (max_a.x < min_b.x || max_a.y < min_b.y || min_a.x > max_b.x || min_a.y > max_b.y) continue;
-				else g_collisions.push_back({ entity_a, entity_b });
+				else collisions.push_back({ entity_a, entity_b });
 			}
 		}
 
@@ -77,17 +81,17 @@ namespace ChronoShift
 	void ResolveCollisions() 
 	{
 		float dt = FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
-		for (Collision collision : g_collisions)
+		for (auto collision : collisions)
 		{
-			auto& a_velocity = collision.a.GetComponent<Rigidbody>()->velocity;
-			auto& a_position = collision.a.GetComponent<Position>()->position;
-			auto& b_velocity = collision.b.GetComponent<Rigidbody>()->velocity;
-			auto& b_position = collision.b.GetComponent<Position>()->position;
+			auto& a_velocity = collision.first.GetComponent<Rigidbody>()->velocity;
+			auto& a_position = collision.first.GetComponent<Position>()->position;
+			auto& b_velocity = collision.second.GetComponent<Rigidbody>()->velocity;
+			auto& b_position = collision.second.GetComponent<Position>()->position;
 
-			auto& a_max = collision.a.GetComponent<BoundingBox2D>()->max;
-			auto& a_min = collision.a.GetComponent<BoundingBox2D>()->min;
-			auto& b_max = collision.b.GetComponent<BoundingBox2D>()->max;
-			auto& b_min = collision.b.GetComponent<BoundingBox2D>()->min;
+			auto& a_max = collision.first.GetComponent<BoundingBox2D>()->max;
+			auto& a_min = collision.first.GetComponent<BoundingBox2D>()->min;
+			auto& b_max = collision.second.GetComponent<BoundingBox2D>()->max;
+			auto& b_min = collision.second.GetComponent<BoundingBox2D>()->min;
 
 			//Check if already resolved
 			if (a_max.x < b_min.x || a_max.y < b_min.y || a_min.x > b_max.x || a_min.y > b_max.y) continue;
@@ -110,7 +114,7 @@ namespace ChronoShift
 			const float down = b_max.y - a_min.y;
 			const float largest = std::min({ left, right, up, down });
 
-			if (!(collision.a.GetComponent<Rigidbody>()->is_static))
+			if (!(collision.first.GetComponent<Rigidbody>()->is_static))
 			{
 				if (largest == left) {
 					a_position.x -= x_penetration;
@@ -124,9 +128,10 @@ namespace ChronoShift
 				else if (largest == down) {
 					a_position.y += y_penetration;
 				}
+				RecomputeBounds(collision.first);
 			}
 			
-			if (!(collision.b.GetComponent<Rigidbody>()->is_static))
+			if (!(collision.second.GetComponent<Rigidbody>()->is_static))
 			{
 				if (largest == left) {
 					b_position.x += x_penetration;
@@ -138,10 +143,9 @@ namespace ChronoShift
 					b_position.y += y_penetration;
 				}
 				else if (largest == down) {
-					std::cout << "pls" << b_position.y;
 					b_position.y -= y_penetration;
-					std::cout << "     new pos " << collision.b.GetComponent<Position>()->position.y << std::endl;
 				}
+				RecomputeBounds(collision.second);
 			}
 		}
 	}

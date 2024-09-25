@@ -57,6 +57,22 @@ namespace ChronoShift {
        });
     house.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
+    FlexECS::Entity box = FlexECS::Scene::CreateEntity();
+    box.AddComponent<TurnOrderDisplay>({});
+    box.AddComponent<Rigidbody>({ {}, false });
+    box.AddComponent<BoundingBox2D>({ });
+    box.AddComponent<IsActive>({ true });
+    box.AddComponent<Position>({ {350, 500 } });
+    box.AddComponent<Scale>({ { 150,150 } });
+    box.AddComponent<ZIndex>({ 10 });
+    box.AddComponent<Sprite>({
+        scene->Internal_StringStorage_New(R"()"),
+        { 0.35f, 0.58f, 0.80f },
+        Vector3::Zero,
+        Vector3::One,
+        Renderer2DProps::Alignment_Center
+       });
+    box.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
 
   }
