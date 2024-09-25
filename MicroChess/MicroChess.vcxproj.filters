@@ -100,6 +100,15 @@
     <ClInclude Include="src\Components\charactercomponents.h">
       <Filter>src\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\overworld.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BattleSystems\physicssystem.h">
+      <Filter>src\BattleSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\characterinput.h">
+      <Filter>src\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -154,6 +163,15 @@
       <Filter>src\BattleSystems</Filter>
     </ClCompile>
     <ClCompile Include="src\Components\charactercomponents.cpp">
+      <Filter>src\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\overworld.cpp">
+      <Filter>src\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BattleSystems\physicssystem.cpp">
+      <Filter>src\BattleSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\characterinput.cpp">
       <Filter>src\Components</Filter>
     </ClCompile>
   </ItemGroup>
