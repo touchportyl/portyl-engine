@@ -274,7 +274,6 @@ namespace FlexEngine
 
       static void SaveEntityAsPrefab(EntityID entityToSave, const std::string& prefabName);
 
-      static void SpawnEntityFromPrefab(const std::string& file_path);
       #pragma endregion
 
       #pragma region Scene serialization functions
