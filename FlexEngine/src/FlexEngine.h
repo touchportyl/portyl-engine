@@ -127,6 +127,8 @@
 #include "FlexEngine/Wrapper/file.h"
 #include "FlexEngine/Wrapper/filelist.h"
 
+#include "FlexEngine/FMOD/AudioManager.h"
+
 
 /* |-----------------------------| */
 /* |---------- Renderer ---------| */
