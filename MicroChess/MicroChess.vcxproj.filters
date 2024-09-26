@@ -109,6 +109,9 @@
     <ClInclude Include="src\Components\characterinput.h">
       <Filter>src\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\imgui_debug.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -173,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="src\Components\characterinput.cpp">
       <Filter>src\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\imgui_debug.cpp">
+      <Filter>src\Layers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

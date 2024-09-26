@@ -160,6 +160,7 @@
     <ClInclude Include="src\Layers\base.h" />
     <ClInclude Include="src\Layers\battle.h" />
     <ClInclude Include="src\Layers\board.h" />
+    <ClInclude Include="src\Layers\imgui_debug.h" />
     <ClInclude Include="src\Layers\menu.h" />
     <ClInclude Include="src\Layers\overworld.h" />
     <ClInclude Include="src\Physics\box2d.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="src\Layers\base.cpp" />
     <ClCompile Include="src\Layers\battle.cpp" />
     <ClCompile Include="src\Layers\board.cpp" />
+    <ClCompile Include="src\Layers\imgui_debug.cpp" />
     <ClCompile Include="src\Layers\menu.cpp" />
     <ClCompile Include="src\Layers\overworld.cpp" />
     <ClCompile Include="src\main.cpp" />
