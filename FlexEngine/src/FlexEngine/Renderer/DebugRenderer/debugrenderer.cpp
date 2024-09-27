@@ -92,10 +92,14 @@ namespace FlexEngine
     glBindVertexArray(0);
 	}
 
-  void DebugRenderer::DrawAABB(ChronoShift::BoundingBox2D box, Vector3 color, float line_width)
+  void DebugRenderer::DrawAABB(Vector3 position, float width, float height, Vector3 color, float line_width)
   {
-    const Vector3& max = box.max;
-    const Vector3& min = box.min;
+
+    Vector3 max = position;
+    max.x += width / 2; max.y += height / 2;
+    Vector3 min = position;
+    min.x -= width/2; min.y -= height / 2;
+    
     //construct lines for AABB
     Vector3 topleft = min;
     Vector3 topright = { max.x, min.y };

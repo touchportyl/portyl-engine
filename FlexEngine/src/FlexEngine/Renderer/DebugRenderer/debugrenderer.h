@@ -4,7 +4,6 @@
 #include "FlexMath/vector4.h"
 #include "../OpenGL/opengltexture.h"
 #include "../OpenGL/openglrenderer.h"
-#include "../../MicroChess/src/Components/physics.h"  //physics can go to flexengine in the future
 
 
 #include <glad/glad.h>
@@ -38,7 +37,7 @@ namespace FlexEngine
 
     static void DrawLine2D(Vector2 start, Vector2 end, 
                           Vector3 color = {1.0f, 0.0f, 0.0f}, float line_width = 2.0f);
-    static void DrawAABB(ChronoShift::BoundingBox2D box, Vector3 color = {1.0f, 0.0f, 0.0f}, float line_width = 2.0f);
+    static void DrawAABB(Vector3 position, float width, float height, Vector3 color = {1.0f, 0.0f, 0.0f}, float line_width = 2.0f);
 
 
   private:
