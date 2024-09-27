@@ -11,6 +11,9 @@ namespace FlexEngine
 {
   //static declarations
   Asset::Shader DebugRenderer::m_line_shader;
+  std::filesystem::path current_file_path = __FILE__;
+  std::filesystem::path vertex_shader_path(current_file_path.parent_path() / "debugrenderer.vert");
+  std::filesystem::path fragment_shader_path(current_file_path.parent_path() / "debugrenderer.frag");
 
   void FlexEngine::DebugRenderer::DrawLine2D(Vector2 start, Vector2 end, Vector3 color, float line_width)
 	{
@@ -32,9 +35,11 @@ namespace FlexEngine
       glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
       glBindVertexArray(0);
+      std::filesystem::path current_dir = std::filesystem::current_path();
+      std::cout << current_dir;
 
-      m_line_shader.Create(std::filesystem::path("./assets/shaders/debugrenderer.vert"), 
-                           std::filesystem::path("./assets/shaders/debugrenderer.frag"));
+      m_line_shader.Create(vertex_shader_path,
+                           fragment_shader_path);
       // free in freequeue
       FreeQueue::Push(
         [=]()
@@ -65,17 +70,17 @@ namespace FlexEngine
     //static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
     Matrix4x4 view_matrix = Matrix4x4::Identity;
 
-    //Matrix4x4 projection_matrix = Matrix4x4::Orthographic(
-    //  0.0f, window_width,
-    //  window_height, 0.0f,
-    //  -2.0f, 2.0f
-    //);
-    Matrix4x4 projection_matrix = {
-      2.0f/ window_width, 0.0f, 0.0f, 0.0f,
-      0.0f, -2.0f/ window_height, 0.0f, 0.0f,
-      0.0f, 0.0f, -0.5f, 0.0f,
-      -1.0f, 1.0f, 0.0f, 1.0f
-    };
+    Matrix4x4 projection_matrix = Matrix4x4::Orthographic(
+      0.0f, window_width,
+      window_height, 0.0f,
+      -2.0f, 2.0f
+    );
+    //Matrix4x4 projection_matrix = {
+    //  2.0f/ window_width, 0.0f, 0.0f, 0.0f,
+    //  0.0f, -2.0f/ window_height, 0.0f, 0.0f,
+    //  0.0f, 0.0f, -0.5f, 0.0f,
+    //  -1.0f, 1.0f, 0.0f, 1.0f
+    //};
 
     m_line_shader.SetUniform_mat4("u_view", view_matrix);
     m_line_shader.SetUniform_mat4("u_projection", projection_matrix);
