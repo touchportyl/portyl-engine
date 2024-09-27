@@ -14,6 +14,8 @@
 
 namespace MicroChess
 {
+    float BoardLayer::m_ScaleDebugTest = 10.f;
+    Vector3 BoardLayer::m_RotateDebugTest = Vector3(0.f,0.f,0.f);
 
   void BoardLayer::SetupBoard()
   {
@@ -34,6 +36,7 @@ namespace MicroChess
       (static_cast<float>(window->GetHeight()) * 0.5f) - (4 * 0.5f * 100.f) + (100.f * 0.5f)
     } });
     board.AddComponent<Scale>({ { 1, 1 } });
+    board.AddComponent<Rotation>({ { 45.f, 0.f, 45.0f } });
 
     for (std::size_t i = 0; i < 4; i++) // rows -
     {
@@ -45,8 +48,9 @@ namespace MicroChess
         tile.AddComponent<ZIndex>({ 10 });
         tile.AddComponent<BoardTile>({});
         tile.AddComponent<Parent>({ board });
-        tile.AddComponent<Position>({ { j * 100.0f, i * 100.0f } });
+        tile.AddComponent<Position>({ { 300.0f+j * 100.0f, i * 100.0f } });
         tile.AddComponent<Scale>({ { 100, 100 } });
+        tile.AddComponent<Rotation>({ { 0.f,0.f, 0.0f } });
         tile.AddComponent<Sprite>({
           //scene->Internal_StringStorage_New(R"(\images\chess_king.png)"),
           scene->Internal_StringStorage_New(R"()"),
@@ -84,8 +88,9 @@ namespace MicroChess
       piece.AddComponent<Parent>({ board });
       //Vector2 pos = { static_cast<int>(i / 4), i % 4 };
       //piece.AddComponent<PiecePosition>({ pos });
-      piece.AddComponent<Position>({ { (i % 4) * 100.0f, (i / 4) * 100.0f } });
+      piece.AddComponent<Position>({ { 300.0f+(i % 4) * 100.0f, (i / 4) * 100.0f } });
       piece.AddComponent<Scale>({ { 50, 50 } });
+      piece.AddComponent<Rotation>({ { 0.f,0.f, 0.0f } });
       piece.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(piece_asset[i]),
         Vector3::One,
@@ -99,6 +104,22 @@ namespace MicroChess
       piece.AddComponent<OnClick>({});
     }
 
+    //TEST (REMOVE AFTER DONE) 
+    scene->Internal_StringStorage_New(R"(\images\normal.png)");
+    FlexECS::Entity test = FlexECS::Scene::CreateEntity("test");
+    test.AddComponent<IsActive>({ true });
+    test.AddComponent<ZIndex>({ 20 });
+    test.AddComponent<Position>({ { 400.0f, 400.0f } });
+    test.AddComponent<Scale>({ { 500, 500 } });
+    test.AddComponent<Rotation>({ { 120.f,120.f, 120.0f } });
+    test.AddComponent<Sprite>({
+      scene->Internal_StringStorage_New(R"(\images\diffuse.png)"),
+      Vector3::One,
+      Vector3::Zero,
+      Vector3::One, //What does this do?
+      Renderer2DProps::Alignment_Center
+    });
+    test.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
   }
 
   void BoardLayer::OnAttach()
@@ -117,7 +138,9 @@ namespace MicroChess
     cursor.AddComponent<ZIndex>({ 100 });
     cursor.AddComponent<Position>({ { 0, 0 } });
     cursor.AddComponent<Scale>({ { 32, 32 } });
+    cursor.AddComponent<Rotation>({ { 0.f,0.f,0.f } });
     cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+    //cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
     cursor.AddComponent<Sprite>({
       scene->Internal_StringStorage_New(R"(\images\cursor\cursor_none.png)"),
       Vector3::One,
@@ -191,6 +214,45 @@ namespace MicroChess
       position = Input::GetCursorPosition() + Vector2(7, 12);
     }
 
+    //Key hold (Can just alter here, not very elegant but will do for now)
+    #if 1 //DEBUG
+    if (Input::GetKey(GLFW_KEY_A))
+    {
+        m_ScaleDebugTest -= 0.8f;
+    }
+    else if (Input::GetKey(GLFW_KEY_D))
+    {
+        m_ScaleDebugTest += 0.8f;
+    }
+
+    if (Input::GetKey(GLFW_KEY_Q))
+    {
+        m_RotateDebugTest.z += 1.0f;
+    }
+    else if (Input::GetKey(GLFW_KEY_E))
+    {
+        m_RotateDebugTest.z -= 1.0f;
+    }
+
+    //Altering entities scale and rotation while game is in debug mode
+    // TEST ON EVERYTHING
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Scale, Rotation>())
+    {
+        if (!entity.GetComponent<IsActive>()->is_active) continue;
+
+        //Search function for a specific object to test and NOT everything
+        auto entity_name_component = entity.GetComponent<EntityName>();
+        //Change "" to whatever object or comment the line to affect everything
+        if ("test" != FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component)) continue;
+        
+        auto& scale = entity.GetComponent<Scale>()->scale;
+        auto& rotation = entity.GetComponent<Rotation>()->rotation;
+
+        scale = Vector2(m_ScaleDebugTest, m_ScaleDebugTest);
+        rotation = m_RotateDebugTest;
+    }
+    #endif
+
     Box2D();
 
     // make the piece bigger when hovered
@@ -222,6 +284,7 @@ namespace MicroChess
 
     RendererSprite2D();
   }
+
 
 }
 #endif

@@ -32,6 +32,13 @@ namespace ChronoShift
     Vector2 scale;
   };
 
+  class Rotation 
+  {
+      FLX_REFL_SERIALIZABLE
+  public:
+      Vector3 rotation;
+  };
+
   class ZIndex
   { FLX_REFL_SERIALIZABLE
   public:
