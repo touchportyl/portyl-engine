@@ -41,7 +41,7 @@ namespace ChronoShift {
     player1.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
   
-    FlexECS::Entity house = FlexECS::Scene::CreateEntity();
+    FlexECS::Entity house = FlexECS::Scene::CreateEntity("House");
     house.AddComponent<Rigidbody>({ {}, true });
     house.AddComponent<BoundingBox2D>({ });
     house.AddComponent<IsActive>({ true });
@@ -58,7 +58,7 @@ namespace ChronoShift {
        });
     house.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
-    FlexECS::Entity box = FlexECS::Scene::CreateEntity();
+    FlexECS::Entity box = FlexECS::Scene::CreateEntity("Movable Box");
     box.AddComponent<Rigidbody>({ {}, false });
     box.AddComponent<BoundingBox2D>({ });
     box.AddComponent<IsActive>({ true });
