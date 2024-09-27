@@ -35,6 +35,7 @@ namespace MicroChess
     } });
     board.AddComponent<Scale>({ { 1, 1 } });
     board.AddComponent<Rotation>({ { 45.f, 0.f, 45.0f } });
+    board.AddComponent<Transform>({});
 
     for (std::size_t i = 0; i < 4; i++) // rows -
     {
@@ -49,6 +50,7 @@ namespace MicroChess
         tile.AddComponent<Position>({ { 300.0f+j * 100.0f, i * 100.0f } });
         tile.AddComponent<Scale>({ { 100, 100 } });
         tile.AddComponent<Rotation>({ { 0.f,0.f, 0.0f } });
+        tile.AddComponent<Transform>({});
         tile.AddComponent<Sprite>({
           //scene->Internal_StringStorage_New(R"(\images\chess_king.png)"),
           scene->Internal_StringStorage_New(R"()"),
@@ -89,6 +91,7 @@ namespace MicroChess
       piece.AddComponent<Position>({ { 300.0f+(i % 4) * 100.0f, (i / 4) * 100.0f } });
       piece.AddComponent<Scale>({ { 50, 50 } });
       piece.AddComponent<Rotation>({ { 0.f,0.f, 0.0f } });
+      piece.AddComponent<Transform>({});
       piece.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(piece_asset[i]),
         Vector3::One,
@@ -110,6 +113,7 @@ namespace MicroChess
     test.AddComponent<Position>({ { 400.0f, 400.0f } });
     test.AddComponent<Scale>({ { 500, 500 } });
     test.AddComponent<Rotation>({ { 120.f,120.f, 120.0f } });
+    test.AddComponent<Transform>({});
     test.AddComponent<Sprite>({
       scene->Internal_StringStorage_New(R"(\images\diffuse.png)"),
       Vector3::One,
@@ -136,7 +140,6 @@ namespace MicroChess
     cursor.AddComponent<ZIndex>({ 100 });
     cursor.AddComponent<Position>({ { 0, 0 } });
     cursor.AddComponent<Scale>({ { 32, 32 } });
-    cursor.AddComponent<Rotation>({ { 0.f,0.f,0.f } });
     cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
     //cursor.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
     cursor.AddComponent<Sprite>({
@@ -212,6 +215,8 @@ namespace MicroChess
       position = Input::GetCursorPosition() + Vector2(7, 12);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Debug Tests
     //Key hold (Can just alter here, not very elegant but will do for now)
     #if 1 //DEBUG
     if (Input::GetKey(GLFW_KEY_A))
@@ -250,9 +255,12 @@ namespace MicroChess
         rotation = m_RotateDebugTest;
     }
     #endif
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Box2D();
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Mouse Interactions
     // make the piece bigger when hovered
     for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, OnHover, Scale>())
     {

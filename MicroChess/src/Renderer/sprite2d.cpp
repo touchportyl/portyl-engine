@@ -21,7 +21,7 @@ namespace MicroChess
     }
 
     // Render all entities
-    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Position, Scale, Rotation, Shader, Sprite>())
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Position, Scale, Rotation, Transform, Shader, Sprite>())
     {
       if (!entity.GetComponent<IsActive>()->is_active) continue;
 
@@ -50,19 +50,27 @@ namespace MicroChess
       auto& position = entity.GetComponent<Position>()->position;
       auto& scale = entity.GetComponent<Scale>()->scale;
       auto& rotation = entity.GetComponent<Rotation>()->rotation;
+      Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
       auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
       auto sprite = entity.GetComponent<Sprite>();
       
       props.shader = shader;
+      props.transform = transform;
+      ////////////////////////////////////////////////////////////////////////////////////////
       props.position = global_position + position/*.RotateDeg(props.rotation.z)*/;
       props.scale = global_scale * scale;
       props.rotation = global_rotation + rotation;
+      ////////////////////////////////////////////////////////////////////////////////////////
       props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
       props.color = sprite->color;
       props.color_to_add = sprite->color_to_add;
       props.color_to_multiply = sprite->color_to_multiply;
       props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
 
+      //auto testfn = [&props]() { props.transform.Dump(); };
+      //testfn();
+
+      //OpenGLSpriteRenderer::DrawTexture2D(props);
       render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
     }
 
