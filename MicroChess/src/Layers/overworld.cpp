@@ -27,11 +27,12 @@ namespace ChronoShift {
     player1.AddComponent<BoundingBox2D>({ });
     player1.AddComponent<IsActive>({ true });
     player1.AddComponent<Position>({ {200, 600} });
+    player1.AddComponent<Rotation>({ });
     player1.AddComponent<Scale>({ { 100,100 } });
     player1.AddComponent<ZIndex>({ 10 });
     player1.AddComponent<Sprite>({
-      //scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
-      scene->Internal_StringStorage_New(R"()"),
+      scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
+      //scene->Internal_StringStorage_New(R"()"),
       Vector3::One,
       Vector3::Zero,
       Vector3::One,
@@ -41,11 +42,11 @@ namespace ChronoShift {
 
   
     FlexECS::Entity house = FlexECS::Scene::CreateEntity();
-    house.AddComponent<TurnOrderDisplay>({});
     house.AddComponent<Rigidbody>({ {}, true });
     house.AddComponent<BoundingBox2D>({ });
     house.AddComponent<IsActive>({ true });
     house.AddComponent<Position>({ {800, 500 } });
+    house.AddComponent<Rotation>({ });
     house.AddComponent<Scale>({ { 250,250 } });
     house.AddComponent<ZIndex>({ 10 });
     house.AddComponent<Sprite>({
@@ -58,11 +59,11 @@ namespace ChronoShift {
     house.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
     FlexECS::Entity box = FlexECS::Scene::CreateEntity();
-    box.AddComponent<TurnOrderDisplay>({});
     box.AddComponent<Rigidbody>({ {}, false });
     box.AddComponent<BoundingBox2D>({ });
     box.AddComponent<IsActive>({ true });
     box.AddComponent<Position>({ {350, 500 } });
+    box.AddComponent<Rotation>({ });
     box.AddComponent<Scale>({ { 150,150 } });
     box.AddComponent<ZIndex>({ 10 });
     box.AddComponent<Sprite>({
