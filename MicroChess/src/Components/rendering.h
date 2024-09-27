@@ -3,7 +3,7 @@
 #include <FlexEngine.h>
 using namespace FlexEngine;
 
-namespace ChronoShift
+namespace MicroChess
 {
 
   using EntityName = FlexEngine::FlexECS::Scene::StringIndex;

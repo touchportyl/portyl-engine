@@ -47,9 +47,6 @@
     <Filter Include="src\FlexEngine\AssetManager">
       <UniqueIdentifier>{21c5c0a3-1d77-4018-8eac-f285cb506a86}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\FlexEngine\Renderer\DebugRenderer">
-      <UniqueIdentifier>{3792cc46-98cd-41a4-ab7a-6cba05726b5d}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -192,9 +189,6 @@
     </ClCompile>
     <ClCompile Include="src\FlexEngine\flexprefs.cpp">
       <Filter>src\FlexEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.cpp">
-      <Filter>src\FlexEngine\Renderer\DebugRenderer</Filter>
     </ClCompile>
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglspriterenderer.cpp">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
@@ -372,9 +366,6 @@
     <ClInclude Include="src\FlexEngine\flexprefs.h">
       <Filter>src\FlexEngine</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.h">
-      <Filter>src\FlexEngine\Renderer\DebugRenderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglspriterenderer.h">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
@@ -385,12 +376,6 @@
     </None>
     <None Include="src\FlexEngine\FlexECS\scene.inl">
       <Filter>src\FlexEngine\FlexECS</Filter>
-    </None>
-    <None Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.vert">
-      <Filter>src\FlexEngine\Renderer\DebugRenderer</Filter>
-    </None>
-    <None Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.frag">
-      <Filter>src\FlexEngine\Renderer\DebugRenderer</Filter>
     </None>
   </ItemGroup>
 </Project>

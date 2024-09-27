@@ -3,15 +3,13 @@
 #include <FlexEngine.h>
 using namespace FlexEngine;
 
-namespace ChronoShift
+namespace MicroChess
 {
 
   class BoundingBox2D
   { FLX_REFL_SERIALIZABLE
   public:
     Vector2 size = Vector2::One;
-    Vector2 min;
-    Vector2 max;
   };
 
   class OnHover
@@ -28,17 +26,4 @@ namespace ChronoShift
     bool is_clicked;
   };
 
-  class AABB
-  { FLX_REFL_SERIALIZABLE
-  public:
-    Vector2 min;
-    Vector2 max;
-  };
-
-  class Rigidbody 
-  { FLX_REFL_SERIALIZABLE
-  public:
-    Vector2 velocity;
-    bool is_static;
-  };
 }

@@ -1,4 +1,3 @@
-#if 0
 #pragma once
 
 #include <FlexEngine.h>
@@ -25,4 +24,3 @@ namespace MicroChess
   };
 
 }
-#endif

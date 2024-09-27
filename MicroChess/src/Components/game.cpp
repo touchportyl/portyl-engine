@@ -1,8 +1,6 @@
-#if 0
-
 #include "game.h"
 
-namespace ChronoShift
+namespace MicroChess
 {
 
   FLX_REFL_REGISTER_START(CustomCursor)
@@ -34,4 +32,3 @@ namespace ChronoShift
   FLX_REFL_REGISTER_END;
 
 }
-#endif
