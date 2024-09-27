@@ -1,5 +1,3 @@
-#if 0
-
 #include "board.h"
 
 #include "States.h"
@@ -287,4 +285,3 @@ namespace MicroChess
 
 
 }
-#endif

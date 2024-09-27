@@ -1,6 +1,6 @@
 #include "physics.h"
 
-namespace ChronoShift
+namespace MicroChess
 {
 
   FLX_REFL_REGISTER_START(BoundingBox2D)
@@ -15,12 +15,6 @@ namespace ChronoShift
 
   FLX_REFL_REGISTER_START(OnClick)
     FLX_REFL_REGISTER_PROPERTY(is_clicked)
-  FLX_REFL_REGISTER_END;
-
-
-  FLX_REFL_REGISTER_START(Rigidbody)
-    FLX_REFL_REGISTER_PROPERTY(velocity)
-    FLX_REFL_REGISTER_PROPERTY(is_static)
   FLX_REFL_REGISTER_END;
 
 }

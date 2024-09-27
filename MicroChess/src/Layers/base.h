@@ -3,7 +3,7 @@
 #include <FlexEngine.h>
 using namespace FlexEngine;
 
-namespace ChronoShift
+namespace MicroChess
 {
 
   class BaseLayer : public FlexEngine::Layer

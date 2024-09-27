@@ -4,7 +4,7 @@
 #include "Components/physics.h"
 #include "Components/rendering.h"
 
-namespace ChronoShift
+namespace MicroChess
 {
 
   // update PieceStatus based on mouse input

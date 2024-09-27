@@ -1,6 +1,6 @@
 #include "rendering.h"
 
-namespace ChronoShift
+namespace MicroChess
 {
 
   FLX_REFL_REGISTER_START(IsActive)
