@@ -30,6 +30,8 @@ namespace ChronoShift
     // Renderer Setup
 
     OpenGLRenderer::EnableBlending();
+    Vector2 temp{ static_cast<float>(window->GetWidth()), static_cast<float>(window->GetHeight()) };
+    OpenGLSpriteRenderer::InitBloomFBO(temp);
   }
 
   void BaseLayer::OnDetach()

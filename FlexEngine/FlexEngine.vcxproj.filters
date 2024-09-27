@@ -196,6 +196,9 @@
     <ClCompile Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.cpp">
       <Filter>src\FlexEngine\Renderer\DebugRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglspriterenderer.cpp">
+      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -371,6 +374,9 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.h">
       <Filter>src\FlexEngine\Renderer\DebugRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglspriterenderer.h">
+      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

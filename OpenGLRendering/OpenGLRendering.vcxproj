@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\Components.h" />
+    <ClInclude Include="src\Components\Prefab.h" />
     <ClInclude Include="src\Layers.h" />
     <ClInclude Include="src\Layers\mainlayer.h" />
     <ClInclude Include="src\States.h" />
