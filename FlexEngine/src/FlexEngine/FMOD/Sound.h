@@ -15,7 +15,7 @@ namespace FlexEngine
 
       // Only allow construction of sound if we have a key.
       Sound(std::string const& key);
-      ~Sound() {};
+      ~Sound() noexcept;
     };
   }
 }

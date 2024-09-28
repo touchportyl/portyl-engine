@@ -22,6 +22,7 @@
 #include "flx_api.h"
 #include "pch.h"
 #include "FMOD/core/fmod.hpp"
+#include "FMOD/studio/fmod_studio.hpp" // FMOD studio
 #include "FMOD/Sound.h"
 
 namespace FlexEngine
@@ -41,10 +42,12 @@ public:
   };
 
   // Static fmod variables
-  static FMOD::System* fmod_system; // NULL
+  static FMOD::Studio::System* fmod_studio_system;
+  static FMOD::System* fmod_system;
   static FMOD_RESULT result;
 
-  inline static bool is_init() { return fmod_system != NULL; }
+  inline static bool is_studio_init() { return fmod_studio_system != NULL; }
+  inline static bool is_core_init() { return fmod_system != NULL; }
 
   // Functions for setup of core FMOD systems
   static void Load();

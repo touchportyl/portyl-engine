@@ -30,6 +30,7 @@ namespace FlexEngine
 
 // Static initialization
 FMOD::System* AudioManager::fmod_system = NULL;
+FMOD::Studio::System* AudioManager::fmod_studio_system = NULL;
 FMOD_RESULT AudioManager::result;
 std::map<std::string, FMOD::Channel*> AudioManager::Core::channels;
 
@@ -38,8 +39,9 @@ std::map<std::string, FMOD::Channel*> AudioManager::Core::channels;
 */
 void AudioManager::Load()
 {
-  FMOD_ASSERT(FMOD::System_Create(&fmod_system));
-  FMOD_ASSERT(fmod_system->init(32, FMOD_INIT_NORMAL, 0));
+  FMOD_ASSERT(FMOD::Studio::System::create(&fmod_studio_system));
+  FMOD_ASSERT(fmod_studio_system->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0));
+  FMOD_ASSERT(fmod_studio_system->getCoreSystem(&fmod_system));
 }
 
 /*!
@@ -47,8 +49,7 @@ void AudioManager::Load()
 */
 void AudioManager::Unload()
 {
-  fmod_system->close();
-  fmod_system->release();
+  FMOD_ASSERT(fmod_studio_system->release()); // Unloads core as well...
 }
 
 /*!
@@ -56,7 +57,7 @@ void AudioManager::Unload()
 */
 void AudioManager::Update()
 {
-  fmod_system->update();
+  FMOD_ASSERT(fmod_studio_system->update()); // Invokes fmod core's update as well...
 }
 
 /*!
