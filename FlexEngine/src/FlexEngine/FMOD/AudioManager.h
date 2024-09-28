@@ -19,24 +19,36 @@
 
 #pragma once
 
+#include "flx_api.h"
+#include "pch.h"
 #include "FMOD/core/fmod.hpp"
+#include "FMOD/Sound.h"
 
-namespace FMOD
+namespace FlexEngine
 {
-  class AudioManager
+class __FLX_API AudioManager
+{
+public:
+
+  // This class extends usage for middle level to call from.
+  class Core
   {
-    FMOD::System* fmod_system = NULL;
-    FMOD_RESULT result;
-
-    FMOD::Sound* sound;
-    FMOD::Channel* channel;
-
-    AudioManager();
-    ~AudioManager();
+    static std::map<std::string, FMOD::Channel*> channels; // Stores all instances of channels in existence
 
   public:
-    void Update();
-    void CreateSound();
-    void PlaySound();
+    static void PlaySound(std::string const&, Asset::Sound const&);
+    static void StopSound(std::string const&);
   };
-} // namespace FMOD
+
+  // Static fmod variables
+  static FMOD::System* fmod_system; // NULL
+  static FMOD_RESULT result;
+
+  inline static bool is_init() { return fmod_system != NULL; }
+
+  // Functions for setup of core FMOD systems
+  static void Load();
+  static void Unload();
+  static void Update();
+};
+}// namespace FlexEngine
