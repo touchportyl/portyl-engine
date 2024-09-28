@@ -2,7 +2,7 @@
 
 #include "AudioManager.h"
 #include "Sound.h"
-#include <FMOD/core/fmod_errors.h>
+
 namespace FlexEngine
 {
   namespace Asset
@@ -10,17 +10,13 @@ namespace FlexEngine
     Sound::Sound(std::string const& key) : sound(nullptr)
     {
       std::string path = "assets" + key;
-      FMOD_RESULT r = AudioManager::fmod_system->createSound(path.c_str(), FMOD_DEFAULT, 0, &sound);
-      if (r != FMOD_OK)
-      {
-        Log::Error(FMOD_ErrorString(r));
-        exit(1); // crash early
-      }
+      FMOD_ASSERT(AudioManager::fmod_system->createSound(path.c_str(), FMOD_DEFAULT, 0, &sound));
     }
 
     Sound::~Sound() noexcept
     {
-      sound->release();
+      //Log::Fatal("Sound destructor called");
+      //sound->release();
     }
   }
 }

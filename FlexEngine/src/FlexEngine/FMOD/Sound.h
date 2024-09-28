@@ -1,7 +1,9 @@
 #pragma once
 
+// Asset template for assetmanager
+
 #include "flx_api.h"
-#include "FMOD/core/fmod.hpp"
+#include "FMOD/studio/fmod_studio.hpp" // FMOD studio
 
 namespace FlexEngine
 {

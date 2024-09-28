@@ -150,15 +150,6 @@ namespace OpenGLRendering
 
   void MainLayer::Update()
   {
-    if (Input::GetKeyDown(GLFW_KEY_0))
-    {
-      AudioManager::Core::PlaySound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/test.mp3")));
-    }
-
-    if (Input::GetKeyDown(GLFW_KEY_1))
-    {
-      AudioManager::Core::StopSound("mario");
-    }
     OpenGLRenderer::ClearFrameBuffer();
 
     FunctionQueue function_queue;

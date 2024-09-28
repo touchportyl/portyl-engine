@@ -21,9 +21,25 @@
 
 #include "flx_api.h"
 #include "pch.h"
-#include "FMOD/core/fmod.hpp"
 #include "FMOD/studio/fmod_studio.hpp" // FMOD studio
-#include "FMOD/Sound.h"
+#include "FMOD/core/fmod_errors.h"     // FMOD error handling for macro
+#include <cassert>
+#include "FMOD/Sound.h"                // Definition of the asset
+
+// Most of the FMOD functions return an FMOD_RESULT, we want to watch for this with FMOD assert macro to crash fast for debugging
+// This function forces the compiler to not optimize out our error string...
+inline const char* GetFMODErrorString(FMOD_RESULT result) {
+  return FMOD_ErrorString(result);
+}
+
+// Macro to assert any FMOD function that returns a FMOD::Result
+#define FMOD_ASSERT(FUNCTION) \
+    AudioManager::result = FUNCTION;  \
+    if (AudioManager::result != FMOD_OK) { \
+        const char* errorString = GetFMODErrorString(AudioManager::result); \
+        Log::Error("FMOD Error: " + std::string(errorString)); \
+        assert(false); \
+    }
 
 namespace FlexEngine
 {
@@ -37,7 +53,13 @@ public:
     static std::map<std::string, FMOD::Channel*> channels; // Stores all instances of channels in existence
 
   public:
+    /*
+      Usage: AudioManager::Core::PlaySound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/test.mp3")));
+    */
     static void PlaySound(std::string const&, Asset::Sound const&);
+    /*
+      Usage: AudioManager::Core::StopSound("mario2");
+    */
     static void StopSound(std::string const&);
   };
 

@@ -16,18 +16,10 @@
  */
 
 #include "AudioManager.h"
-#include "fmod_errors.h"
 #include <string>
-#include <cassert>
 
 namespace FlexEngine
 {
-
-// Most of the FMOD functions return an FMOD_RESULT, we want to watch for this with FMOD assert macro to crash fast for debugging
-#define FMOD_ASSERT(FUNCTION) \
-          AudioManager::result = FUNCTION;  \
-          assert(AudioManager::result == FMOD_OK && FMOD_ErrorString(AudioManager::result))
-
 // Static initialization
 FMOD::System* AudioManager::fmod_system = NULL;
 FMOD::Studio::System* AudioManager::fmod_studio_system = NULL;
@@ -40,7 +32,7 @@ std::map<std::string, FMOD::Channel*> AudioManager::Core::channels;
 void AudioManager::Load()
 {
   FMOD_ASSERT(FMOD::Studio::System::create(&fmod_studio_system));
-  FMOD_ASSERT(fmod_studio_system->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0));
+  FMOD_ASSERT(fmod_studio_system->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
   FMOD_ASSERT(fmod_studio_system->getCoreSystem(&fmod_system));
 }
 
@@ -71,7 +63,7 @@ void AudioManager::Core::PlaySound(std::string const& identifier, Asset::Sound c
   if (channels.find(identifier) == channels.end()) // not already used identifier
   {
     FMOD::Channel* channel;
-    FMOD_ASSERT(fmod_system->playSound(asset.sound, 0, false, &channel));
+    FMOD_ASSERT(fmod_system->playSound(asset.sound, nullptr, false, &channel));
     channels[identifier] = channel;
   }
   else Log::Warning("Channel already exists for identifier: " + identifier);
