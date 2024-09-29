@@ -127,9 +127,6 @@
 #include "FlexEngine/Wrapper/file.h"
 #include "FlexEngine/Wrapper/filelist.h"
 
-#include "FlexEngine/FMOD/AudioManager.h"
-
-
 /* |-----------------------------| */
 /* |---------- Renderer ---------| */
 /* |-----------------------------| */
@@ -192,4 +189,4 @@
 /* |-----------------------------| */
 /* |------        FMOD     ------| */
 /* |-----------------------------| */
-#include "FlexEngine/FMOD/AudioManager.h"
+#include "FlexEngine/FMOD/FMODWrapper.h"

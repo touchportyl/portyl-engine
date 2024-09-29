@@ -22,8 +22,6 @@ namespace OpenGLRendering
     AlignImGuiContext(window);
 
     // load audio handler
-    AudioManager::Load();
-    FreeQueue::Push(std::bind(&AudioManager::Unload), "FMOD");
 
     // load assets only after the window has been created
     AssetManager::Load();
@@ -40,7 +38,6 @@ namespace OpenGLRendering
   {
     // Free in reverse add order...
     FreeQueue::RemoveAndExecute("OpenGLRendering AssetManager");
-    FreeQueue::RemoveAndExecute("FMOD");
 
     Application::CloseWindow(window);
     window.reset();
@@ -49,7 +46,6 @@ namespace OpenGLRendering
   void MainState::Update()
   {
     window->Update();
-    AudioManager::Update();
   }
 
 }

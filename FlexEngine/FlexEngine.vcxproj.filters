@@ -196,7 +196,7 @@
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglspriterenderer.cpp">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\FMOD\AudioManager.cpp">
+    <ClCompile Include="src\FlexEngine\FMOD\FMODWrapper.cpp">
       <Filter>src\FlexEngine\FMOD</Filter>
     </ClCompile>
     <ClCompile Include="src\FlexEngine\FMOD\Sound.cpp">
@@ -378,7 +378,7 @@
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglspriterenderer.h">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\FMOD\AudioManager.h">
+    <ClInclude Include="src\FlexEngine\FMOD\FMODWrapper.h">
       <Filter>src\FlexEngine\FMOD</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\FMOD\Sound.h">

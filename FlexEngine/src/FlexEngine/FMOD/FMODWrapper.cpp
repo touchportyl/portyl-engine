@@ -1,5 +1,5 @@
 /** WLVerse
- * \file AudioManager.h
+ * \file FMODWrapper.cpp
  *
  * \brief
  *   Audio wrapper to be used to play all audio in the game.
@@ -15,21 +15,21 @@
  * \par All content (c) 2024 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 
-#include "AudioManager.h"
+#include "FMODWrapper.h"
 #include <string>
 
 namespace FlexEngine
 {
 // Static initialization
-FMOD::System* AudioManager::fmod_system = NULL;
-FMOD::Studio::System* AudioManager::fmod_studio_system = NULL;
-FMOD_RESULT AudioManager::result;
-std::map<std::string, FMOD::Channel*> AudioManager::Core::channels;
+FMOD::System* FMODWrapper::fmod_system = NULL;
+FMOD::Studio::System* FMODWrapper::fmod_studio_system = NULL;
+FMOD_RESULT FMODWrapper::result;
+std::map<std::string, FMOD::Channel*> FMODWrapper::Core::channels;
 
 /*!
-  \brief Constructor for the AudioManager. Handles the creation of the FMOD system.
+  \brief Constructor for the FMODWrapper. Handles the creation of the FMOD system.
 */
-void AudioManager::Load()
+void FMODWrapper::Load()
 {
   FMOD_ASSERT(FMOD::Studio::System::create(&fmod_studio_system));
   FMOD_ASSERT(fmod_studio_system->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
@@ -37,9 +37,9 @@ void AudioManager::Load()
 }
 
 /*!
-  \brief Destructor for the AudioManager. Handles close and release of the FMOD system.
+  \brief Destructor for the FMODWrapper. Handles close and release of the FMOD system.
 */
-void AudioManager::Unload()
+void FMODWrapper::Unload()
 {
   FMOD_ASSERT(fmod_studio_system->release()); // Unloads core as well...
 }
@@ -47,7 +47,7 @@ void AudioManager::Unload()
 /*!
   \brief Updates the FMOD instance
 */
-void AudioManager::Update()
+void FMODWrapper::Update()
 {
   FMOD_ASSERT(fmod_studio_system->update()); // Invokes fmod core's update as well...
 }
@@ -57,7 +57,7 @@ void AudioManager::Update()
   \param identifier The identifier of the sound for controlling
   \param sound The sound to play
 */
-void AudioManager::Core::PlaySound(std::string const& identifier, Asset::Sound const& asset)
+void FMODWrapper::Core::PlaySound(std::string const& identifier, Asset::Sound const& asset)
 {
   // Play the sound given a sound handle and a channel...
   if (channels.find(identifier) == channels.end()) // not already used identifier
@@ -69,7 +69,7 @@ void AudioManager::Core::PlaySound(std::string const& identifier, Asset::Sound c
   else Log::Warning("Channel already exists for identifier: " + identifier);
 }
 
-void AudioManager::Core::StopSound(std::string const& identifier)
+void FMODWrapper::Core::StopSound(std::string const& identifier)
 {
   if (channels.find(identifier) != channels.end())
   {

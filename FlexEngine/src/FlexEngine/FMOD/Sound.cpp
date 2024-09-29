@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AudioManager.h"
+#include "FMODWrapper.h"
 #include "Sound.h"
 
 namespace FlexEngine
@@ -10,7 +10,7 @@ namespace FlexEngine
     Sound::Sound(std::string const& key) : sound(nullptr)
     {
       std::string path = "assets" + key;
-      FMOD_ASSERT(AudioManager::fmod_system->createSound(path.c_str(), FMOD_DEFAULT, 0, &sound));
+      FMOD_ASSERT(FMODWrapper::fmod_system->createSound(path.c_str(), FMOD_DEFAULT, 0, &sound));
     }
 
     Sound::~Sound() noexcept

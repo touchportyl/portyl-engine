@@ -3,7 +3,7 @@
 #include "assetmanager.h"
 
 #include "Wrapper/assimp.h"
-#include "FMOD/AudioManager.h"
+#include "FMOD/FMODWrapper.h"
 
 namespace FlexEngine
 {

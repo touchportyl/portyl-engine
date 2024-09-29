@@ -1,5 +1,5 @@
 /** WLVerse
- * \file AudioManager.h
+ * \file FMODWrapper.h
  *
  * \brief
  *   Audio Manager extends a function to setup FMOD at the start and end of the game. This is meant
@@ -34,16 +34,16 @@ inline const char* GetFMODErrorString(FMOD_RESULT result) {
 
 // Macro to assert any FMOD function that returns a FMOD::Result
 #define FMOD_ASSERT(FUNCTION) \
-    AudioManager::result = FUNCTION;  \
-    if (AudioManager::result != FMOD_OK) { \
-        const char* errorString = GetFMODErrorString(AudioManager::result); \
+    FMODWrapper::result = FUNCTION;  \
+    if (FMODWrapper::result != FMOD_OK) { \
+        const char* errorString = GetFMODErrorString(FMODWrapper::result); \
         Log::Error("FMOD Error: " + std::string(errorString)); \
         assert(false); \
     }
 
 namespace FlexEngine
 {
-class __FLX_API AudioManager
+class __FLX_API FMODWrapper
 {
 public:
 
@@ -54,11 +54,11 @@ public:
 
   public:
     /*
-      Usage: AudioManager::Core::PlaySound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/test.mp3")));
+      Usage: FMODWrapper::Core::PlaySound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/test.mp3")));
     */
     static void PlaySound(std::string const&, Asset::Sound const&);
     /*
-      Usage: AudioManager::Core::StopSound("mario2");
+      Usage: FMODWrapper::Core::StopSound("mario2");
     */
     static void StopSound(std::string const&);
   };
