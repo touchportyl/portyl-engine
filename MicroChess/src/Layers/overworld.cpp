@@ -21,6 +21,7 @@ namespace ChronoShift {
   {
     auto scene = FlexECS::Scene::GetActiveScene();
 
+    #pragma region Creating Entities 
     FlexECS::Entity player1 = FlexECS::Scene::CreateEntity("White Queen");
     player1.AddComponent<CharacterInput>({ });
     player1.AddComponent<Rigidbody>({ {}, false });
@@ -77,6 +78,7 @@ namespace ChronoShift {
         Renderer2DProps::Alignment_Center
        });
     box.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+    #pragma endregion
 
 
   }
@@ -136,7 +138,45 @@ namespace ChronoShift {
       }
     }
 
-    UpdatePhysicsSystem();
+    //For testing 2500 objects
+    //Create one, then clone the rest
+    if (Input::GetKeyDown(GLFW_KEY_0))
+    {
+      auto scene = FlexECS::Scene::GetActiveScene();
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<EntityName>()) 
+      {
+        scene->DestroyEntity(entity);
+      }
+
+      FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
+      thing.AddComponent<IsActive>({ true });
+      thing.AddComponent<Position>({ {0,0} });
+      thing.AddComponent<Rotation>({ });
+      thing.AddComponent<Scale>({ { 15,15 } });
+      thing.AddComponent<ZIndex>({ 10 });
+      thing.AddComponent<Sprite>({
+        scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
+        Vector3::One,
+        Vector3::Zero,
+        Vector3::One,
+        Renderer2DProps::Alignment_Center
+       });
+      thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+
+      for (size_t x = 0; x < 50; x++)
+      {
+        for (size_t y = 0; y < 50; y++)
+        {
+          FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
+          auto& position = cloned_thing.GetComponent<Position>()->position;
+          //cloned_thing.GetComponent<IsActive>()->is_active = false;
+          position.x = 15 * (x + 1);
+          position.y = 15 * (y + 1);
+        }
+      }
+    }
+
+    //UpdatePhysicsSystem();
     RendererSprite2D();
   }
 }

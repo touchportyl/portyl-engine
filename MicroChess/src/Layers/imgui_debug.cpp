@@ -24,8 +24,6 @@ namespace ChronoShift
   {
     FlexEngine::Editor::GetInstance()->Update();
 
-
-
     //for (auto& entity : FlexECS::Scene::GetActiveScene()->View<BoundingBox2D>())
     //{
     //  const Vector3& max = entity.GetComponent<BoundingBox2D>()->max;
