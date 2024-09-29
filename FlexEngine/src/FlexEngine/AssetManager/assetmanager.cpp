@@ -3,6 +3,7 @@
 #include "assetmanager.h"
 
 #include "Wrapper/assimp.h"
+#include "FMOD/FMODWrapper.h"
 
 namespace FlexEngine
 {
@@ -132,6 +133,13 @@ namespace FlexEngine
             //Log::Info("Loaded model: " + key);
             assets[key] = loaded_model;
           }
+          FLX_FLOW_ENDSCOPE();
+        }
+        else if (FLX_EXTENSIONS_CHECK_SAFETY("audio", file_extension.string()))
+        {
+          AssetKey key = file.path.string().substr(default_directory_length);
+          FLX_FLOW_BEGINSCOPE();
+          assets[key] = Asset::Sound{ key }; // create sound asserts on FMOD side and shouldn't need here
           FLX_FLOW_ENDSCOPE();
         }
       }
