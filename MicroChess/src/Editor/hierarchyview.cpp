@@ -13,12 +13,15 @@ namespace FlexEngine
 		size_t entity_count = scene->entity_index.size();
 		std::string entity_count_text = "Entity Count:  " + std::to_string(entity_count);
 
+		FlexECS::Entity entity_to_delete = FlexECS::Entity::Null;
+
 		ImGui::Begin("Scene Hierarchy");
 		ImGui::Text(entity_count_text.c_str());
 
-		int i = 0;
+		int imgui_id = 0;
 		for (auto& [id, record] : scene->entity_index)
 		{
+			ImGui::PushID(imgui_id++);
 			Entity entity(id);
 			std::string name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<EntityName>());
 			
@@ -41,11 +44,27 @@ namespace FlexEngine
 				Editor::GetInstance()->SelectEntity(entity);
 			}
 			
+			if (ImGui::BeginPopupContextItem("EntityContextMenu"))  // Begin right-click context menu
+			{
+				if (ImGui::MenuItem("Delete Entity"))
+				{
+					entity_to_delete = entity;
+				}
+
+				if (ImGui::MenuItem("Duplicate Entity"))
+				{
+					// Handle entity duplication here
+					scene->CloneEntity(entity);
+				}
+
+				ImGui::EndPopup();  // End context menu
+			}
+
 			if (is_open)
 			{
 				ImGui::TreePop();
 			}
-			++i;
+			ImGui::PopID();
 		}
 
 		if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0))
@@ -56,7 +75,10 @@ namespace FlexEngine
 		ImGui::End();
 
 
-
+		if (entity_to_delete != FlexECS::Entity::Null)
+		{
+			scene->DestroyEntity(entity_to_delete);
+		}
 
 	}
 }

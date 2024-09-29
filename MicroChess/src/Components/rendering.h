@@ -68,11 +68,9 @@ namespace ChronoShift
     Rotation rotation;
     Scale scale;
   };
-
-  class Test
-  { FLX_REFL_SERIALIZABLE
-  public:
-    int member = 5;
-  };
-
+  //class Test
+  //{ FLX_REFL_SERIALIZABLE
+  //public:
+  //  int member = 5;
+  //};
 }

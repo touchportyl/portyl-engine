@@ -75,16 +75,17 @@ namespace FlexEngine
 				ImGui::PopItemWidth();
 			}
 		
-			//ImGui::Text("REalPosition");
-			//ImGui::Text("X"); ImGui::SameLine();
-			//ImGui::PushItemWidth(field_width);
-			//ImGui::DragFloat("##posX", &entity.GetComponent<Position>()->position.x, 0.1f);
-			//ImGui::PopItemWidth();
-			//ImGui::SameLine();
-			//ImGui::Text("Y"); ImGui::SameLine();
-			//ImGui::PushItemWidth(field_width);
-			//ImGui::DragFloat("##posY", &entity.GetComponent<Position>()->position.y, 0.1f);
-			//ImGui::PopItemWidth();
+			//TEMPORARY "REAL" POSITION until renderer switches to transform component
+			ImGui::Text("Position");
+			ImGui::Text("X"); ImGui::SameLine();
+			ImGui::PushItemWidth(field_width);
+			ImGui::DragFloat("##posX", &entity.GetComponent<Position>()->position.x, 0.1f);
+			ImGui::PopItemWidth();
+			ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine();
+			ImGui::PushItemWidth(field_width);
+			ImGui::DragFloat("##posY", &entity.GetComponent<Position>()->position.y, 0.1f);
+			ImGui::PopItemWidth();
 
 			auto entity_record = ENTITY_INDEX[entity];
 			auto archetype = entity_record.archetype;
