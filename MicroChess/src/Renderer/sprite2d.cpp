@@ -5,7 +5,8 @@
 #define PostProcessing 0
 namespace ChronoShift
 {
-    void UpdateMatrixRecur(FlexECS::Entity& currEntity, const Matrix4x4 parent_entity_matrix = Matrix4x4::Identity)
+    //If u want this function to be callable, tell wei jie, otherwise not supposed to be called outside of sprite2D
+    static void UpdateTransformationMatrix(FlexECS::Entity& currEntity, const Matrix4x4 parent_entity_matrix = Matrix4x4::Identity)
     {
         auto& local_transform = currEntity.GetComponent<Transform>()->transform;
         //if (!currEntity.GetComponent<Transform>()->is_dirty) return; //SOMETHING WRONG WITH IS_DIRTY
@@ -15,12 +16,11 @@ namespace ChronoShift
         auto& local_rotation = currEntity.GetComponent<Rotation>()->rotation;
 
         // calculate the transform
-
         Matrix4x4 translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, Vector3(-local_position.x, local_position.y, 0.0f));
         Matrix4x4 rotation_matrix = Quaternion::FromEulerAnglesDeg(local_rotation).ToRotationMatrix();
         Matrix4x4 scale_matrix = Matrix4x4::Scale(Matrix4x4::Identity, local_scale);
 
-        Matrix4x4 curr_entity_matrix = translation_matrix * scale_matrix /** rotation_matrix*/;
+        Matrix4x4 curr_entity_matrix = translation_matrix * rotation_matrix * scale_matrix;
         local_transform = parent_entity_matrix * curr_entity_matrix;
     }
 
@@ -61,7 +61,6 @@ namespace ChronoShift
                 }
                 else
                 {
-                    // No parent, we've reached the root
                     break;
                 }
             }
@@ -74,21 +73,20 @@ namespace ChronoShift
                 if (t_processedEntities.find((*it)->Get()) == t_processedEntities.end())
                 {
                     //Update current obj transform
-                    UpdateMatrixRecur(**it, globaltransform);
+                    UpdateTransformationMatrix(**it, globaltransform);
                     // Mark the entity as processed
                     t_processedEntities.insert((*it)->Get());
-
                 }
                 // Update the parent's global transform to pass it down to the next child
                 globaltransform = (*it)->GetComponent<Transform>()->transform;
 
-                Log::Debug(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*(*it)->GetComponent<EntityName>()));
+                //Log::Debug(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*(*it)->GetComponent<EntityName>()));
 
             }
-            Log::Debug(" ");
+           // Log::Debug(" ");
             t_entitystack.clear();
         }
-        Log::Debug("****************************************************************");
+        //Log::Debug("****************************************************************");
     }
 
     void RendererSprite2D()
