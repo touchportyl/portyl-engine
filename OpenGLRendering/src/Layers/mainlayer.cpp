@@ -140,7 +140,6 @@ namespace OpenGLRendering
     CreateDefaultScene();
 
     // Renderer Setup
-
     OpenGLRenderer::EnableDepthTest();
   }
 

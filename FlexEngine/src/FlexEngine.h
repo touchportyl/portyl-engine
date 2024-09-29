@@ -127,7 +127,6 @@
 #include "FlexEngine/Wrapper/file.h"
 #include "FlexEngine/Wrapper/filelist.h"
 
-
 /* |-----------------------------| */
 /* |---------- Renderer ---------| */
 /* |-----------------------------| */
@@ -186,3 +185,8 @@
 // The number that is generated is inclusive of the min and max values.
 // Can also be used to store a range of values by getting min and max.
 #include "FlexEngine/DataStructures/range.h"
+
+/* |-----------------------------| */
+/* |------        FMOD     ------| */
+/* |-----------------------------| */
+#include "FlexEngine/FMOD/FMODWrapper.h"
