@@ -158,6 +158,7 @@
     <ClInclude Include="src\Components\rendering.h" />
     <ClInclude Include="src\Editor\editor.h" />
     <ClInclude Include="src\Editor\hierarchyview.h" />
+    <ClInclude Include="src\Editor\inspector.h" />
     <ClInclude Include="src\Layers.h" />
     <ClInclude Include="src\Layers\base.h" />
     <ClInclude Include="src\Layers\battle.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="src\Components\rendering.cpp" />
     <ClCompile Include="src\Editor\editor.cpp" />
     <ClCompile Include="src\Editor\hierarchyview.cpp" />
+    <ClCompile Include="src\Editor\inspector.cpp" />
     <ClCompile Include="src\Layers\base.cpp" />
     <ClCompile Include="src\Layers\battle.cpp" />
     <ClCompile Include="src\Layers\board.cpp" />

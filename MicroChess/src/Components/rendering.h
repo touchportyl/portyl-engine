@@ -61,4 +61,18 @@ namespace ChronoShift
     int alignment = Renderer2DProps::Alignment_Center;
   };
 
+  class Transform
+  { FLX_REFL_SERIALIZABLE
+  public:
+    Position position;
+    Rotation rotation;
+    Scale scale;
+  };
+
+  class Test
+  { FLX_REFL_SERIALIZABLE
+  public:
+    int member = 5;
+  };
+
 }

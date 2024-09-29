@@ -121,6 +121,9 @@
     <ClInclude Include="src\Editor\editor.h">
       <Filter>src\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="src\Editor\inspector.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -193,6 +196,9 @@
       <Filter>src\Editor</Filter>
     </ClCompile>
     <ClCompile Include="src\Editor\editor.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\inspector.cpp">
       <Filter>src\Editor</Filter>
     </ClCompile>
   </ItemGroup>

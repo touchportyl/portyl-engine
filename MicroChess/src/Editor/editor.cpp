@@ -17,15 +17,22 @@ namespace FlexEngine
 	}
 	void Editor::Update()
 	{
-		ImGui::ShowDemoWindow();
-
+		//ImGui::ShowDemoWindow();
 		DisplaySceneHierarchy();
-
-
-
+		DisplayInspector();
 	}
 	void Editor::Shutdown()
 	{
+	}
+
+	void Editor::SelectEntity(FlexECS::Entity entity)
+	{
+		m_selected_entity = entity;
+	}
+
+	FlexECS::Entity Editor::GetSelectedEntity()
+	{
+		return m_selected_entity;
 	}
 
 	

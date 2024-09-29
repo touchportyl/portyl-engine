@@ -3,8 +3,7 @@
 
 namespace FlexEngine
 {
-	void DisplaySceneHierarchy();
+	void DisplayInspector();
 
 
 }
-

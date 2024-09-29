@@ -29,6 +29,7 @@ namespace ChronoShift {
     player1.AddComponent<Position>({ {200, 600} });
     player1.AddComponent<Rotation>({ });
     player1.AddComponent<Scale>({ { 100,100 } });
+    player1.AddComponent<Transform>({});
     player1.AddComponent<ZIndex>({ 10 });
     player1.AddComponent<Sprite>({
       scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
@@ -48,6 +49,7 @@ namespace ChronoShift {
     house.AddComponent<Position>({ {800, 500 } });
     house.AddComponent<Rotation>({ });
     house.AddComponent<Scale>({ { 250,250 } });
+    house.AddComponent<Transform>({});
     house.AddComponent<ZIndex>({ 10 });
     house.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"()"),
@@ -65,6 +67,7 @@ namespace ChronoShift {
     box.AddComponent<Position>({ {350, 500 } });
     box.AddComponent<Rotation>({ });
     box.AddComponent<Scale>({ { 150,150 } });
+    box.AddComponent<Transform>({});
     box.AddComponent<ZIndex>({ 10 });
     box.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"()"),
