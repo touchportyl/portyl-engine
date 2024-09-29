@@ -119,28 +119,28 @@ namespace ChronoShift
     
     //TODO -> RUN THROUGH FOR LOOP FOR CHILDREN
     //No parent
-    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
-    {
-        Parent* test = nullptr;
-        if (!entity.GetComponent<IsActive>()->is_active /*|| entity.TryGetComponent<Parent>(test)*/) continue;
-    
-        auto& local_transform = entity.GetComponent<Transform>()->transform;
-        if (!entity.GetComponent<Transform>()->is_dirty) continue;
-    
-        auto& local_position = entity.GetComponent<Position>()->position;
-        auto& local_scale = entity.GetComponent<Scale>()->scale;
-        auto& local_rotation = entity.GetComponent<Rotation>()->rotation;
-    
-        // calculate the transform
-    
-        Matrix4x4 local_translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, Vector3(-local_position.x, local_position.y, 0.0f));
-        Matrix4x4 rotation_matrix = Quaternion::FromEulerAnglesDeg(local_rotation).ToRotationMatrix();
-        Matrix4x4 scale_matrix = Matrix4x4::Scale(Matrix4x4::Identity, local_scale);
-    
-        local_transform = local_translation_matrix * rotation_matrix * scale_matrix;
-        
-        Log::Debug(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<EntityName>()));
-    }
+    //for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+    //{
+    //    Parent* test = nullptr;
+    //    if (!entity.GetComponent<IsActive>()->is_active /*|| entity.TryGetComponent<Parent>(test)*/) continue;
+    //
+    //    auto& local_transform = entity.GetComponent<Transform>()->transform;
+    //    if (!entity.GetComponent<Transform>()->is_dirty) continue;
+    //
+    //    auto& local_position = entity.GetComponent<Position>()->position;
+    //    auto& local_scale = entity.GetComponent<Scale>()->scale;
+    //    auto& local_rotation = entity.GetComponent<Rotation>()->rotation;
+    //
+    //    // calculate the transform
+    //
+    //    Matrix4x4 local_translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, Vector3(-local_position.x, local_position.y, 0.0f));
+    //    Matrix4x4 rotation_matrix = Quaternion::FromEulerAnglesDeg(local_rotation).ToRotationMatrix();
+    //    Matrix4x4 scale_matrix = Matrix4x4::Scale(Matrix4x4::Identity, local_scale);
+    //
+    //    local_transform = local_translation_matrix * rotation_matrix * scale_matrix;
+    //    
+    //    Log::Debug(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<EntityName>()));
+    //}
     //// With parent
     //for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform, Parent>())
     //{
