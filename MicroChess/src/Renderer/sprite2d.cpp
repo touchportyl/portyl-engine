@@ -3,7 +3,7 @@
 #include "Components/rendering.h"
 
 #define PostProcessing 0
-namespace MicroChess
+namespace ChronoShift
 {
 
   void RendererSprite2D()
