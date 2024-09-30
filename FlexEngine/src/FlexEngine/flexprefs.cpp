@@ -18,7 +18,7 @@ namespace FlexEngine
     std::ifstream ifs(Path::current("assets/saves/").append(SAVE_FILE_NAME).c_str());
     if (!ifs.is_open())
     {
-      std::cerr << "Failed to open PlayerPrefs" << std::endl;
+      Log::Warning("Failed to open PlayerPrefs");
       Internal_Create();
       return;
     }
@@ -38,10 +38,10 @@ namespace FlexEngine
   void FlexPrefs::Save(bool prettify)
   {
     // Check for validity of file to write to, if not writeable, create a new one.
-    std::ofstream ofs(Path::current("assets/saves/").append(SAVE_FILE_NAME).c_str());
+    std::ofstream ofs(Path::current().append(SAVE_FILE_NAME).c_str());
     if (!ofs.is_open())
     {
-      std::cerr << "Failed to open PlayerPrefs: Creating a default one..." << std::endl;
+      Log::Warning("Failed to open PlayerPrefs: Creating a default one...");
       Internal_Create();
     }
     OStreamWrapper osw(ofs);
