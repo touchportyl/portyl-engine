@@ -64,9 +64,6 @@
     <ClCompile Include="..\third_party\src\glad\glad.c">
       <Filter>third_party\glad</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\playerprefs.cpp">
-      <Filter>src\FlexEngine</Filter>
-    </ClCompile>
     <ClCompile Include="src\FlexEngine\input.cpp">
       <Filter>src\FlexEngine</Filter>
     </ClCompile>
@@ -218,9 +215,6 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Core\entrypoint.h">
       <Filter>src\FlexEngine\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\playerprefs.h">
-      <Filter>src\FlexEngine</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\timer.h">
       <Filter>src\FlexEngine</Filter>
