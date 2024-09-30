@@ -15,8 +15,21 @@ namespace ChronoShift
         auto& local_scale = currEntity.GetComponent<Scale>()->scale;
         auto& local_rotation = currEntity.GetComponent<Rotation>()->rotation;
 
+        //Alignment of sprite
+        static Vector2 sprite_alignment = Vector2::Zero;
+        switch (currEntity.GetComponent<Sprite>()->alignment)
+        {
+        case Renderer2DProps::Alignment::Alignment_TopLeft:
+            sprite_alignment = Vector2(local_scale * 0.5f);
+            break;
+        case Renderer2DProps::Alignment::Alignment_Center:
+        default:
+            sprite_alignment = Vector2::Zero;
+            break;
+        }
+
         // calculate the transform
-        Matrix4x4 translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, Vector3(-local_position.x, local_position.y, 0.0f));
+        Matrix4x4 translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, Vector3(-(local_position.x + sprite_alignment.x), local_position.y + sprite_alignment.y, 0.0f));
         Matrix4x4 rotation_matrix = Quaternion::FromEulerAnglesDeg(local_rotation).ToRotationMatrix();
         Matrix4x4 scale_matrix = Matrix4x4::Scale(Matrix4x4::Identity, local_scale);
 
