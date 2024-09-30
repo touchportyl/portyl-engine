@@ -6,6 +6,7 @@ using namespace FlexEngine;
 namespace ChronoShift
 {
 
-  void RendererSprite2D();
+	void UpdateSprite2DMatrix();
+	void RendererSprite2D();
 
 }

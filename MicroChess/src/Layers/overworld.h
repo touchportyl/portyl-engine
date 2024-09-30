@@ -20,6 +20,9 @@ namespace ChronoShift
   private:
     void SetupWorld();
 
+    static float m_ScaleDebugTest;
+    static Vector3 m_RotateDebugTest;
+
   };
 
 
