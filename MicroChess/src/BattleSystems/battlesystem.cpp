@@ -4,7 +4,6 @@
 #include "Layers.h"
 
 #include "Components/battlecomponents.h"
-#include "Components/charactercomponents.h"
 #include "Components/physics.h"
 #include "Components/rendering.h"
 
@@ -22,7 +21,7 @@ namespace ChronoShift {
   struct SortLowestSpeed
   {
     bool operator()(FlexECS::Entity e1, FlexECS::Entity e2) {
-      return e1.GetComponent<CharacterSpeed>()->current_speed < e2.GetComponent<CharacterSpeed>()->current_speed;
+      return e1.GetComponent<Character>()->current_speed < e2.GetComponent<Character>()->current_speed;
     }
   };
 
@@ -54,6 +53,7 @@ namespace ChronoShift {
       slot.AddComponent<Position>({ position });
       slot.AddComponent<Scale>({ { 100,100 } });
       slot.AddComponent<ZIndex>({ 9 });
+      slot.AddComponent<Rotation>({});
       slot.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"()"),
         is_player_slot ? color_player_slot : color_enemy_slot,
@@ -78,6 +78,7 @@ namespace ChronoShift {
       move_button.AddComponent<Position>({ position });
       move_button.AddComponent<Scale>({ { 350,70 } });
       move_button.AddComponent<ZIndex>({ 9 });
+      move_button.AddComponent<Rotation>({});
       move_button.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"()"),
         Vector3::One,
@@ -89,31 +90,11 @@ namespace ChronoShift {
     }
   }
 
-  void BattleSystem::SetMovesForWeapon(FlexECS::Entity weapon)
-  {
-    //this is just here to cleanify code.... to remove..... thanks.....
-    FlexECS::Entity move1 = FlexECS::Scene::CreateEntity();
-    FlexECS::Entity move2 = FlexECS::Scene::CreateEntity();
-    FlexECS::Entity move3 = FlexECS::Scene::CreateEntity();
-    //FlexECS::Entity move4 = FlexECS::Scene::CreateEntity();
-    move1.AddComponent<MoveID>({});
-    move2.AddComponent<MoveID>({});
-    move3.AddComponent<MoveID>({});
-    //move4.AddComponent<MoveID>({});
-
-    auto movelist = weapon.GetComponent<Weapon>();
-    movelist->weapon_move_one = move1;
-    movelist->weapon_move_two = move2;
-    movelist->weapon_move_three = move3;
-    //movelist->weapon_move_four = move4;
-  }
-
   void BattleSystem::AddCharacter(FlexECS::Entity character, int position)
   {
     //SetMovesForCharacter(character);
     m_characters.push_back(character);
     m_slots[position].GetComponent<BattleSlot>()->character = character;
-
   }
 
   void BattleSystem::BeginBattle()
@@ -128,9 +109,16 @@ namespace ChronoShift {
     std::cout << "Beginning Stack Order:\nName / HP / Speed \n";
     for (auto& entity : m_speedstack)
     {
-      std::cout << scene->Internal_StringStorage_Get(entity.GetComponent<CharacterName>()->character_name)
-        << "  HP: " << entity.GetComponent<CharacterHealth>()->current_health
-        << "  Spd: " << entity.GetComponent<CharacterSpeed>()->current_speed << std::endl;
+      auto cw = entity.GetComponent<Character>()->weapon_name;
+      std::cout << scene->Internal_StringStorage_Get(entity.GetComponent<Character>()->character_name)
+        << "  HP: " << entity.GetComponent<Character>()->current_health
+        << "  Spd: " << entity.GetComponent<Character>()->current_speed
+        << " Weapon: " << scene->Internal_StringStorage_Get(cw);
+      if (entity.GetComponent<Character>()->is_player) {
+        auto cg = entity.GetComponent<Character>()->chrono_gear_description;
+        std::cout << " Chrono Gear: " << scene->Internal_StringStorage_Get(cg);
+      }
+      std::cout << std::endl;
     }
     std::cout << "\n";
 
@@ -141,20 +129,20 @@ namespace ChronoShift {
   void BattleSystem::UpdateSpeedStack()
   {
     auto scene = FlexECS::Scene::GetActiveScene();
-    int speed_to_decrease = m_speedstack.front().GetComponent<CharacterSpeed>()->current_speed;
+    int speed_to_decrease = m_speedstack.front().GetComponent<Character>()->current_speed;
     for (auto& entity : m_speedstack)
     {
-      entity.GetComponent<CharacterSpeed>()->current_speed -= speed_to_decrease;
-      std::cout << scene->Internal_StringStorage_Get(entity.GetComponent<CharacterName>()->character_name)
-        << "  HP: " << entity.GetComponent<CharacterHealth>()->current_health
-        << "  Spd: " << entity.GetComponent<CharacterSpeed>()->current_speed << std::endl;
+      entity.GetComponent<Character>()->current_speed -= speed_to_decrease;
+      std::cout << scene->Internal_StringStorage_Get(entity.GetComponent<Character>()->character_name)
+        << "  HP: " << entity.GetComponent<Character>()->current_health
+        << "  Spd: " << entity.GetComponent<Character>()->current_speed << std::endl;
     }
     std::cout << "\n";
 
     FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
     battle_state.GetComponent<BattleState>()->active_character = m_speedstack.front();
 
-    if (m_speedstack.front().GetComponent<IsPlayer>()->is_player) {
+    if (m_speedstack.front().GetComponent<Character>()->is_player) {
       battle_state.GetComponent<BattleState>()->phase = BP_PLAYER_TURN;
     }
     else {
@@ -175,8 +163,7 @@ namespace ChronoShift {
       PlayerMoveSelection();
     }
     else if (battle_phase == BP_ENEMY_TURN) {
-      m_speedstack.front().GetComponent<Action>()->move_to_use = 
-        static_cast<FlexECS::Entity>(m_speedstack.front().GetComponent<CharacterWeapon>()->equipped_weapon).GetComponent<Weapon>()->weapon_move_one;
+      m_speedstack.front().GetComponent<Action>()->move_to_use = m_speedstack.front().GetComponent<Character>()->weapon_move_one;
       battle_state.GetComponent<BattleState>()->current_target_count = 1;
       battle_state.GetComponent<BattleState>()->target_one = 0;
       battle_state.GetComponent<BattleState>()->phase = BP_MOVE_EXECUTION;
@@ -192,7 +179,7 @@ namespace ChronoShift {
 
   void BattleSystem::PlayerMoveSelection()
   {
-    FlexECS::Entity move_to_use = FlexECS::Entity::Null;
+    FlexECS::Scene::StringIndex selected_move = UUID::Null;
     for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, MoveButton>()) {
       entity.GetComponent<IsActive>()->is_active = true;
     }
@@ -205,13 +192,13 @@ namespace ChronoShift {
       {
         switch (entity.GetComponent<MoveButton>()->move_number) {
         case 0:
-          move_to_use = static_cast<FlexECS::Entity>(m_speedstack.front().GetComponent<CharacterWeapon>()->equipped_weapon).GetComponent<Weapon>()->weapon_move_one;
+          selected_move = m_speedstack.front().GetComponent<Character>()->weapon_move_one;
           break;
         case 1:
-          move_to_use = static_cast<FlexECS::Entity>(m_speedstack.front().GetComponent<CharacterWeapon>()->equipped_weapon).GetComponent<Weapon>()->weapon_move_two;
+          selected_move = m_speedstack.front().GetComponent<Character>()->weapon_move_two;
           break;
         case 2:
-          move_to_use = static_cast<FlexECS::Entity>(m_speedstack.front().GetComponent<CharacterWeapon>()->equipped_weapon).GetComponent<Weapon>()->weapon_move_three;
+          selected_move = m_speedstack.front().GetComponent<Character>()->weapon_move_three;
           break;
         case 3:
           //move_to_use = m_speedstack.front().GetComponent<MoveList>()->move_four;
@@ -220,9 +207,9 @@ namespace ChronoShift {
       }
     }
 
-    if (move_to_use == FlexECS::Entity::Null) return;
+    if (selected_move == UUID::Null) return;
 
-    m_speedstack.front().GetComponent<Action>()->move_to_use = move_to_use;
+    m_speedstack.front().GetComponent<Action>()->move_to_use = selected_move;
 
     FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
     battle_state.GetComponent<BattleState>()->phase = BP_MOVE_TARGET_SELECTION;
@@ -234,8 +221,8 @@ namespace ChronoShift {
 
     //printing info
     FlexECS::Entity player = battle_state.GetComponent<BattleState>()->active_character;
-    FlexECS::Entity selected_move = player.GetComponent<Action>()->move_to_use;
-    Move move = MoveRegistry::GetMove(selected_move.GetComponent<MoveID>()->move_name);
+    //FlexECS::Entity selected_move = player.GetComponent<Action>()->move_to_use;
+    Move move = MoveRegistry::GetMove(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(player.GetComponent<Action>()->move_to_use));
     std::cout << "Move Selected: " << move.name << std::endl;
   }
 
@@ -245,8 +232,8 @@ namespace ChronoShift {
     auto& target_count = battle_state.GetComponent<BattleState>()->current_target_count;
 
     FlexECS::Entity player = battle_state.GetComponent<BattleState>()->active_character;
-    FlexECS::Entity move_to_use = player.GetComponent<Action>()->move_to_use;
-    Move move = MoveRegistry::GetMove(move_to_use.GetComponent<MoveID>()->move_name);
+    //FlexECS::Entity move_to_use = player.GetComponent<Action>()->move_to_use;
+    Move move = MoveRegistry::GetMove(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(player.GetComponent<Action>()->move_to_use));
 
     if (target_count < move.target_count) {
       GetTargetSelection();
@@ -290,8 +277,8 @@ namespace ChronoShift {
     //get the move user
     FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
     FlexECS::Entity user = battle_state.GetComponent<BattleState>()->active_character;
-    FlexECS::Entity move_to_use = user.GetComponent<Action>()->move_to_use;
-    Move move = MoveRegistry::GetMove(move_to_use.GetComponent<MoveID>()->move_name);
+    //FlexECS::Entity move_to_use = user.GetComponent<Action>()->move_to_use;
+    Move move = MoveRegistry::GetMove(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(user.GetComponent<Action>()->move_to_use));
 
     std::vector<FlexECS::Entity> targets;
 
@@ -317,21 +304,21 @@ namespace ChronoShift {
     else if (move.target_type == MOVE_TARGET_ALL_ENEMY) {
       for (FlexECS::Entity target : m_characters)
       {
-        if (!target.GetComponent<IsPlayer>()->is_player)
+        if (!target.GetComponent<Character>()->is_player)
           targets.push_back(target);
       }
     }
     else if (move.target_type == MOVE_TARGET_ALL_PLAYER) {
       for (FlexECS::Entity target : m_characters)
       {
-        if (target.GetComponent<IsPlayer>()->is_player)
+        if (target.GetComponent<Character>()->is_player)
           targets.push_back(target);
       }
     }
 
     //execute move
     move.effect(user, targets);
-    user.GetComponent<CharacterSpeed>()->current_speed += move.cost + user.GetComponent<CharacterSpeed>()->base_speed;
+    user.GetComponent<Character>()->current_speed += move.cost + user.GetComponent<Character>()->base_speed;
     user.GetComponent<Action>()->move_to_use = FlexECS::Entity::Null;
     m_speedstack.sort(SortLowestSpeed());
 
@@ -339,9 +326,9 @@ namespace ChronoShift {
     auto scene = FlexECS::Scene::GetActiveScene();
     for (auto& entity : m_speedstack)
     {
-      std::cout << scene->Internal_StringStorage_Get(entity.GetComponent<CharacterName>()->character_name)
-        << "  HP: " << entity.GetComponent<CharacterHealth>()->current_health
-        << "  Spd: " << entity.GetComponent<CharacterSpeed>()->current_speed << std::endl;
+      std::cout << scene->Internal_StringStorage_Get(entity.GetComponent<Character>()->character_name)
+        << "  HP: " << entity.GetComponent<Character>()->current_health
+        << "  Spd: " << entity.GetComponent<Character>()->current_speed << std::endl;
     }
     std::cout << "\n";
     battle_state.GetComponent<BattleState>()->current_target_count = 0;

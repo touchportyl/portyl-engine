@@ -4,7 +4,6 @@
 #include "Layers.h"
 
 #include "Components/battlecomponents.h"
-#include "Components/charactercomponents.h"
 #include "Components/physics.h"
 #include "Components/rendering.h"
 
@@ -14,10 +13,10 @@
 
 #include "Physics/box2d.h"
 #include "Renderer/sprite2d.h"
+#include "CharacterPrefab/characterprefab.h"
 
 
 namespace ChronoShift {
-
 
   void BattleLayer::SetupBattle()
   {
@@ -25,180 +24,313 @@ namespace ChronoShift {
 
     //battle positions for characters
     m_battlesystem.InitializeBattleSlots();
+    #pragma region Chrono Gear Main Stats
+    /*FlexECS::Entity main_hp = FlexECS::Scene::CreateEntity("Flat HP");
+    main_hp.AddComponent<Stat>({
+      scene->Internal_StringStorage_New("Flat HP"),
+      112,
+      112
+      });
+    FlexECS::Entity main_atk = FlexECS::Scene::CreateEntity("Flat Main ATK Stats");
+    main_atk.AddComponent<Stat>({
+      scene->Internal_StringStorage_New("Flat Main ATK Stats"),
+      56,
+      56
+      });
+    FlexECS::Entity main_spd = FlexECS::Scene::CreateEntity("Flat Main SPD Stats");
+    main_spd.AddComponent<Stat>({
+      scene->Internal_StringStorage_New("Flat Main SPD Stats"),
+      4,
+      4
+      });*/
+    #pragma endregion
+
+    #pragma region Chrono Gear Sub Stats
+    /*FlexECS::Entity sub_hp = FlexECS::Scene::CreateEntity("Flat Sub HP Stats");
+    sub_hp.AddComponent<Stat>({
+      scene->Internal_StringStorage_New("Flat Sub HP Stats"),
+      38,
+      38
+      });
+    FlexECS::Entity sub_atk = FlexECS::Scene::CreateEntity("Flat Sub ATK Stats");
+    sub_atk.AddComponent<Stat>({
+      scene->Internal_StringStorage_New("Flat Sub ATK Stats"),
+      21,
+      21
+      });
+    FlexECS::Entity sub_spd = FlexECS::Scene::CreateEntity("Flat Sub SPD Stats");
+    sub_spd.AddComponent<Stat>({
+      scene->Internal_StringStorage_New("Flat Sub SPD Stats"),
+      2,
+      2
+      });*/
+    #pragma endregion
 
     #pragma region Character Components
-    FlexECS::Entity player1 = FlexECS::Scene::CreateEntity("White Queen");
-    player1.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("White Queen") });
-    player1.AddComponent<IsPlayer>({ true });
-    player1.AddComponent<CharacterHealth>({ 20, 20 });
-    player1.AddComponent<CharacterSpeed>({ 5,5 });
-    player1.AddComponent<Action>({});
-    player1.AddComponent<CharacterWeapon>({});
+    FlexECS::Scene::StringIndex player1_name = scene->Internal_StringStorage_New("White Queen");
+    FlexECS::Scene::StringIndex player2_name = scene->Internal_StringStorage_New("White King");
+    FlexECS::Scene::StringIndex enemy1_name = scene->Internal_StringStorage_New("Black Knight");
+    FlexECS::Scene::StringIndex enemy2_name = scene->Internal_StringStorage_New("Black Bishop");
+    FlexECS::Scene::StringIndex enemy3_name =  scene->Internal_StringStorage_New("Black Pawn");
 
-    FlexECS::Entity player2 = FlexECS::Scene::CreateEntity("White King");
-    player2.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("White King") });
-    player2.AddComponent<IsPlayer>({ true });
-    player2.AddComponent<CharacterHealth>({ 10, 10 });
-    player2.AddComponent<CharacterSpeed>({ 10,10 });
-    player2.AddComponent<Action>({});
-    player2.AddComponent<CharacterWeapon>({});
+    FlexECS::Scene::StringIndex enemy_weapon_name = scene->Internal_StringStorage_New("Enemy Weapon");
+    FlexECS::Scene::StringIndex enemy_weapon_description = scene->Internal_StringStorage_New("Dummy Weapon");
+    FlexECS::Scene::StringIndex enemy_weapon_move = scene->Internal_StringStorage_New("Poke");
 
-    FlexECS::Entity enemy1 = FlexECS::Scene::CreateEntity("Black Knight");
-    enemy1.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Black Knight") });
-    enemy1.AddComponent<IsPlayer>({ false });
-    enemy1.AddComponent<CharacterHealth>({ 6, 6 });
-    enemy1.AddComponent<CharacterSpeed>({ 7, 7 });
-    enemy1.AddComponent<Action>({});
-    enemy1.AddComponent<CharacterWeapon>({});
+    FlexECS::Scene::StringIndex player1_weapon_name = scene->Internal_StringStorage_New("Plasma Blade");
+    FlexECS::Scene::StringIndex player1_weapon_description = scene->Internal_StringStorage_New("Blade made of plasma");
+    FlexECS::Scene::StringIndex player1_weapon_move1 = scene->Internal_StringStorage_New("Dual Strike");
+    FlexECS::Scene::StringIndex player1_weapon_move2 = scene->Internal_StringStorage_New("Whirlwind");
+    FlexECS::Scene::StringIndex player1_weapon_move3 = scene->Internal_StringStorage_New("Block");
 
-    FlexECS::Entity enemy2 = FlexECS::Scene::CreateEntity("Black Bishop");
-    enemy2.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Black Bishop") });
-    enemy2.AddComponent<IsPlayer>({ false });
-    enemy2.AddComponent<CharacterHealth>({ 6, 6 });
-    enemy2.AddComponent<CharacterSpeed>({ 8, 8 });
-    enemy2.AddComponent<Action>({});
-    enemy2.AddComponent<CharacterWeapon>({});
+    FlexECS::Scene::StringIndex player2_weapon_name = scene->Internal_StringStorage_New("Electric Railgun");
+    FlexECS::Scene::StringIndex player2_weapon_description = scene->Internal_StringStorage_New("Railgun that uses electromagnetic force");
+    FlexECS::Scene::StringIndex player2_weapon_move1 = scene->Internal_StringStorage_New("Rift Surge");
+    FlexECS::Scene::StringIndex player2_weapon_move2 = scene->Internal_StringStorage_New("Flashbang");
+    FlexECS::Scene::StringIndex player2_weapon_move3 = scene->Internal_StringStorage_New("Temporal Wave");
 
-    FlexECS::Entity enemy3 = FlexECS::Scene::CreateEntity("Black Pawn");
-    enemy3.AddComponent<CharacterName>({ scene->Internal_StringStorage_New("Black Pawn") });
-    enemy3.AddComponent<IsPlayer>({ false });
-    enemy3.AddComponent<CharacterHealth>({ 6, 6 });
-    enemy3.AddComponent<CharacterSpeed>({ 9, 9 });
-    enemy3.AddComponent<Action>({});
-    enemy3.AddComponent<CharacterWeapon>({});
+    FlexECS::Scene::StringIndex cg_name = scene->Internal_StringStorage_New("Demo Chrono Gear");
+    FlexECS::Scene::StringIndex cg1_descrip  = scene->Internal_StringStorage_New("Revives a dead drifter");
+    FlexECS::Scene::StringIndex cg2_descrip = scene->Internal_StringStorage_New("Instant Win");
+
+    FlexECS::Scene::StringIndex shdr_path = scene->Internal_StringStorage_New(R"(\shaders\texture)");
+    FlexECS::Scene::StringIndex queen_path = scene->Internal_StringStorage_New(R"(\images\chess_queen.png)");
+    FlexECS::Scene::StringIndex king_path = scene->Internal_StringStorage_New(R"(\images\chess_king.png)");
+    FlexECS::Scene::StringIndex knight_path = scene->Internal_StringStorage_New(R"(\images\chess_knight.png)");
+    FlexECS::Scene::StringIndex bishop_path = scene->Internal_StringStorage_New(R"(\images\chess_bishop.png)");
+    FlexECS::Scene::StringIndex pawn_path = scene->Internal_StringStorage_New(R"(\images\chess_pawn.png)");
+
+
+    //FlexECS::Entity player1 = FlexECS::Scene::CreateEntity("White Queen");
+    //
+    //player1.AddComponent<Character>({});
+    //player1.AddComponent<Action>({});
+    //player1.GetComponent<Character>()->is_player = true;
+    //player1.GetComponent<Character>()->base_health = 20;
+    //player1.GetComponent<Character>()->current_health = 20;
+    //player1.GetComponent<Character>()->base_speed = 5;
+    //player1.GetComponent<Character>()->current_speed = 5;
+    //player1.GetComponent<Character>()->character_name = player1_name;
+
+    ///*player1.GetComponent<Character>()->weapon_move_one.move_name = scene->Internal_StringStorage_New("Diagonal Attack");
+    //player1.GetComponent<Character>()->weapon_move_one.target_count = 1;
+    //player1.GetComponent<Character>()->weapon_move_one.target_type = MOVE_TARGET_SINGLE;
+    //player1.GetComponent<Character>()->weapon_move_one.cost = 4;*/
+
+    //player1.GetComponent<Character>()->character_class = CLASS_DPS;
+
+    //FlexECS::Entity player2 = FlexECS::Scene::CreateEntity("White King");
+    //player2.AddComponent<Character>({});
+    //player2.AddComponent<Action>({});
+    //player2.GetComponent<Character>()->is_player = true;
+    //player2.GetComponent<Character>()->base_health = 10;
+    //player2.GetComponent<Character>()->current_health = 10;
+    //player2.GetComponent<Character>()->base_speed = 10;
+    //player2.GetComponent<Character>()->current_speed = 10;
+    //player2.GetComponent<Character>()->character_name = player2_name;
+
+    ////
+    //FlexECS::Entity enemy1 = FlexECS::Scene::CreateEntity("Black Knight");
+    //enemy1.AddComponent<Character>({});
+    //enemy1.AddComponent<Action>({});
+    //enemy1.GetComponent<Character>()->is_player = false;
+    //enemy1.GetComponent<Character>()->base_health = 6;
+    //enemy1.GetComponent<Character>()->current_health = 6;
+    //enemy1.GetComponent<Character>()->base_speed = 7;
+    //enemy1.GetComponent<Character>()->current_speed = 7;
+    //enemy1.GetComponent<Character>()->character_name = enemy1_name;
+
+    //FlexECS::Entity enemy2 = FlexECS::Scene::CreateEntity("Black Bishop");
+    //enemy2.AddComponent<Character>({});
+    //enemy2.AddComponent<Action>({});
+    //enemy2.GetComponent<Character>()->is_player = false;
+    //enemy2.GetComponent<Character>()->base_health = 6;
+    //enemy2.GetComponent<Character>()->current_health = 6;
+    //enemy2.GetComponent<Character>()->base_speed = 8;
+    //enemy2.GetComponent<Character>()->current_speed = 8;
+    //enemy2.GetComponent<Character>()->character_name = enemy2_name;
+
+    //FlexECS::Entity enemy3 = FlexECS::Scene::CreateEntity("Black Pawn");
+    //enemy3.AddComponent<Character>({});
+    //enemy3.AddComponent<Action>({});
+    //enemy3.GetComponent<Character>()->is_player = false;
+    //enemy3.GetComponent<Character>()->base_health = 6;
+    //enemy3.GetComponent<Character>()->current_health = 6;
+    //enemy3.GetComponent<Character>()->base_speed = 9;
+    //enemy3.GetComponent<Character>()->current_speed = 9;
+    //enemy3.GetComponent<Character>()->character_name = enemy3_name;
+    //
+    //// Put the data into entity
+    //// Get your values via asset, AssetManager::Get("asset/player1");
+    //// Hardcode some file with data first
+    //// 
+    //// To write some character data, need to find all the characters first
+    ////  - Scene::View(Character) // Gets all with character component
+    ////  - Get the archetype of that entity, access the archetype table and that component
+    //// 
+    ////  - The character component need to be serializable (Writing part)
+    ////      - File::Create - Creates a file
+    ////      - File::Open() - File* open something like that
+    ////      
+    ////      // Write the entire into json format and read back in json
+    ////      - Reflection::TypeDescriptor* type = TYPE_DESCRIPTOR_LOOKUP["Character"]; // Gets the type and some info about the component
+    ////      - type->Serialize() // Produces the JSON for u
+    ////      - Parse() // Break it down back into json in std::string
+    ////      - Do the FlexFormatter::Parse() and rewrite
+    //// 
+    ////      // File::Open()
+    ////      // File::Read() // Gives you the std::string u put in eg if u do lazy way data looks like (10 6 8 10)
+    ////  
+    //// Read data after that
+    //// Component reliant on data outside
+
+    ///* 
+    //   "System" - Battle system (Only takes combat related stuff, which is just character component)
+    //   - Load some characters
+    //   - Apply logic given character component
+    //   - Take a turn now -> Rotate between character components
+    //   - Queue of character components
+    //*/
+
+    ///*
+    //  Character component (Even enemies use this)
+    //  - Health/Attack
+    //  - Other stuff
+    //  - Weapon 1 -> a bunch of player moves 
+    //  - Weapon 2 -> std::optional, if u boss u might have this. If empty, don't factor this, maybe if boss have like 2 weapons??
+    //*/
+
+    //#pragma endregion
+
+    //#pragma region Moves
+
+    ////Adding moves
+    //player1.GetComponent<Character>()->weapon_name = player1_weapon_name;
+    //player1.GetComponent<Character>()->weapon_description = player1_weapon_description;
+    //player1.GetComponent<Character>()->weapon_move_one = player1_weapon_move1;
+    //player1.GetComponent<Character>()->weapon_move_two = player1_weapon_move2;
+    //player1.GetComponent<Character>()->weapon_move_three = player1_weapon_move3;
+
+    //player2.GetComponent<Character>()->weapon_name = player2_weapon_name;
+    //player2.GetComponent<Character>()->weapon_description = player2_weapon_description;
+    //player2.GetComponent<Character>()->weapon_move_one = player2_weapon_move1;
+    //player2.GetComponent<Character>()->weapon_move_two = player2_weapon_move2;
+    //player2.GetComponent<Character>()->weapon_move_three = player2_weapon_move3;
+
+    //enemy1.GetComponent<Character>()->weapon_name = enemy_weapon_name;
+    //enemy1.GetComponent<Character>()->weapon_description = enemy_weapon_description;
+    //enemy1.GetComponent<Character>()->weapon_move_one = enemy_weapon_move;
+    //enemy1.GetComponent<Character>()->weapon_move_two = enemy_weapon_move;
+    //enemy1.GetComponent<Character>()->weapon_move_three = enemy_weapon_move;
+
+    //enemy2.GetComponent<Character>()->weapon_name = enemy_weapon_name;
+    //enemy2.GetComponent<Character>()->weapon_description = enemy_weapon_description;
+    //enemy2.GetComponent<Character>()->weapon_move_one = enemy_weapon_move;
+    //enemy2.GetComponent<Character>()->weapon_move_two = enemy_weapon_move;
+    //enemy2.GetComponent<Character>()->weapon_move_three = enemy_weapon_move;
+
+    //enemy3.GetComponent<Character>()->weapon_name = enemy_weapon_name;
+    //enemy3.GetComponent<Character>()->weapon_description = enemy_weapon_description;
+    //enemy3.GetComponent<Character>()->weapon_move_one = enemy_weapon_move;
+    //enemy3.GetComponent<Character>()->weapon_move_two = enemy_weapon_move;
+    //enemy3.GetComponent<Character>()->weapon_move_three = enemy_weapon_move;
+    //
+
+    //#pragma endregion
+    //#pragma region Chrono Gear
+    //player1.GetComponent<Character>()->chrono_gear_name = cg_name;
+    //player1.GetComponent<Character>()->chrono_gear_description = cg1_descrip;
+
+    //player2.GetComponent<Character>()->chrono_gear_name = cg_name;
+    //player2.GetComponent<Character>()->chrono_gear_description = cg2_descrip;
+    //#pragma endregion
+    //
+    //#pragma endregion
+
+    //#pragma region Rendering Components
+    ////Rendering related components
+    //player1.AddComponent<IsActive>({ true });
+    //player1.AddComponent<Position>({ {200, 600} });
+    //player1.AddComponent<Scale>({ { 100,100 } });
+    //player1.AddComponent<ZIndex>({ 10 });
+    //player1.AddComponent<Rotation>({});
+    //player1.AddComponent<Sprite>({
+    //  queen_path,
+    //  Vector3::One,
+    //  Vector3::Zero,
+    //  Vector3::One,
+    //  Renderer2DProps::Alignment_Center
+    // });
+    //player1.AddComponent<Shader>({ shdr_path });
+
+    //player2.AddComponent<IsActive>({ true });
+    //player2.AddComponent<Position>({ {320, 600} });
+    //player2.AddComponent<Scale>({ { 100,100 } });
+    //player2.AddComponent<ZIndex>({ 10 });
+    //player2.AddComponent<Rotation>({});
+    //player2.AddComponent<Sprite>({
+    //  king_path,
+    //  Vector3::One,
+    //  Vector3::Zero,
+    //  Vector3::One,
+    //  Renderer2DProps::Alignment_Center
+    // });
+    //player2.AddComponent<Shader>({ shdr_path });
+
+    //enemy1.AddComponent<IsActive>({ true });
+    //enemy1.AddComponent<Position>({ {700, 200} });
+    //enemy1.AddComponent<Scale>({ { 100,100 } });
+    //enemy1.AddComponent<ZIndex>({ 10 });
+    //enemy1.AddComponent<Rotation>({});
+    //enemy1.AddComponent<Sprite>({
+    //  knight_path,
+    //  Vector3::One,
+    //  Vector3::Zero,
+    //  Vector3::Zero,
+    //  Renderer2DProps::Alignment_Center
+    // });
+    //enemy1.AddComponent<Shader>({ shdr_path });
+
+    //enemy2.AddComponent<IsActive>({ true });
+    //enemy2.AddComponent<Position>({ {820, 200} });
+    //enemy2.AddComponent<Scale>({ { 100,100 } });
+    //enemy2.AddComponent<ZIndex>({ 10 });
+    //enemy2.AddComponent<Rotation>({});
+    //enemy2.AddComponent<Sprite>({
+    //  bishop_path,
+    //  Vector3::One,
+    //  Vector3::Zero,
+    //  Vector3::Zero,
+    //  Renderer2DProps::Alignment_Center
+    // });
+    //enemy2.AddComponent<Shader>({ shdr_path });
+
+    //enemy3.AddComponent<IsActive>({ true });
+    //enemy3.AddComponent<Position>({ {940, 200} });
+    //enemy3.AddComponent<Scale>({ { 100,100 } });
+    //enemy3.AddComponent<ZIndex>({ 10 });
+    //enemy3.AddComponent<Rotation>({});
+    //enemy3.AddComponent<Sprite>({
+    //  pawn_path,
+    //  Vector3::One,
+    //  Vector3::Zero,
+    //  Vector3::Zero,
+    //  Renderer2DProps::Alignment_Center
+    // });
+    //enemy3.AddComponent<Shader>({ shdr_path });
+    
+    FlexECS::Entity player1 = LoadCharacter("White Queen");
+    FlexECS::Entity player2 = LoadCharacter("White King");
+    FlexECS::Entity enemy1 = LoadCharacter("Black Knight");
+    FlexECS::Entity enemy2 = LoadCharacter("Black Bishop");
+    FlexECS::Entity enemy3 = LoadCharacter("Black Pawn");
 
     m_battlesystem.AddCharacter(player1, 0);
     m_battlesystem.AddCharacter(player2, 1);
     m_battlesystem.AddCharacter(enemy1, 4);
     m_battlesystem.AddCharacter(enemy2, 5);
     m_battlesystem.AddCharacter(enemy3, 6);
-    #pragma endregion
-
-    #pragma region Moves
-
-    //Adding moves
-    FlexECS::Entity plasma_blade = FlexECS::Scene::CreateEntity("Plasma Blade");\
-    plasma_blade.AddComponent<Weapon>({});
-    plasma_blade.GetComponent<Weapon>()->weapon_description = scene->Internal_StringStorage_New("Blade made of plasma");
-    plasma_blade.GetComponent<Weapon>()->weapon_name = scene->Internal_StringStorage_New("Plasma Blade");
-    plasma_blade.GetComponent<Weapon>()->weapon_type = WT_MELEE;
-    m_battlesystem.SetMovesForWeapon(plasma_blade);
-
-    static_cast<FlexECS::Entity>(plasma_blade.GetComponent<Weapon>()->weapon_move_one).GetComponent<MoveID>()->move_name = "Dual Strike";
-    static_cast<FlexECS::Entity>(plasma_blade.GetComponent<Weapon>()->weapon_move_two).GetComponent<MoveID>()->move_name = "Whirlwind";
-    static_cast<FlexECS::Entity>(plasma_blade.GetComponent<Weapon>()->weapon_move_three).GetComponent<MoveID>()->move_name = "Block";
-
-    player1.GetComponent<CharacterWeapon>()->equipped_weapon = plasma_blade;
-
-    //p2
-    FlexECS::Entity electric_railgun = FlexECS::Scene::CreateEntity("Electric Railgun");
-    electric_railgun.AddComponent<Weapon>({});
-    electric_railgun.GetComponent<Weapon>()->weapon_description = scene->Internal_StringStorage_New("Railgun that uses electromagnetic force");
-    electric_railgun.GetComponent<Weapon>()->weapon_name = scene->Internal_StringStorage_New("Electric Railgun");
-    electric_railgun.GetComponent<Weapon>()->weapon_type = WT_RANGED;
-    m_battlesystem.SetMovesForWeapon(electric_railgun);
-
-    static_cast<FlexECS::Entity>(electric_railgun.GetComponent<Weapon>()->weapon_move_one).GetComponent<MoveID>()->move_name = "Rift Surge";
-    static_cast<FlexECS::Entity>(electric_railgun.GetComponent<Weapon>()->weapon_move_two).GetComponent<MoveID>()->move_name = "Flashbang";
-    static_cast<FlexECS::Entity>(electric_railgun.GetComponent<Weapon>()->weapon_move_three).GetComponent<MoveID>()->move_name = "Temporal Wave";
     
-    player2.GetComponent<CharacterWeapon>()->equipped_weapon = electric_railgun;
-
-    //enemies
-    FlexECS::Entity enemy_weapon = FlexECS::Scene::CreateEntity("Enemy Weapon");
-    enemy_weapon.AddComponent<Weapon>({});
-    enemy_weapon.GetComponent<Weapon>()->weapon_description = scene->Internal_StringStorage_New("Dummy Weapon");
-    enemy_weapon.GetComponent<Weapon>()->weapon_name = scene->Internal_StringStorage_New("Enemy Weapon");
-    enemy_weapon.GetComponent<Weapon>()->weapon_type = WT_RANGED;
-    m_battlesystem.SetMovesForWeapon(enemy_weapon);
-
-    static_cast<FlexECS::Entity>(enemy_weapon.GetComponent<Weapon>()->weapon_move_one).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy_weapon.GetComponent<Weapon>()->weapon_move_two).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy_weapon.GetComponent<Weapon>()->weapon_move_three).GetComponent<MoveID>()->move_name = "Poke";
-
-    enemy1.GetComponent<CharacterWeapon>()->equipped_weapon = enemy_weapon;
-    enemy2.GetComponent<CharacterWeapon>()->equipped_weapon = enemy_weapon;
-    enemy3.GetComponent<CharacterWeapon>()->equipped_weapon = enemy_weapon;
-
-    /*static_cast<FlexECS::Entity>(enemy2.GetComponent<MoveList>()->move_one).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy2.GetComponent<MoveList>()->move_two).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy2.GetComponent<MoveList>()->move_three).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy2.GetComponent<MoveList>()->move_four).GetComponent<MoveID>()->move_name = "";
-
-    static_cast<FlexECS::Entity>(enemy3.GetComponent<MoveList>()->move_one).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy3.GetComponent<MoveList>()->move_two).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy3.GetComponent<MoveList>()->move_three).GetComponent<MoveID>()->move_name = "Poke";
-    static_cast<FlexECS::Entity>(enemy3.GetComponent<MoveList>()->move_four).GetComponent<MoveID>()->move_name = "";*/
-    #pragma endregion
-
-    #pragma region Rendering Components
-    //Rendering related components
-    player1.AddComponent<IsActive>({ true });
-    player1.AddComponent<Position>({ {200, 600} });
-    player1.AddComponent<Scale>({ { 100,100 } });
-    player1.AddComponent<ZIndex>({ 10 });
-    player1.AddComponent<Sprite>({
-      scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
-      Vector3::One,
-      Vector3::Zero,
-      Vector3::One,
-      Renderer2DProps::Alignment_Center
-     });
-    player1.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
-    player2.AddComponent<IsActive>({ true });
-    player2.AddComponent<Position>({ {320, 600} });
-    player2.AddComponent<Scale>({ { 100,100 } });
-    player2.AddComponent<ZIndex>({ 10 });
-    player2.AddComponent<Sprite>({
-      scene->Internal_StringStorage_New(R"(\images\chess_king.png)"),
-      Vector3::One,
-      Vector3::Zero,
-      Vector3::One,
-      Renderer2DProps::Alignment_Center
-     });
-    player2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
-    enemy1.AddComponent<IsActive>({ true });
-    enemy1.AddComponent<Position>({ {700, 200} });
-    enemy1.AddComponent<Scale>({ { 100,100 } });
-    enemy1.AddComponent<ZIndex>({ 10 });
-    enemy1.AddComponent<Sprite>({
-      scene->Internal_StringStorage_New(R"(\images\chess_knight.png)"),
-      Vector3::One,
-      Vector3::Zero,
-      Vector3::Zero,
-      Renderer2DProps::Alignment_Center
-     });
-    enemy1.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
-    enemy2.AddComponent<IsActive>({ true });
-    enemy2.AddComponent<Position>({ {820, 200} });
-    enemy2.AddComponent<Scale>({ { 100,100 } });
-    enemy2.AddComponent<ZIndex>({ 10 });
-    enemy2.AddComponent<Sprite>({
-      scene->Internal_StringStorage_New(R"(\images\chess_bishop.png)"),
-      Vector3::One,
-      Vector3::Zero,
-      Vector3::Zero,
-      Renderer2DProps::Alignment_Center
-     });
-    enemy2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
-    enemy3.AddComponent<IsActive>({ true });
-    enemy3.AddComponent<Position>({ {940, 200} });
-    enemy3.AddComponent<Scale>({ { 100,100 } });
-    enemy3.AddComponent<ZIndex>({ 10 });
-    enemy3.AddComponent<Sprite>({
-      scene->Internal_StringStorage_New(R"(\images\chess_pawn.png)"),
-      Vector3::One,
-      Vector3::Zero,
-      Vector3::Zero,
-      Renderer2DProps::Alignment_Center
-     });
-    enemy3.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-    #pragma endregion
-
     #pragma region Turn Order Display
 
     for (size_t i = 0; i < m_battlesystem.GetCharacterCount(); i++)
@@ -210,14 +342,11 @@ namespace ChronoShift {
       display_slot.AddComponent<Scale>({ { 60,60 } });
       display_slot.AddComponent<ZIndex>({ 10 });
       display_slot.AddComponent<Sprite>({});
-      display_slot.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+      display_slot.AddComponent<Rotation>({});
+      display_slot.AddComponent<Shader>({ shdr_path });
     }
 
     #pragma endregion
-
-
-
-
 
     MoveRegistry::RegisterMoves();
 
@@ -252,7 +381,15 @@ namespace ChronoShift {
 
     DisplayTurnOrder(m_battlesystem.GetTurnOrder());
     RendererSprite2D();
+    
+    if (Input::GetKeyDown(GLFW_KEY_S)) {
+      SaveCharacters();
+    }
+    else if (Input::GetKeyDown(GLFW_KEY_R)) {
+      ResetCharacters();
+    }
   }
+  
 }
 
 #if 0

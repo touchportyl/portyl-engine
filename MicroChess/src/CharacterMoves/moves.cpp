@@ -1,5 +1,4 @@
 #include "CharacterMoves/moves.h"
-#include "Components/charactercomponents.h"
 #include "Components/battlecomponents.h"
 namespace ChronoShift 
 {
@@ -13,14 +12,14 @@ namespace ChronoShift
 	void Move_DualStrike(FlexECS::Entity& user, std::vector<FlexECS::Entity> targets) {
 		for (FlexECS::Entity target : targets)
 		{
-			target.GetComponent<CharacterHealth>()->current_health -= 1;
+			target.GetComponent<Character>()->current_health -= 1;
 		}
 	}
 
 	void Move_Whirlwind(FlexECS::Entity& user, std::vector<FlexECS::Entity> targets) {
 		for (FlexECS::Entity target : targets)
 		{
-			target.GetComponent<CharacterHealth>()->current_health -= 2;
+			target.GetComponent<Character>()->current_health -= 2;
 		}
 		//modify speed buff/debuff here
 	}
@@ -33,14 +32,14 @@ namespace ChronoShift
 	void Move_RiftSurge(FlexECS::Entity& user, std::vector<FlexECS::Entity> targets) {
 		for (FlexECS::Entity target : targets)
 		{
-			target.GetComponent<CharacterHealth>()->current_health -= 3;
+			target.GetComponent<Character>()->current_health -= 3;
 		}
 	}
 
 	void Move_Flashbang(FlexECS::Entity& user, std::vector<FlexECS::Entity> targets) {
 		for (FlexECS::Entity target : targets)
 		{
-			target.GetComponent<CharacterHealth>()->current_health -= 2;
+			target.GetComponent<Character>()->current_health -= 2;
 			//Add dizzy
 		}
 	}
@@ -56,7 +55,7 @@ namespace ChronoShift
 	void Move_Poke(FlexECS::Entity& user, std::vector<FlexECS::Entity> targets) {
 		for (FlexECS::Entity target : targets)
 		{
-			target.GetComponent<CharacterHealth>()->current_health -= 1;
+			target.GetComponent<Character>()->current_health -= 1;
 		}
 	}
 	#pragma endregion;

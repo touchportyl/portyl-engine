@@ -96,11 +96,11 @@ namespace ChronoShift
   class Action
   { FLX_REFL_SERIALIZABLE
   public:
-    FlexECS::EntityID move_to_use;   //ID of move in movelist
+    FlexECS::Scene::StringIndex move_to_use;   //ID of move in movelist
   };
 
   //Attach these components to move entity
-  class MoveID
+  /*class MoveID
   { FLX_REFL_SERIALIZABLE
   public:
     std::string move_name;  //string accessing MoveRegistry
@@ -116,7 +116,7 @@ namespace ChronoShift
   { FLX_REFL_SERIALIZABLE
   public:
     int move_cooldown;
-  };
+  };*/
 
   /*class MoveList 
   { FLX_REFL_SERIALIZABLE
@@ -202,46 +202,71 @@ namespace ChronoShift
   };
   #endif
 
-  class ChronoGear
-  { FLX_REFL_SERIALIZABLE
-  public:
-    FlexECS::Scene::StringIndex chrono_gear_name;
-    FlexECS::Scene::StringIndex chrono_gear_description;
-    FlexECS::EntityID main_stat;
-    FlexECS::EntityID sub_stat_one;
-    FlexECS::EntityID sub_stat_two;
-    FlexECS::EntityID sub_stat_three;
+  enum WeaponType : int {
+    WT_RANGED,    // Ranged Combat
+    WT_MELEE,     // Close Combat
+    WT_DEFENSIVE, // Defense
   };
 
-  class Stat
-  { FLX_REFL_SERIALIZABLE
-  public:
+  enum CharacterClass : int {
+    CLASS_CROWD_CONTROL, // Crowd Control
+    CLASS_TANK,          // Tank
+    CLASS_DPS,           // DPS
+  };
+
+  enum MoveTargetType : int {
+    MOVE_TARGET_NONE = 1,
+    MOVE_TARGET_ALL_ENEMY = 2,
+    MOVE_TARGET_ALL_PLAYER = 3,
+    MOVE_TARGET_SINGLE = 4,
+    MOVE_TARGET_SELF = 5,
+    MOVE_TARGET_NULL = -100
+  };
+
+  //struct Move {
+  //  FLX_REFL_SERIALIZABLE
+  //  FlexECS::Scene::StringIndex move_name;
+  //  FlexECS::Scene::StringIndex move_description;
+  //  int cost;         // Speed cost for each move
+  //  int target_type;  // MoveTargetType Enum
+  //  int target_count; // how many times you need to target
+  //};
+
+  struct Stat {
+    FLX_REFL_SERIALIZABLE
     FlexECS::Scene::StringIndex stat_name;
     int base_stat_value;
     int current_stat_value;
   };
 
-  enum WeaponType : int {
-    WT_RANGED,   // Ranged Combat
-    WT_MELEE,    // Close Combat
-    WT_DEFENSIVE, // Defense
-  };
-
-  class Weapon
-  { FLX_REFL_SERIALIZABLE
+  class Character {
+    FLX_REFL_SERIALIZABLE
   public:
+    bool is_player = true;
+    FlexECS::Scene::StringIndex character_name;
+    FlexECS::Scene::StringIndex character_status;   // Character Status Effects Description
+    int character_class;                            // Character Class and Weapon Type needs to be the same
+    int base_health;
+    int current_health;
+    int base_speed;
+    int current_speed;
+    
     FlexECS::Scene::StringIndex weapon_name;
     FlexECS::Scene::StringIndex weapon_description;
     int weapon_type;
-    FlexECS::EntityID weapon_move_one;
-    FlexECS::EntityID weapon_move_two;
-    FlexECS::EntityID weapon_move_three;
-  };
+    FlexECS::Scene::StringIndex weapon_move_one;
+    FlexECS::Scene::StringIndex weapon_move_two;
+    FlexECS::Scene::StringIndex weapon_move_three;
 
-  class CharacterStatus
-  { FLX_REFL_SERIALIZABLE
-  public:
-    // Status Effects
-    FlexECS::Scene::StringIndex character_status;
+    FlexECS::Scene::StringIndex chrono_gear_name;
+    FlexECS::Scene::StringIndex chrono_gear_description;
+    int chrono_gear_cooldown;
+    Stat main_stat;
+
+    FlexECS::Scene::StringIndex character_ultimate;
+    FlexECS::Scene::StringIndex character_ultimate_cooldown;
+
+    FlexECS::Scene::StringIndex character_passive_name;
+    FlexECS::Scene::StringIndex character_passive_description;
   };
 }

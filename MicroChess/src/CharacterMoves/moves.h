@@ -7,14 +7,7 @@
 using namespace FlexEngine;
 namespace ChronoShift
 {
-  enum MOVE_TARGET_TYPE : int {
-    MOVE_TARGET_NONE = 1,
-    MOVE_TARGET_ALL_ENEMY = 2,
-    MOVE_TARGET_ALL_PLAYER = 3,
-    MOVE_TARGET_SINGLE = 4,
-    MOVE_TARGET_SELF = 5,
-    MOVE_TARGET_NULL = -100
-  };
+  
   using MoveEffect = std::function<void(FlexECS::Entity& user, std::vector<FlexECS::Entity> targets)>;
   struct Move {
     std::string name; //use to access map of moves

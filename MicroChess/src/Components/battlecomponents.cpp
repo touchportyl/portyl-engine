@@ -17,34 +17,7 @@ namespace ChronoShift
     FLX_REFL_REGISTER_PROPERTY(speed)
   FLX_REFL_REGISTER_END;
 
-  /*FLX_REFL_REGISTER_START(MoveList)
-    FLX_REFL_REGISTER_PROPERTY(move_one)
-    FLX_REFL_REGISTER_PROPERTY(move_two)
-    FLX_REFL_REGISTER_PROPERTY(move_three)
-    FLX_REFL_REGISTER_PROPERTY(move_four)
-  FLX_REFL_REGISTER_END;*/
-
-  FLX_REFL_REGISTER_START(CharacterStatus)
-    FLX_REFL_REGISTER_PROPERTY(character_status)
-  FLX_REFL_REGISTER_END;
-
   #pragma endregion
-
-
-  #pragma region Move Components
-  FLX_REFL_REGISTER_START(MoveID)
-    FLX_REFL_REGISTER_PROPERTY(move_name)
-  FLX_REFL_REGISTER_END;
-  
-  FLX_REFL_REGISTER_START(MoveDuration)
-    FLX_REFL_REGISTER_PROPERTY(move_duration)
-  FLX_REFL_REGISTER_END;
-  
-  FLX_REFL_REGISTER_START(MoveCooldown)
-    FLX_REFL_REGISTER_PROPERTY(move_cooldown)
-  FLX_REFL_REGISTER_END;
-  #pragma endregion
-
 
   #pragma region Battle Components
   FLX_REFL_REGISTER_START(BattleState)
@@ -83,22 +56,33 @@ namespace ChronoShift
 
   #pragma endregion
 
-  FLX_REFL_REGISTER_START(ChronoGear)
-    FLX_REFL_REGISTER_PROPERTY(chrono_gear_name)
-    FLX_REFL_REGISTER_PROPERTY(chrono_gear_description)
-    FLX_REFL_REGISTER_PROPERTY(main_stat)
-    FLX_REFL_REGISTER_PROPERTY(sub_stat_one)
-    FLX_REFL_REGISTER_PROPERTY(sub_stat_two)
-    FLX_REFL_REGISTER_PROPERTY(sub_stat_three)
-  FLX_REFL_REGISTER_END;
+  FLX_REFL_REGISTER_START(Character)
+    FLX_REFL_REGISTER_PROPERTY(is_player)
+    FLX_REFL_REGISTER_PROPERTY(character_name)
+    FLX_REFL_REGISTER_PROPERTY(character_status) // Character Status Effects Description
+    FLX_REFL_REGISTER_PROPERTY(character_class)  // Character Class and Weapon Type needs to be the same
+    FLX_REFL_REGISTER_PROPERTY(base_health)
+    FLX_REFL_REGISTER_PROPERTY(current_health)
+    FLX_REFL_REGISTER_PROPERTY(base_speed)
+    FLX_REFL_REGISTER_PROPERTY(current_speed)
 
-  FLX_REFL_REGISTER_START(Weapon)
     FLX_REFL_REGISTER_PROPERTY(weapon_name)
     FLX_REFL_REGISTER_PROPERTY(weapon_description)
     FLX_REFL_REGISTER_PROPERTY(weapon_type)
     FLX_REFL_REGISTER_PROPERTY(weapon_move_one)
     FLX_REFL_REGISTER_PROPERTY(weapon_move_two)
     FLX_REFL_REGISTER_PROPERTY(weapon_move_three)
+
+    FLX_REFL_REGISTER_PROPERTY(chrono_gear_name)
+    FLX_REFL_REGISTER_PROPERTY(chrono_gear_description)
+    FLX_REFL_REGISTER_PROPERTY(chrono_gear_cooldown)
+    FLX_REFL_REGISTER_PROPERTY(main_stat)
+
+    FLX_REFL_REGISTER_PROPERTY(character_ultimate)
+    FLX_REFL_REGISTER_PROPERTY(character_ultimate_cooldown)
+
+    FLX_REFL_REGISTER_PROPERTY(character_passive_name)
+    FLX_REFL_REGISTER_PROPERTY(character_passive_description)
   FLX_REFL_REGISTER_END;
 
   FLX_REFL_REGISTER_START(Stat)
