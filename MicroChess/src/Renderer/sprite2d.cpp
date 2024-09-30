@@ -13,7 +13,9 @@ namespace ChronoShift
 
         auto& local_position = currEntity.GetComponent<Position>()->position;
         auto& local_scale = currEntity.GetComponent<Scale>()->scale;
-        auto& local_rotation = currEntity.GetComponent<Rotation>()->rotation;
+        Rotation* local_rotation = nullptr; //Just in case rotation is missing
+        if (currEntity.TryGetComponent<Rotation>(local_rotation))
+            local_rotation = currEntity.GetComponent<Rotation>();
 
         //Alignment of sprite
         static Vector2 sprite_alignment = Vector2::Zero;
@@ -30,7 +32,7 @@ namespace ChronoShift
 
         // calculate the transform
         Matrix4x4 translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, Vector3(-(local_position.x + sprite_alignment.x), local_position.y + sprite_alignment.y, 0.0f));
-        Matrix4x4 rotation_matrix = Quaternion::FromEulerAnglesDeg(local_rotation).ToRotationMatrix();
+        Matrix4x4 rotation_matrix = Quaternion::FromEulerAnglesDeg(local_rotation != nullptr ? local_rotation->rotation : Vector3::Zero).ToRotationMatrix();
         Matrix4x4 scale_matrix = Matrix4x4::Scale(Matrix4x4::Identity, local_scale);
 
         Matrix4x4 curr_entity_matrix = translation_matrix * rotation_matrix * scale_matrix;
@@ -117,7 +119,7 @@ namespace ChronoShift
         }
 
         // Render all entities
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Position, Scale, Rotation, Transform, Shader, Sprite>())
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
         {
             if (!entity.GetComponent<IsActive>()->is_active) continue;
 

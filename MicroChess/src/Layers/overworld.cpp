@@ -66,7 +66,7 @@ namespace ChronoShift {
         box.AddComponent<BoundingBox2D>({ });
         box.AddComponent<IsActive>({ true });
         box.AddComponent<Position>({ {350, 500 } });
-        box.AddComponent<Rotation>({ });
+        //box.AddComponent<Rotation>({ });
         box.AddComponent<Scale>({ { 150,150 } });
         box.AddComponent<Transform>({ {} });
         box.AddComponent<ZIndex>({ 10 });
