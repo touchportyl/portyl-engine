@@ -3,9 +3,9 @@
   \brief FlexPrefs is a class that allows you to save and load player preferences in a JSON file.
 
          Usage: Include this header file in the required file.
-                - Call FlexPrefs::Load() to load the playerprefs file. It will automatically create one if none is available.
+                - Call FlexPrefs::Load() to load the FlexPrefs file. It will automatically create one if none is available.
                 - Use the getters and setters to get and set values. Eg FlexPrefs::SetInt("score", 100);
-                - Call FlexPrefs::Save() to update changes made by the getters/setters and save the playerprefs file.
+                - Call FlexPrefs::Save() to update changes made by the getters/setters and save the FlexPrefs file.
          
          Note: Will generate warnings in the console.
 */
@@ -26,12 +26,12 @@ namespace FlexEngine
   public:
 
     /*
-      \brief Loads a playerpref file if one exists, otherwise creates a empty one.
+      \brief Loads a FlexPrefs file if one exists, otherwise creates a empty one.
     */
     static void Load();
 
     /*
-      \brief Saves the playerpref file. Automatically creates a file if it doesn't exist.
+      \brief Saves the FlexPrefs file. Automatically creates a file if it doesn't exist.
       \param prettify Determines whether to output the json file with indentation and spacing. Default true because who doesn't want readable json?
     */
     static void Save(bool prettify = true);
@@ -73,7 +73,7 @@ namespace FlexEngine
   private:
 
     // INTERNAL FUNCTION
-    // Creates a new playerprefs file with default values
+    // Creates a new FlexPrefs file with default values
     static void Internal_Create();
   };
 

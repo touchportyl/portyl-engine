@@ -5,7 +5,7 @@
 #include "FlexEngine/flexformatter.h" // rapidjson
 
 constexpr const char* SAVE_FILE_NAME = "flxprefs.json"; 
-constexpr const char* container_name = "playerprefs"; // Name of the object that will contain all the key value pairs
+constexpr const char* container_name = "flexprefs"; // Name of the object that will contain all the key value pairs
 
 namespace FlexEngine
 {
@@ -14,11 +14,11 @@ namespace FlexEngine
 
   void FlexPrefs::Load()
   {
-    // If playerpref doesn't exist, create it.
+    // If FlexPref doesn't exist, create it.
     std::ifstream ifs(Path::current("assets/saves/").append(SAVE_FILE_NAME).c_str());
     if (!ifs.is_open())
     {
-      Log::Warning("Failed to open PlayerPrefs");
+      Log::Warning("Failed to open FlexPrefs");
       Internal_Create();
       return;
     }
@@ -28,11 +28,11 @@ namespace FlexEngine
 
     m_document.ParseStream(isw);
     if (m_document.HasParseError()) 
-      Log::Error("Failed to parse playerprefs");
+      Log::Error("Failed to parse FlexPrefs");
 
     ifs.close();
 
-    Log::Info("Loaded playerpref successfully.");
+    Log::Info("Loaded FlexPrefs successfully.");
   }
 
   void FlexPrefs::Save(bool prettify)
@@ -41,7 +41,7 @@ namespace FlexEngine
     std::ofstream ofs(Path::current().append(SAVE_FILE_NAME).c_str());
     if (!ofs.is_open())
     {
-      Log::Warning("Failed to open PlayerPrefs: Creating a default one...");
+      Log::Warning("Failed to open FlexPrefs: Creating a default one...");
       Internal_Create();
     }
     OStreamWrapper osw(ofs);
@@ -58,7 +58,7 @@ namespace FlexEngine
       m_document.Accept(writer);
     }
 
-    Log::Info("Saved playerpref successfully.");
+    Log::Info("Saved FlexPrefs successfully.");
   }
 
   void FlexPrefs::DeleteAll()
@@ -180,7 +180,7 @@ namespace FlexEngine
     // Layout will be in the form of key value pairs contained in an object, 
     // so we simply create an object expecting key value pairs to be inserted in the future.
     Value obj(kObjectType);
-    m_document.AddMember("playerprefs", obj, m_document.GetAllocator()); // Unfortunately cannot be using constexpr here
+    m_document.AddMember("flexprefs", obj, m_document.GetAllocator()); // Unfortunately cannot be using constexpr here
 
     // Write to document
     rapidjson::StringBuffer buffer;
