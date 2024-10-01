@@ -15,7 +15,7 @@
 
 
 namespace ChronoShift {
-    float OverworldLayer::m_ScaleDebugTest = 1.f;
+    float OverworldLayer::m_ScaleDebugTest = 0.8f;
     Vector3 OverworldLayer::m_RotateDebugTest = Vector3(0.f, 0.f, 0.f);
 
     void OverworldLayer::SetupWorld()
