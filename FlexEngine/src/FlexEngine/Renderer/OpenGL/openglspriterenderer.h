@@ -13,6 +13,9 @@ namespace FlexEngine
         {
             Alignment_Center = 0,
             Alignment_TopLeft = 1,
+            Alignment_TopRight = 2,
+            Alignment_BottomLeft = 3,
+            Alignment_BottomRight = 4,
         };
 
         std::string shader = R"(/shaders/texture)";

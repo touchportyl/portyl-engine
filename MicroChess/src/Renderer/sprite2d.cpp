@@ -21,13 +21,11 @@ namespace ChronoShift
         static Vector2 sprite_alignment = Vector2::Zero;
         switch (currEntity.GetComponent<Sprite>()->alignment)
         {
-        case Renderer2DProps::Alignment::Alignment_TopLeft:
-            sprite_alignment = Vector2(local_scale * 0.5f);
-            break;
-        case Renderer2DProps::Alignment::Alignment_Center:
-        default:
-            sprite_alignment = Vector2::Zero;
-            break;
+        case Renderer2DProps::Alignment::Alignment_TopLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, local_scale.y * 0.5f); break;
+        case Renderer2DProps::Alignment::Alignment_TopRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, local_scale.y * 0.5f); break;
+        case Renderer2DProps::Alignment::Alignment_BottomLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
+        case Renderer2DProps::Alignment::Alignment_BottomRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
+        default: case Renderer2DProps::Alignment::Alignment_Center: sprite_alignment = Vector2::Zero; break;
         }
 
         // calculate the transform

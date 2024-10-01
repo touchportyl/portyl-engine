@@ -66,7 +66,6 @@ namespace ChronoShift {
         box.AddComponent<BoundingBox2D>({ });
         box.AddComponent<IsActive>({ true });
         box.AddComponent<Position>({ {350, 500 } });
-        //box.AddComponent<Rotation>({ });
         box.AddComponent<Scale>({ { 150,150 } });
         box.AddComponent<Transform>({ {} });
         box.AddComponent<ZIndex>({ 10 });
@@ -79,7 +78,7 @@ namespace ChronoShift {
            });
         box.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
-        //Parent 
+        //Parent Test
         {
             FlexECS::Entity box2 = FlexECS::Scene::CreateEntity("box2");
             box2.AddComponent<IsActive>({ true });
