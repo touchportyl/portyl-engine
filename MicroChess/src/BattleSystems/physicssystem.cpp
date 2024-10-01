@@ -157,6 +157,7 @@ namespace ChronoShift
 		UpdateBounds();
 		FindCollisions();
 		ResolveCollisions();
+
 	}
 
 }
