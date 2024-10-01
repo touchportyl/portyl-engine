@@ -2,11 +2,11 @@
 
 #include "hierarchyview.h"
 #include "inspector.h"
+#include "editorgui.h"
 
 #include "FlexEngine/Core/imguiwrapper.h"
 #include "FlexEngine/Renderer/DebugRenderer/debugrenderer.h"
 #include "FlexEngine.h"
-
 
 namespace FlexEngine
 {

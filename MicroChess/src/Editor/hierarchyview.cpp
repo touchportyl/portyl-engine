@@ -1,7 +1,8 @@
 #include "editor.h"
 #include "hierarchyview.h"
+#include "Components/rendering.h"
 
-
+using namespace ChronoShift;
 using namespace FlexEngine::FlexECS;
 using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
 
@@ -12,11 +13,43 @@ namespace FlexEngine
 		auto scene = FlexECS::Scene::GetActiveScene();
 		size_t entity_count = scene->entity_index.size();
 		std::string entity_count_text = "Entity Count:  " + std::to_string(entity_count);
+		
+		FunctionQueue delete_queue;
 
 		FlexECS::Entity entity_to_delete = FlexECS::Entity::Null;
 
 		ImGui::Begin("Scene Hierarchy");
 		ImGui::Text(entity_count_text.c_str());
+
+		//Track Clicks when not inside tree node
+		//Deselect focused entity
+		if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0))
+		{
+			Editor::GetInstance()->SelectEntity(FlexECS::Entity::Null);  // Deselect when clicking in empty space
+		}
+		
+		//Right click menu (create entity)
+		if (ImGui::IsWindowHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+		{
+			ImGui::OpenPopup("RightClickMenu");
+		}
+		if (ImGui::BeginPopup("RightClickMenu"))
+		{
+			if (ImGui::MenuItem("Create Entity"))
+			{
+				//Add default components
+				auto new_entity = Scene::CreateEntity();
+				new_entity.AddComponent<IsActive>({});
+				new_entity.AddComponent<Position>({});
+				new_entity.AddComponent<Rotation>({});
+				new_entity.AddComponent<Scale>({});
+			}
+			ImGui::EndPopup();
+		}
+
+
+
+
 
 		int imgui_id = 0;
 		for (auto& [id, record] : scene->entity_index)
@@ -44,20 +77,24 @@ namespace FlexEngine
 				Editor::GetInstance()->SelectEntity(entity);
 			}
 			
-			if (ImGui::BeginPopupContextItem("EntityContextMenu"))  // Begin right-click context menu
-			{
-				if (ImGui::MenuItem("Delete Entity"))
-				{
-					entity_to_delete = entity;
-				}
 
-				if (ImGui::MenuItem("Duplicate Entity"))
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+			{
+				ImGui::OpenPopup("EntityOptions");
+				Editor::GetInstance()->SelectEntity(entity);
+			}
+			if (ImGui::BeginPopup("EntityOptions"))
+			{
+				if (ImGui::MenuItem("Duplicate Entity")) 
 				{
-					// Handle entity duplication here
 					scene->CloneEntity(entity);
 				}
-
-				ImGui::EndPopup();  // End context menu
+				if (ImGui::MenuItem("Destroy Entity")) 
+				{
+					delete_queue.Insert({ [scene, entity]() {scene->DestroyEntity(entity); }, "", 0 });
+					Editor::GetInstance()->SelectEntity(FlexECS::Entity::Null);
+				}
+				ImGui::EndPopup();
 			}
 
 			if (is_open)
@@ -67,19 +104,18 @@ namespace FlexEngine
 			ImGui::PopID();
 		}
 
-		if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0))
-		{
-			Editor::GetInstance()->SelectEntity(FlexECS::Entity::Null);  // Deselect when clicking in empty space
-		}
 
+		if (ImGui::BeginPopupContextItem("EntityCreationMenu"))
+		{
+			if (ImGui::MenuItem("Create Entity"))
+			{
+				Scene::CreateEntity();
+			}
+			ImGui::EndPopup();
+		}
 		ImGui::End();
 
-
-		if (entity_to_delete != FlexECS::Entity::Null)
-		{
-			scene->DestroyEntity(entity_to_delete);
-		}
-
+		delete_queue.Flush();
 	}
 }
 
