@@ -85,6 +85,8 @@ namespace FlexEngine
         static void ClearFrameBuffer();
         static void ClearColor(const Vector4& color);
 
+        static GLuint GetVAO_ID(Renderer2DProps::VBO_Type type);
+
         /////////////////////////////////////////////////////////////////////
         // Pls enter in the following sample vertices order:
         // float vertices[] = {

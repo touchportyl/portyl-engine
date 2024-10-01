@@ -67,11 +67,10 @@ namespace FlexEngine
         m_draw_calls_last_frame = m_draw_calls;
         m_draw_calls = 0;
     }
+    GLuint OpenGLSpriteRenderer::GetVAO_ID(Renderer2DProps::VBO_Type type) { return m_vbos[type].vao; }
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Init
-
-
     void OpenGLSpriteRenderer::CreateVAOandVBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount) 
     {
         /////////////////////////////////////////////////////////////////////

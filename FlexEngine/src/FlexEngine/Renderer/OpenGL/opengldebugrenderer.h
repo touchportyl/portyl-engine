@@ -2,8 +2,8 @@
 #include "flx_api.h"
 
 #include "FlexMath/vector4.h"
-#include "../OpenGL/opengltexture.h"
-#include "../OpenGL/openglrenderer.h"
+#include "opengltexture.h"
+#include "openglspriterenderer.h"
 
 
 #include <glad/glad.h>
