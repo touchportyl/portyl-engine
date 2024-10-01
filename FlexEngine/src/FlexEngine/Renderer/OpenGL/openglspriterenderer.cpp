@@ -70,6 +70,7 @@ namespace FlexEngine
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Init
+
     void OpenGLSpriteRenderer::CreateVAOandVBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount) 
     {
         /////////////////////////////////////////////////////////////////////
@@ -244,33 +245,17 @@ namespace FlexEngine
 
     void OpenGLSpriteRenderer::DrawTexture2D(const Renderer2DProps& props)
     {
-        //// unit square
-        //// Flipped UVs for OpenGL
-        //static const float vertices[] = {
-        //    // Position        // TexCoords
-        //    -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // Bottom-left
-        //     0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // Bottom-right
-        //     0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
-        //     0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
-        //    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // Top-left
-        //    -0.5f, -0.5f, 0.0f,   1.0f, 0.0f  // Bottom-left
-        //};
-
-        //static GLuint vao = 0, vbo = 0;
-        //if (vao == 0)
-        //{
-        //    CreateVAOandVBO(vao, vbo, vertices, sizeof(vertices) / sizeof(float));
-        //}
-
-        //guard
+        // Guard
         if (props.shader == "" || props.transform == Matrix4x4::Zero) return;
 
-        // bind all
+        // Bind all
         glBindVertexArray(m_vbos[props.vbo_id].vao);
 
+        // Apply Shader
         auto& asset_shader = FLX_ASSET_GET(Asset::Shader, props.shader);
         asset_shader.Use();
 
+        // Apply Texture
         if (props.texture != "")
         {
             asset_shader.SetUniform_bool("u_use_texture", true);
@@ -285,12 +270,11 @@ namespace FlexEngine
         else
         {
             Log::Fatal("No texture or color specified for texture shader.");
-            //Change to misc image
         }
-
         asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
         asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
 
+        // Transformation & Orthographic Projection
         asset_shader.SetUniform_mat4("u_model", props.transform);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
@@ -300,7 +284,7 @@ namespace FlexEngine
         ) * view_matrix;
         asset_shader.SetUniform_mat4("u_projection_view", projection_view);
 
-        // draw
+        // Draw
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
 
