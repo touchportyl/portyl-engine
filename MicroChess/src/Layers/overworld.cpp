@@ -256,6 +256,7 @@ namespace ChronoShift {
       thing.AddComponent<Rotation>({ });
       thing.AddComponent<Scale>({ { 15,15 } });
       thing.AddComponent<ZIndex>({ 10 });
+      thing.AddComponent<Transform>({ });
       thing.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
         Vector3::One,
@@ -271,7 +272,6 @@ namespace ChronoShift {
         {
           FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
           auto& position = cloned_thing.GetComponent<Position>()->position;
-          //cloned_thing.GetComponent<IsActive>()->is_active = false;
           position.x = 15 * (x + 1);
           position.y = 15 * (y + 1);
         }
