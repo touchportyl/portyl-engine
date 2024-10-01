@@ -27,10 +27,11 @@ namespace ChronoShift
 	void UpdatePositions() 
 	{
 		float dt = FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
-		for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Position, Rigidbody>())
+		for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Transform, Rigidbody>())
 		{
 			auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
 			auto& position = entity.GetComponent<Position>()->position;
+			entity.GetComponent<Transform>()->is_dirty = true;
 
 			position.x += velocity.x * dt;
 			position.y += velocity.y * dt;
@@ -39,7 +40,7 @@ namespace ChronoShift
 	
 	void UpdateBounds()
 	{
-		for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Position, Scale, Rigidbody, BoundingBox2D>()) 
+		for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Transform, Rigidbody, BoundingBox2D>())
 		{
 			auto& position = entity.GetComponent<Position>()->position;
 			auto& scale = entity.GetComponent<Scale>()->scale;
@@ -56,14 +57,14 @@ namespace ChronoShift
 	{
 		collisions.clear();
 		
-		for (auto& entity_a : FlexECS::Scene::GetActiveScene()->View<Position, Scale, Rigidbody, BoundingBox2D>())
+		for (auto& entity_a : FlexECS::Scene::GetActiveScene()->View<Transform, Rigidbody, BoundingBox2D>())
 		{
 			if(entity_a.GetComponent<Rigidbody>()->is_static) continue;
 			//construct aabb
 			auto& max_a = entity_a.GetComponent<BoundingBox2D>()->max;
 			auto& min_a = entity_a.GetComponent<BoundingBox2D>()->min;
 			
-			for (auto& entity_b : FlexECS::Scene::GetActiveScene()->View<Position, Scale, Rigidbody, BoundingBox2D>()) 
+			for (auto& entity_b : FlexECS::Scene::GetActiveScene()->View<Transform, Rigidbody, BoundingBox2D>())
 			{
 				if (entity_a == entity_b) continue;
 
@@ -92,6 +93,9 @@ namespace ChronoShift
 			auto& a_min = collision.first.GetComponent<BoundingBox2D>()->min;
 			auto& b_max = collision.second.GetComponent<BoundingBox2D>()->max;
 			auto& b_min = collision.second.GetComponent<BoundingBox2D>()->min;
+
+			collision.first.GetComponent<Transform>()->is_dirty = true;
+			collision.second.GetComponent<Transform>()->is_dirty = true;
 
 			//Check if already resolved
 			if (a_max.x < b_min.x || a_max.y < b_min.y || a_min.x > b_max.x || a_min.y > b_max.y) continue;
