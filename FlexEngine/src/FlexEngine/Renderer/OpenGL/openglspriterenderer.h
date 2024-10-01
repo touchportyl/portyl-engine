@@ -24,14 +24,15 @@ namespace FlexEngine
         Vector3 color_to_add = Vector3(0.0f, 0.0f, 0.0f);
         Vector3 color_to_multiply = Vector3(1.0f, 1.0f, 1.0f);
         Matrix4x4 transform = {};
-        ///*************************************************************/
-        ////May not be necessary - only is used during re-alignment
-        //Vector2 position = Vector2(0.0f, 0.0f);
-        //Vector2 scale = Vector2(1.0f, 1.0f);
-        //Vector3 rotation = Vector3(0.0f, 0.0f, 1.0f);
         Vector2 window_size = Vector2(800.0f, 600.0f);
-        ///*************************************************************/
         Alignment alignment = Alignment_Center;
+        GLuint vbo_id = 0;
+    };
+
+    struct __FLX_API VertexBufferObject
+    {
+        GLuint vao = 0;
+        GLuint vbo = 0;
     };
 
     class __FLX_API OpenGLSpriteRenderer
@@ -41,6 +42,7 @@ namespace FlexEngine
         static bool m_depth_test;
         static bool m_blending;
 
+        static std::vector<VertexBufferObject> m_vbos;
 
         // Everything below is still testing (ignore if not proper nametypes)
         // Number of samples per pixel for MSAA anti-aliasing for pixel blend - remove jaggedness
@@ -77,9 +79,9 @@ namespace FlexEngine
         static void ClearColor(const Vector4& color);
 
         static void CreateVAOandVBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
-        
-        // Initialize FBOs for bloom
-        static void InitBloomFBO(const Vector2& windowSize);
+        //static float* Generate
+        // Initialize VBOs for normal FBOs for bloom
+        static void Init(const Vector2& windowSize);
 
         // Draw the texture
         static void DrawTexture2D(const Renderer2DProps& props = {});

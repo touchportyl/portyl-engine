@@ -12,6 +12,8 @@ namespace FlexEngine
     bool OpenGLSpriteRenderer::m_depth_test = false;
     bool OpenGLSpriteRenderer::m_blending = false;
 
+    std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
+
     GLuint OpenGLSpriteRenderer::samples = 8;
     float OpenGLSpriteRenderer::gamma = 2.2f;
     GLuint OpenGLSpriteRenderer::m_rectVAO = 0;
@@ -108,144 +110,163 @@ namespace FlexEngine
         );
     }
 
-    void OpenGLSpriteRenderer::InitBloomFBO(const Vector2& windowSize)
+    void OpenGLSpriteRenderer::Init(const Vector2& windowSize)
     {
-        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/test)");
-        asset_shader.Use();
-        glUniform1i(glGetUniformLocation(asset_shader.Get(), "screenTexture"), 0);
-        glUniform1i(glGetUniformLocation(asset_shader.Get(), "bloomTexture"), 1);
-        glUniform1f(glGetUniformLocation(asset_shader.Get(), "gamma"), gamma);
-        asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/GaussianBlur)");
-        auto& temp = FLX_ASSET_GET(Asset::Shader, R"(/shaders/test)");
-        asset_shader.Use();
-        glUniform1i(glGetUniformLocation(asset_shader.Get(), "screenTexture"), 0);
 
-
-        const float vertices[] = {
-            // Position        // TexCoords
-            -1.0f, -1.f, 0.0f,   0.0f, 0.0f, // Bottom-left
-             1.0f, -1.f, 0.0f,   1.0f, 0.0f, // Bottom-right
-             1.0f,  1.f, 0.0f,   1.0f, 1.0f, // Top-right
-             1.0f,  1.f, 0.0f,   1.0f, 1.0f, // Top-right
-            -1.0f,  1.f, 0.0f,   0.0f, 1.0f, // Top-left
-            -1.0f, -1.f, 0.0f,   0.0f, 0.0f  // Bottom-left
+        VertexBufferObject basic;
+        float vert[] = {
+            // Position           // TexCoords
+            -0.5f, -0.5f, 0.0f,   1.0f, 0.0f,  // Bottom-left
+             0.5f, -0.5f, 0.0f,   0.0f, 0.0f,  // Bottom-right
+             0.5f,  0.5f, 0.0f,   0.0f, 1.0f,  // Top-right
+             0.5f,  0.5f, 0.0f,   0.0f, 1.0f,  // Top-right
+            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f,  // Top-left
+            -0.5f, -0.5f, 0.0f,   1.0f, 0.0f   // Bottom-left
         };
-        //Change to 1,
-        //Disable for now
+        CreateVAOandVBO(basic.vao, basic.vbo, vert, sizeof(vert) / sizeof(float));
+        m_vbos.push_back(basic);
+
+        ////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////
         {
+            // EVERYTHING BELOW HERE IS STILL UNDER DEVELOPMENT
+            auto& asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/test)");
+            asset_shader.Use();
+            glUniform1i(glGetUniformLocation(asset_shader.Get(), "screenTexture"), 0);
+            glUniform1i(glGetUniformLocation(asset_shader.Get(), "bloomTexture"), 1);
+            glUniform1f(glGetUniformLocation(asset_shader.Get(), "gamma"), gamma);
+            asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/GaussianBlur)");
+            auto& temp = FLX_ASSET_GET(Asset::Shader, R"(/shaders/test)");
+            asset_shader.Use();
+            glUniform1i(glGetUniformLocation(asset_shader.Get(), "screenTexture"), 0);
 
-            //// Enables the Depth Buffer
-            //glEnable(GL_DEPTH_TEST);
 
-            //// Enables Multisampling
-            //glEnable(GL_MULTISAMPLE);
+            const float vertices[] = {
+                // Position        // TexCoords
+                -1.0f, -1.f, 0.0f,   0.0f, 0.0f, // Bottom-left
+                 1.0f, -1.f, 0.0f,   1.0f, 0.0f, // Bottom-right
+                 1.0f,  1.f, 0.0f,   1.0f, 1.0f, // Top-right
+                 1.0f,  1.f, 0.0f,   1.0f, 1.0f, // Top-right
+                -1.0f,  1.f, 0.0f,   0.0f, 1.0f, // Top-left
+                -1.0f, -1.f, 0.0f,   0.0f, 0.0f  // Bottom-left
+            };
+            //Change to 1,
+            //Disable for now
+            {
 
-            //// Enables Cull Facing
-            //glEnable(GL_CULL_FACE);
-            //// Keeps front faces
-            //glCullFace(GL_FRONT);
-            //// Uses counter clock-wise standard
-            //glFrontFace(GL_CCW);
-        }
+                //// Enables the Depth Buffer
+                //glEnable(GL_DEPTH_TEST);
 
-        // Set up VAO and VBO
-        glGenVertexArrays(1, &m_rectVAO);
-        glGenBuffers(1, &m_rectVBO);
-        glBindVertexArray(m_rectVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, m_rectVBO);
-        // Correct the usage of vertices in glBufferData
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        // Position attribute (3 floats: x, y, z)
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // 5 * sizeof(float) is correct for the stride.
-        // Texture coordinates attribute (2 floats: u, v), starting after the position
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))); // Offset to the 4th element (3 floats).
+                //// Enables Multisampling
+                //glEnable(GL_MULTISAMPLE);
 
-        // Create Frame Buffer Object
-        glGenFramebuffers(1, &m_postProcessingFBO);
-        glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);
+                //// Enables Cull Facing
+                //glEnable(GL_CULL_FACE);
+                //// Keeps front faces
+                //glCullFace(GL_FRONT);
+                //// Uses counter clock-wise standard
+                //glFrontFace(GL_CCW);
+            }
 
-        // Create Framebuffer Texture
-        int width, height;
-        width = windowSize.x;
-        height = windowSize.y;
-        glGenTextures(1, &postProcessingTexture);
-        glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, postProcessingTexture, 0);
+            // Set up VAO and VBO
+            glGenVertexArrays(1, &m_rectVAO);
+            glGenBuffers(1, &m_rectVBO);
+            glBindVertexArray(m_rectVAO);
+            glBindBuffer(GL_ARRAY_BUFFER, m_rectVBO);
+            // Correct the usage of vertices in glBufferData
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+            // Position attribute (3 floats: x, y, z)
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // 5 * sizeof(float) is correct for the stride.
+            // Texture coordinates attribute (2 floats: u, v), starting after the position
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))); // Offset to the 4th element (3 floats).
 
-        // Create Second Framebuffer Texture
-        glGenTextures(1, &bloomTexture);
-        glBindTexture(GL_TEXTURE_2D, bloomTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, bloomTexture, 0);
+            // Create Frame Buffer Object
+            glGenFramebuffers(1, &m_postProcessingFBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);
 
-        // Tell OpenGL we need to draw to both attachments
-        unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-        glDrawBuffers(2, attachments);
-
-        // Error checking framebuffer
-        auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
-            Log::Fatal("Post-Processing Framebuffer error: " + fboStatus);
-
-        // Create Ping Pong Framebuffers for repetitive blurring
-        glGenFramebuffers(2, m_pingpongFBO);
-        glGenTextures(2, m_pingpongBuffer);
-        for (unsigned int i = 0; i < 2; i++)
-        {
-            glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[i]);
-            glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[i]);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            // Create Framebuffer Texture
+            int width, height;
+            width = windowSize.x;
+            height = windowSize.y;
+            glGenTextures(1, &postProcessingTexture);
+            glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongBuffer[i], 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, postProcessingTexture, 0);
 
-            fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            // Create Second Framebuffer Texture
+            glGenTextures(1, &bloomTexture);
+            glBindTexture(GL_TEXTURE_2D, bloomTexture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, bloomTexture, 0);
+
+            // Tell OpenGL we need to draw to both attachments
+            unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+            glDrawBuffers(2, attachments);
+
+            // Error checking framebuffer
+            auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
             if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
-                Log::Fatal("Ping-Pong Framebuffer error: " + fboStatus);
-        }
+                Log::Fatal("Post-Processing Framebuffer error: " + fboStatus);
 
-        //Unbind frame buffer
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            // Create Ping Pong Framebuffers for repetitive blurring
+            glGenFramebuffers(2, m_pingpongFBO);
+            glGenTextures(2, m_pingpongBuffer);
+            for (unsigned int i = 0; i < 2; i++)
+            {
+                glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[i]);
+                glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[i]);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongBuffer[i], 0);
+
+                fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+                if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+                    Log::Fatal("Ping-Pong Framebuffer error: " + fboStatus);
+            }
+
+            //Unbind frame buffer
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
     }
 
     void OpenGLSpriteRenderer::DrawTexture2D(const Renderer2DProps& props)
     {
-        // unit square
-        // Flipped UVs for OpenGL
-        static const float vertices[] = {
-            // Position        // TexCoords
-            -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // Bottom-left
-             0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // Bottom-right
-             0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
-             0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
-            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // Top-left
-            -0.5f, -0.5f, 0.0f,   1.0f, 0.0f  // Bottom-left
-        };
+        //// unit square
+        //// Flipped UVs for OpenGL
+        //static const float vertices[] = {
+        //    // Position        // TexCoords
+        //    -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // Bottom-left
+        //     0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // Bottom-right
+        //     0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
+        //     0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
+        //    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // Top-left
+        //    -0.5f, -0.5f, 0.0f,   1.0f, 0.0f  // Bottom-left
+        //};
 
-        static GLuint vao = 0, vbo = 0;
-        if (vao == 0)
-        {
-            CreateVAOandVBO(vao, vbo, vertices, sizeof(vertices) / sizeof(float));
-        }
+        //static GLuint vao = 0, vbo = 0;
+        //if (vao == 0)
+        //{
+        //    CreateVAOandVBO(vao, vbo, vertices, sizeof(vertices) / sizeof(float));
+        //}
 
-        // guard
-        if (vao == 0 || props.shader == "" || props.transform == Matrix4x4::Zero) return;
+        //guard
+        if (props.shader == "" || props.transform == Matrix4x4::Zero) return;
 
         // bind all
-        glBindVertexArray(vao);
+        glBindVertexArray(m_vbos[props.vbo_id].vao);
 
         auto& asset_shader = FLX_ASSET_GET(Asset::Shader, props.shader);
         asset_shader.Use();
