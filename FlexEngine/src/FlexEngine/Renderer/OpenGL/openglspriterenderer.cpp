@@ -139,19 +139,6 @@ namespace FlexEngine
         CreateVAOandVBO(line.vao, line.vbo, vert_1, sizeof(vert_1) / sizeof(float));
         m_vbos.push_back(line);
 
-        VertexBufferObject wireframe;
-        float vert_2[] = {
-            // Position           // TexCoords
-            -0.5f, -0.5f, 0.0f,   25.0f, 0.0f,  // Bottom-left
-             0.5f, -0.5f, 0.0f,   0.0f, 0.0f,  // Bottom-right
-             0.5f,  0.5f, 0.0f,   0.0f, 25.0f,  // Top-right
-             0.5f,  0.5f, 0.0f,   0.0f, 25.0f,  // Top-right
-            -0.5f,  0.5f, 0.0f,   25.0f, 25.0f,  // Top-left
-            -0.5f, -0.5f, 0.0f,   25.0f, 0.0f   // Bottom-left
-        };
-        CreateVAOandVBO(wireframe.vao, wireframe.vbo, vert_2, sizeof(vert_2) / sizeof(float));
-        m_vbos.push_back(wireframe);
-
         ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
         {

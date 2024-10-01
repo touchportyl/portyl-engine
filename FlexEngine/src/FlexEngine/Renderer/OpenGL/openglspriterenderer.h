@@ -19,9 +19,10 @@ namespace FlexEngine
         };
         enum __FLX_API VBO_Type
         {
-            VBO_Basic = 0,
-            VBO_Line = 1,
-            VBO_Wireframe = 2,
+            VBO_Basic,
+            VBO_Line,
+
+            VBO_PProcessing,
         };
 
         std::string shader = R"(/shaders/texture)";

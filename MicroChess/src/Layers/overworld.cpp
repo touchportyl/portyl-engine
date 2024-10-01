@@ -22,6 +22,9 @@ namespace ChronoShift {
     {
         auto scene = FlexECS::Scene::GetActiveScene();
 
+        //@anyone, liase with me(wei jie) for if you want the tilt of the background to be more slanted or anything you wish
+        //Tried to just simply rotate on x-axis of a wrapped vbo but kenah the orthographic camera cut off
+        //so no choice do lame method
         FlexECS::Entity background = FlexECS::Scene::CreateEntity("bg");
         background.AddComponent<IsActive>({ true });
         background.AddComponent<Position>({ {650, 600} });
