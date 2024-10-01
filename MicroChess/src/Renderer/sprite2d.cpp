@@ -146,7 +146,7 @@ namespace ChronoShift
             props.color_to_add = sprite->color_to_add;
             props.color_to_multiply = sprite->color_to_multiply;
             props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
-
+            props.vbo_id = sprite->vbo_id;
             //auto testfn = [&props]() { props.transform.Dump(); };
             //testfn();
 

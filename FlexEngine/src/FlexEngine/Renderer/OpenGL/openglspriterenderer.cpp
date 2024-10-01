@@ -71,6 +71,7 @@ namespace FlexEngine
     //////////////////////////////////////////////////////////////////////////////////////////
     // Init
 
+
     void OpenGLSpriteRenderer::CreateVAOandVBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount) 
     {
         /////////////////////////////////////////////////////////////////////
@@ -86,7 +87,6 @@ namespace FlexEngine
             };
         */
         /////////////////////////////////////////////////////////////////////
-
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);
 
@@ -113,7 +113,6 @@ namespace FlexEngine
 
     void OpenGLSpriteRenderer::Init(const Vector2& windowSize)
     {
-
         VertexBufferObject basic;
         float vert[] = {
             // Position           // TexCoords
@@ -126,6 +125,32 @@ namespace FlexEngine
         };
         CreateVAOandVBO(basic.vao, basic.vbo, vert, sizeof(vert) / sizeof(float));
         m_vbos.push_back(basic);
+
+        VertexBufferObject line;
+        float vert_1[] = {
+            // Position           // TexCoords
+            -0.5f, -0.5f, 0.0f,   50.0f, 0.0f,  // Bottom-left
+             0.5f, -0.5f, 0.0f,   0.0f, 0.0f,  // Bottom-right
+             0.5f,  0.5f, 0.0f,   0.0f, 48.0f,  // Top-right
+             0.5f,  0.5f, 0.0f,   0.0f, 48.0f,  // Top-right
+            -0.5f,  0.5f, 0.0f,   48.0f, 48.0f,  // Top-left
+            -0.5f, -0.5f, 0.0f,   48.0f, 0.0f   // Bottom-left
+        };
+        CreateVAOandVBO(line.vao, line.vbo, vert_1, sizeof(vert_1) / sizeof(float));
+        m_vbos.push_back(line);
+
+        VertexBufferObject wireframe;
+        float vert_2[] = {
+            // Position           // TexCoords
+            -0.5f, -0.5f, 0.0f,   25.0f, 0.0f,  // Bottom-left
+             0.5f, -0.5f, 0.0f,   0.0f, 0.0f,  // Bottom-right
+             0.5f,  0.5f, 0.0f,   0.0f, 25.0f,  // Top-right
+             0.5f,  0.5f, 0.0f,   0.0f, 25.0f,  // Top-right
+            -0.5f,  0.5f, 0.0f,   25.0f, 25.0f,  // Top-left
+            -0.5f, -0.5f, 0.0f,   25.0f, 0.0f   // Bottom-left
+        };
+        CreateVAOandVBO(wireframe.vao, wireframe.vbo, vert_2, sizeof(vert_2) / sizeof(float));
+        m_vbos.push_back(wireframe);
 
         ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
@@ -246,8 +271,11 @@ namespace FlexEngine
     void OpenGLSpriteRenderer::DrawTexture2D(const Renderer2DProps& props)
     {
         // Guard
-        if (props.shader == "" || props.transform == Matrix4x4::Zero) return;
-
+        if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0) 
+            Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
+        if (props.shader == "" || props.transform == Matrix4x4::Zero) 
+            return;
+        
         // Bind all
         glBindVertexArray(m_vbos[props.vbo_id].vao);
 

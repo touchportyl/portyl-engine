@@ -17,6 +17,12 @@ namespace FlexEngine
             Alignment_BottomLeft = 3,
             Alignment_BottomRight = 4,
         };
+        enum __FLX_API VBO_Type
+        {
+            VBO_Basic = 0,
+            VBO_Line = 1,
+            VBO_Wireframe = 2,
+        };
 
         std::string shader = R"(/shaders/texture)";
         std::string texture = R"(/images/flexengine/flexengine-256.png)";
@@ -78,8 +84,20 @@ namespace FlexEngine
         static void ClearFrameBuffer();
         static void ClearColor(const Vector4& color);
 
+        /////////////////////////////////////////////////////////////////////
+        // Pls enter in the following sample vertices order:
+        // float vertices[] = {
+        // // Position        // TexCoords
+        // -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // Bottom-left
+        //  0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // Bottom-right
+        //  0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
+        //  0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
+        // -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // Top-left
+        // -0.5f, -0.5f, 0.0f,   1.0f, 0.0f  // Bottom-left
+        // };
+        /////////////////////////////////////////////////////////////////////
         static void CreateVAOandVBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
-        //static float* Generate
+        
         // Initialize VBOs for normal FBOs for bloom
         static void Init(const Vector2& windowSize);
 

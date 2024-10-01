@@ -22,6 +22,22 @@ namespace ChronoShift {
     {
         auto scene = FlexECS::Scene::GetActiveScene();
 
+        FlexECS::Entity background = FlexECS::Scene::CreateEntity("bg");
+        background.AddComponent<IsActive>({ true });
+        background.AddComponent<Position>({ {650, 600} });
+        background.AddComponent<Scale>({ { 2500,1500 } });
+        background.AddComponent<Transform>({});
+        background.AddComponent<ZIndex>({ 0 });
+        background.AddComponent<Sprite>({
+            scene->Internal_StringStorage_New(R"(\images\misc\wireframe_darkbg.png)"),
+            Vector3::One,
+            Vector3::Zero,
+            Vector3::One,
+            Renderer2DProps::Alignment_Center,
+            Renderer2DProps::VBO_Basic
+           });
+        background.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+
         FlexECS::Entity player1 = FlexECS::Scene::CreateEntity("player1");
         player1.AddComponent<CharacterInput>({ });
         player1.AddComponent<Rigidbody>({ {}, false });
