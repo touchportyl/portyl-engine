@@ -198,7 +198,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\FMOD\Sound.cpp" />
     <ClCompile Include="src\FlexEngine\input.cpp" />
     <ClCompile Include="src\FlexEngine\flexlogger.cpp" />
-    <ClCompile Include="src\FlexEngine\playerprefs.cpp" />
     <ClCompile Include="src\FlexEngine\Reflection\primitives.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\buffer.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.cpp" />
@@ -262,7 +261,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\FMOD\Sound.h" />
     <ClInclude Include="src\FlexEngine\input.h" />
     <ClInclude Include="src\FlexEngine\flexlogger.h" />
-    <ClInclude Include="src\FlexEngine\playerprefs.h" />
     <ClInclude Include="src\FlexEngine\Reflection\base.h" />
     <ClInclude Include="src\FlexEngine\Renderer\buffer.h" />
     <ClInclude Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.h" />
