@@ -300,12 +300,16 @@ namespace ChronoShift {
       switch (move.target_count) {
       case 5:
         targets.insert(targets.begin(), static_cast<FlexECS::Entity>(m_slots[battle_state.GetComponent<BattleState>()->target_five].GetComponent<BattleSlot>()->character));
+        [[fallthrough]];
       case 4:
         targets.insert(targets.begin(), static_cast<FlexECS::Entity>(m_slots[battle_state.GetComponent<BattleState>()->target_four].GetComponent<BattleSlot>()->character));
+        [[fallthrough]];
       case 3:
         targets.insert(targets.begin(), static_cast<FlexECS::Entity>(m_slots[battle_state.GetComponent<BattleState>()->target_three].GetComponent<BattleSlot>()->character));
+        [[fallthrough]];
       case 2:
         targets.insert(targets.begin(), static_cast<FlexECS::Entity>(m_slots[battle_state.GetComponent<BattleState>()->target_two].GetComponent<BattleSlot>()->character));
+        [[fallthrough]];
       case 1:
         targets.insert(targets.begin(), static_cast<FlexECS::Entity>(m_slots[battle_state.GetComponent<BattleState>()->target_one].GetComponent<BattleSlot>()->character));
         break;

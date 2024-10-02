@@ -1,3 +1,16 @@
+/*!************************************************************************
+// WLVERSE [https://wlverse.web.app]
+// editor.cpp
+//
+// This file contains the implementation of the Editor class.
+//
+// AUTHORS
+// [100%] Rocky Sutarius (rocky.sutarius@digipen.edu)
+//   - Main Author
+//
+// Copyright (c) 2024 DigiPen, All rights reserved.
+**************************************************************************/
+
 #pragma once
 #include "editor.h"
 
@@ -12,15 +25,13 @@ namespace ChronoShift
 
 		return &instance;
 	}
-	Editor::~Editor()
-	{
 
-	}
 	void Editor::Init()
 	{
 
 	}
 
+	//ImGui startframe endframe already called in States::Window
 	void Editor::Update()
 	{
 		EditorUI::StartFrame();
@@ -43,9 +54,6 @@ namespace ChronoShift
 	{
 		return m_selected_entity;
 	}
-
-	
-	//ImGui startframe endframe already called in Window
 
 }
 

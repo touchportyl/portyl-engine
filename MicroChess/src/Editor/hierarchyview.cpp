@@ -1,3 +1,16 @@
+/*!************************************************************************
+// WLVERSE [https://wlverse.web.app]
+// hierarchyview.cpp
+//
+// Hierarchy Panel for the editor.
+//
+// AUTHORS
+// [100%] Rocky Sutarius (rocky.sutarius@digipen.edu)
+//   - Main Author
+//
+// Copyright (c) 2024 DigiPen, All rights reserved.
+**************************************************************************/
+
 #include "editor.h"
 #include "hierarchyview.h"
 #include "Components/rendering.h"
@@ -33,7 +46,7 @@ namespace ChronoShift
 			if (ImGui::MenuItem("Create Entity"))
 			{
 				//Add default components
-				auto new_entity = scene->CreateEntity();
+				FlexECS::Entity new_entity = FlexECS::Scene::CreateEntity();
 				new_entity.AddComponent<IsActive>({});
 				new_entity.AddComponent<Position>({});
 				new_entity.AddComponent<Rotation>({});
@@ -41,7 +54,6 @@ namespace ChronoShift
 			}
 			ImGui::EndPopup();
 		}
-
 
 		int imgui_id = 0;
 		for (auto& [id, record] : scene->entity_index)
@@ -102,15 +114,6 @@ namespace ChronoShift
 			ImGui::PopID();
 		}
 
-
-		if (ImGui::BeginPopupContextItem("EntityCreationMenu"))
-		{
-			if (ImGui::MenuItem("Create Entity"))
-			{
-				scene->CreateEntity();
-			}
-			ImGui::EndPopup();
-		}
 		
 		//Track Clicks when not inside tree node
 		//Deselect focused entity

@@ -1,3 +1,18 @@
+/*!************************************************************************
+// WLVERSE [https://wlverse.web.app]
+// componentviewer.cpp
+//
+// This file contains a class that helps to display 
+// component data inside the Inspector Panel in the editor.
+//
+// AUTHORS
+// [100%] Rocky Sutarius (rocky.sutarius@digipen.edu)
+//   - Main Author
+//
+// Copyright (c) 2024 DigiPen, All rights reserved.
+**************************************************************************/
+
+
 #include "componentviewer.h"
 
 

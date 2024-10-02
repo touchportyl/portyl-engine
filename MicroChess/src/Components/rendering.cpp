@@ -92,15 +92,15 @@ namespace ChronoShift
 //Component registry for editor
 //so the properties panel knows how to display them
   COMPONENT_VIEWER_START(Position)
-    COMPONENT_VIEWER_DRAG_FLOAT2(position)
+    COMPONENT_VIEWER_DRAG_VECTOR2(position)
   COMPONENT_VIEWER_END(Position)
 
   COMPONENT_VIEWER_START(Rotation)
-    COMPONENT_VIEWER_DRAG_FLOAT3(rotation)
+    COMPONENT_VIEWER_DRAG_VECTOR3(rotation)
   COMPONENT_VIEWER_END(Rotation)
 
   COMPONENT_VIEWER_START(Scale)
-    COMPONENT_VIEWER_DRAG_FLOAT2(scale)
+    COMPONENT_VIEWER_DRAG_VECTOR2(scale)
   COMPONENT_VIEWER_END(Scale)
 
   COMPONENT_VIEWER_START(ZIndex)

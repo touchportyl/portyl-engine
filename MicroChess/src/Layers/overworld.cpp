@@ -262,7 +262,7 @@ namespace ChronoShift {
 
     //For testing 2500 objects
     //Create one, then clone the rest
-    if (Input::GetKeyDown(GLFW_KEY_0))
+    if (Input::GetKeyDown(GLFW_KEY_P))
     {
       auto scene = FlexECS::Scene::GetActiveScene();
       for (auto& entity : FlexECS::Scene::GetActiveScene()->View<EntityName>()) 
@@ -292,8 +292,8 @@ namespace ChronoShift {
         {
           FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
           auto& position = cloned_thing.GetComponent<Position>()->position;
-          position.x = 15 * (x + 1);
-          position.y = 15 * (y + 1);
+          position.x = static_cast<float>(15 * (x + 1));
+          position.y = static_cast<float>(15 * (y + 1));
         }
       }
     }

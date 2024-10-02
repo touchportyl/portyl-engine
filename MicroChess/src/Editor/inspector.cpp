@@ -1,3 +1,16 @@
+/*!************************************************************************
+// WLVERSE [https://wlverse.web.app]
+// inspector.cpp
+//
+// Inspector Panel (properties viewer) for the editor.
+//
+// AUTHORS
+// [100%] Rocky Sutarius (rocky.sutarius@digipen.edu)
+//   - Main Author
+//
+// Copyright (c) 2024 DigiPen, All rights reserved.
+**************************************************************************/
+
 #include "editor.h"
 #include "hierarchyview.h"
 #include "inspector.h"
@@ -19,14 +32,16 @@ namespace ChronoShift
 
 		if (entity != FlexECS::Entity::Null)
 		{
-			float field_width = 65.0f;
 			//Do mandatory components
 			//IsActive and EntityName
-			auto& is_active = entity.GetComponent<IsActive>()->is_active;
-			ImGui::Checkbox("##IsActive", &is_active);
-			ImGui::SameLine();
-			std::string& name = scene->Internal_StringStorage_Get(*entity.GetComponent<EntityName>());
+			if (entity.HasComponent<IsActive>())
+			{
+				auto& is_active = entity.GetComponent<IsActive>()->is_active;
+				ImGui::Checkbox("##IsActive", &is_active);
+				ImGui::SameLine();
+			}
 			
+			std::string& name = scene->Internal_StringStorage_Get(*entity.GetComponent<EntityName>());
 			EditorUI::EditableTextField(name);
 
 			//Your 3 basic transform components
@@ -35,7 +50,7 @@ namespace ChronoShift
 				auto& position = entity.GetComponent<Position>()->position;
 				if (ImGui::CollapsingHeader("Position"))
 				{
-					EditorUI::DragFloat2(position, "Position", "X", "Y");
+					EditorUI::DragFloat2(position, "Position");
 				}
 			}
 			if (entity.HasComponent<Rotation>())
@@ -43,7 +58,7 @@ namespace ChronoShift
 				auto& rotation = entity.GetComponent<Rotation>()->rotation;
 				if (ImGui::CollapsingHeader("Rotation"))
 				{
-					EditorUI::DragFloat3(rotation, "Rotation", "X", "Y", "Z");
+					EditorUI::DragFloat3(rotation, "Rotation");
 				}
 			}
 			if (entity.HasComponent<Scale>())
@@ -51,7 +66,7 @@ namespace ChronoShift
 				auto& scale = entity.GetComponent<Scale>()->scale;
 				if (ImGui::CollapsingHeader("Scale"))
 				{
-					EditorUI::DragFloat2(scale, "Scale", "X", "Y");
+					EditorUI::DragFloat2(scale, "Scale");
 				}
 			}
 
