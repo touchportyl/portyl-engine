@@ -142,6 +142,21 @@ namespace FlexEngine
           assets[key] = Asset::Sound{ key }; // create sound asserts on FMOD side and shouldn't need here
           FLX_FLOW_ENDSCOPE();
         }
+        else if (FLX_EXTENSIONS_CHECK_SAFETY("flx", file_extension.string()))
+        {
+          if (file_extension.string() == ".flxprefab")
+          {
+            // Read in flexprefab not needed
+          }
+          else if (file_extension.string() == ".flxdata")
+          {
+            // Write flxdata support
+            AssetKey key = file.path.string().substr(default_directory_length);
+            FLX_FLOW_BEGINSCOPE();
+            assets[key] = Asset::FlxData{ key };
+            FLX_FLOW_ENDSCOPE();
+          }
+        }
       }
     );
 
