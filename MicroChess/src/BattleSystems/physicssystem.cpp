@@ -81,12 +81,12 @@ namespace ChronoShift
 
 	void ResolveCollisions() 
 	{
-		float dt = FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
+		//float dt = FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
 		for (auto collision : collisions)
 		{
-			auto& a_velocity = collision.first.GetComponent<Rigidbody>()->velocity;
+			//auto& a_velocity = collision.first.GetComponent<Rigidbody>()->velocity;
 			auto& a_position = collision.first.GetComponent<Position>()->position;
-			auto& b_velocity = collision.second.GetComponent<Rigidbody>()->velocity;
+			//auto& b_velocity = collision.second.GetComponent<Rigidbody>()->velocity;
 			auto& b_position = collision.second.GetComponent<Position>()->position;
 
 			auto& a_max = collision.first.GetComponent<BoundingBox2D>()->max;

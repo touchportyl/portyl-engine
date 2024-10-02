@@ -103,7 +103,7 @@ namespace ChronoShift {
             box2.AddComponent<IsActive>({ true });
             box2.AddComponent<Position>({ {1, 0 } });
             box2.AddComponent<Rotation>({ {0,0,20} });
-            box2.AddComponent<Scale>({ { 0.9, 0.9 } });
+            box2.AddComponent<Scale>({ { 0.9f, 0.9f } });
             box2.AddComponent<Transform>({});
             box2.AddComponent<ZIndex>({ 10 });
             box2.AddComponent<Sprite>({
@@ -120,7 +120,7 @@ namespace ChronoShift {
             box3.AddComponent<IsActive>({ true });
             box3.AddComponent<Position>({ {1, 0 } });
             box3.AddComponent<Rotation>({ {0,0,20} });
-            box3.AddComponent<Scale>({ { 0.9, 0.9 } });
+            box3.AddComponent<Scale>({ { 0.9f, 0.9f } });
             box3.AddComponent<Transform>({});
             box3.AddComponent<ZIndex>({ 10 });
             box3.AddComponent<Sprite>({
@@ -137,7 +137,7 @@ namespace ChronoShift {
             box4.AddComponent<IsActive>({ true });
             box4.AddComponent<Position>({ {1, 0 } });
             box4.AddComponent<Rotation>({ {0,0,20} });
-            box4.AddComponent<Scale>({ { 0.9, 0.9 } });
+            box4.AddComponent<Scale>({ { 0.9f, 0.9f } });
             box4.AddComponent<Transform>({});
             box4.AddComponent<ZIndex>({ 10 });
             box4.AddComponent<Sprite>({
@@ -154,7 +154,7 @@ namespace ChronoShift {
             box5.AddComponent<IsActive>({ true });
             box5.AddComponent<Position>({ {1, 0 } });
             box5.AddComponent<Rotation>({ {0,0,20} });
-            box5.AddComponent<Scale>({ { 0.9, 0.9 } });
+            box5.AddComponent<Scale>({ { 0.9f, 0.9f } });
             box5.AddComponent<Transform>({});
             box5.AddComponent<ZIndex>({ 10 });
             box5.AddComponent<Sprite>({
@@ -171,7 +171,7 @@ namespace ChronoShift {
             box6.AddComponent<IsActive>({ true });
             box6.AddComponent<Position>({ {1, 0 } });
             box6.AddComponent<Rotation>({ {0,0,20} });
-            box6.AddComponent<Scale>({ { 0.9, 0.9 } });
+            box6.AddComponent<Scale>({ { 0.9f, 0.9f } });
             box6.AddComponent<Transform>({});
             box6.AddComponent<ZIndex>({ 10 });
             box6.AddComponent<Sprite>({
@@ -188,7 +188,7 @@ namespace ChronoShift {
             box7.AddComponent<IsActive>({ true });
             box7.AddComponent<Position>({ {1, 0 } });
             box7.AddComponent<Rotation>({ {0,0,20} });
-            box7.AddComponent<Scale>({ { 0.9, 0.9 } });
+            box7.AddComponent<Scale>({ { 0.9f, 0.9f } });
             box7.AddComponent<Transform>({});
             box7.AddComponent<ZIndex>({ 10 });
             box7.AddComponent<Sprite>({

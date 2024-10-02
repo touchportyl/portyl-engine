@@ -1,3 +1,30 @@
+/*!************************************************************************
+// WLVERSE [https://wlverse.web.app]
+// openglspriterenderer.cpp
+//
+// This file implements the OpenGLSpriteRenderer class, which is responsible
+// for handling 2D sprite rendering within the game engine. It provides
+// functions for rendering sprites, applying post-processing effects,
+// and managing the necessary OpenGL resources such as shaders and
+// framebuffers.
+//
+// Key functionalities include:
+// - Rendering 2D sprites with texture binding and transformations.
+// - Supporting post-processing effects such as Gaussian Blur and Bloom.
+// - Providing wrapper functions for commonly used OpenGL operations,
+//   ensuring streamlined usage across the codebase.
+//
+// The renderer is built with a focus on performance and flexibility,
+// allowing for easy customization and extension of rendering capabilities.
+//
+// AUTHORS
+// [100%] Soh Wei Jie (weijie.soh@digipen.edu)
+//   - Main Author
+//   - Developed the core rendering functionalities and post-processing
+//     pipeline, ensuring compatibility with the game engine's architecture.
+//
+// Copyright (c) 2024 DigiPen, All rights reserved.
+**************************************************************************/
 #include "openglspriterenderer.h"
 
 #include "FlexEngine/AssetManager/assetmanager.h" // FLX_ASSET_GET
@@ -11,7 +38,7 @@ namespace FlexEngine
     uint32_t OpenGLSpriteRenderer::m_draw_calls_last_frame = 0;
     bool OpenGLSpriteRenderer::m_depth_test = false;
     bool OpenGLSpriteRenderer::m_blending = false;
-
+    
     std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
 
     GLuint OpenGLSpriteRenderer::samples = 8;
@@ -28,64 +55,132 @@ namespace FlexEngine
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // WRAPPER FUNCTIONS
-    // Draw Call
+    /*!***************************************************************************
+    * \brief
+    * Retrieves the total number of draw calls made.
+    *
+    * \return Total draw calls as a uint32_t.
+    *****************************************************************************/
     uint32_t OpenGLSpriteRenderer::GetDrawCalls() { return m_draw_calls; }
+    /*!***************************************************************************
+    * \brief
+    * Retrieves the number of draw calls made in the last frame.
+    *
+    * \return Total draw calls from the last frame as a uint32_t.
+    *****************************************************************************/
     uint32_t OpenGLSpriteRenderer::GetDrawCallsLastFrame() { return m_draw_calls_last_frame; }
-    // Post-Processing Frame Buffers
+    /*!***************************************************************************
+    * \brief
+    * Enables post-processing effects for rendering.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::EnablePostProcessing() { glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);}
+    /*!***************************************************************************
+    * \brief
+    * Disables post-processing effects for rendering.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::DisablePostProcessing() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
-    // Depth Test
+    /*!***************************************************************************
+    * \brief
+    * Checks if depth testing is enabled.
+    *
+    * \return True if depth testing is enabled, otherwise false.
+    *****************************************************************************/
     bool OpenGLSpriteRenderer::IsDepthTestEnabled() { return m_depth_test; }
+    /*!***************************************************************************
+    * \brief
+    * Enables depth testing for rendering.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::EnableDepthTest() 
     {
         m_depth_test = true;
         glEnable(GL_DEPTH_TEST);
     }
+    /*!***************************************************************************
+    * \brief
+    * Disables depth testing for rendering.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::DisableDepthTest()
     {
         m_depth_test = false;
         glDisable(GL_DEPTH_TEST);
     }
-    // Blending
+    /*!***************************************************************************
+    * \brief
+    * Checks if blending is enabled.
+    *
+    * \return True if blending is enabled, otherwise false.
+    *****************************************************************************/
     bool OpenGLSpriteRenderer::IsBlendingEnabled() { return m_blending; }
+    /*!***************************************************************************
+    * \brief
+    * Enables blending for rendering.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::EnableBlending()
     {
         m_blending = true;
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
+    /*!***************************************************************************
+    * \brief
+    * Disables blending for rendering.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::DisableBlending()
     {
         m_blending = false;
         glDisable(GL_BLEND);
     }
-    //Frame Buffer
+    /*!***************************************************************************
+    * \brief
+    * Clears the current framebuffer.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::ClearFrameBuffer() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
+    /*!***************************************************************************
+    * \brief
+    * Clears the color buffer with a specified color.
+    *
+    * \param color The color to clear the buffer to, represented as a Vector4.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::ClearColor(const Vector4& color)
     {
         glClearColor(color.x, color.y, color.z, color.w);
         m_draw_calls_last_frame = m_draw_calls;
         m_draw_calls = 0;
     }
+    /*!***************************************************************************
+    * \brief
+    * Retrieves the VAO ID for a specified VBO type.
+    *
+    * \param type The type of VBO for which to retrieve the VAO ID.
+    * \return The corresponding VAO ID as a GLuint.
+    *****************************************************************************/
     GLuint OpenGLSpriteRenderer::GetVAO_ID(Renderer2DProps::VBO_Type type) { return m_vbos[type].vao; }
 
     //////////////////////////////////////////////////////////////////////////////////////////
-    // Init
+    //////////////////////////////////////////////////////////////////////////////////////////
+    
+    /*!***************************************************************************
+    * \brief
+    * Creates a VAO and VBO with the specified vertices.
+    *
+    * Pls enter in the following sample vertices order:
+    * float vertices[] = {
+    * // Position        // TexCoords
+    * -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // Bottom-left
+    *  0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // Bottom-right
+    *  0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
+    *  0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
+    * -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // Top-left
+    * -0.5f, -0.5f, 0.0f,   1.0f, 0.0f  // Bottom-left
+    * };
+    *
+    * \param vao Reference to the VAO ID to be created.
+    * \param vbo Reference to the VBO ID to be created.
+    * \param vertices Pointer to an array of vertex data.
+    * \param vertexCount The number of vertices in the array.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::CreateVAOandVBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount) 
     {
-        /////////////////////////////////////////////////////////////////////
-        /* Example vertices:
-            static const float vertices[] = {
-            // Position        // TexCoords
-            -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // Bottom-left
-             0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // Bottom-right
-             0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
-             0.5f,  0.5f, 0.0f,   0.0f, 1.0f, // Top-right
-            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // Top-left
-            -0.5f, -0.5f, 0.0f,   1.0f, 0.0f  // Bottom-left
-            };
-        */
-        /////////////////////////////////////////////////////////////////////
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);
 
@@ -110,6 +205,12 @@ namespace FlexEngine
         );
     }
 
+    /*!***************************************************************************
+    * \brief
+    * Initializes the VBOs.
+    *
+    * \param windowSize The size of the rendering window as a Vector2.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::Init(const Vector2& windowSize)
     {
         VertexBufferObject basic;
@@ -148,7 +249,7 @@ namespace FlexEngine
             glUniform1i(glGetUniformLocation(asset_shader.Get(), "bloomTexture"), 1);
             glUniform1f(glGetUniformLocation(asset_shader.Get(), "gamma"), gamma);
             asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/GaussianBlur)");
-            auto& temp = FLX_ASSET_GET(Asset::Shader, R"(/shaders/test)");
+            //auto& temp = FLX_ASSET_GET(Asset::Shader, R"(/shaders/test)");
             asset_shader.Use();
             glUniform1i(glGetUniformLocation(asset_shader.Get(), "screenTexture"), 0);
 
@@ -189,22 +290,22 @@ namespace FlexEngine
             glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
             // Position attribute (3 floats: x, y, z)
             glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // 5 * sizeof(float) is correct for the stride.
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(5 * sizeof(float)), (void*)0); // 5 * sizeof(float) is correct for the stride.
             // Texture coordinates attribute (2 floats: u, v), starting after the position
             glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))); // Offset to the 4th element (3 floats).
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(5 * sizeof(float)), (void*)(3 * sizeof(float))); // Offset to the 4th element (3 floats).
 
             // Create Frame Buffer Object
             glGenFramebuffers(1, &m_postProcessingFBO);
             glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);
 
             // Create Framebuffer Texture
-            int width, height;
+            float width, height;
             width = windowSize.x;
             height = windowSize.y;
             glGenTextures(1, &postProcessingTexture);
             glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -214,7 +315,7 @@ namespace FlexEngine
             // Create Second Framebuffer Texture
             glGenTextures(1, &bloomTexture);
             glBindTexture(GL_TEXTURE_2D, bloomTexture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -237,7 +338,7 @@ namespace FlexEngine
             {
                 glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[i]);
                 glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[i]);
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -254,6 +355,13 @@ namespace FlexEngine
         }
     }
 
+    /*!***************************************************************************
+    * \brief
+    * Draws a 2D texture using the specified properties.
+    *
+    * \param props The properties for rendering the texture, including shader,
+    *              texture, color, and transformations.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::DrawTexture2D(const Renderer2DProps& props)
     {
         // Guard
@@ -305,6 +413,10 @@ namespace FlexEngine
         glBindVertexArray(0);
     }
 
+    /*!***************************************************************************
+    * \brief
+    * Draws the post-processing layer after all other rendering operations.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::DrawPostProcessingLayer()
     {
         // Step 1: Full-screen quad vertices for post-processing (unchanged)

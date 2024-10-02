@@ -21,7 +21,7 @@ namespace ChronoShift
   {
     ImGui::ShowDemoWindow();
 
-    int i = 0;
+    //int i = 0;
     for (auto& entity : FlexECS::Scene::GetActiveScene()->View<BoundingBox2D>())
     {
 
