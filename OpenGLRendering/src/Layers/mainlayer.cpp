@@ -1,6 +1,7 @@
 #include "mainlayer.h"
 
 #include "Components/Components.h"
+#include "flxdata.h"
 
 namespace OpenGLRendering
 {

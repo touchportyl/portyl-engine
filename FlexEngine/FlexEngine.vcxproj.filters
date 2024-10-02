@@ -199,6 +199,9 @@
     <ClCompile Include="src\FlexEngine\FMOD\Sound.cpp">
       <Filter>src\FlexEngine\FMOD</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\flxdata.cpp">
+      <Filter>src\FlexEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -377,6 +380,9 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\FMOD\Sound.h">
       <Filter>src\FlexEngine\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\flxdata.h">
+      <Filter>src\FlexEngine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

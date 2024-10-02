@@ -194,6 +194,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\FlexMath\vector4.cpp" />
     <ClCompile Include="src\FlexEngine\flexid.cpp" />
     <ClCompile Include="src\FlexEngine\flexprefs.cpp" />
+    <ClCompile Include="src\FlexEngine\flxdata.cpp" />
     <ClCompile Include="src\FlexEngine\FMOD\FMODWrapper.cpp" />
     <ClCompile Include="src\FlexEngine\FMOD\Sound.cpp" />
     <ClCompile Include="src\FlexEngine\input.cpp" />
@@ -256,6 +257,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\FlexMath\vector4.h" />
     <ClInclude Include="src\FlexEngine\flexid.h" />
     <ClInclude Include="src\FlexEngine\flexprefs.h" />
+    <ClInclude Include="src\FlexEngine\flxdata.h" />
     <ClInclude Include="src\FlexEngine\FMOD\FMODWrapper.h" />
     <ClInclude Include="src\FlexEngine\FMOD\Sound.h" />
     <ClInclude Include="src\FlexEngine\input.h" />
