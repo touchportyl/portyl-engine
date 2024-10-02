@@ -1,10 +1,11 @@
 #pragma once
 
 #include <FlexEngine.h>
-using namespace FlexEngine;
+#include "Editor/componentviewer.h"
 
 namespace ChronoShift
 {
+using namespace FlexEngine;
 
   using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
 
@@ -86,4 +87,5 @@ namespace ChronoShift
       float far = 100.0f;
   };
 
+  void RegisterRenderingComponents();
 }

@@ -4,17 +4,22 @@
 
 namespace FlexEngine
 {
-	Editor* FlexEngine::Editor::GetInstance()
+	Editor* Editor::GetInstance()
 	{
+		static bool initialized = false;
 		static Editor instance{};
+		if (!initialized) instance.Init();
+
 		return &instance;
 	}
 	Editor::~Editor()
 	{
+
 	}
 	void Editor::Init()
 	{
 	}
+
 	void Editor::Update()
 	{
 		//ImGui::ShowDemoWindow();

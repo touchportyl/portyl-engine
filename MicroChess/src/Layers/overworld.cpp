@@ -195,6 +195,8 @@ namespace ChronoShift {
     auto scene = FlexECS::Scene::CreateScene();
     FlexECS::Scene::SetActiveScene(scene);
 
+    RegisterRenderingComponents();
+
     SetupWorld();
   }
 

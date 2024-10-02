@@ -2,8 +2,8 @@
 #include "hierarchyview.h"
 #include "Components/rendering.h"
 
+
 using namespace ChronoShift;
-using namespace FlexEngine::FlexECS;
 using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
 
 namespace FlexEngine
@@ -21,12 +21,7 @@ namespace FlexEngine
 		ImGui::Begin("Scene Hierarchy");
 		ImGui::Text(entity_count_text.c_str());
 
-		//Track Clicks when not inside tree node
-		//Deselect focused entity
-		if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0))
-		{
-			Editor::GetInstance()->SelectEntity(FlexECS::Entity::Null);  // Deselect when clicking in empty space
-		}
+
 		
 		//Right click menu (create entity)
 		if (ImGui::IsWindowHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
@@ -38,7 +33,7 @@ namespace FlexEngine
 			if (ImGui::MenuItem("Create Entity"))
 			{
 				//Add default components
-				auto new_entity = Scene::CreateEntity();
+				auto new_entity = scene->CreateEntity();
 				new_entity.AddComponent<IsActive>({});
 				new_entity.AddComponent<Position>({});
 				new_entity.AddComponent<Rotation>({});
@@ -48,14 +43,11 @@ namespace FlexEngine
 		}
 
 
-
-
-
 		int imgui_id = 0;
 		for (auto& [id, record] : scene->entity_index)
 		{
 			ImGui::PushID(imgui_id++);
-			Entity entity(id);
+			FlexECS::Entity entity(id);
 			std::string name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<EntityName>());
 			
 			ImGuiTreeNodeFlags node_flags =
@@ -71,8 +63,18 @@ namespace FlexEngine
 			}
 
 			bool is_open = ImGui::TreeNodeEx(name.c_str(), node_flags, name.c_str());
-			
-			if (ImGui::IsItemClicked())
+			if (is_open)
+			{
+				if (ImGui::BeginDragDropSource())
+				{
+					ImGui::SetDragDropPayload("ENTITY_DRAG", &entity.Get(), sizeof(FlexECS::EntityID));
+					ImGui::Text(name.c_str()); // Show the entity name during drag
+					ImGui::EndDragDropSource();
+				}
+				ImGui::TreePop();
+			}
+
+			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left) && !ImGui::IsMouseDragging(ImGuiMouseButton_Left))
 			{
 				Editor::GetInstance()->SelectEntity(entity);
 			}
@@ -97,10 +99,6 @@ namespace FlexEngine
 				ImGui::EndPopup();
 			}
 
-			if (is_open)
-			{
-				ImGui::TreePop();
-			}
 			ImGui::PopID();
 		}
 
@@ -109,10 +107,18 @@ namespace FlexEngine
 		{
 			if (ImGui::MenuItem("Create Entity"))
 			{
-				Scene::CreateEntity();
+				scene->CreateEntity();
 			}
 			ImGui::EndPopup();
 		}
+		
+		//Track Clicks when not inside tree node
+		//Deselect focused entity
+		if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0))
+		{
+			Editor::GetInstance()->SelectEntity(FlexECS::Entity::Null);  // Deselect when clicking in empty space
+		}
+		
 		ImGui::End();
 
 		delete_queue.Flush();

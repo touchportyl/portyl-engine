@@ -7,7 +7,7 @@ using namespace FlexEngine;
 namespace ChronoShift
 {
 
-  class DebugLayer : public FlexEngine::Layer
+  class EditorLayer : public FlexEngine::Layer
   {
     const Path default_save_directory = Path::current("saves");
     const std::string default_save_name = "default";
@@ -15,8 +15,8 @@ namespace ChronoShift
     std::string current_save_name = default_save_name;
 
   public:
-    DebugLayer() : Layer("Debug Layer") {}
-    ~DebugLayer() = default;
+    EditorLayer() : Layer("Debug Layer") {}
+    ~EditorLayer() = default;
 
     virtual void OnAttach() override;
     virtual void OnDetach() override;

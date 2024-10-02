@@ -44,15 +44,15 @@ namespace FlexEngine
 			//Tranform
 			if (ImGui::CollapsingHeader("Position"))
 			{
-				DragFloat2(position, "X", "Y");
+				EditorGUI::DragFloat2(position, "X", "Y");
 			}
 			if (ImGui::CollapsingHeader("Rotation"))
 			{
-				DragFloat3(rotation, "X", "Y", "Z");
+				EditorGUI::DragFloat3(rotation, "X", "Y", "Z");
 			}
 			if (ImGui::CollapsingHeader("Scale"))
 			{
-				DragFloat2(scale, "X", "Y");
+				EditorGUI::DragFloat2(scale, "X", "Y");
 			}
 
 			auto entity_record = ENTITY_INDEX[entity];
@@ -66,13 +66,12 @@ namespace FlexEngine
 				if (component_name == "Position" || component_name == "Rotation" || component_name == "Scale")
 					continue;
 
-				if (ImGui::CollapsingHeader(component_name.c_str()))
+				if (ComponentViewRegistry::ViewerExists(component_name))
 				{
-					FlexECS::ArchetypeMap &archetype_map = COMPONENT_INDEX[component_id];
-					FlexECS::ArchetypeRecord &archetype_record = archetype_map[archetype->id];
-					FlexECS::ComponentData<void> component_data = archetype->archetype_table[archetype_record.column][entity_record.row];
-					void* data = FlexECS::Internal_GetComponentData(component_data).second;
-					//T* out_component = reinterpret_cast<T*>(data);
+					if (ImGui::CollapsingHeader(component_name.c_str()))
+					{
+						ComponentViewRegistry::ViewComponent(component_name, entity);
+					}
 				}
 			}
 		}

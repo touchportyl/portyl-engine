@@ -112,7 +112,7 @@
     <ClInclude Include="src\Components\characterinput.h">
       <Filter>src\Components</Filter>
     </ClInclude>
-    <ClInclude Include="src\Layers\imgui_debug.h">
+    <ClInclude Include="src\Layers\editorlayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\hierarchyview.h">
@@ -122,6 +122,12 @@
       <Filter>src\Editor</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\inspector.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\editorgui.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\componentviewer.h">
       <Filter>src\Editor</Filter>
     </ClInclude>
   </ItemGroup>
@@ -189,7 +195,7 @@
     <ClCompile Include="src\Components\characterinput.cpp">
       <Filter>src\Components</Filter>
     </ClCompile>
-    <ClCompile Include="src\Layers\imgui_debug.cpp">
+    <ClCompile Include="src\Layers\editorlayer.cpp">
       <Filter>src\Layers</Filter>
     </ClCompile>
     <ClCompile Include="src\Editor\hierarchyview.cpp">
@@ -199,6 +205,12 @@
       <Filter>src\Editor</Filter>
     </ClCompile>
     <ClCompile Include="src\Editor\inspector.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\editorgui.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\componentviewer.cpp">
       <Filter>src\Editor</Filter>
     </ClCompile>
   </ItemGroup>

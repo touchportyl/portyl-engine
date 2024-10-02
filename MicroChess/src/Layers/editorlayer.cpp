@@ -1,4 +1,4 @@
-#include "imgui_debug.h"
+#include "editorlayer.h"
 #include "Components/physics.h"
 #include "Editor/editor.h"
 
@@ -8,19 +8,19 @@
 
 namespace ChronoShift 
 {
-  void DebugLayer::OnAttach()
+  void EditorLayer::OnAttach()
   {
     FLX_FLOW_BEGINSCOPE();
     Editor::GetInstance()->Init();
   }
 
-  void DebugLayer::OnDetach()
+  void EditorLayer::OnDetach()
   {
     FLX_FLOW_ENDSCOPE();
 
   }
 
-  void DebugLayer::Update()
+  void EditorLayer::Update()
   {
     FlexEngine::Editor::GetInstance()->Update();
 

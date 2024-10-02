@@ -3,6 +3,8 @@
 #include "hierarchyview.h"
 #include "inspector.h"
 #include "editorgui.h"
+#include "componentviewer.h"
+#include "Components/rendering.h"
 
 #include "FlexEngine/Core/imguiwrapper.h"
 #include "FlexEngine/Renderer/DebugRenderer/debugrenderer.h"
@@ -25,6 +27,7 @@ namespace FlexEngine
 
 	private:
 		FlexECS::Entity m_selected_entity = FlexECS::Entity::Null;
+		//ComponentViewRegistry m_component_registry;
 	};
 
 }
