@@ -14,6 +14,8 @@ namespace ChronoShift
     Path current_save_directory = default_save_directory;
     std::string current_save_name = default_save_name;
 
+    bool show_colliders = false;
+
   public:
     EditorLayer() : Layer("Debug Layer") {}
     ~EditorLayer() = default;

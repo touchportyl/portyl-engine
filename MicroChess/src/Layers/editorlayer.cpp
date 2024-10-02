@@ -24,19 +24,29 @@ namespace ChronoShift
   {
     Editor::GetInstance()->Update();
 
-    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<BoundingBox2D>())
+    ImGui::Begin("Tools");
+    if (ImGui::Button("Show Colliders"))
     {
-      const Vector3& max = entity.GetComponent<BoundingBox2D>()->max;
-      const Vector3& min = entity.GetComponent<BoundingBox2D>()->min;
-      //construct lines for AABB
-      Vector3 topleft = min;
-      Vector3 topright = { max.x, min.y };
-      Vector3 botleft = { min.x, max.y };
-      Vector3 botright = max;
-      FlexEngine::OpenGLDebugRenderer::DrawLine2D(topleft, topright);
-      FlexEngine::OpenGLDebugRenderer::DrawLine2D(topright, botright);
-      FlexEngine::OpenGLDebugRenderer::DrawLine2D(botright, botleft);
-      FlexEngine::OpenGLDebugRenderer::DrawLine2D(botleft, topleft);
+      show_colliders = !show_colliders;
+    }
+    ImGui::End();
+
+    if (show_colliders)
+    {
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<BoundingBox2D>())
+      {
+        const Vector3& max = entity.GetComponent<BoundingBox2D>()->max;
+        const Vector3& min = entity.GetComponent<BoundingBox2D>()->min;
+        //construct lines for AABB
+        Vector3 topleft = min;
+        Vector3 topright = { max.x, min.y };
+        Vector3 botleft = { min.x, max.y };
+        Vector3 botright = max;
+        FlexEngine::OpenGLDebugRenderer::DrawLine2D(topleft, topright);
+        FlexEngine::OpenGLDebugRenderer::DrawLine2D(topright, botright);
+        FlexEngine::OpenGLDebugRenderer::DrawLine2D(botright, botleft);
+        FlexEngine::OpenGLDebugRenderer::DrawLine2D(botleft, topleft);
+      }
     }
   }
 
