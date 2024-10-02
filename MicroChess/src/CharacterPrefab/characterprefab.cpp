@@ -20,6 +20,24 @@ void ResetCharacters() {
   std::cout << "Reset Complete" << std::endl;
 }
 
+void CreateCharacter(Character parameters) {
+  auto scene = FlexECS::Scene::GetActiveScene();
+  std::string character_name = scene->Internal_StringStorage_Get(parameters.character_name);
+  FlexECS::Entity new_character = FlexECS::Scene::CreateEntity(character_name);
+  new_character.AddComponent<Character>(parameters);
+}
+
+void EditCharacter(std::string character_name, Character parameters) {
+  auto scene = FlexECS::Scene::GetActiveScene();
+  for (auto& entity : scene->View<ChronoShift::Character>()) {
+    std::string name_to_check = scene->Internal_StringStorage_Get(*(entity.GetComponent<EntityName>()));
+    if (name_to_check == character_name) {
+      entity.RemoveComponent<Character>();
+      entity.AddComponent<Character>(parameters);
+    }
+  }
+}
+
 FlexECS::Entity& LoadCharacter(const std::string& prefabName)
 {
   // Open the prefab file

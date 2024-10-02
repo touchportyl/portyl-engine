@@ -146,9 +146,10 @@ namespace ChronoShift
   enum BattlePhase : int {
     BP_PLAYER_TURN,   //waiting for player input
     BP_ENEMY_TURN,
-    BP_MOVE_TARGET_SELECTION,
-    BP_MOVE_EXECUTION,//Animation playing
+    BP_MOVE_DEATH_PROCESSION,
+    BP_MOVE_EXECUTION, //Animation playing
     BP_PROCESSING,    //Speed stack moving around, showing who's next
+    BP_MOVE_SELECTION,
   };
   
   class BattleState 
@@ -215,12 +216,14 @@ namespace ChronoShift
   };
 
   enum MoveTargetType : int {
-    MOVE_TARGET_NONE = 1,
-    MOVE_TARGET_ALL_ENEMY = 2,
-    MOVE_TARGET_ALL_PLAYER = 3,
-    MOVE_TARGET_SINGLE = 4,
-    MOVE_TARGET_SELF = 5,
-    MOVE_TARGET_NULL = -100
+    MOVE_TARGET_SELF = 1,
+    MOVE_TARGET_SINGLE = 2,
+    MOVE_TARGET_SINGLE_ENEMY = 3,
+    MOVE_TARGET_SINGLE_PLAYER = 4,
+    MOVE_TARGET_DOUBLE = 5,
+    MOVE_TARGET_TRIPLE = 6,
+    MOVE_TARGET_ALL_ENEMY = 7,
+    MOVE_TARGET_ALL_PLAYER = 8,
   };
 
   //struct Move {
@@ -261,7 +264,6 @@ namespace ChronoShift
     FlexECS::Scene::StringIndex chrono_gear_name;
     FlexECS::Scene::StringIndex chrono_gear_description;
     int chrono_gear_cooldown;
-    Stat main_stat;
 
     FlexECS::Scene::StringIndex character_ultimate;
     FlexECS::Scene::StringIndex character_ultimate_cooldown;

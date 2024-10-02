@@ -23,3 +23,5 @@
 FlexECS::Entity& LoadCharacter(const std::string& prefabName);
 void SaveCharacters();
 void ResetCharacters();
+//void CreateCharacter(Character parameters);
+//void EditCharacter(std::string character_name, Character parameters);

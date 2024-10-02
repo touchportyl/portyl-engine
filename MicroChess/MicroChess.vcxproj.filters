@@ -33,9 +33,6 @@
     <Filter Include="src\BattleSystems">
       <UniqueIdentifier>{61a2e2be-1880-4d04-bfd6-b8a5dcd4c6b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\ChronoGear">
-      <UniqueIdentifier>{cfa8171e-21a2-4990-aeee-8283a70d3b6d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\CharacterPrefab">
       <UniqueIdentifier>{8ed49ca6-4141-4522-a825-741823d3846e}</UniqueIdentifier>
     </Filter>
@@ -103,9 +100,6 @@
     <ClInclude Include="src\BattleSystems\turnorderdisplay.h">
       <Filter>src\BattleSystems</Filter>
     </ClInclude>
-    <ClInclude Include="src\ChronoGear\chronogearstats.h">
-      <Filter>src\ChronoGear</Filter>
-    </ClInclude>
     <ClInclude Include="src\CharacterPrefab\characterprefab.h">
       <Filter>src\CharacterPrefab</Filter>
     </ClInclude>
@@ -161,9 +155,6 @@
     </ClCompile>
     <ClCompile Include="src\BattleSystems\turnorderdisplay.cpp">
       <Filter>src\BattleSystems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ChronoGear\chronogearstats.cpp">
-      <Filter>src\ChronoGear</Filter>
     </ClCompile>
     <ClCompile Include="src\CharacterPrefab\characterprefab.cpp">
       <Filter>src\CharacterPrefab</Filter>

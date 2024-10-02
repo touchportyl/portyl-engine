@@ -13,25 +13,25 @@ namespace ChronoShift
     ~BattleSystem();
 
     void InitializeBattleSlots();
-    void SetMovesForWeapon(FlexECS::Entity weapon);
     void AddCharacter(FlexECS::Entity character, int position);
 
     void BeginBattle();
     void Update();
 
-    void UpdateSpeedStack();
-    void PlayerMoveSelection();
-    void PlayerTargetSelection();
-    void ExecuteMove();
-
     size_t GetCharacterCount() { return m_characters.size(); };
-    std::list<FlexECS::Entity>& GetTurnOrder() { return m_speedstack; };
+    std::list<FlexECS::Entity>& GetTurnOrder() { return m_characters; };
   private:
-    std::vector<FlexECS::Entity> m_characters;
-    std::list<FlexECS::Entity> m_speedstack;
+    std::list<FlexECS::Entity> m_characters;
+    std::vector<FlexECS::Entity> m_enemies;
+    std::vector<FlexECS::Entity> m_players;
+    //std::list<FlexECS::Entity> m_speedstack;
     std::array<FlexECS::Entity, 9> m_slots; //player takes up first 4, enemy last 5
 
     //BattleState m_battle_state;
+    void UpdateSpeedStack();
+    void PlayerMoveSelection();
+    void DeathProcession();
+    void ExecuteMove(FlexECS::Scene::StringIndex move_id, std::vector<int> selected_targets);
   };
 
 }

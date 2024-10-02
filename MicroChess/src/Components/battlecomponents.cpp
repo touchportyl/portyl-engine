@@ -76,7 +76,6 @@ namespace ChronoShift
     FLX_REFL_REGISTER_PROPERTY(chrono_gear_name)
     FLX_REFL_REGISTER_PROPERTY(chrono_gear_description)
     FLX_REFL_REGISTER_PROPERTY(chrono_gear_cooldown)
-    FLX_REFL_REGISTER_PROPERTY(main_stat)
 
     FLX_REFL_REGISTER_PROPERTY(character_ultimate)
     FLX_REFL_REGISTER_PROPERTY(character_ultimate_cooldown)
