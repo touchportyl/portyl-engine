@@ -1,7 +1,7 @@
 #pragma once
 #include "FlexEngine.h"
 
-namespace FlexEngine
+namespace ChronoShift
 {
 	void DisplayInspector();
 

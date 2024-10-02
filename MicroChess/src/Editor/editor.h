@@ -10,7 +10,7 @@
 #include "FlexEngine/Renderer/DebugRenderer/debugrenderer.h"
 #include "FlexEngine.h"
 
-namespace FlexEngine
+namespace ChronoShift
 {
 	class Editor
 	{
@@ -22,11 +22,11 @@ namespace FlexEngine
 		void Update();
 		void Shutdown();
 
-		void SelectEntity(FlexECS::Entity);
-		FlexECS::Entity GetSelectedEntity();
+		void SelectEntity(FlexEngine::FlexECS::Entity);
+		FlexEngine::FlexECS::Entity GetSelectedEntity();
 
 	private:
-		FlexECS::Entity m_selected_entity = FlexECS::Entity::Null;
+		FlexEngine::FlexECS::Entity m_selected_entity = FlexEngine::FlexECS::Entity::Null;
 		//ComponentViewRegistry m_component_registry;
 	};
 

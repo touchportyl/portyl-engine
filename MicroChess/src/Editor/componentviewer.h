@@ -2,21 +2,20 @@
 #include "FlexEngine.h"
 #include "editorgui.h"
 
-namespace FlexEngine
+namespace ChronoShift
 {
-
-	//Each component should provide it's own display functionality
+	//Each component should provide it's own display functionality for the editor
 	using ComponentViewer = std::function<void(FlexEngine::FlexECS::Entity)>;
 
 	class ComponentViewRegistry
 	{
 	public:
-
+		
 		static void RegisterComponent(std::string, ComponentViewer);
 		
 		static bool ViewerExists(std::string);
 
-		static void ViewComponent(std::string, FlexECS::Entity);
+		static void ViewComponent(std::string, FlexEngine::FlexECS::Entity);
 
 	private:
 		static std::unordered_map<std::string, ComponentViewer> m_component_viewer;
@@ -24,28 +23,38 @@ namespace FlexEngine
 	};
 
 
+
+
+
 	#define COMPONENT_VIEWER_START(TYPE) \
-void COMPONENT_VIEWER_##TYPE(FlexECS::Entity entity) \
+void COMPONENT_VIEWER_##TYPE(FlexEngine::FlexECS::Entity entity) \
 { \
   using T = TYPE;
 
 	#define COMPONENT_VIEWER_DRAG_FLOAT2(name) \
-  EditorGUI::DragFloat2(entity.GetComponent<T>()->name, "X", "Y");
+  EditorUI::DragFloat2(entity.GetComponent<T>()->name, #name, "X", "Y");
 
 	#define COMPONENT_VIEWER_DRAG_FLOAT3(name) \
-  EditorGUI::DragFloat3(entity.GetComponent<T>()->name, "X", "Y", "Z"); 
+  EditorUI::DragFloat3(entity.GetComponent<T>()->name, #name, "X", "Y", "Z"); 
 
 	#define COMPONENT_VIEWER_DRAG_INT(name) \
-  EditorGUI::DragInt(entity.GetComponent<T>()->name, #name); 
+  EditorUI::DragInt(entity.GetComponent<T>()->name, #name); 
 
 	#define COMPONENT_VIEWER_ENTITY_REFERENCE(name) \
-  EditorGUI::EntityReference(entity.GetComponent<T>()->name, #name); 
+  EditorUI::EntityReference(entity.GetComponent<T>()->name, #name); 
 
 	#define COMPONENT_VIEWER_COLOR3(name) \
-  EditorGUI::Color3(entity.GetComponent<T>()->name, #name); 
+  EditorUI::Color3(entity.GetComponent<T>()->name, #name); 
 
+	#define COMPONENT_VIEWER_EDITABLE_STRING(name) \
+	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<T>()->name); \
+	EditorUI::EditableTextField(str, #name);
 
-	#define COMPONENT_VIEWER_END() \
+	#define COMPONENT_VIEWER_STRING(name) \
+	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<T>()->name); \
+	EditorUI::TextField(str);
+
+	#define COMPONENT_VIEWER_END(name) \
 }
 
 	#define REGISTER_COMPONENT_VIEWER(TYPE) \

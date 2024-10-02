@@ -1,7 +1,7 @@
 #include "componentviewer.h"
 
 
-namespace FlexEngine
+namespace ChronoShift
 {
 	std::unordered_map<std::string, ComponentViewer> ComponentViewRegistry::m_component_viewer;
 

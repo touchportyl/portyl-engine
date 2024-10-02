@@ -3,10 +3,10 @@
 #include "inspector.h"
 #include "Components/rendering.h"
 
-using namespace ChronoShift;
+using namespace FlexEngine;
 using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
 
-namespace FlexEngine
+namespace ChronoShift
 {
 
 	void DisplayInspector()
@@ -27,32 +27,32 @@ namespace FlexEngine
 			ImGui::SameLine();
 			std::string& name = scene->Internal_StringStorage_Get(*entity.GetComponent<EntityName>());
 			
-			ImGui::Text(name.c_str());
-			//char text_buffer[128];
-			//strncpy_s(text_buffer, name.c_str(), sizeof(text_buffer));
-			//text_buffer[sizeof(text_buffer) - 1] = '\0';
+			EditorUI::EditableTextField(name);
 
-			//if (ImGui::InputText("##EntityName", text_buffer, IM_ARRAYSIZE(text_buffer)))
-			//{
-			//	name = std::string(text_buffer);
-			//}
-
-			auto& position = entity.GetComponent<Position>()->position;
-			auto& rotation = entity.GetComponent<Rotation>()->rotation;
-			auto& scale = entity.GetComponent<Scale>()->scale;
-
-			//Tranform
-			if (ImGui::CollapsingHeader("Position"))
+			//Your 3 basic transform components
+			if (entity.HasComponent<Position>())
 			{
-				EditorGUI::DragFloat2(position, "X", "Y");
+				auto& position = entity.GetComponent<Position>()->position;
+				if (ImGui::CollapsingHeader("Position"))
+				{
+					EditorUI::DragFloat2(position, "Position", "X", "Y");
+				}
 			}
-			if (ImGui::CollapsingHeader("Rotation"))
+			if (entity.HasComponent<Rotation>())
 			{
-				EditorGUI::DragFloat3(rotation, "X", "Y", "Z");
+				auto& rotation = entity.GetComponent<Rotation>()->rotation;
+				if (ImGui::CollapsingHeader("Rotation"))
+				{
+					EditorUI::DragFloat3(rotation, "Rotation", "X", "Y", "Z");
+				}
 			}
-			if (ImGui::CollapsingHeader("Scale"))
+			if (entity.HasComponent<Scale>())
 			{
-				EditorGUI::DragFloat2(scale, "X", "Y");
+				auto& scale = entity.GetComponent<Scale>()->scale;
+				if (ImGui::CollapsingHeader("Scale"))
+				{
+					EditorUI::DragFloat2(scale, "Scale", "X", "Y");
+				}
 			}
 
 			auto entity_record = ENTITY_INDEX[entity];
@@ -75,8 +75,6 @@ namespace FlexEngine
 				}
 			}
 		}
-
-
 		ImGui::End();
 	}
 }
@@ -100,48 +98,3 @@ namespace FlexEngine
 			}
 */
 
-
-/*
-if (ImGui::CollapsingHeader("Transform"))
-			{
-				float field_width = 65.0f;
-				//ImGui::Text("Transform");
-				ImGui::Text("Position");
-				ImGui::Text("X"); ImGui::SameLine();
-				ImGui::PushItemWidth(field_width);
-				ImGui::DragFloat("##posX", &position.position.x, 0.1f);
-				ImGui::PopItemWidth();
-				ImGui::SameLine();
-				ImGui::Text("Y"); ImGui::SameLine();
-				ImGui::PushItemWidth(field_width);
-				ImGui::DragFloat("##posY", &position.position.y, 0.1f);
-				ImGui::PopItemWidth();
-
-				ImGui::Text("Rotation");
-				ImGui::Text("X"); ImGui::SameLine();
-				ImGui::PushItemWidth(field_width);
-				ImGui::DragFloat("##rotX", &rotation.rotation.x, 0.1f);
-				ImGui::PopItemWidth();
-				ImGui::SameLine();
-				ImGui::Text("Y"); ImGui::SameLine();
-				ImGui::PushItemWidth(field_width);
-				ImGui::DragFloat("##rotY", &rotation.rotation.y, 0.1f);
-				ImGui::PopItemWidth();
-				ImGui::SameLine();
-				ImGui::Text("Z"); ImGui::SameLine();
-				ImGui::PushItemWidth(field_width);
-				ImGui::DragFloat("##rotZ", &rotation.rotation.z, 0.1f);
-				ImGui::PopItemWidth();
-
-				ImGui::Text("Scale");
-				ImGui::Text("X"); ImGui::SameLine();
-				ImGui::PushItemWidth(field_width);
-				ImGui::DragFloat("##scaleX", &scale.scale.x, 0.1f);
-				ImGui::PopItemWidth();
-				ImGui::SameLine();
-				ImGui::Text("Y"); ImGui::SameLine();
-				ImGui::PushItemWidth(field_width);
-				ImGui::DragFloat("##scaleY", &scale.scale.y, 0.1f);
-				ImGui::PopItemWidth();
-			}
-*/

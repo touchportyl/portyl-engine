@@ -2,7 +2,7 @@
 #include "editor.h"
 
 
-namespace FlexEngine
+namespace ChronoShift
 {
 	Editor* Editor::GetInstance()
 	{
@@ -18,13 +18,17 @@ namespace FlexEngine
 	}
 	void Editor::Init()
 	{
+
 	}
 
 	void Editor::Update()
 	{
-		//ImGui::ShowDemoWindow();
+		EditorUI::StartFrame();
+		
 		DisplaySceneHierarchy();
 		DisplayInspector();
+		
+		EditorUI::EndFrame();
 	}
 	void Editor::Shutdown()
 	{

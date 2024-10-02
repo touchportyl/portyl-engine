@@ -2,25 +2,38 @@
 #include "FlexEngine.h"
 #include "editor.h"
 
-namespace FlexEngine
+namespace ChronoShift
 {
-	namespace EditorGUI
+	class EditorUI
 	{
-
-		void DragFloat3(Vector3& data, std::string label1 = "", std::string label2 = "", std::string label3 = "",
+	public:
+		static void DragFloat2(FlexEngine::Vector2& data, std::string title = "", 
+			std::string label1 = "X", std::string label2 = "Y",
 			float width = 65.0f, float drag_speed = 0.1f);
 
-		void DragFloat2(Vector2& data, std::string label1 = "", std::string label2 = "",
+		static void DragFloat3(FlexEngine::Vector3& data, std::string title = "", 
+			std::string label1 = "X", std::string label2 = "Y", std::string label3 = "Z",
 			float width = 65.0f, float drag_speed = 0.1f);
 
-		void DragInt(int& data, std::string label1 = "",
+
+		static void DragInt(int& data, std::string label1 = "",
 			float width = 65.0f, float drag_speed = 0.1f);
 
-		void EntityReference(FlexECS::Entity& data, std::string label = "", float width = 120.0f);
+		static void EntityReference(FlexEngine::FlexECS::Entity& data, std::string label = "entity", float width = 120.0f);
 	
-		void Color3(Vector3& data, std::string label1 = "", float width = 65.0f);
+		static void Color3(FlexEngine::Vector3& data, std::string label1 = "color", float width = 65.0f);
 
+		static void EditableTextField(std::string& data, std::string label1 = "", float width = 150.0f);
 
-	}
+		static void TextField(const std::string& data);
 
+		static void StartFrame();
+		static void EndFrame();
+
+	private:
+		static int PushID();
+		static void PopID();
+
+		static int m_id;
+	};
 }

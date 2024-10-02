@@ -3,10 +3,10 @@
 #include "Components/rendering.h"
 
 
-using namespace ChronoShift;
+using namespace FlexEngine;
 using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
 
-namespace FlexEngine
+namespace ChronoShift
 {
 	void DisplaySceneHierarchy()
 	{

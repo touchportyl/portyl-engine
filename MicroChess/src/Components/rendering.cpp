@@ -119,8 +119,8 @@ namespace ChronoShift
 
   void RegisterRenderingComponents()
   {
-    REGISTER_COMPONENT_VIEWER(Rotation);
     REGISTER_COMPONENT_VIEWER(Position);
+    REGISTER_COMPONENT_VIEWER(Rotation);
     REGISTER_COMPONENT_VIEWER(Scale);
     REGISTER_COMPONENT_VIEWER(ZIndex);
     REGISTER_COMPONENT_VIEWER(Parent);
