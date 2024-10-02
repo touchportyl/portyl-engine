@@ -67,6 +67,7 @@ namespace ChronoShift
     Vector3 color_to_add = Vector3::Zero;
     Vector3 color_to_multiply = Vector3::One;
     int alignment = Renderer2DProps::Alignment_Center;
+    GLuint vbo_id = Renderer2DProps::VBO_Basic;
   };
 
   class Camera

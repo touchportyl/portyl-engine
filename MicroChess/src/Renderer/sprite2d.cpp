@@ -5,28 +5,46 @@
 #define PostProcessing 0
 namespace ChronoShift
 {
-    //If u want this function to be callable, tell wei jie, otherwise not supposed to be called outside of sprite2D
-    static void UpdateTransformationMatrix(FlexECS::Entity& currEntity, const Matrix4x4 parent_entity_matrix = Matrix4x4::Identity)
+
+    void UpdateTransformationMatrix(FlexECS::Entity& currEntity, const Matrix4x4 parent_entity_matrix = Matrix4x4::Identity)
     {
         auto& local_transform = currEntity.GetComponent<Transform>()->transform;
-        //if (!currEntity.GetComponent<Transform>()->is_dirty) return; //SOMETHING WRONG WITH IS_DIRTY
-
+        if (!currEntity.GetComponent<Transform>()->is_dirty) return;
+       
         auto& local_position = currEntity.GetComponent<Position>()->position;
         auto& local_scale = currEntity.GetComponent<Scale>()->scale;
-        auto& local_rotation = currEntity.GetComponent<Rotation>()->rotation;
+        // Get rotation component if it exists
+        Rotation* local_rotation = nullptr;
+        if (currEntity.TryGetComponent<Rotation>(local_rotation))
+            local_rotation = currEntity.GetComponent<Rotation>();
+
+        //Alignment of sprite
+        static Vector2 sprite_alignment = Vector2::Zero;
+        switch (currEntity.GetComponent<Sprite>()->alignment)
+        {
+        case Renderer2DProps::Alignment::Alignment_TopLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, local_scale.y * 0.5f); break;
+        case Renderer2DProps::Alignment::Alignment_TopRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, local_scale.y * 0.5f); break;
+        case Renderer2DProps::Alignment::Alignment_BottomLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
+        case Renderer2DProps::Alignment::Alignment_BottomRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
+        default: case Renderer2DProps::Alignment::Alignment_Center: sprite_alignment = Vector2::Zero; break;
+        }
 
         // calculate the transform
-        Matrix4x4 translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, Vector3(-local_position.x, local_position.y, 0.0f));
-        Matrix4x4 rotation_matrix = Quaternion::FromEulerAnglesDeg(local_rotation).ToRotationMatrix();
+        Matrix4x4 translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, Vector3(-(local_position.x + sprite_alignment.x), local_position.y + sprite_alignment.y, 0.0f));
+        Matrix4x4 rotation_matrix = Quaternion::FromEulerAnglesDeg(local_rotation != nullptr ? local_rotation->rotation : Vector3::Zero).ToRotationMatrix();
         Matrix4x4 scale_matrix = Matrix4x4::Scale(Matrix4x4::Identity, local_scale);
 
-        Matrix4x4 curr_entity_matrix = translation_matrix * rotation_matrix * scale_matrix;
-        local_transform = parent_entity_matrix * curr_entity_matrix;
+        // Apply parent entity's matrix
+       local_transform = parent_entity_matrix * (translation_matrix * rotation_matrix * scale_matrix);
     }
 
     void UpdateSprite2DMatrix()
     {
-        //Uncomment log for debug testing
+        //DEBUG CHECKS IF IMAGE IS FROZEN OR NOT SHOWING
+        // 1. DID YOU SET IS_DIRTY = true;
+        // 2. DO YOU ADD A TRANSFORM COMPONENT TO YOUR OBJECT
+        // 3. IS YOUR OBJECTS BEING CALLED IN THE LOOP TO BE PROCESSED? //Uncomment logs to check or ask wei jie
+
         static std::vector<FlexECS::Entity*> t_entitystack;
         t_entitystack.clear();  // Clear stack at the beginning of each update
         // Unordered set to track processed entities (avoid redundant updates)
@@ -36,26 +54,25 @@ namespace ChronoShift
         for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
         {
             // Check if this entity has already been processed
-            if (t_processedEntities.find(entity.Get()) != t_processedEntities.end() || 
-                !entity.GetComponent<IsActive>()->is_active)
-            {
-                continue;  // Skip
-            }
+            if (t_processedEntities.find(entity.Get()) != t_processedEntities.end() || !entity.GetComponent<IsActive>()->is_active) continue; //Skip
 
             // Traverse up the hierarchy and collect parent entities in a stack
             FlexECS::Entity* t_currentEntity = &entity;
-
+            // Track whether any entity in the stack is dirty
+            bool entity_isdirty = false;
             //Update the parent order
             while (true)
             {
                 // Push the entity into the stack to process later
                 t_entitystack.push_back(t_currentEntity);
+                entity_isdirty = t_currentEntity->GetComponent<Transform>()->is_dirty? true: entity_isdirty;
 
                 // Get the parent of the current entity
                 Parent* t_parententity = nullptr;
                 if ((*t_currentEntity).TryGetComponent<Parent>(t_parententity))
                 {
                     t_parententity = (*t_currentEntity).GetComponent<Parent>();
+                    
                     // Move up to the parent entity
                     t_currentEntity = &t_parententity->parent;
                 }
@@ -72,6 +89,8 @@ namespace ChronoShift
                 // Check if the parent has already been processed, don't update matrix
                 if (t_processedEntities.find((*it)->Get()) == t_processedEntities.end())
                 {
+                    // If any entity in the hierarchy is dirty, mark all as dirty
+                    (*it)->GetComponent<Transform>()->is_dirty = entity_isdirty ? true : (*it)->GetComponent<Transform>()->is_dirty;
                     //Update current obj transform
                     UpdateTransformationMatrix(**it, globaltransform);
                     // Mark the entity as processed
@@ -81,12 +100,19 @@ namespace ChronoShift
                 globaltransform = (*it)->GetComponent<Transform>()->transform;
 
                 //Log::Debug(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*(*it)->GetComponent<EntityName>()));
-
             }
            // Log::Debug(" ");
             t_entitystack.clear();
         }
         //Log::Debug("****************************************************************");
+        
+        //Ensure all entities is no longer dirty
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+        {
+            if (!entity.GetComponent<IsActive>()->is_active) continue;
+
+            entity.GetComponent<Transform>()->is_dirty = false;
+        }
     }
 
     void RendererSprite2D()
@@ -104,7 +130,7 @@ namespace ChronoShift
         }
 
         // Render all entities
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Position, Scale, Rotation, Transform, Shader, Sprite>())
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
         {
             if (!entity.GetComponent<IsActive>()->is_active) continue;
 
@@ -120,7 +146,7 @@ namespace ChronoShift
             props.color_to_add = sprite->color_to_add;
             props.color_to_multiply = sprite->color_to_multiply;
             props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
-
+            props.vbo_id = sprite->vbo_id;
             //auto testfn = [&props]() { props.transform.Dump(); };
             //testfn();
 
