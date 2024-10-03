@@ -39,9 +39,9 @@ namespace ChronoShift
 
     //window->PushLayer(std::make_shared<MenuLayer>());
     //window->PushLayer(std::make_shared<BoardLayer>());
-    window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
-    //window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
-    //window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
+    //window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
+    window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
+    window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
 
     // Renderer Setup
 
@@ -61,6 +61,16 @@ namespace ChronoShift
 
   void BaseLayer::Update()
   {
+    #pragma region M1 Controls
+    if (Input::GetKeyDown(GLFW_KEY_1))
+    {
+      FMODWrapper::Core::PlaySound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/test.mp3")));
+    }
+    if (Input::GetKeyDown(GLFW_KEY_2))
+    {
+      FMODWrapper::Core::StopSound("mario");
+    }
+    #pragma endregion
     OpenGLRenderer::ClearFrameBuffer();
 
     FunctionQueue function_queue;
