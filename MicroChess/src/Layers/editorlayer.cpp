@@ -25,10 +25,7 @@ namespace ChronoShift
     Editor::GetInstance()->Update();
 
     ImGui::Begin("Tools");
-    if (ImGui::Button("Show Colliders"))
-    {
-      show_colliders = !show_colliders;
-    }
+    ImGui::Checkbox("Show Colliders", &show_colliders);
     ImGui::End();
 
     if (show_colliders)
