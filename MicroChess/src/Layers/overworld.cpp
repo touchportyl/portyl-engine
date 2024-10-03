@@ -262,7 +262,7 @@ namespace ChronoShift {
 
     //For testing 2500 objects
     //Create one, then clone the rest
-    if (Input::GetKeyDown(GLFW_KEY_P))
+    if (Input::GetKeyDown(GLFW_KEY_0))
     {
       auto scene = FlexECS::Scene::GetActiveScene();
       for (auto& entity : FlexECS::Scene::GetActiveScene()->View<EntityName>()) 
