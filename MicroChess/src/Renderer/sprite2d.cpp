@@ -186,7 +186,7 @@ namespace ChronoShift
         for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
         {
             if (!entity.GetComponent<IsActive>()->is_active) continue;
-
+            //Log::Warning("FUCK");
             auto& z_index = entity.GetComponent<ZIndex>()->z;
             Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
             auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
