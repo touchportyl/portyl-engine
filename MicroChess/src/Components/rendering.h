@@ -16,10 +16,11 @@
 // Copyright (c) 2024 DigiPen, All rights reserved.
 **************************************************************************/
 #include <FlexEngine.h>
-using namespace FlexEngine;
+#include "Editor/componentviewer.h"
 
 namespace ChronoShift
 {
+using namespace FlexEngine;
 
   using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
 
@@ -39,7 +40,7 @@ namespace ChronoShift
   * \class Parent
   * \brief
   * This class represents the parent entity of an entity, enabling hierarchical
-  * transformations where a child entity inherits its parent’s transformation
+  * transformations where a child entity inherits its parentï¿½s transformation
   * matrix. It supports complex scene graph structures.
   ******************************************************************************/
   class Parent
@@ -87,7 +88,7 @@ namespace ChronoShift
   * \brief
   * This class represents the complete transformation of an entity, combining
   * position, rotation, and scale into a 4x4 matrix. It supports hierarchical
-  * transformations by allowing an entity to inherit its parent’s transform.
+  * transformations by allowing an entity to inherit its parentï¿½s transform.
   ******************************************************************************/
   class Transform
   {
@@ -136,6 +137,7 @@ namespace ChronoShift
     int alignment = Renderer2DProps::Alignment_Center;
     GLuint vbo_id = Renderer2DProps::VBO_Basic;
   };
+  
   /*!***************************************************************************
   * \class Camera
   * \brief
@@ -161,4 +163,5 @@ namespace ChronoShift
       float far = 100.0f;
   };
 
+  void RegisterRenderingComponents();
 }

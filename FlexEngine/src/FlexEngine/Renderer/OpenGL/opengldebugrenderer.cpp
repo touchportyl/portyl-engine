@@ -12,8 +12,8 @@ namespace FlexEngine
     //static declarations
     Asset::Shader OpenGLDebugRenderer::m_line_shader;
     std::filesystem::path current_file_path = __FILE__;
-    std::filesystem::path vertex_shader_path(current_file_path.parent_path() / "../../../../assets/shader/debug/debugrenderer.vert");
-    std::filesystem::path fragment_shader_path(current_file_path.parent_path() / "../../../../assets/shader/debug/debugrenderer.frag");
+    std::filesystem::path vertex_shader_path(current_file_path.parent_path() / "../../../../assets/shader/debugshaders/debugrenderer.vert");
+    std::filesystem::path fragment_shader_path(current_file_path.parent_path() / "../../../../assets/shader/debugshaders/debugrenderer.frag");
 
     void FlexEngine::OpenGLDebugRenderer::DrawLine2D(Vector2 start, Vector2 end, Vector3 color, float line_width)
     {
