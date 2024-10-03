@@ -34,7 +34,7 @@
 
 #include "Components/rendering.h"
 
-#define PostProcessing 1
+#define PostProcessing 0
 namespace ChronoShift
 {
     /*!***************************************************************************

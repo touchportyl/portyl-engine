@@ -33,6 +33,9 @@
     <Filter Include="src\BattleSystems">
       <UniqueIdentifier>{61a2e2be-1880-4d04-bfd6-b8a5dcd4c6b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Editor">
+      <UniqueIdentifier>{fbdd6626-7250-4b66-a9d0-6bd2380b98f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\texture.frag">
@@ -109,8 +112,23 @@
     <ClInclude Include="src\Components\characterinput.h">
       <Filter>src\Components</Filter>
     </ClInclude>
-    <ClInclude Include="src\Layers\imgui_debug.h">
+    <ClInclude Include="src\Layers\editorlayer.h">
       <Filter>src\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\hierarchyview.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\editor.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\inspector.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\editorgui.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\componentviewer.h">
+      <Filter>src\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -177,8 +195,23 @@
     <ClCompile Include="src\Components\characterinput.cpp">
       <Filter>src\Components</Filter>
     </ClCompile>
-    <ClCompile Include="src\Layers\imgui_debug.cpp">
+    <ClCompile Include="src\Layers\editorlayer.cpp">
       <Filter>src\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\hierarchyview.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\editor.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\inspector.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\editorgui.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\componentviewer.cpp">
+      <Filter>src\Editor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
