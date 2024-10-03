@@ -1,4 +1,21 @@
-#pragma once
+/* Start Header
+*****************************************************************/
+/*!
+WLVERSE [https://wlverse.web.app]
+\file      battlesystem.h
+\author    [100%] Ho Jin Jie Donovan, h.jinjiedonovan, 2301233
+\par       h.jinjiedonovan\@digipen.edu
+\date      03 October 2024
+\brief     This file is where the functions utilized by the
+           battle system to execute the battle scene, is declared
+           at.
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header
+*******************************************************************/
 #pragma once
 #include <FlexEngine.h>
 

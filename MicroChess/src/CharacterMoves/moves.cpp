@@ -1,3 +1,23 @@
+/* Start Header
+*****************************************************************/
+/*!
+\file      moves.cpp
+\author    [90%] Rocky Sutarius
+\par			 rocky.sutarius\@digipen.edu
+\co-author [10%] Ho Jin Jie Donovan, h.jinjiedonovan, 2301233
+\par       h.jinjiedonovan\@digipen.edu
+\date      03 October 2024
+\brief     This file contains the definition of all the moves'
+					 functionalities along with the registry of these
+					 moves stored into an unordered map
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header
+*******************************************************************/
+
 #include "CharacterMoves/moves.h"
 #include "Components/battlecomponents.h"
 namespace ChronoShift 

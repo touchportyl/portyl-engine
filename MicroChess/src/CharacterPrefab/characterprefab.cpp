@@ -1,6 +1,30 @@
-#include "characterprefab.h"
+/* Start Header
+*****************************************************************/
+/*!
+WLVERSE [https://wlverse.web.app]
+\file      characterprefab.cpp
+\author    [10%] Ho Jin Jie Donovan, h.jinjiedonovan, 2301233
+\par       h.jinjiedonovan\@digipen.edu
+\co-author [90%] Kuan Yew Chong
+\par       yewchong.k\@digipen.edu
+\date      03 October 2024
+\brief     This file contains the following functions to load
+           and save characters from and to file respectively,
+           along with manpulating character data while the game
+           is running:
+           - SaveCharacters
+           - ResetCharacters
+           - CreateCharacter
+           - EditCharacter
+           - LoadCharacter
 
-using namespace ChronoShift; // This is solution specific...
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header
+*******************************************************************/
+#include "characterprefab.h"
 
 void SaveCharacters() {
   auto scene = FlexECS::Scene::GetActiveScene();

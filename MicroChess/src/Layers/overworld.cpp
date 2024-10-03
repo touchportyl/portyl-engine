@@ -4,7 +4,6 @@
 #include "Layers.h"
 
 #include "Components/battlecomponents.h"
-#include "Components/charactercomponents.h"
 #include "Components/physics.h"
 #include "Components/rendering.h"
 #include "Components/characterinput.h"

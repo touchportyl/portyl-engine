@@ -1,3 +1,22 @@
+/* Start Header
+*****************************************************************/
+/*!
+WLVERSE [https://wlverse.web.app]
+\file      battlecomponents.h
+\author    [90%] Rocky Sutarius
+\par       rocky.sutarius@digipen.edu
+\co-author [10%] Ho Jin Jie Donovan, h.jinjiedonovan, 2301233
+\par       h.jinjiedonovan\@digipen.edu
+\date      03 October 2024
+\brief     This file is where the design of the components utilized
+           by the battle system, are written in.
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header
+*******************************************************************/
 #pragma once
 #include <FlexEngine.h>
 using namespace FlexEngine;

@@ -1,3 +1,21 @@
+/* Start Header
+*****************************************************************/
+/*!
+WLVERSE [https://wlverse.web.app]
+\file      battlesystem.cpp
+\author    [100%] Ho Jin Jie Donovan, h.jinjiedonovan, 2301233
+\par       h.jinjiedonovan\@digipen.edu
+\date      03 October 2024
+\brief     This file is where the functions utilized by the
+           battle system to execute the battle scene, is defined
+           at.
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header
+*******************************************************************/
 #include "battlesystem.h"
 
 #include "States.h"
@@ -57,6 +75,7 @@ namespace ChronoShift {
       slot.AddComponent<Scale>({ { 100,100 } });
       slot.AddComponent<ZIndex>({ 9 });
       slot.AddComponent<Rotation>({});
+      slot.AddComponent<Transform>({});
       slot.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"()"),
         is_player_slot ? color_player_slot : color_enemy_slot,
@@ -65,7 +84,6 @@ namespace ChronoShift {
         Renderer2DProps::Alignment_Center
        });
       slot.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
       m_slots[i] = slot;
     }
 
@@ -82,6 +100,7 @@ namespace ChronoShift {
       move_button.AddComponent<Scale>({ { 350,70 } });
       move_button.AddComponent<ZIndex>({ 9 });
       move_button.AddComponent<Rotation>({});
+      move_button.AddComponent<Transform>({});
       move_button.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"()"),
         Vector3::One,
@@ -350,7 +369,8 @@ namespace ChronoShift {
         targets.insert(targets.begin(), static_cast<FlexECS::Entity>(m_slots[selected_targets[i]].GetComponent<BattleSlot>()->character));
       }
     }
-    else if (move.target_type == MOVE_TARGET_SELF) {
+    // WIP: To include execution of other moves of different target types
+    /*else if (move.target_type == MOVE_TARGET_SELF) {
       targets.push_back(user);
     }
     else if (move.target_type == MOVE_TARGET_ALL_ENEMY) {
@@ -366,7 +386,7 @@ namespace ChronoShift {
         if (target.GetComponent<Character>()->is_player)
           targets.push_back(target);
       }
-    }
+    }*/
 
     //execute move
     move.effect(targets);
@@ -374,8 +394,9 @@ namespace ChronoShift {
     user.GetComponent<Action>()->move_to_use = FlexECS::Entity::Null;
     m_characters.sort(SortLowestSpeed());
 
-    //Display now info
+    
     auto scene = FlexECS::Scene::GetActiveScene();
+    //Display Character Move and target selection
     std::cout << scene->Internal_StringStorage_Get(user.GetComponent<Character>()->character_name)
       << " executed " << move.name
       << " on ";
@@ -384,6 +405,7 @@ namespace ChronoShift {
       if ((i + 1) < targets.size()) std::cout << " and ";
     }
     std::cout << std::endl;
+    // Display Status of alive Characters
     for (auto& entity : m_characters)
     {
       if (entity.GetComponent<Character>()->current_health > 0) {
@@ -392,6 +414,7 @@ namespace ChronoShift {
           << "  Spd: " << entity.GetComponent<Character>()->current_speed << std::endl;
       }
     }
+    // Display Characters that have died
     for (auto& entity : m_characters)
     {
       if (entity.GetComponent<Character>()->current_health <= 0) {
@@ -437,6 +460,7 @@ namespace ChronoShift {
           }
         }
         to_delete = 0;
+        // Removing Dead Character from battle system slots
         for (int i = 0; i < m_slots.size(); i++) {
           if (m_slots[i].GetComponent<BattleSlot>()->character == entity) {
             m_slots[i].GetComponent<IsActive>()->is_active = false;
