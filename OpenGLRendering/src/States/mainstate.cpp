@@ -21,9 +21,10 @@ namespace OpenGLRendering
     );
     AlignImGuiContext(window);
 
+    // load audio handler
+
     // load assets only after the window has been created
     AssetManager::Load();
-    
     FreeQueue::Push(std::bind(&AssetManager::Unload), "OpenGLRendering AssetManager");
 
     window->SetTargetFPS();
@@ -35,6 +36,7 @@ namespace OpenGLRendering
 
   void MainState::OnExit()
   {
+    // Free in reverse add order...
     FreeQueue::RemoveAndExecute("OpenGLRendering AssetManager");
 
     Application::CloseWindow(window);

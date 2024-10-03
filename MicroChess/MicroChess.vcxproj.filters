@@ -103,6 +103,18 @@
     <ClInclude Include="src\CharacterPrefab\characterprefab.h">
       <Filter>src\CharacterPrefab</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\overworld.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BattleSystems\physicssystem.h">
+      <Filter>src\BattleSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\characterinput.h">
+      <Filter>src\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\imgui_debug.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -158,6 +170,18 @@
     </ClCompile>
     <ClCompile Include="src\CharacterPrefab\characterprefab.cpp">
       <Filter>src\CharacterPrefab</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\overworld.cpp">
+      <Filter>src\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BattleSystems\physicssystem.cpp">
+      <Filter>src\BattleSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\characterinput.cpp">
+      <Filter>src\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\imgui_debug.cpp">
+      <Filter>src\Layers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

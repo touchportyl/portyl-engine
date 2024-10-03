@@ -1,6 +1,7 @@
 #include "mainlayer.h"
 
 #include "Components/Components.h"
+#include "flxdata.h"
 
 namespace OpenGLRendering
 {
@@ -140,7 +141,6 @@ namespace OpenGLRendering
     CreateDefaultScene();
 
     // Renderer Setup
-
     OpenGLRenderer::EnableDepthTest();
   }
 

@@ -23,13 +23,15 @@ namespace ChronoShift
 
     //window->PushLayer(std::make_shared<MenuLayer>());
     //window->PushLayer(std::make_shared<BoardLayer>());
-    window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
+    //window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
+    window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
+    window->PushLayer(std::make_shared<ChronoShift::DebugLayer>());
 
     // Renderer Setup
 
     OpenGLRenderer::EnableBlending();
-    Vector2 temp{ static_cast<float>(window->GetWidth()), static_cast<float>(window->GetHeight()) };
-    OpenGLSpriteRenderer::InitBloomFBO(temp);
+    Vector2 windowsize{ static_cast<float>(window->GetWidth()), static_cast<float>(window->GetHeight()) };
+    OpenGLSpriteRenderer::Init(windowsize);
   }
 
   void BaseLayer::OnDetach()
