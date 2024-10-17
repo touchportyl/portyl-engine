@@ -43,12 +43,10 @@ namespace FlexEngine
     std::filesystem::path curr_file_path = __FILE__;
     std::filesystem::path shared_vert_path(curr_file_path.parent_path() / "../../../../assets/shader/Shared.vert");
     std::filesystem::path bloom_brightness_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_bright_extraction.frag");
-    std::filesystem::path bloom_blurV_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_blur_vertical.frag");
-    std::filesystem::path bloom_blurH_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_blur_horizontal.frag");
+    std::filesystem::path bloom_blur_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_gaussian_blurN.frag");
     std::filesystem::path bloom_final_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_final_composite.frag");
     Asset::Shader OpenGLSpriteRenderer::m_bloom_brightness_shader;
-    Asset::Shader OpenGLSpriteRenderer::m_bloom_gaussianblurH_shader;
-    Asset::Shader OpenGLSpriteRenderer::m_bloom_gaussianblurV_shader;
+    Asset::Shader OpenGLSpriteRenderer::m_bloom_gaussianblur_shader;
     Asset::Shader OpenGLSpriteRenderer::m_bloom_finalcomp_shader;
 
     //////////////////////////////////////////////////////////////
@@ -63,6 +61,8 @@ namespace FlexEngine
     GLuint OpenGLSpriteRenderer::m_pingpongTex[2] = {};
     GLuint OpenGLSpriteRenderer::m_postProcessingTex = 0;
     GLuint OpenGLSpriteRenderer::m_editorTex = {};
+
+    float width, height;
     //////////////////////////////////////////////////////////////
     
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -265,26 +265,27 @@ namespace FlexEngine
         /////////////////////////////////////////////////////////////////////////////////////
         // Linking shaders
         m_bloom_brightness_shader.Create(shared_vert_path, bloom_brightness_frag_path);
-        m_bloom_gaussianblurH_shader.Create(shared_vert_path, bloom_blurH_frag_path);
-        m_bloom_gaussianblurV_shader.Create(shared_vert_path, bloom_blurV_frag_path);
+        m_bloom_gaussianblur_shader.Create(shared_vert_path, bloom_blur_frag_path);
         m_bloom_finalcomp_shader.Create(shared_vert_path, bloom_final_frag_path);
         FreeQueue::Push(
           [=]()
         {
             m_bloom_brightness_shader.Destroy();
-            m_bloom_gaussianblurH_shader.Destroy();
-            m_bloom_gaussianblurV_shader.Destroy();
+            m_bloom_gaussianblur_shader.Destroy();
             m_bloom_finalcomp_shader.Destroy();
         }
         );
         Log::Info("All post-processing shaders are created.");
 
         m_bloom_finalcomp_shader.Use();
-        glUniform1i(glGetUniformLocation(m_bloom_finalcomp_shader.Get(), "screenTexture"), 0);
-        glUniform1i(glGetUniformLocation(m_bloom_finalcomp_shader.Get(), "bloomTexture"), 1);
+        glUniform1i(glGetUniformLocation(m_bloom_finalcomp_shader.Get(), "screenTex"), 0);
+        glUniform1i(glGetUniformLocation(m_bloom_finalcomp_shader.Get(), "bloomVTex"), 1);
+        glUniform1i(glGetUniformLocation(m_bloom_finalcomp_shader.Get(), "bloomHTex"), 2);
         glUniform1f(glGetUniformLocation(m_bloom_finalcomp_shader.Get(), "opacity"), m_PPopacity);
-        m_bloom_gaussianblurH_shader.Use();
-        glUniform1i(glGetUniformLocation(m_bloom_gaussianblurH_shader.Get(), "screenTexture"), 0);
+        m_bloom_gaussianblur_shader.Use();
+        glUniform1i(glGetUniformLocation(m_bloom_gaussianblur_shader.Get(), "scene"), 0);
+        glUniform1i(glGetUniformLocation(m_bloom_gaussianblur_shader.Get(), "blurDistance"), 2.0f);
+        glUniform1i(glGetUniformLocation(m_bloom_gaussianblur_shader.Get(), "intensity"), 6);
 
         #if 0
         // Enables the Depth Buffer
@@ -340,7 +341,6 @@ namespace FlexEngine
         // Create relevant FBO 
         glGenFramebuffers(1, &m_postProcessingFBO); //For final composite post-process
         Enable_PPFBO_Layer();
-        float width, height;
         width = windowSize.x;
         height = windowSize.y;
         // Create brightness pass texture
@@ -401,6 +401,19 @@ namespace FlexEngine
 
         // Unbind frame buffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        FreeQueue::Push(
+        [=]()
+        {
+            glDeleteFramebuffers(1, &m_postProcessingFBO);
+            glDeleteFramebuffers(1, &m_editorFBO);
+            glDeleteFramebuffers(2, m_pingpongFBO);
+            glDeleteTextures(1, &m_brightnessTex);
+            glDeleteTextures(1, &m_postProcessingTex);
+            glDeleteTextures(1, &m_editorTex);
+            glDeleteTextures(2, m_pingpongTex);
+        }
+        );
     }
 
     /*!***************************************************************************
@@ -484,18 +497,25 @@ namespace FlexEngine
         m_draw_calls++;
 
         // Step 4: Gaussian Blur Pass
-        //auto& blur_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/GaussianBlur)");
-        m_bloom_gaussianblurH_shader.Use();
-
+        m_bloom_gaussianblur_shader.Use();
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_postProcessingFBO);
+        glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_brightnessTex, 0);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_pingpongFBO[0]);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongTex[0], 0);
+        glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_pingpongFBO[1]);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongTex[1], 0);
+        glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
         bool horizontal = true;
-        int blur_passes = 2;
-        for (int i = 0; i < blur_passes; ++i)
+        for (int i = 0; i < 6; ++i)
         {
             glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[horizontal]);
-            m_bloom_gaussianblurH_shader.SetUniform_int("horizontal", horizontal);
+            m_bloom_gaussianblur_shader.SetUniform_int("horizontal", horizontal);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_brightnessTex);
-            m_bloom_gaussianblurH_shader.SetUniform_int("scene", 0);
+            glBindTexture(GL_TEXTURE_2D, m_pingpongTex[horizontal]);
+            m_bloom_gaussianblur_shader.SetUniform_int("scene", 0);
+            m_bloom_gaussianblur_shader.SetUniform_float("blurDistance", 10.0f);
+            m_bloom_gaussianblur_shader.SetUniform_int("intensity", 12);
 
             glBindVertexArray(m_vbos[2].vao);
             glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -508,10 +528,13 @@ namespace FlexEngine
         m_bloom_finalcomp_shader.Use();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_editorTex); // Original scene texture
-        m_bloom_finalcomp_shader.SetUniform_int("screenTexture", 0);
+        m_bloom_finalcomp_shader.SetUniform_int("screenTex", 0);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, m_pingpongTex[0]); // Final blurred texture
-        m_bloom_finalcomp_shader.SetUniform_int("bloomTexture", 1);
+        glBindTexture(GL_TEXTURE_2D, m_pingpongTex[0]); // Blur Vertical
+        m_bloom_finalcomp_shader.SetUniform_int("bloomVTex", 1);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, m_pingpongTex[1]); // Blur Horizontal
+        m_bloom_finalcomp_shader.SetUniform_int("bloomHTex", 2);
 
         glBindVertexArray(m_vbos[2].vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);

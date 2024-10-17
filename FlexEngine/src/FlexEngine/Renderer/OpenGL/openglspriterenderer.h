@@ -125,8 +125,7 @@ namespace FlexEngine
         static std::vector<VertexBufferObject> m_vbos; /*!< Vector of Vertex Buffer Objects */
 
         static Asset::Shader m_bloom_brightness_shader;
-        static Asset::Shader m_bloom_gaussianblurH_shader;
-        static Asset::Shader m_bloom_gaussianblurV_shader;
+        static Asset::Shader m_bloom_gaussianblur_shader;
         static Asset::Shader m_bloom_finalcomp_shader;
 
         //Currently have 6 FBOs - including default
