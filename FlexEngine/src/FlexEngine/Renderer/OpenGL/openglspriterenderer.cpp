@@ -32,15 +32,26 @@
 
 namespace FlexEngine
 {
-
     // static member initialization
-    uint32_t OpenGLSpriteRenderer::m_draw_calls = 0;
+    uint32_t OpenGLSpriteRenderer::m_draw_calls = 0; 
     uint32_t OpenGLSpriteRenderer::m_draw_calls_last_frame = 0;
     bool OpenGLSpriteRenderer::m_depth_test = false;
     bool OpenGLSpriteRenderer::m_blending = false;
-    
+
     std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
 
+    std::filesystem::path curr_file_path = __FILE__;
+    std::filesystem::path shared_vert_path(curr_file_path.parent_path() / "../../../../assets/shader/Shared.vert");
+    std::filesystem::path bloom_brightness_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_bright_extraction.frag");
+    std::filesystem::path bloom_blurV_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_blur_vertical.frag");
+    std::filesystem::path bloom_blurH_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_blur_horizontal.frag");
+    std::filesystem::path bloom_final_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_final_composite.frag");
+    Asset::Shader OpenGLSpriteRenderer::m_bloom_brightness_shader;
+    Asset::Shader OpenGLSpriteRenderer::m_bloom_gaussianblurH_shader;
+    Asset::Shader OpenGLSpriteRenderer::m_bloom_gaussianblurV_shader;
+    Asset::Shader OpenGLSpriteRenderer::m_bloom_finalcomp_shader;
+
+    //////////////////////////////////////////////////////////////
     GLuint OpenGLSpriteRenderer::samples = 8;
     float OpenGLSpriteRenderer::gamma = 2.2f;
     GLuint OpenGLSpriteRenderer::m_rectVAO = 0;
@@ -52,7 +63,8 @@ namespace FlexEngine
     GLuint OpenGLSpriteRenderer::m_brightBuffer = 0;
     GLuint OpenGLSpriteRenderer::m_pingpongFBO[2] = {};
     GLuint OpenGLSpriteRenderer::m_pingpongBuffer[2] = {};
-
+    //////////////////////////////////////////////////////////////
+    
     //////////////////////////////////////////////////////////////////////////////////////////
     // WRAPPER FUNCTIONS
     /*!***************************************************************************
@@ -238,11 +250,25 @@ namespace FlexEngine
         };
         CreateVAOandVBO(line.vao, line.vbo, vert_1, sizeof(vert_1) / sizeof(float));
         m_vbos.push_back(line);
+        Log::Info("All VAOs & VBOs are setup.");
 
-        ////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////
+        //Linking Shaders
+        m_bloom_brightness_shader.Create(shared_vert_path, bloom_brightness_frag_path);
+        m_bloom_gaussianblurH_shader.Create(shared_vert_path, bloom_blurH_frag_path);
+        m_bloom_gaussianblurV_shader.Create(shared_vert_path, bloom_blurV_frag_path);
+        m_bloom_finalcomp_shader.Create(shared_vert_path, bloom_final_frag_path);
+        FreeQueue::Push(
+          [=]()
         {
-            // EVERYTHING BELOW HERE IS STILL UNDER DEVELOPMENT
+            m_bloom_brightness_shader.Destroy();
+            m_bloom_gaussianblurH_shader.Destroy();
+            m_bloom_gaussianblurV_shader.Destroy();
+            m_bloom_finalcomp_shader.Destroy();
+        }
+        );
+        Log::Info("All post-processing shaders are created.");
+
+        {
             auto& asset_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/test)");
             asset_shader.Use();
             glUniform1i(glGetUniformLocation(asset_shader.Get(), "screenTexture"), 0);
@@ -263,23 +289,22 @@ namespace FlexEngine
                 -1.0f,  1.f, 0.0f,   0.0f, 1.0f, // Top-left
                 -1.0f, -1.f, 0.0f,   0.0f, 0.0f  // Bottom-left
             };
-            //Change to 1,
+            
             //Disable for now
-            {
+            #if 0
+            // Enables the Depth Buffer
+            glEnable(GL_DEPTH_TEST);
 
-                //// Enables the Depth Buffer
-                //glEnable(GL_DEPTH_TEST);
+            // Enables Multisampling
+            glEnable(GL_MULTISAMPLE);
 
-                //// Enables Multisampling
-                //glEnable(GL_MULTISAMPLE);
-
-                //// Enables Cull Facing
-                //glEnable(GL_CULL_FACE);
-                //// Keeps front faces
-                //glCullFace(GL_FRONT);
-                //// Uses counter clock-wise standard
-                //glFrontFace(GL_CCW);
-            }
+            // Enables Cull Facing
+            glEnable(GL_CULL_FACE);
+            // Keeps front faces
+            glCullFace(GL_FRONT);
+            // Uses counter clock-wise standard
+            glFrontFace(GL_CCW);
+            #endif
 
             // Set up VAO and VBO
             glGenVertexArrays(1, &m_rectVAO);

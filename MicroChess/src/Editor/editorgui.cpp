@@ -84,6 +84,15 @@ namespace ChronoShift
 		PopID();
 	}
 
+	void EditorUI::CreateCheckbox(bool& value, std::string title)
+	{
+		PushID();
+		ImGui::Text(title.c_str());  // Display the title label
+		ImGui::SameLine();           // Place the checkbox next to the title
+		ImGui::Checkbox("", &value); // Create the checkbox widget
+		PopID();
+	}
+
 	void EditorUI::EntityReference(FlexECS::Entity& entity, std::string title)
 	{
 		PushID();

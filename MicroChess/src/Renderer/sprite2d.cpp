@@ -34,7 +34,6 @@
 
 #include "Components/rendering.h"
 
-#define PostProcessing 0
 namespace ChronoShift
 {
     /*!***************************************************************************
@@ -174,19 +173,19 @@ namespace ChronoShift
         Renderer2DProps props;
         props.window_size = { static_cast<float>(window_props.width), static_cast<float>(window_props.height) };
 
-        FunctionQueue render_queue;
-
-        if (PostProcessing)
-        {
-            OpenGLSpriteRenderer::EnablePostProcessing();
-            OpenGLSpriteRenderer::ClearFrameBuffer();
-        }
+        FunctionQueue pp_render_queue, non_pp_render_queue;
+        ////////////////////////////////////////////////////////////////////////////////
+        // Potential Issues
+        ////////////////////////////////////////////////////////////////////////////////
+        // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
+        
+        OpenGLSpriteRenderer::EnablePostProcessing();
+        OpenGLSpriteRenderer::ClearFrameBuffer();
 
         // Render all entities
         for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
         {
             if (!entity.GetComponent<IsActive>()->is_active) continue;
-            //Log::Warning("FUCK");
             auto& z_index = entity.GetComponent<ZIndex>()->z;
             Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
             auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
@@ -200,10 +199,11 @@ namespace ChronoShift
             props.color_to_multiply = sprite->color_to_multiply;
             props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
             props.vbo_id = sprite->vbo_id;
-            //auto testfn = [&props]() { props.transform.Dump(); };
-            //testfn();
 
-            render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
+            if (sprite->post_processed)
+                pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
+            else
+                non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
         }
 
         // push settings
@@ -215,12 +215,10 @@ namespace ChronoShift
 
         // batch-render
 
-        render_queue.Flush();
-        if (PostProcessing)
-        {
-            OpenGLSpriteRenderer::DisablePostProcessing();
-            OpenGLSpriteRenderer::DrawPostProcessingLayer();
-        }
+        pp_render_queue.Flush();
+        OpenGLSpriteRenderer::DisablePostProcessing();
+        OpenGLSpriteRenderer::DrawPostProcessingLayer();
+        non_pp_render_queue.Flush();
 
         // pop settings
 

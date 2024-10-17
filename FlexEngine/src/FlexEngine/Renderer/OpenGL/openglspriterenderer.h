@@ -124,6 +124,11 @@ namespace FlexEngine
 
         static std::vector<VertexBufferObject> m_vbos; /*!< Vector of Vertex Buffer Objects */
 
+        static Asset::Shader m_bloom_brightness_shader;
+        static Asset::Shader m_bloom_gaussianblurH_shader;
+        static Asset::Shader m_bloom_gaussianblurV_shader;
+        static Asset::Shader m_bloom_finalcomp_shader;
+
         // Testing variables (subject to change)
         static GLuint samples;                         /*!< Number of samples per pixel for MSAA anti-aliasing */
         static float gamma;                            /*!< Controls the gamma function */

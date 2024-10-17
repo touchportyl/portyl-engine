@@ -92,7 +92,9 @@ namespace ChronoShift {
             { 0.35f, 0.58f, 0.80f },
             Vector3::Zero,
             Vector3::One,
-            Renderer2DProps::Alignment_Center
+            Renderer2DProps::Alignment_Center,
+            0,
+            false
            });
         box.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
@@ -110,7 +112,9 @@ namespace ChronoShift {
                 { 0.35f, 0.08f, 1.80f },
                 Vector3::Zero,
                 Vector3::One,
-                Renderer2DProps::Alignment_Center
+                Renderer2DProps::Alignment_Center,
+                0,
+                false
                });
             box2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box2.AddComponent<Parent>({ box });
@@ -127,7 +131,9 @@ namespace ChronoShift {
                 { 1.35f, 0.08f, 0.80f },
                 Vector3::Zero,
                 Vector3::One,
-                Renderer2DProps::Alignment_Center
+                Renderer2DProps::Alignment_Center,
+                0,
+                false
                });
             box3.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box3.AddComponent<Parent>({ box2 });
@@ -144,7 +150,9 @@ namespace ChronoShift {
                 { 0.1f, 0.08f, 0.80f },
                 Vector3::Zero,
                 Vector3::One,
-                Renderer2DProps::Alignment_Center
+                Renderer2DProps::Alignment_Center,
+                0,
+                false
                });
             box4.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box4.AddComponent<Parent>({ box3 });
@@ -161,7 +169,9 @@ namespace ChronoShift {
                 { 0.2f, 0.78f, 0.30f },
                 Vector3::Zero,
                 Vector3::One,
-                Renderer2DProps::Alignment_Center
+                Renderer2DProps::Alignment_Center,
+                0,
+                false
                });
             box5.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box5.AddComponent<Parent>({ box4 });
@@ -178,7 +188,9 @@ namespace ChronoShift {
                 { 1.2f, 0.78f, 0.30f },
                 Vector3::Zero,
                 Vector3::One,
-                Renderer2DProps::Alignment_Center
+                Renderer2DProps::Alignment_Center,
+                0,
+                false
                });
             box6.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box6.AddComponent<Parent>({ box5 });
@@ -195,7 +207,9 @@ namespace ChronoShift {
                 { 1.2f, 0.78f, 1.30f },
                 Vector3::Zero,
                 Vector3::One,
-                Renderer2DProps::Alignment_Center
+                Renderer2DProps::Alignment_Center,
+                0,
+                false
                });
             box7.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box7.AddComponent<Parent>({ box6 });
