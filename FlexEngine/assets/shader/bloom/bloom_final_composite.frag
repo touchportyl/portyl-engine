@@ -1,15 +1,23 @@
-#version 460 core
+#version 330 core
 
-//Third part of bloom -> Combining HDR Color with Bloom Color (Add)
-
-in vec2 TexCoords;
 out vec4 FragColor;
+in vec2 tex_coord;
 
-uniform sampler2D scene;
-uniform sampler2D bloomBlur;
+uniform sampler2D screenTexture;
+uniform sampler2D bloomTexture;
+uniform float opacity;  // Controls bloom intensity
 
-void main() {
-    vec3 hdrColor = texture(scene, TexCoords).rgb;
-    vec3 bloomColor = texture(bloomBlur, TexCoords).rgb;
-    FragColor = vec4(hdrColor + bloomColor, 1.0);  // Additive blending
+void main()
+{
+    // Fetch base color from the screen texture
+    vec3 fragment = texture(screenTexture, tex_coord).rgb;
+
+    // Fetch bloom color
+    vec3 bloom = texture(bloomTexture, tex_coord).rgb;
+
+    // Perform overlay blending with opacity control
+    vec3 blended = mix(fragment, bloom, opacity);
+
+    // Output the final fragment color
+    FragColor = vec4(blended, 1.0);  // Full alpha
 }

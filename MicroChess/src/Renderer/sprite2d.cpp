@@ -169,6 +169,9 @@ namespace ChronoShift
     *****************************************************************************/
     void RendererSprite2D()
     {
+        //Update Transformation Matrix of All Entities
+        UpdateSprite2DMatrix();
+
         WindowProps window_props = Application::GetCurrentWindow()->GetProps();
         Renderer2DProps props;
         props.window_size = { static_cast<float>(window_props.width), static_cast<float>(window_props.height) };
@@ -179,9 +182,6 @@ namespace ChronoShift
         ////////////////////////////////////////////////////////////////////////////////
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
         
-        OpenGLSpriteRenderer::EnablePostProcessing();
-        OpenGLSpriteRenderer::ClearFrameBuffer();
-
         // Render all entities
         for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
         {
@@ -214,14 +214,14 @@ namespace ChronoShift
         if (!blending) OpenGLRenderer::EnableBlending();
 
         // batch-render
-
-        pp_render_queue.Flush();
-        OpenGLSpriteRenderer::DisablePostProcessing();
+        OpenGLSpriteRenderer::Enable_PPFBO_Layer();
+        OpenGLSpriteRenderer::ClearFrameBuffer();
+        pp_render_queue.Flush(); //First Render pp objects first
         OpenGLSpriteRenderer::DrawPostProcessingLayer();
-        non_pp_render_queue.Flush();
+        OpenGLSpriteRenderer::Enable_DefaultFBO_Layer();
+        non_pp_render_queue.Flush(); //Then Render non-pp objects second
 
         // pop settings
-
         if (depth_test) OpenGLRenderer::EnableDepthTest();
         if (!blending) OpenGLRenderer::DisableBlending();
     }

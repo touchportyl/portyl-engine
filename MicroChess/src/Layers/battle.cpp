@@ -191,7 +191,6 @@ namespace ChronoShift {
     m_battlesystem.Update();
 
     DisplayTurnOrder(m_battlesystem.GetTurnOrder());
-    UpdateSprite2DMatrix();
     RendererSprite2D();
     
     if (Input::GetKeyDown(GLFW_KEY_S)) {

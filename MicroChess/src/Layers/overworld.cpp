@@ -36,7 +36,8 @@ namespace ChronoShift {
             Vector3::Zero,
             Vector3::One,
             Renderer2DProps::Alignment_Center,
-            Renderer2DProps::VBO_Basic
+            Renderer2DProps::VBO_Basic,
+            true
            });
         background.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
@@ -94,7 +95,7 @@ namespace ChronoShift {
             Vector3::One,
             Renderer2DProps::Alignment_Center,
             0,
-            false
+            true
            });
         box.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
@@ -114,7 +115,7 @@ namespace ChronoShift {
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
-                false
+                true
                });
             box2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box2.AddComponent<Parent>({ box });
@@ -133,7 +134,7 @@ namespace ChronoShift {
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
-                false
+                true
                });
             box3.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box3.AddComponent<Parent>({ box2 });
@@ -152,7 +153,7 @@ namespace ChronoShift {
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
-                false
+                true
                });
             box4.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box4.AddComponent<Parent>({ box3 });
@@ -171,7 +172,7 @@ namespace ChronoShift {
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
-                false
+                true
                });
             box5.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box5.AddComponent<Parent>({ box4 });
@@ -190,7 +191,7 @@ namespace ChronoShift {
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
-                false
+                true
                });
             box6.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box6.AddComponent<Parent>({ box5 });
@@ -209,7 +210,7 @@ namespace ChronoShift {
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
-                false
+                true
                });
             box7.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box7.AddComponent<Parent>({ box6 });
@@ -355,9 +356,6 @@ namespace ChronoShift {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     UpdatePhysicsSystem();
-
-    //Update Transformation Matrix of All Entities
-    UpdateSprite2DMatrix();
 
     //Render All Entities
     RendererSprite2D();

@@ -129,19 +129,23 @@ namespace FlexEngine
         static Asset::Shader m_bloom_gaussianblurV_shader;
         static Asset::Shader m_bloom_finalcomp_shader;
 
+        //Currently have 4 FBOs
+        static GLuint m_postProcessingFBO;            /*!< Framebuffer Object for post-processing */
+        static GLuint m_pingpongFBO[2];               /*!< Ping-pong Framebuffer Objects */
+        //4 Textures going to be created, 2 for post_processing and 2 for editor and game
+        static GLuint m_brightnessTex;                    /*!< Texture used for bloom effects */
+        static GLuint m_pingpongTex[2];            /*!< Ping-pong buffers for intermediate processing */
+        static GLuint m_postProcessingTex;
+        static GLuint m_flexEngineTex[2];           /*!<0 for editor, 1 for in game */         
+
         // Testing variables (subject to change)
         static GLuint samples;                         /*!< Number of samples per pixel for MSAA anti-aliasing */
         static float gamma;                            /*!< Controls the gamma function */
-        static GLuint m_rectVAO;                      /*!< VAO for rendering rectangles */
-        static GLuint m_rectVBO;                      /*!< VBO for rendering rectangles */
-        static GLuint m_postProcessingFBO;            /*!< Framebuffer Object for post-processing */
-        static GLuint m_colorBuffer;                   /*!< Color buffer for rendering */
-        static GLuint m_brightBuffer;                  /*!< Brightness buffer for bloom effects */
-        static GLuint bloomTexture;                    /*!< Texture used for bloom effects */
-        static GLuint postProcessingTexture;           /*!< Final texture after post-processing */
-        static GLuint m_pingpongFBO[2];               /*!< Ping-pong Framebuffer Objects */
-        static GLuint m_pingpongBuffer[2];            /*!< Ping-pong buffers for intermediate processing */
-
+        static float m_PPopacity;
+        //static GLuint m_rectVAO;                      /*!< VAO for rendering rectangles */
+        //static GLuint m_rectVBO;                      /*!< VBO for rendering rectangles */
+        //static GLuint m_colorBuffer;                   /*!< Color buffer for rendering */
+        //static GLuint m_brightBuffer;                  /*!< Brightness buffer for bloom effects */
     public:
         /*!***************************************************************************
         * \brief
@@ -203,13 +207,13 @@ namespace FlexEngine
         * \brief
         * Enables post-processing effects for rendering.
         *****************************************************************************/
-        static void EnablePostProcessing();
+        static void Enable_PPFBO_Layer();
 
         /*!***************************************************************************
         * \brief
         * Disables post-processing effects for rendering.
         *****************************************************************************/
-        static void DisablePostProcessing();
+        static void Enable_DefaultFBO_Layer();
 
         /*!***************************************************************************
         * \brief
@@ -254,7 +258,7 @@ namespace FlexEngine
         * \param vertices Pointer to an array of vertex data.
         * \param vertexCount The number of vertices in the array.
         *****************************************************************************/
-        static void CreateVAOandVBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
+        static void InitQuadVAO_VBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
         
         /*!***************************************************************************
         * \brief
