@@ -16,7 +16,7 @@ void main()
     vec3 bloom = texture(bloomTexture, tex_coord).rgb;
 
     // Perform overlay blending with opacity control
-    vec3 blended = mix(fragment, bloom, opacity);
+    vec3 blended = mix(fragment, fragment + bloom, opacity); //might need to change
 
     // Output the final fragment color
     FragColor = vec4(blended, 1.0);  // Full alpha

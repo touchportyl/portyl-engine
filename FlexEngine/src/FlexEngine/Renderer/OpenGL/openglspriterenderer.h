@@ -129,14 +129,15 @@ namespace FlexEngine
         static Asset::Shader m_bloom_gaussianblurV_shader;
         static Asset::Shader m_bloom_finalcomp_shader;
 
-        //Currently have 4 FBOs
+        //Currently have 6 FBOs - including default
         static GLuint m_postProcessingFBO;            /*!< Framebuffer Object for post-processing */
-        static GLuint m_pingpongFBO[2];               /*!< Ping-pong Framebuffer Objects */
+        static GLuint m_pingpongFBO[2]; 
+        static GLuint m_editorFBO;       //0 - Basic, 1 - Finalized
         //4 Textures going to be created, 2 for post_processing and 2 for editor and game
         static GLuint m_brightnessTex;                    /*!< Texture used for bloom effects */
         static GLuint m_pingpongTex[2];            /*!< Ping-pong buffers for intermediate processing */
         static GLuint m_postProcessingTex;
-        static GLuint m_flexEngineTex[2];           /*!<0 for editor, 1 for in game */         
+        static GLuint m_editorTex;           /*!<0 for editor, 1 for in game */         
 
         // Testing variables (subject to change)
         static GLuint samples;                         /*!< Number of samples per pixel for MSAA anti-aliasing */
@@ -214,6 +215,12 @@ namespace FlexEngine
         * Disables post-processing effects for rendering.
         *****************************************************************************/
         static void Enable_DefaultFBO_Layer();
+
+        /*!***************************************************************************
+        * \brief
+        * Disables post-processing effects for rendering.
+        *****************************************************************************/
+        static void Enable_EditorFBO_Layer();
 
         /*!***************************************************************************
         * \brief

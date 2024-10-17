@@ -213,14 +213,17 @@ namespace ChronoShift
         bool blending = OpenGLRenderer::IsBlendingEnabled();
         if (!blending) OpenGLRenderer::EnableBlending();
 
-        // batch-render
-        OpenGLSpriteRenderer::Enable_PPFBO_Layer();
+        // batch-render scene
+        OpenGLSpriteRenderer::Enable_EditorFBO_Layer();
         OpenGLSpriteRenderer::ClearFrameBuffer();
         pp_render_queue.Flush(); //First Render pp objects first
         OpenGLSpriteRenderer::DrawPostProcessingLayer();
         OpenGLSpriteRenderer::Enable_DefaultFBO_Layer();
         non_pp_render_queue.Flush(); //Then Render non-pp objects second
 
+        // Draw Final Render
+        //Pending
+        
         // pop settings
         if (depth_test) OpenGLRenderer::EnableDepthTest();
         if (!blending) OpenGLRenderer::DisableBlending();

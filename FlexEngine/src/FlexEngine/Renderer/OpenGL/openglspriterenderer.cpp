@@ -54,14 +54,15 @@ namespace FlexEngine
     //////////////////////////////////////////////////////////////
     GLuint OpenGLSpriteRenderer::samples = 8;
     float OpenGLSpriteRenderer::gamma = 2.2f;
-    float OpenGLSpriteRenderer::m_PPopacity = 1.0f;
+    float OpenGLSpriteRenderer::m_PPopacity = 0.8f;
     GLuint OpenGLSpriteRenderer::m_postProcessingFBO = 0;
     GLuint OpenGLSpriteRenderer::m_pingpongFBO[2] = {};
+    GLuint OpenGLSpriteRenderer::m_editorFBO = 0;
 
     GLuint OpenGLSpriteRenderer::m_brightnessTex = 0;
     GLuint OpenGLSpriteRenderer::m_pingpongTex[2] = {};
     GLuint OpenGLSpriteRenderer::m_postProcessingTex = 0;
-    GLuint OpenGLSpriteRenderer::m_flexEngineTex[2] = {};
+    GLuint OpenGLSpriteRenderer::m_editorTex = {};
     //////////////////////////////////////////////////////////////
     
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +84,8 @@ namespace FlexEngine
 
     void OpenGLSpriteRenderer::Enable_PPFBO_Layer() { glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);}
     void OpenGLSpriteRenderer::Enable_DefaultFBO_Layer() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+    void OpenGLSpriteRenderer::Enable_EditorFBO_Layer() { glBindFramebuffer(GL_FRAMEBUFFER, m_editorFBO); }
+    
     /*!***************************************************************************
     * \brief
     * Checks if depth testing is enabled.
@@ -333,25 +336,22 @@ namespace FlexEngine
         //glEnableVertexAttribArray(1);
         //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(5 * sizeof(float)), (void*)(3 * sizeof(float))); // Offset to the 4th element (3 floats).
         #endif
-
+        //////////////////////////////////////////////////////////////////////////////////////////////////
         // Create relevant FBO 
         glGenFramebuffers(1, &m_postProcessingFBO); //For final composite post-process
-        glGenFramebuffers(2, m_pingpongFBO); //For gaussian blurring
-        glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);
-
-        // Create Framebuffer Texture
+        Enable_PPFBO_Layer();
         float width, height;
         width = windowSize.x;
         height = windowSize.y;
         // Create brightness pass texture
         glGenTextures(1, &m_brightnessTex);
         glBindTexture(GL_TEXTURE_2D, m_brightnessTex);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_brightnessTex, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_brightnessTex, 0);
         // Create final composite texture (All post_processed rendered on)
         glGenTextures(1, &m_postProcessingTex);
         glBindTexture(GL_TEXTURE_2D, m_postProcessingTex);
@@ -360,8 +360,7 @@ namespace FlexEngine
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_postProcessingTex, 0);
-
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_postProcessingTex, 0);
         unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
         glDrawBuffers(2, attachments);
         auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -369,6 +368,7 @@ namespace FlexEngine
             Log::Fatal("Post-Processing Framebuffer error: " + fboStatus);
 
         // Create gaussian blur texture (All post_processed rendered on)
+        glGenFramebuffers(2, m_pingpongFBO); //For gaussian blurring
         glGenTextures(2, m_pingpongTex);
         for (unsigned int i = 0; i < 2; i++)
         {
@@ -385,20 +385,21 @@ namespace FlexEngine
             if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
                 Log::Fatal("Ping-Pong Framebuffer error: " + fboStatus);
         }
-        // Create editor and game texture
-        glGenTextures(2, m_flexEngineTex);
-        for (unsigned int i = 0; i < 2; i++)
-        {
-            glBindTexture(GL_TEXTURE_2D, m_flexEngineTex[i]);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_flexEngineTex[i], 0);
-        }
+        // Create editor FBO
+        glGenFramebuffers(1, &m_editorFBO);
+        Enable_EditorFBO_Layer();
+        glGenTextures(1, &m_editorTex);
+        glBindTexture(GL_TEXTURE_2D, m_editorTex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_editorTex, 0);
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            Log::Fatal("Editor Framebuffer error: " + fboStatus);
 
-        //Unbind frame buffer
+        // Unbind frame buffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
@@ -419,8 +420,6 @@ namespace FlexEngine
         
         // Bind all
         glBindVertexArray(m_vbos[props.vbo_id].vao);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_flexEngineTex[0]);
 
         // Apply Shader
         auto& asset_shader = FLX_ASSET_GET(Asset::Shader, props.shader);
@@ -475,7 +474,7 @@ namespace FlexEngine
         m_bloom_brightness_shader.SetUniform_float("u_Threshold", 0.55f);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_brightnessTex); // Texture rendered in the previous step (scene texture)
+        glBindTexture(GL_TEXTURE_2D, m_editorTex); // Texture rendered in the previous step (scene texture)
         m_bloom_brightness_shader.SetUniform_int("scene", 0);
 
         // Render brightness to first ping-pong buffer
@@ -486,7 +485,7 @@ namespace FlexEngine
 
         // Step 4: Gaussian Blur Pass
         //auto& blur_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/GaussianBlur)");
-       // blur_shader.Use();
+        //blur_shader.Use();
 
         //bool horizontal = true;
         //int blur_passes = 2;
@@ -513,7 +512,7 @@ namespace FlexEngine
         Enable_DefaultFBO_Layer();
         m_bloom_finalcomp_shader.Use();
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_flexEngineTex[0]); // Original scene texture
+        glBindTexture(GL_TEXTURE_2D, m_editorTex); // Original scene texture
         m_bloom_finalcomp_shader.SetUniform_int("screenTexture", 0);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, m_brightnessTex); // Final blurred texture
