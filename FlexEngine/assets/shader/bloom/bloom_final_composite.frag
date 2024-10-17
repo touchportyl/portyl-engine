@@ -19,5 +19,5 @@ void main()
     vec3 blended = mix(fragment, fragment + bloom, opacity); //might need to change
 
     // Output the final fragment color
-    FragColor = vec4(blended, 1.0);  // Full alpha
+    FragColor = vec4(bloom, 1.0);  // Full alpha
 }

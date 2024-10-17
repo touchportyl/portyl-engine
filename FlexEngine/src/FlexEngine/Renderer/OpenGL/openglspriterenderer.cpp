@@ -485,28 +485,23 @@ namespace FlexEngine
 
         // Step 4: Gaussian Blur Pass
         //auto& blur_shader = FLX_ASSET_GET(Asset::Shader, R"(/shaders/GaussianBlur)");
-        //blur_shader.Use();
+        m_bloom_gaussianblurH_shader.Use();
 
-        //bool horizontal = true;
-        //int blur_passes = 2;
-
-        /*for (int i = 0; i < blur_passes; ++i)
+        bool horizontal = true;
+        int blur_passes = 2;
+        for (int i = 0; i < blur_passes; ++i)
         {
             glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[horizontal]);
-            blur_shader.SetUniform_int("horizontal", horizontal);
+            m_bloom_gaussianblurH_shader.SetUniform_int("horizontal", horizontal);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, m_brightnessTex);
+            m_bloom_gaussianblurH_shader.SetUniform_int("scene", 0);
 
-            if (i == 0) {
-                glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[0]);
-            }
-            else {
-                glBindTexture(GL_TEXTURE_2D, m_pingpongBuffer[!horizontal]);
-            }
-
-            glBindVertexArray(m_rectVAO);
+            glBindVertexArray(m_vbos[2].vao);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             m_draw_calls++;
             horizontal = !horizontal;
-        }*/
+        }
 
         // Step 5: Final Composition
         Enable_DefaultFBO_Layer();
@@ -515,7 +510,7 @@ namespace FlexEngine
         glBindTexture(GL_TEXTURE_2D, m_editorTex); // Original scene texture
         m_bloom_finalcomp_shader.SetUniform_int("screenTexture", 0);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, m_brightnessTex); // Final blurred texture
+        glBindTexture(GL_TEXTURE_2D, m_pingpongTex[0]); // Final blurred texture
         m_bloom_finalcomp_shader.SetUniform_int("bloomTexture", 1);
 
         glBindVertexArray(m_vbos[2].vao);
