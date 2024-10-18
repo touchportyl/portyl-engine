@@ -19,10 +19,14 @@
 namespace ChronoShift
 {
 	std::unordered_map<std::string, ComponentViewer> ComponentViewRegistry::m_component_viewer;
+	std::unordered_map<std::string, ComponentViewer> ComponentViewRegistry::m_component_adder;
+	std::unordered_map<std::string, ComponentViewer> ComponentViewRegistry::m_component_remover;
 
-	void ComponentViewRegistry::RegisterComponent(std::string name, ComponentViewer display)
+	void ComponentViewRegistry::RegisterComponent(std::string name, ComponentViewer display, ComponentViewer adder, ComponentViewer remover)
 	{
 		m_component_viewer[name] = display;
+		m_component_adder[name] = adder;
+		m_component_remover[name] = remover;
 	}
 
 	bool ComponentViewRegistry::ViewerExists(std::string name)
@@ -38,5 +42,25 @@ namespace ChronoShift
 			return;
 
 		m_component_viewer[name](entity);
+	}
+
+
+	void ComponentViewRegistry::AddComponent(std::string name, FlexEngine::FlexECS::Entity entity)
+	{
+		if (auto search = m_component_viewer.find(name); search == m_component_viewer.end())
+			return;
+
+		m_component_adder[name](entity);
+	}
+
+
+	std::vector<std::string> ComponentViewRegistry::GetComponentList()
+	{
+		std::vector<std::string> components;
+		for (const auto& component : m_component_adder)
+		{
+			components.push_back(component.first);
+		}
+		return components;
 	}
 }

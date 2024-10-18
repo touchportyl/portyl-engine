@@ -25,7 +25,7 @@ namespace ChronoShift
 	void DisplayInspector()
 	{
 		ImGui::Begin("Inspector");
-		
+
 		auto scene = FlexECS::Scene::GetActiveScene();
 		auto entity = Editor::GetInstance()->GetSelectedEntity();
 
@@ -40,7 +40,7 @@ namespace ChronoShift
 				ImGui::Checkbox("##IsActive", &is_active);
 				ImGui::SameLine();
 			}
-			
+
 			std::string& name = scene->Internal_StringStorage_Get(*entity.GetComponent<EntityName>());
 			EditorUI::EditableTextField(name);
 
@@ -89,13 +89,57 @@ namespace ChronoShift
 					}
 				}
 			}
+
+
+
+
+			//Menu to add component
+			if (ImGui::Button("Add Component"))
+			{
+				ImGui::OpenPopup("AddComponentPopup");
+			}
+
+			// Create the popup for adding components
+			if (ImGui::BeginPopup("AddComponentPopup"))
+			{
+				// Static buffer to store the search query
+				static char search_query[64] = "";
+
+				// Display the search bar inside the popup
+				ImGui::InputTextWithHint("##ComponentSearch", "Search Component...", search_query, IM_ARRAYSIZE(search_query));
+
+				std::string query = search_query;
+				std::transform(query.begin(), query.end(), query.begin(), ::tolower);
+
+				// Loop through the unordered_map and create a selectable option for each key
+				for (const std::string& component_name : ComponentViewRegistry::GetComponentList())
+				{
+					// Convert the component name to lowercase for comparison
+					std::string lower_component_name = component_name;
+					std::transform(lower_component_name.begin(), lower_component_name.end(), lower_component_name.begin(), ::tolower);
+
+					// If the search query is empty or the component name contains the search query, display it
+					if (query.empty() || lower_component_name.find(query) != std::string::npos)
+					{
+						if (ImGui::Selectable(component_name.c_str()))
+						{
+							// Code to add the selected component to the entity
+							ComponentViewRegistry::AddComponent(component_name, entity);
+							// Close the popup after adding the component
+							ImGui::CloseCurrentPopup();
+						}
+					}
+				}
+
+				ImGui::EndPopup();
+			}
 		}
-		ImGui::End();
+
+
 	}
 }
 
 /*
-
 			float button_width = ImGui::CalcTextSize("...").x + ImGui::GetStyle().FramePadding.x * 2.0f;
 			ImGui::SameLine(ImGui::GetContentRegionAvail().x - button_width);
 			if (ImGui::Button("..."))

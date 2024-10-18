@@ -39,9 +39,10 @@ namespace ChronoShift
 
     //window->PushLayer(std::make_shared<MenuLayer>());
     //window->PushLayer(std::make_shared<BoardLayer>());
-    window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
-    //window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
-    //window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
+    //window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
+    window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
+    window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
+
 
     // Renderer Setup
 
@@ -330,6 +331,42 @@ ImGui::EndMainMenuBar();
 
     #pragma endregion
 
+
+    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_B))
+    {
+      function_queue.Insert({
+        []()
+        {
+          FlexEngine::Window* window = Application::GetCurrentWindow();
+          window->PopLayer();
+          //window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
+          //window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
+        }
+      });
+    }
+    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_N))
+    {
+      function_queue.Insert({
+        []()
+        {
+          FlexEngine::Window* window = Application::GetCurrentWindow();
+          //window->PopLayer();
+          //window->PopLayer();
+          window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
+          window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
+      }
+      });
+    }
+    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_M))
+    {
+      function_queue.Insert({
+        []()
+        {
+          FlexEngine::Window* window = Application::GetCurrentWindow();
+          window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
+      }
+      });
+    }
 
     function_queue.Flush();
 

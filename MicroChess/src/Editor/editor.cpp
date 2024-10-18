@@ -35,7 +35,8 @@ namespace ChronoShift
 	void Editor::Update()
 	{
 		EditorUI::StartFrame();
-		
+
+		ImGui::ShowDemoWindow();
 		DisplaySceneHierarchy();
 		DisplayInspector();
 		
