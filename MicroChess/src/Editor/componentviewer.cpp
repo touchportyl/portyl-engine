@@ -47,10 +47,18 @@ namespace ChronoShift
 
 	void ComponentViewRegistry::AddComponent(std::string name, FlexEngine::FlexECS::Entity entity)
 	{
-		if (auto search = m_component_viewer.find(name); search == m_component_viewer.end())
+		if (auto search = m_component_adder.find(name); search == m_component_adder.end())
 			return;
 
 		m_component_adder[name](entity);
+	}
+
+	void ComponentViewRegistry::RemoveComponent(std::string name, FlexEngine::FlexECS::Entity entity)
+	{
+		if (auto search = m_component_remover.find(name); search == m_component_remover.end())
+			return;
+
+		m_component_remover[name](entity);
 	}
 
 

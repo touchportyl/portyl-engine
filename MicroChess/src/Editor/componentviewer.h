@@ -48,6 +48,7 @@ namespace ChronoShift
 		static void ViewComponent(std::string, FlexEngine::FlexECS::Entity);
 
 		static void AddComponent(std::string, FlexEngine::FlexECS::Entity);
+		static void RemoveComponent(std::string, FlexEngine::FlexECS::Entity);
 
 
 		static std::vector<std::string> GetComponentList();

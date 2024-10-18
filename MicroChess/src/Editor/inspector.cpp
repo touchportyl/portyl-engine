@@ -87,10 +87,20 @@ namespace ChronoShift
 					{
 						ComponentViewRegistry::ViewComponent(component_name, entity);
 					}
+
+					//Remove component functionality
+					if (ImGui::BeginPopupContextItem(("ComponentPopup" + component_name).c_str())) // Create a unique ID for the popup
+					{
+						if (ImGui::MenuItem("Remove Component"))
+						{
+							std::cout << "Removing the component: " << component_name << "\n";
+							ComponentViewRegistry::RemoveComponent(component_name, entity);
+						}
+
+						ImGui::EndPopup();
+					}
 				}
 			}
-
-
 
 
 			//Menu to add component
@@ -109,23 +119,19 @@ namespace ChronoShift
 				ImGui::InputTextWithHint("##ComponentSearch", "Search Component...", search_query, IM_ARRAYSIZE(search_query));
 
 				std::string query = search_query;
-				std::transform(query.begin(), query.end(), query.begin(), ::tolower);
+				std::transform(query.begin(), query.end(), query.begin(), [](char c) { return std::tolower(c); });
 
-				// Loop through the unordered_map and create a selectable option for each key
 				for (const std::string& component_name : ComponentViewRegistry::GetComponentList())
 				{
 					// Convert the component name to lowercase for comparison
 					std::string lower_component_name = component_name;
-					std::transform(lower_component_name.begin(), lower_component_name.end(), lower_component_name.begin(), ::tolower);
+					std::transform(lower_component_name.begin(), lower_component_name.end(), lower_component_name.begin(), [](char c) { return std::tolower(c); });
 
-					// If the search query is empty or the component name contains the search query, display it
 					if (query.empty() || lower_component_name.find(query) != std::string::npos)
 					{
 						if (ImGui::Selectable(component_name.c_str()))
 						{
-							// Code to add the selected component to the entity
 							ComponentViewRegistry::AddComponent(component_name, entity);
-							// Close the popup after adding the component
 							ImGui::CloseCurrentPopup();
 						}
 					}
