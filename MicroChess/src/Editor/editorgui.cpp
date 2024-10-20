@@ -110,6 +110,25 @@ namespace ChronoShift
 		PopID();
 	}
 
+	void EditorGUI::TexturePath(std::string& path, std::string title)
+	{
+		PushID();
+		
+		std::filesystem::path current_texture = path;
+		ImGui::Button(current_texture.filename().string().c_str());
+
+		if (ImGui::BeginDragDropTarget()) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_PATH")) {
+				// Retrieve the file path from the payload
+				const char* dropped_path = (const char*)payload->Data;
+				std::string new_file_path(dropped_path);
+				path = new_file_path; // Store the file path in the component
+			}
+			ImGui::EndDragDropTarget();
+		}
+		PopID();
+	}
+
 	void EditorGUI::Color3(Vector3& data, std::string title)
 	{
 		PushID();
@@ -168,6 +187,7 @@ namespace ChronoShift
 
 		PopID();
 	}
+
 
 
 

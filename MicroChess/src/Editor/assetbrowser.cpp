@@ -62,12 +62,12 @@ namespace ChronoShift
 			//Check if top level file
 			if (parent_path.string() == "") 
 			{
-				m_root_folder.files.push_back(entry);
+				m_root_folder.files.push_back(relative_path);
 			}
 			else
 			{
 				// Add file to folder normally
-				m_directories[parent_path].files.push_back(entry);
+				m_directories[parent_path].files.push_back(relative_path);
 			}
 
 		}
@@ -87,6 +87,19 @@ namespace ChronoShift
 			for (const auto& file : folder.files)
 			{
 				ImGui::Selectable(file.filename().string().c_str());
+
+				if (ImGui::BeginDragDropSource())
+				{
+					std::string payload(file.string());
+					payload.insert(0, "\\");	//to fit the AssetKey format
+					
+					if (FLX_EXTENSIONS_CHECK_SAFETY("image", file.extension().string()))
+					{
+						ImGui::SetDragDropPayload("IMAGE_PATH", payload.c_str(), payload.size() + 1);	//+ 1 for null terminating
+						ImGui::Text(file.filename().string().c_str()); // Show the name during drag
+						ImGui::EndDragDropSource();
+					}
+				}
 			}
 			ImGui::TreePop();
 		}

@@ -130,6 +130,10 @@ void COMPONENT_VIEWER_##TYPE(FlexEngine::FlexECS::Entity entity) \
 	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<T>()->name); \
 	EditorGUI::EditableTextField(str, #name);
 
+	#define COMPONENT_VIEWER_TEXTURE_PATH(name) \
+	std::string& path = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
+	EditorGUI::TexturePath(path);
+
 	#define COMPONENT_VIEWER_STRING(name) \
 	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<T>()->name); \
 	EditorGUI::TextField(str);

@@ -59,6 +59,8 @@ namespace ChronoShift
 		******************************************************************************/
 		static void EntityReference(FlexEngine::FlexECS::Entity& data, std::string title = "Entity");
 	
+		static void TexturePath(std::string& path, std::string title = "Sprite");
+
 		static void Color3(FlexEngine::Vector3& data, std::string title = "color");
 
 		static void EditableTextField(std::string& data, std::string title = "");

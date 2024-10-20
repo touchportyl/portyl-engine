@@ -382,6 +382,7 @@ namespace FlexEngine
         {
             asset_shader.SetUniform_bool("u_use_texture", true);
             auto& asset_texture = FLX_ASSET_GET(Asset::Texture, props.texture);
+            //std::cout << props.texture << "\n";
             asset_texture.Bind(asset_shader, "u_texture", 0);
         }
         else if (props.color != Vector3::Zero)
