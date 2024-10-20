@@ -75,7 +75,7 @@ namespace ChronoShift
 
 	void AssetBrowser::RenderFolder(Folder& folder)
 	{
-		if (ImGui::TreeNode(folder.name.c_str()))
+		if (ImGui::TreeNodeEx(folder.name.c_str()))
 		{
 			// Render directories first
 			for (auto& [subfolder_path, subfolder] : folder.subfolders)
@@ -84,10 +84,20 @@ namespace ChronoShift
 			}
 
 			// Render the rest of the files in the folder
-			for (const auto& file : folder.files)
+			for (auto& file : folder.files)
 			{
-				ImGui::Selectable(file.filename().string().c_str());
+				//Render the file name
+				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+				bool is_selected = (m_selected_file == file);
+				if (is_selected) node_flags |= ImGuiTreeNodeFlags_Selected;
 
+				ImGui::TreeNodeEx(file.filename().string().c_str(), node_flags);
+				if (ImGui::IsItemClicked())
+				{
+					m_selected_file = file;
+				}
+
+				//Drag and drop for sprite component
 				if (ImGui::BeginDragDropSource())
 				{
 					std::string payload(file.string());
@@ -121,3 +131,71 @@ namespace ChronoShift
 		ImGui::End();
 	}
 }
+
+
+
+
+//void AssetBrowser::RenderFolder(Folder& folder)
+//{
+//	if (ImGui::TreeNodeEx(folder.name.c_str()))
+//	{
+//		// Render directories first
+//		for (auto& [subfolder_path, subfolder] : folder.subfolders)
+//		{
+//			RenderFolder(*subfolder);
+//		}
+//
+//		// Render the rest of the files in the folder
+//		for (auto& file : folder.files)
+//		{
+//			bool renaming = m_is_renaming && m_selected_file == file;
+//			if (ImGui::IsKeyPressed(ImGuiKey_F2) && m_selected_file == file)
+//			{
+//				m_is_renaming = true;
+//			}
+//			if (renaming)
+//			{
+//				static char renameBuffer[256];
+//				strncpy_s(renameBuffer, file.filename().string().c_str(), sizeof(renameBuffer));
+//
+//				if (ImGui::InputText("##RenameAsset", renameBuffer, sizeof(renameBuffer), ImGuiInputTextFlags_EnterReturnsTrue))
+//				{
+//					// Rename confirmed
+//					std::filesystem::path newPath = file.parent_path() / renameBuffer;
+//					std::cout << "Old path: " << file.string() << "   new path: " << newPath.string() << "\n";
+//
+//					LoadAllDirectories();
+//					m_is_renaming = false;
+//				}
+//			}
+//			else
+//			{
+//				//Render the file name
+//				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+//				bool is_selected = (m_selected_file == file);
+//				if (is_selected) node_flags |= ImGuiTreeNodeFlags_Selected;
+//
+//				ImGui::TreeNodeEx(file.filename().string().c_str(), node_flags);
+//				if (ImGui::IsItemClicked())
+//				{
+//					m_selected_file = file;
+//				}
+//
+//				//Drag and drop for sprite component
+//				if (ImGui::BeginDragDropSource())
+//				{
+//					std::string payload(file.string());
+//					payload.insert(0, "\\");	//to fit the AssetKey format
+//
+//					if (FLX_EXTENSIONS_CHECK_SAFETY("image", file.extension().string()))
+//					{
+//						ImGui::SetDragDropPayload("IMAGE_PATH", payload.c_str(), payload.size() + 1);	//+ 1 for null terminating
+//						ImGui::Text(file.filename().string().c_str()); // Show the name during drag
+//						ImGui::EndDragDropSource();
+//					}
+//				}
+//			}
+//		}
+//		ImGui::TreePop();
+//	}
+//}

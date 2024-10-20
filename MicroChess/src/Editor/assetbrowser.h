@@ -30,7 +30,9 @@ namespace ChronoShift
 		std::filesystem::path m_current_directory = "assets";
 		const std::filesystem::path m_root_directory = "assets";
 
-		std::filesystem::path m_selected_path = "";
+		std::filesystem::path m_selected_file = "";
+
+		//bool m_is_renaming = false;
 
 		Folder m_root_folder;
 		std::unordered_map<std::filesystem::path, Folder> m_directories;
