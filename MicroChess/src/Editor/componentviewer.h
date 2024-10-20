@@ -134,6 +134,12 @@ void COMPONENT_VIEWER_##TYPE(FlexEngine::FlexECS::Entity entity) \
 	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<T>()->name); \
 	EditorUI::TextField(str);
 
+	#define COMPONENT_VIEWER_BOOL(name) \
+	EditorUI::Checkbox(entity.GetComponent<T>()->name, #name);
+
+	#define COMPONENT_VIEWER_MAT44(name) \
+	EditorUI::Mat44(entity.GetComponent<T>()->name, #name);
+
 	#define COMPONENT_VIEWER_END(name) \
 }
 

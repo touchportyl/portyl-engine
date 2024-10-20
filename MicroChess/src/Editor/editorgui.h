@@ -65,7 +65,9 @@ namespace ChronoShift
 
 		static void TextField(const std::string& data);
 
+		static void Checkbox(bool& data, std::string title = "");
 
+		static void Mat44(FlexEngine::Matrix4x4& data, std::string title = "");
 
 		/*!***************************************************************************
 		* @brief

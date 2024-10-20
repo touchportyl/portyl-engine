@@ -137,6 +137,39 @@ namespace ChronoShift
 		PopID();
 	}
 
+	void EditorUI::Checkbox(bool& data, std::string title)
+	{
+		PushID();
+		ImGui::Checkbox(title.c_str(), &data);
+		PopID();
+	}
+
+	void EditorUI::Mat44(FlexEngine::Matrix4x4& data, std::string title)
+	{
+		PushID();
+		
+		// Create a label for the matrix
+		ImGui::Text("%s", title.c_str());
+
+		ImGui::PushItemWidth(60.0f);
+
+		for (int row = 0; row < 4; ++row)
+		{
+			for (int col = 0; col < 4; ++col)
+			{
+				PushID();
+				ImGui::DragFloat("##", &data(row, col), 0.1f);
+				PopID();
+
+				if (col < 3) ImGui::SameLine();
+			}
+		}
+		ImGui::PopItemWidth();
+
+		PopID();
+	}
+
+
 
 	void EditorUI::StartFrame()
 	{
