@@ -115,17 +115,30 @@ namespace ChronoShift
 		PushID();
 		
 		std::filesystem::path current_texture = path;
-		ImGui::Button(current_texture.filename().string().c_str());
+		std::string filename = current_texture.filename().string();
+		if (filename == "") filename = "(no sprite)";
+
+		ImGui::Text("Sprite");
+		ImGui::SameLine();
+		ImGui::Button(filename.c_str());
 
 		if (ImGui::BeginDragDropTarget()) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_PATH")) {
-				// Retrieve the file path from the payload
 				const char* dropped_path = (const char*)payload->Data;
 				std::string new_file_path(dropped_path);
 				path = new_file_path; // Store the file path in the component
 			}
 			ImGui::EndDragDropTarget();
 		}
+
+		//std::string asset_key = current_texture.string();
+		//AssetVariant* asset_ptr = AssetManager::Get(asset_key);
+		//if (asset_ptr)
+		//{
+		//	Asset::Texture& texture = std::get<Asset::Texture>(*asset_ptr);
+		//	ImGui::Image(texture.GetTextureImGui(), ImVec2(60.0f, 60.0f));
+		//}
+
 		PopID();
 	}
 
