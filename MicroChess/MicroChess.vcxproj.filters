@@ -100,9 +100,6 @@
     <ClInclude Include="src\BattleSystems\turnorderdisplay.h">
       <Filter>src\BattleSystems</Filter>
     </ClInclude>
-    <ClInclude Include="src\Components\charactercomponents.h">
-      <Filter>src\Components</Filter>
-    </ClInclude>
     <ClInclude Include="src\Layers\overworld.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
@@ -128,6 +125,12 @@
       <Filter>src\Editor</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\componentviewer.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterPrefab\characterprefab.h">
+      <Filter>assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\assetbrowser.h">
       <Filter>src\Editor</Filter>
     </ClInclude>
   </ItemGroup>
@@ -183,9 +186,6 @@
     <ClCompile Include="src\BattleSystems\turnorderdisplay.cpp">
       <Filter>src\BattleSystems</Filter>
     </ClCompile>
-    <ClCompile Include="src\Components\charactercomponents.cpp">
-      <Filter>src\Components</Filter>
-    </ClCompile>
     <ClCompile Include="src\Layers\overworld.cpp">
       <Filter>src\Layers</Filter>
     </ClCompile>
@@ -211,6 +211,10 @@
       <Filter>src\Editor</Filter>
     </ClCompile>
     <ClCompile Include="src\Editor\componentviewer.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterPrefab\characterprefab.cpp" />
+    <ClCompile Include="src\Editor\assetbrowser.cpp">
       <Filter>src\Editor</Filter>
     </ClCompile>
   </ItemGroup>

@@ -34,13 +34,15 @@ namespace ChronoShift
 	//ImGui startframe endframe already called in States::Window
 	void Editor::Update()
 	{
-		EditorUI::StartFrame();
+		EditorGUI::StartFrame();
 
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 		DisplaySceneHierarchy();
 		DisplayInspector();
+
+		m_assetbrowser.EditorUI();
 		
-		EditorUI::EndFrame();
+		EditorGUI::EndFrame();
 	}
 	void Editor::Shutdown()
 	{

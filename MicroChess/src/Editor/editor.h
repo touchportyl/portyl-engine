@@ -13,10 +13,12 @@
 
 #pragma once
 
-#include "hierarchyview.h"
-#include "inspector.h"
-#include "editorgui.h"
-#include "componentviewer.h"
+#include "Editor/hierarchyview.h"
+#include "Editor/inspector.h"
+#include "Editor/editorgui.h"
+#include "Editor/assetbrowser.h"
+#include "Editor/componentviewer.h"
+
 #include "Components/rendering.h"
 
 #include "FlexEngine/Core/imguiwrapper.h"
@@ -64,6 +66,9 @@ namespace ChronoShift
 
 	private:
 		FlexEngine::FlexECS::Entity m_selected_entity = FlexEngine::FlexECS::Entity::Null;	//Which entity the inspector panel should focus on.
+		AssetBrowser m_assetbrowser;
+
+		
 		//ComponentViewRegistry m_component_registry;
 	};
 

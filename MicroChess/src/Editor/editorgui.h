@@ -38,7 +38,7 @@ namespace ChronoShift
 	X[1.11] Y[2.22]
 	======================================================================================================================= */
 
-	class EditorUI
+	class EditorGUI
 	{
 	public:
 		static void DragFloat2(FlexEngine::Vector2& data, std::string title = "", 
@@ -77,9 +77,9 @@ namespace ChronoShift
 		static void StartFrame();
 		static void EndFrame();
 
-	private:
 		static int PushID();
 		static void PopID();
+	private:
 
 		static int m_id;
 	};

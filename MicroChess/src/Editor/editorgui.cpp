@@ -19,9 +19,9 @@
 using namespace FlexEngine;
 namespace ChronoShift
 {
-	int EditorUI::m_id = 0;
+	int EditorGUI::m_id = 0;
 
-	void EditorUI::DragFloat2(Vector2& data, std::string title,
+	void EditorGUI::DragFloat2(Vector2& data, std::string title,
 		//std::string label1, std::string label2, 
 		float width, float drag_speed)
 	{
@@ -44,7 +44,7 @@ namespace ChronoShift
 		PopID();
 	}
 
-	void EditorUI::DragFloat3(Vector3& data, std::string title,
+	void EditorGUI::DragFloat3(Vector3& data, std::string title,
 		//std::string label1, std::string label2, std::string label3,
 		float width, float drag_speed)
 	{
@@ -74,7 +74,7 @@ namespace ChronoShift
 		PopID();
 	}
 
-	void EditorUI::DragInt(int& data, std::string title, float width, float drag_speed)
+	void EditorGUI::DragInt(int& data, std::string title, float width, float drag_speed)
 	{
 		PushID();
 		ImGui::PushItemWidth(width);
@@ -84,7 +84,7 @@ namespace ChronoShift
 		PopID();
 	}
 
-	void EditorUI::EntityReference(FlexECS::Entity& entity, std::string title)
+	void EditorGUI::EntityReference(FlexECS::Entity& entity, std::string title)
 	{
 		PushID();
 		std::string entity_name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<FlexEngine::FlexECS::Scene::StringIndex>());
@@ -110,14 +110,14 @@ namespace ChronoShift
 		PopID();
 	}
 
-	void EditorUI::Color3(Vector3& data, std::string title)
+	void EditorGUI::Color3(Vector3& data, std::string title)
 	{
 		PushID();
 		ImGui::ColorEdit3(title.c_str(), data.data);
 		PopID();
 	}
 
-	void EditorUI::EditableTextField(std::string& data, std::string title)
+	void EditorGUI::EditableTextField(std::string& data, std::string title)
 	{
 		PushID();
 		char text_buffer[128];
@@ -130,21 +130,21 @@ namespace ChronoShift
 		PopID();
 	}
 
-	void EditorUI::TextField(const std::string& data)
+	void EditorGUI::TextField(const std::string& data)
 	{
 		PushID();
 		ImGui::Text(data.c_str());
 		PopID();
 	}
 
-	void EditorUI::Checkbox(bool& data, std::string title)
+	void EditorGUI::Checkbox(bool& data, std::string title)
 	{
 		PushID();
 		ImGui::Checkbox(title.c_str(), &data);
 		PopID();
 	}
 
-	void EditorUI::Mat44(FlexEngine::Matrix4x4& data, std::string title)
+	void EditorGUI::Mat44(FlexEngine::Matrix4x4& data, std::string title)
 	{
 		PushID();
 		
@@ -171,23 +171,23 @@ namespace ChronoShift
 
 
 
-	void EditorUI::StartFrame()
+	void EditorGUI::StartFrame()
 	{
 		m_id = 0;
 	}
 
-	void EditorUI::EndFrame()
+	void EditorGUI::EndFrame()
 	{
 		m_id = 0;
 	}
 
-	int EditorUI::PushID()
+	int EditorGUI::PushID()
 	{
 		ImGui::PushID(m_id);
 		return m_id++;
 	}
 
-	void EditorUI::PopID()
+	void EditorGUI::PopID()
 	{
 		ImGui::PopID();
 	}
