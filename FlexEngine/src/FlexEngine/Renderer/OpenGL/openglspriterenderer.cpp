@@ -507,12 +507,12 @@ namespace FlexEngine
         glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongTex[1], 0);
         glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
         bool horizontal = true;
-        for (int i = 0; i < 6; ++i)
+        for (int i = 0; i < 4; ++i)
         {
             glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[horizontal]);
             m_bloom_gaussianblur_shader.SetUniform_int("horizontal", horizontal);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_pingpongTex[horizontal]);
+            glBindTexture(GL_TEXTURE_2D, m_pingpongTex[!horizontal]);
             m_bloom_gaussianblur_shader.SetUniform_int("scene", 0);
             m_bloom_gaussianblur_shader.SetUniform_float("blurDistance", 10.0f);
             m_bloom_gaussianblur_shader.SetUniform_int("intensity", 12);
