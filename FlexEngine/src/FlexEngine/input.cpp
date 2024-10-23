@@ -40,7 +40,7 @@ namespace FlexEngine
 
     if (key < 0 || key >= GLFW_KEY_LAST)
     {
-      Log::Warning("A key not recognised by GLF was entered");
+      Log::Warning("A key not recognised by GLFW was entered");
       return;
     }
 
