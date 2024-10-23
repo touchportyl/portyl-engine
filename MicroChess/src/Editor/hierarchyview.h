@@ -13,6 +13,7 @@
 
 #pragma once
 #include "FlexEngine.h"
+#include "editorpanel.h"
 
 namespace ChronoShift
 {
@@ -21,7 +22,13 @@ namespace ChronoShift
 	* @brief
 	* Call in Update() function of EditorLayer().
 	******************************************************************************/
-	void DisplaySceneHierarchy();
+	class HierarchyView : public EditorPanel
+	{
+		void Init();
+		void Update();
+		void EditorUI();
+		void Shutdown();
+	};
 
 
 }

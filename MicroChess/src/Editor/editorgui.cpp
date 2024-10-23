@@ -100,7 +100,6 @@ namespace ChronoShift
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
 			{
-				// Assuming the payload is the Entity ID (you can customize this)
 				FlexECS::Entity dropped_entity = *(FlexECS::EntityID*)payload->Data;
 				entity = dropped_entity;
 			}

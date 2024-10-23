@@ -3,9 +3,16 @@
 
 namespace ChronoShift
 {
-	AssetBrowser::AssetBrowser()
+	void AssetBrowser::Init()
 	{
 		LoadAllDirectories();
+	}
+
+	void AssetBrowser::Update()
+	{
+	}
+	void AssetBrowser::Shutdown()
+	{
 	}
 
 	void AssetBrowser::LoadAllDirectories()
@@ -130,6 +137,7 @@ namespace ChronoShift
 		}
 		ImGui::End();
 	}
+	
 }
 
 

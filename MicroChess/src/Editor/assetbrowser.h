@@ -1,5 +1,5 @@
 #include "FlexEngine.h"
-
+#include "editorpanel.h"
 
 namespace ChronoShift
 {
@@ -18,13 +18,14 @@ namespace ChronoShift
 		{}
 	};
 
-	class AssetBrowser
+	class AssetBrowser : public EditorPanel
 	{
 	public:
-		AssetBrowser();
-
-		void LoadAllDirectories();
+		void Init();
+		void Update();
 		void EditorUI();
+		void Shutdown();
+
 
 	private:
 		std::filesystem::path m_current_directory = "assets";
@@ -37,6 +38,7 @@ namespace ChronoShift
 		Folder m_root_folder;
 		std::unordered_map<std::filesystem::path, Folder> m_directories;
 
+		void LoadAllDirectories();
 		void AddToDirectoryStructure(const std::filesystem::path& entry);
 		void RenderFolder(Folder& folder);
 

@@ -19,33 +19,56 @@ namespace ChronoShift
 {
 	Editor* Editor::GetInstance()
 	{
-		static bool initialized = false;
 		static Editor instance{};
-		if (!initialized) instance.Init();
+		if (!instance.m_initialized)
+		{
+			instance.Init();
+		}
 
 		return &instance;
 	}
 
 	void Editor::Init()
 	{
+		if (m_initialized) return;
+		m_initialized = true;
 
+		m_panels.emplace_back(std::make_unique<HierarchyView>());
+		m_panels.emplace_back(std::make_unique<Inspector>());
+		m_panels.emplace_back(std::make_unique<AssetBrowser>());
+
+		for (auto& panel : m_panels)
+		{
+			panel->Init();
+		}
 	}
 
 	//ImGui startframe endframe already called in States::Window
 	void Editor::Update()
 	{
-		EditorGUI::StartFrame();
-
 		//ImGui::ShowDemoWindow();
-		DisplaySceneHierarchy();
-		DisplayInspector();
 
-		m_assetbrowser.EditorUI();
-		
+		EditorGUI::StartFrame();
+		for (auto& panel : m_panels)
+		{
+			panel->Update();
+		}
+
+		for (auto& panel : m_panels)
+		{
+			panel->EditorUI();
+		}
+
 		EditorGUI::EndFrame();
 	}
+
+
 	void Editor::Shutdown()
 	{
+		for (auto& panel : m_panels)
+		{
+			panel->Shutdown();
+		}
 	}
 
 	void Editor::SelectEntity(FlexECS::Entity entity)

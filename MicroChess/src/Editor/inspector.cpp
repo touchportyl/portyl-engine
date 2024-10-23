@@ -21,8 +21,14 @@ using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
 
 namespace ChronoShift
 {
+	void Inspector::Init()
+	{}
+	void Inspector::Update()
+	{}
+	void Inspector::Shutdown()
+	{}
 
-	void DisplayInspector()
+	void Inspector::EditorUI()
 	{
 		ImGui::Begin("Inspector");
 
@@ -136,13 +142,11 @@ namespace ChronoShift
 						}
 					}
 				}
-
 				ImGui::EndPopup();
 			}
 		}
-
-
 	}
+
 }
 
 /*
