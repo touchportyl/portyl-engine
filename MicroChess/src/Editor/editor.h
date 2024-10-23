@@ -57,6 +57,10 @@ namespace ChronoShift
 		******************************************************************************/
 		void Shutdown();
 
+		//consider shared_ptr instead?
+		template <typename T>
+		T* GetPanel();
+
 		/*!***************************************************************************
 		* @brief
 		* Sets the selected entity to param entity.
@@ -67,14 +71,18 @@ namespace ChronoShift
 		FlexEngine::FlexECS::Entity GetSelectedEntity();
 
 	private:
-		FlexEngine::FlexECS::Entity m_selected_entity = FlexEngine::FlexECS::Entity::Null;	//Which entity the inspector panel should focus on.
-		AssetBrowser m_assetbrowser;
-
-		std::vector<std::unique_ptr<EditorPanel>> m_panels;
-
 		bool m_initialized = false;
+		std::vector<std::unique_ptr<EditorPanel>> m_panels;
+		
+
+		//wtf move this out to inspector or something else
+		FlexEngine::FlexECS::Entity m_selected_entity = FlexEngine::FlexECS::Entity::Null;	//Which entity the inspector panel should focus on.
 		
 		//ComponentViewRegistry m_component_registry;
+		//std::unordered_map<std::type_index, std::string> type_names;
+		//std::unordered_map<std::type_index, EditorPanel*> m_panels;
 	};
+
+
 
 }

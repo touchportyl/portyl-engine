@@ -21,6 +21,7 @@ namespace ChronoShift
 
 	class Inspector : public EditorPanel
 	{
+	public:
 		void Init();
 		void Update();
 		void EditorUI();

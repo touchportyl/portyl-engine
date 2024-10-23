@@ -24,6 +24,7 @@ namespace ChronoShift
 	******************************************************************************/
 	class HierarchyView : public EditorPanel
 	{
+	public:
 		void Init();
 		void Update();
 		void EditorUI();

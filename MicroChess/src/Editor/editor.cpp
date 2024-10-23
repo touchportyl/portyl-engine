@@ -71,6 +71,22 @@ namespace ChronoShift
 		}
 	}
 
+
+
+
+	template<typename T>
+	T* Editor::GetPanel()
+	{
+		for (const auto& panel : m_panels) {
+			if (T* cast = dynamic_cast<T*>(panel.get())) 
+			{
+				return cast;  // Return if successful cast
+			}
+		}
+		return nullptr;
+	}
+
+
 	void Editor::SelectEntity(FlexECS::Entity entity)
 	{
 		m_selected_entity = entity;
@@ -80,6 +96,7 @@ namespace ChronoShift
 	{
 		return m_selected_entity;
 	}
+
 
 }
 
