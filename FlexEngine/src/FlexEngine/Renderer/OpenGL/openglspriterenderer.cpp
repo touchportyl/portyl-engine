@@ -545,8 +545,10 @@ namespace FlexEngine
         }
 
         // Final Composition
-        //Enable_EditorFBO_Layer();
-        Enable_DefaultFBO_Layer();
+        Enable_EditorFBO_Layer();
+        GLenum drawBuffer = GL_COLOR_ATTACHMENT1;
+        glDrawBuffers(1, &drawBuffer);
+        //Enable_DefaultFBO_Layer();
         m_bloom_finalcomp_shader.Use();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_editorTex); // Original scene texture
@@ -562,6 +564,9 @@ namespace FlexEngine
         glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
+
+        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+        glDrawBuffers(2, drawBuffers);
 
         // Clean-up
         Enable_DefaultFBO_Layer();
