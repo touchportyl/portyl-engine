@@ -53,40 +53,49 @@ namespace ChronoShift {
   BattleSystem::~BattleSystem()
   {
   }
-  void BattleSystem::InitializeBattleSlots()
-  {
+  
+  void BattleSystem::SetUpBattleScene(int num_of_enemies, int num_of_players) {
+    enemies_displayed = num_of_enemies;
+    players_displayed = num_of_players;
+
     auto scene = FlexECS::Scene::GetActiveScene();
-    const Vector3 color_player_slot = { 0.45f, 0.58f, 0.32f };
-    const Vector3 color_enemy_slot = { 0.77f, 0.12f, 0.23f };
 
-    for (int i = 0; i < m_slots.size(); i++)
-    {
-      bool is_player_slot = (i < 4);
-      Vector2 position;
-      if (is_player_slot) position = { 200.f + 120.f * i, 600.f };
-      else                position = { 700.f + 120.f * (i - 4), 200.f };
-
+    for (int i = 0; i < (num_of_players + num_of_enemies); i++) {
       FlexECS::Entity slot = FlexECS::Scene::CreateEntity();
-      slot.AddComponent<BattleSlot>({ i, FlexECS::Entity::Null });
-      slot.AddComponent<OnHover>({});
+      slot.AddComponent<BattleSlot>({ FlexECS::Entity::Null });
       slot.AddComponent<OnClick>({});
       slot.AddComponent<IsActive>({ false });
-      slot.AddComponent<Position>({ position });
+      slot.AddComponent<Position>({});
       slot.AddComponent<Scale>({ { 100,100 } });
       slot.AddComponent<ZIndex>({ 9 });
       slot.AddComponent<Rotation>({});
       slot.AddComponent<Transform>({});
       slot.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"()"),
-        is_player_slot ? color_player_slot : color_enemy_slot,
+        SLOT_COLOR_PLAYER,
         Vector3::Zero,
         Vector3::One,
         Renderer2DProps::Alignment_Center
        });
       slot.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-      m_slots[i] = slot;
-    }
 
+      //if (i >= num_of_players) slot.GetComponent<Sprite>()->color = SLOT_COLOR_ENEMY;
+      // Set the position of the slots to be drawn here, it should be based on the number of players and enemies
+      // For example: Let's say there is about 5 enemies, use a formula to split the amount of space allocated to them
+      // and divide it equally so that they are equally spaced out. When there is character death, the positions will be
+      // updated again with the same formula in the character death function
+      // Note: position of slots to be stored in m_slots
+      if (i < num_of_players) {
+        slot.GetComponent<Position>()->position = { SLOT_POS_HOR_PLAYER + 120.f * i, SLOT_POS_VERT_PLAYER };
+        m_players.push_back(slot);
+      }
+      else {
+        slot.GetComponent<Position>()->position = { SLOT_POS_HOR_ENEMY + 120.f * (i - num_of_players), SLOT_POS_VERT_ENEMY };
+        m_enemies.push_back(slot);
+      }
+      //m_slots.push_back(slot);
+    }
+    // Move Buttons for Mouse Click Selection of Moves
     for (int i = 0; i < 4; i++)
     {
       Vector2 position = { 900.f, 450.f + (80.f * i) };
@@ -112,24 +121,21 @@ namespace ChronoShift {
     }
   }
 
-  void BattleSystem::AddCharacter(FlexECS::Entity character, int position)
-  {
-    m_characters.push_back(character);
-    if (character.GetComponent<Character>()->is_player) m_players.push_back(character);
-    else m_enemies.push_back(character);
-    m_slots[position].GetComponent<BattleSlot>()->character = character;
-    m_slots[position].GetComponent<IsActive>()->is_active = true;
+  void BattleSystem::AddCharacters(std::vector<FlexECS::Entity> characters) {
+    // positions of character sprites should be updated according to the slot positions
+    for (size_t i = 0; i < characters.size(); i++) {
+      m_characters.push_back(characters[i]);
+      if (i < players_displayed) m_players[i].GetComponent<BattleSlot>()->character = characters[i];
+      else m_enemies[i-players_displayed].GetComponent<BattleSlot>()->character = characters[i];
+      //m_slots[i].GetComponent<BattleSlot>()->character = characters[i];
+    }
   }
 
   void BattleSystem::BeginBattle()
   {
     ResetCharacters();
-    /*for (FlexECS::Entity entity : m_characters)
-    {
-      m_speedstack.push_back(entity);
-    }*/
-    m_characters.sort(SortLowestSpeed());
 
+    std::sort(m_characters.begin(), m_characters.end(), SortLowestSpeed());
     auto scene = FlexECS::Scene::GetActiveScene();
     std::cout << "Beginning Stack Order:\nName / HP / Speed \n";
     for (auto& entity : m_characters)
@@ -170,13 +176,6 @@ namespace ChronoShift {
     FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
     battle_state.GetComponent<BattleState>()->active_character = m_characters.front();
     battle_state.GetComponent<BattleState>()->phase = BP_MOVE_SELECTION;
-      /*if (m_characters.front().GetComponent<Character>()->is_player) {
-        battle_state.GetComponent<BattleState>()->phase = BP_PLAYER_TURN;
-      }
-      else {
-        battle_state.GetComponent<BattleState>()->phase = BP_ENEMY_TURN;
-      }*/
-    //}
   }
 
   void BattleSystem::Update()
@@ -189,23 +188,29 @@ namespace ChronoShift {
     else if (battle_phase == BP_MOVE_SELECTION) {
       PlayerMoveSelection();
     }
-    else if (battle_phase == BP_MOVE_DEATH_PROCESSION) {
+    /*else if (battle_phase == BP_MOVE_DEATH_PROCESSION) {
       DeathProcession();
-    }
+    }*/
   }
 
   void BattleSystem::PlayerMoveSelection()
   {
-    static int selected_num;
+    static auto selected_num = m_enemies.begin();
     std::array<FlexECS::Scene::StringIndex, 3> character_moves{
       m_characters.front().GetComponent<Character>()->weapon_move_one,
       m_characters.front().GetComponent<Character>()->weapon_move_two,
       m_characters.front().GetComponent<Character>()->weapon_move_three,
     };
     // Reset all the slots colors
-    for (int i = 0; i < 9; i++) {
-      m_slots[i].GetComponent<Sprite>()->color = { 0.45f, 0.58f, 0.32f }; // player slot color
-      if (i > 3) m_slots[i].GetComponent<Sprite>()->color = { 0.77f, 0.12f, 0.23f }; // enemy slot color
+    //for (int i = 0; i < m_slots.size(); i++) {
+    //  m_slots[i].GetComponent<Sprite>()->color = SLOT_COLOR_PLAYER; // player slot color
+    //  if (i >= players_displayed) m_slots[i].GetComponent<Sprite>()->color = SLOT_COLOR_ENEMY; // enemy slot color
+    //}
+    for (auto& slot : m_enemies) {
+      slot.GetComponent<IsActive>()->is_active = false;
+    }
+    for (auto& slot : m_players) {
+      slot.GetComponent<IsActive>()->is_active = false;
     }
 
     static int move_decision = -1; // variable storing move selection
@@ -228,7 +233,10 @@ namespace ChronoShift {
             FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(
               character_moves[move_decision]));
           std::cout << "Move Selected: " << player_move.name << std::endl;
-          selected_num = (!player_move.is_target_player * 4);
+          if (player_move.is_target_player) selected_num = m_players.begin();
+          else selected_num = m_enemies.begin();
+          //selected_num = (!player_move.is_target_player * players_displayed);
+          //selected_num += (!player_move.is_target_player * players_displayed);
         }
       }
     }
@@ -270,7 +278,9 @@ namespace ChronoShift {
         }
       }
     }*/
-    std::vector<int> result;
+    std::vector<FlexECS::Entity> result;
+    auto max_targets = m_enemies.end();
+    auto min_targets = m_enemies.begin();
     if (m_characters.front().GetComponent<Character>()->is_player) {
       static int adjacent = 1;
 
@@ -280,47 +290,89 @@ namespace ChronoShift {
       size_t no_of_targets = 0;
       if (selected_move.is_target_player) {
         // means is player target
-        no_of_targets = m_players.size();
+        no_of_targets = players_displayed;
+        min_targets = m_players.begin();
+        max_targets = m_players.end();
       }
       else {
         // means is enemy target
-        no_of_targets = m_enemies.size();
+        no_of_targets = enemies_displayed;
       }
-
       if (selected_move.target_count < no_of_targets) {
-        if (Input::GetKeyDown(GLFW_KEY_A) && selected_num > (!selected_move.is_target_player * 4)) {
-          selected_num--;
+        // targetting system
+        if (Input::GetKeyDown(GLFW_KEY_D)) {
+          if (selected_num != (max_targets - 1)) selected_num++;
         }
-        else if (Input::GetKeyDown(GLFW_KEY_D) && selected_num < ((!selected_move.is_target_player * 4) + no_of_targets - 1)) {
-          selected_num++;
+        if (Input::GetKeyDown(GLFW_KEY_A)) {
+          if (selected_num != min_targets) selected_num--;
         }
-        if ((selected_num + 1) > ((!selected_move.is_target_player * 4) + no_of_targets - 1)) {
-          adjacent = -1;
-        }
-        else if ((selected_num - 1) < (!selected_move.is_target_player * 4)) {
-          adjacent = 1;
-        }
-        if (selected_move.target_count == 1) {
-          m_slots[selected_num].GetComponent<Sprite>()->color = { 0.35f, 0.68f, 0.12f };
-        }
-        else if (selected_move.target_count == 2) {
-          m_slots[selected_num].GetComponent<Sprite>()->color = { 0.35f, 0.68f, 0.12f };
-          m_slots[selected_num + adjacent].GetComponent<Sprite>()->color = { 0.35f, 0.68f, 0.12f };
-        }
-        else {
-          for (int j = (selected_num - 1); j < (selected_num + 1); j++) {
-            m_slots[j].GetComponent<Sprite>()->color = { 0.35f, 0.68f, 0.12f };
+
+        if (selected_num == (max_targets - 1)) adjacent = -1;
+        else if (selected_num == min_targets) adjacent = 1;
+        
+        // This needs to be resolved ASAP
+        // display sprites when selected, adjacency matters
+        if (selected_num != min_targets || selected_num != (max_targets - 1)) {
+          if (selected_move.target_count == 3) {
+            (*(selected_num - 1)).GetComponent<IsActive>()->is_active = true;
+            (*(selected_num + 1)).GetComponent<IsActive>()->is_active = true;
+          }
+          else if (selected_move.target_count == 2) {
+            (*(selected_num + adjacent)).GetComponent<IsActive>()->is_active = true;
           }
         }
+        else (*(selected_num + adjacent)).GetComponent<IsActive>()->is_active = true;
+        (*selected_num).GetComponent<IsActive>()->is_active = true;
       }
       else {
-        for (int i = selected_num; i < (selected_num + no_of_targets); i++) {
-          m_slots[i].GetComponent<Sprite>()->color = { 0.35f, 0.68f, 0.12f };
+        // all the slots are to be targetted
+        for (auto i = min_targets; i != max_targets; i++) {
+          (*i).GetComponent<IsActive>()->is_active = true;
         }
       }
+      // This entire target selection needs to improve. Too restrictive alr
+      //if (selected_move.target_count < no_of_targets) {
+      //  if (Input::GetKeyDown(GLFW_KEY_A) && selected_num > (!selected_move.is_target_player * players_displayed)) {
+      //    selected_num--;
+      //  }
+      //  else if (Input::GetKeyDown(GLFW_KEY_D) && selected_num < ((!selected_move.is_target_player * players_displayed) + no_of_targets - 1)) {
+      //    selected_num++;
+      //  }
+      //  if ((selected_num + 1) > ((!selected_move.is_target_player * players_displayed) + no_of_targets - 1)) {
+      //    adjacent = -1;
+      //  }
+      //  else if ((selected_num - 1) < (!selected_move.is_target_player * players_displayed)) {
+      //    adjacent = 1;
+      //  }
+      //  if (selected_move.target_count == 1) {
+      //    m_slots[selected_num].GetComponent<IsActive>()->is_active = true;
+      //    //m_slots[selected_num].GetComponent<Sprite>()->color = { 0.35f, 0.68f, 0.12f };
+      //  }
+      //  else if (selected_move.target_count == 2) {
+      //    m_slots[selected_num].GetComponent<IsActive>()->is_active = true;
+      //    m_slots[selected_num + adjacent].GetComponent<IsActive>()->is_active = true;
+      //    //m_slots[selected_num].GetComponent<Sprite>()->color = { 0.35f, 0.68f, 0.12f };
+      //    //m_slots[selected_num + adjacent].GetComponent<Sprite>()->color = { 0.35f, 0.68f, 0.12f };
+      //  }
+      //  else {
+      //    for (int j = (selected_num - 1); j < (selected_num + 1); j++) {
+      //      m_slots[j].GetComponent<IsActive>()->is_active = true;
+      //      //m_slots[j].GetComponent<Sprite>()->color = { 0.35f, 0.68f, 0.12f };
+      //    }
+      //  }
+      //}
+      //else {
+      //  for (int i = selected_num; i < (selected_num + no_of_targets); i++) {
+      //    m_slots[i].GetComponent<IsActive>()->is_active = true;
+      //    //m_slots[i].GetComponent<Sprite>()->color = { 0.35f, 0.68f, 0.12f };
+      //  }
+      //}
 
       if (Input::GetKeyDown(GLFW_KEY_SPACE)) {
-        switch (selected_move.target_count) {
+        for (auto i = min_targets; i != max_targets; i++) {
+          if ((*i).GetComponent<IsActive>()->is_active) result.push_back((*i).GetComponent<BattleSlot>()->character);
+        }
+        /*switch (selected_move.target_count) {
         case 3:
           result.push_back(selected_num + 1);
           result.push_back(selected_num - 1);
@@ -329,46 +381,88 @@ namespace ChronoShift {
           result.push_back(selected_num + adjacent);
           break;
         }
-        result.push_back(selected_num);
+        result.push_back(selected_num);*/
       }
     }
     else {
-      int min = 0, max = 0;
+      //int min = 0, max = 0;
+      //if (selected_move.is_target_player) {
+      //  //max = static_cast<int>(players_displayed - 1);
+      //  max = players_displayed;
+      //}
+      //else {
+      //  //min = static_cast<int>(players_displayed + 1);
+      //  //max = static_cast<int>(m_characters.size() - 1);
+      //  max = enemies_displayed;
+      //}
+      //for (int i = 0; i < selected_move.target_count; i++) {
+      //  result.push_back(Range(min, max).Get());
+      //}
+      int max = 0;
       if (selected_move.is_target_player) {
-        min = 0;
-        max = static_cast<int>(m_players.size() - 1);
+        max = players_displayed;
+        min_targets = m_players.begin();
+      }
+      else max = enemies_displayed;
+      int random_selection = Range(0, max).Get();
+      if (selected_move.target_count < max) {
+        if (random_selection != 0 || random_selection != max) {
+          if (selected_move.target_count == 3) {
+            result.push_back((*(min_targets + 1)).GetComponent<BattleSlot>()->character);
+            result.push_back((*(min_targets - 1)).GetComponent<BattleSlot>()->character);
+          }
+          else if (selected_move.target_count == 2) result.push_back((*(min_targets - 1)).GetComponent<BattleSlot>()->character);
+        }
+        else {
+          if (random_selection == max) result.push_back((*(min_targets - 1)).GetComponent<BattleSlot>()->character);
+          else result.push_back((*(min_targets + 1)).GetComponent<BattleSlot>()->character);
+        }
+        result.push_back((*min_targets).GetComponent<BattleSlot>()->character);
       }
       else {
-        min = static_cast<int>(m_players.size() + 1);
-        max = static_cast<int>(m_characters.size() - 1);
-      }
-      for (int i = 0; i < selected_move.target_count; i++) {
-        result.push_back(Range(min, max).Get());
+        // all the slots are to be targetted
+        for (int i = 0; i < max; i++) {
+          result.push_back(*(min_targets + i));
+        }
       }
     }
     if (result.empty()) return;
 
     int final_decision = move_decision;
     move_decision = -1;
-    std::vector final_result = result;
+    std::vector<FlexECS::Entity> final_result = result;
     result.clear();
     ExecuteMove(character_moves[final_decision], final_result);
   }
 
-  void BattleSystem::ExecuteMove(FlexECS::Scene::StringIndex move_id, std::vector<int> selected_targets)
+  void BattleSystem::ExecuteMove(FlexECS::Scene::StringIndex move_id, std::vector<FlexECS::Entity> selected_targets)
   {
     //get the move user
     FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
     FlexECS::Entity user = battle_state.GetComponent<BattleState>()->active_character;
     Move move = MoveRegistry::GetMove(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(move_id));
     std::vector<FlexECS::Entity> targets;
+    /*auto max_target = m_enemies.end(), min_target = m_enemies.begin();
+    if (move.is_target_player) {
+      max_target = m_players.end();
+      min_target = m_players.begin();
+    }
+    std::vector<FlexECS::Entity>::iterator selected_target = selected;
+    if (selected != max_target || selected != min_target) {
+      switch (move.target_count) {
+      case 3:
+        selected_target = selected - 1;
+        break;
 
-    if (move.target_type == MOVE_TARGET_SINGLE)
+      }
+    }*/
+    targets.insert(targets.begin(), selected_targets.begin(), selected_targets.end());
+    /*if (move.target_type == MOVE_TARGET_SINGLE)
     {
       for (int i = 0; i < selected_targets.size(); i++) {
         targets.insert(targets.begin(), static_cast<FlexECS::Entity>(m_slots[selected_targets[i]].GetComponent<BattleSlot>()->character));
       }
-    }
+    }*/
     // WIP: To include execution of other moves of different target types
     /*else if (move.target_type == MOVE_TARGET_SELF) {
       targets.push_back(user);
@@ -392,8 +486,7 @@ namespace ChronoShift {
     move.effect(targets);
     user.GetComponent<Character>()->current_speed += move.cost + user.GetComponent<Character>()->base_speed;
     user.GetComponent<Action>()->move_to_use = FlexECS::Entity::Null;
-    m_characters.sort(SortLowestSpeed());
-
+    std::sort(m_characters.begin(), m_characters.end(), SortLowestSpeed());
     
     auto scene = FlexECS::Scene::GetActiveScene();
     //Display Character Move and target selection
@@ -406,6 +499,7 @@ namespace ChronoShift {
     }
     std::cout << std::endl;
     // Display Status of alive Characters
+    targets.clear();
     for (auto& entity : m_characters)
     {
       if (entity.GetComponent<Character>()->current_health > 0) {
@@ -413,20 +507,20 @@ namespace ChronoShift {
           << "  HP: " << entity.GetComponent<Character>()->current_health
           << "  Spd: " << entity.GetComponent<Character>()->current_speed << std::endl;
       }
+      else targets.push_back(entity);
     }
     // Display Characters that have died
-    for (auto& entity : m_characters)
+    for (auto& dead_character : targets)
     {
-      if (entity.GetComponent<Character>()->current_health <= 0) {
-        std::cout << scene->Internal_StringStorage_Get(entity.GetComponent<Character>()->character_name)
-          << " has been killed by " << scene->Internal_StringStorage_Get(user.GetComponent<Character>()->character_name)
-          << "'s " << move.name << std::endl;
-      }
+      std::cout << scene->Internal_StringStorage_Get(dead_character.GetComponent<Character>()->character_name)
+        << " has been killed by " << scene->Internal_StringStorage_Get(user.GetComponent<Character>()->character_name)
+        << "'s " << move.name << std::endl;
     }
     std::cout << "\n";
     battle_state.GetComponent<BattleState>()->current_target_count = 0;
     battle_state.GetComponent<BattleState>()->active_character = FlexECS::Entity::Null;
-    battle_state.GetComponent<BattleState>()->phase = BP_PROCESSING;
+    DeathProcession(targets);
+    //battle_state.GetComponent<BattleState>()->phase = BP_PROCESSING;
   }
   // WIP: Death Procession kind of works:
   // 1. need to disable IsActive component for the character entity itself so that the sprite won't appear
@@ -435,43 +529,63 @@ namespace ChronoShift {
   //   just setting to 0 for player and 4 for enemies is not enough
   // - If enemy killed is not the first one, current targetting system has no
   //   issues. However, when attempting to execute the move, instant crash (issue has not been identified)
-  void BattleSystem::DeathProcession() {
+  void BattleSystem::DeathProcession(std::vector<FlexECS::Entity> list_of_deaths) {
     FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
-    int to_delete = 0;
-    FlexECS::Entity entity_to_delete = FlexECS::Entity::Null;
-    for (auto& entity : m_characters) {
-      if (entity.GetComponent<Character>()->current_health <= 0) {
-        if (entity.GetComponent<Character>()->is_player) {
-          // Removing Dead Player from players vector
-          for (auto& player : m_players) {
-            if (player.GetComponent<Character>()->character_name == entity.GetComponent<Character>()->character_name) {
-              m_players.erase(m_players.begin() + to_delete);
-            }
-            ++to_delete;
+    for (auto it = list_of_deaths.begin(); it != list_of_deaths.end(); it++) {
+      for (auto c = m_characters.begin(); c != m_characters.end(); c++) {
+        if (*c == *it) {
+          m_characters.erase(c);
+          std::cout << (*it).GetComponent<Character>()->character_name << " has been removed from characters list" << std::endl;
+          break;
+        }
+      }
+      if ((*it).GetComponent<Character>()->is_player) {
+        for (auto p = m_players.begin(); p != m_players.end(); p++) {
+          if ((*p).GetComponent<BattleSlot>()->character == *it) {
+            (*p).GetComponent<IsActive>()->is_active = false;
+            m_players.erase(p);
+            players_displayed--;
+            std::cout << (*it).GetComponent<Character>()->character_name << " has been removed from player list" << std::endl;
+            break;
           }
         }
-        else {
-          // Removing Dead Enemy from enemies vector
-          for (auto& enemy : m_enemies) {
-            if (enemy.GetComponent<Character>()->character_name == entity.GetComponent<Character>()->character_name) {
-              m_enemies.erase(m_enemies.begin() + to_delete);
-            }
-            ++to_delete;
+      }
+      else {
+        for (auto e = m_enemies.begin(); e != m_enemies.end(); e++) {
+          if ((*e).GetComponent<BattleSlot>()->character == *it) {
+            (*e).GetComponent<IsActive>()->is_active = false;
+            m_enemies.erase(e);
+            enemies_displayed--;
+            std::cout << (*it).GetComponent<Character>()->character_name << " has been removed from enemy list" << std::endl;
+            break;
           }
         }
-        to_delete = 0;
-        // Removing Dead Character from battle system slots
-        for (int i = 0; i < m_slots.size(); i++) {
-          if (m_slots[i].GetComponent<BattleSlot>()->character == entity) {
-            m_slots[i].GetComponent<IsActive>()->is_active = false;
-            m_slots[i].GetComponent<BattleSlot>()->character = FlexECS::Entity::Null;
-          }
-        }
-        // Removing Dead Character from character vector
-        entity_to_delete = entity;
       }
     }
-    if (entity_to_delete != FlexECS::Entity::Null) m_characters.remove(entity_to_delete);
+    //for (auto it = m_characters.begin(); it != m_characters.end(); it++) {
+    //  if (it->GetComponent<Character>()->current_health <= 0) {
+    //    if (it->GetComponent<Character>()->is_player) {
+    //      players_displayed--;
+    //      // player death is going to be abit more sus and require more discussion
+    //      
+    //      //m_slots.pop_front();
+    //    }
+    //    else {
+    //      enemies_displayed--;
+    //      // need to recalculate positions of m_slots for enemies;
+    //      //m_slots.pop_back();
+    //    }
+    //    // Removing Dead Character from battle system slots
+    //    
+    //    *it = FlexECS::Entity::Null;
+    //  }
+    //}
+    //for (auto it = m_characters.begin(); it != m_characters.end(); it++) {
+    //  if (*it == FlexECS::Entity::Null) {
+    //    m_characters.erase(it);
+    //    it = m_characters.begin();
+    //  }
+    //}
     battle_state.GetComponent<BattleState>()->phase = BP_PROCESSING;
   }
 }
