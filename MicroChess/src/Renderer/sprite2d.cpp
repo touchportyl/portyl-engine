@@ -176,7 +176,7 @@ namespace ChronoShift
         Renderer2DProps props;
         props.window_size = { static_cast<float>(window_props.width), static_cast<float>(window_props.height) };
 
-        FunctionQueue pp_render_queue, non_pp_render_queue;
+        FunctionQueue pp_render_queue, non_pp_render_queue, finalized_render_queue;
         ////////////////////////////////////////////////////////////////////////////////
         // Potential Issues
         ////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +205,7 @@ namespace ChronoShift
             props.vbo_id = sprite->vbo_id;
 
             if ("finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", z_index});
+                finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", z_index});
             else if (sprite->post_processed)
                 pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
             else
@@ -228,14 +228,20 @@ namespace ChronoShift
         bool blending = OpenGLRenderer::IsBlendingEnabled();
         if (!blending) OpenGLRenderer::EnableBlending();
 
-        // batch-render scene
+        // batch-render scene on editor
         OpenGLSpriteRenderer::Enable_EditorFBO_Layer();
         OpenGLSpriteRenderer::ClearFrameBuffer();
         //auto start = std::chrono::high_resolution_clock::now();
         pp_render_queue.Flush(); //First Render pp objects first
         OpenGLSpriteRenderer::DrawPostProcessingLayer();
-        OpenGLSpriteRenderer::Enable_DefaultFBO_Layer();
+        //OpenGLSpriteRenderer::Enable_DefaultFBO_Layer();
+        OpenGLSpriteRenderer::Enable_EditorFBO_Layer();
         non_pp_render_queue.Flush(); //Then Render non-pp objects second
+
+        //Render editor and final render
+        OpenGLSpriteRenderer::Enable_DefaultFBO_Layer();
+        finalized_render_queue.Flush();
+
         //auto end = std::chrono::high_resolution_clock::now();
         //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
         //std::cout << "Time taken: " << duration << " ms" << std::endl;

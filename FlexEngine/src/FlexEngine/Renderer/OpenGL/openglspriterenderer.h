@@ -138,7 +138,8 @@ namespace FlexEngine
         static GLuint m_brightnessTex;                    /*!< Texture used for bloom effects */
         static GLuint m_pingpongTex[2];            /*!< Ping-pong buffers for intermediate processing */
         static GLuint m_postProcessingTex;
-        static GLuint m_editorTex;           /*!<0 for editor, 1 for in game */         
+        static GLuint m_editorTex;
+        static GLuint m_finalRenderTex;
         static float m_PPopacity;
 
         // Testing variables (subject to change)

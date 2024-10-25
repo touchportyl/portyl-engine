@@ -61,6 +61,7 @@ namespace FlexEngine
     GLuint OpenGLSpriteRenderer::m_pingpongTex[2] = {};
     GLuint OpenGLSpriteRenderer::m_postProcessingTex = 0;
     GLuint OpenGLSpriteRenderer::m_editorTex = {};
+    GLuint OpenGLSpriteRenderer::m_finalRenderTex = {};
 
     float width, height;
     //////////////////////////////////////////////////////////////
@@ -168,7 +169,7 @@ namespace FlexEngine
         switch (id)
         {
         case CreatedTextureID::CID_finalRender:
-            return m_postProcessingTex;
+            return m_finalRenderTex;
         case CreatedTextureID::CID_brightnessPass:
             return m_brightnessTex;
         case CreatedTextureID::CID_blur:
@@ -365,6 +366,17 @@ namespace FlexEngine
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_editorTex, 0);
+        glGenTextures(1, &m_finalRenderTex);
+        glBindTexture(GL_TEXTURE_2D, m_finalRenderTex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_finalRenderTex, 0);
+        unsigned int attachments2[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+        glDrawBuffers(2, attachments2);
+
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             Log::Fatal("Editor Framebuffer error: " + fboStatus);
 
@@ -380,6 +392,7 @@ namespace FlexEngine
             glDeleteTextures(1, &m_brightnessTex);
             glDeleteTextures(1, &m_postProcessingTex);
             glDeleteTextures(1, &m_editorTex);
+            glDeleteTextures(1, &m_finalRenderTex);
             glDeleteTextures(2, m_pingpongTex);
         }
         );
