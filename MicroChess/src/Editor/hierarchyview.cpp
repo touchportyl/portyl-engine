@@ -31,15 +31,15 @@ namespace ChronoShift
 	void HierarchyView::EditorUI()
 	{
 		auto scene = FlexECS::Scene::GetActiveScene();
-		size_t entity_count = scene->entity_index.size();
-		std::string entity_count_text = "Entity Count:  " + std::to_string(entity_count);
+		//size_t entity_count = scene->entity_index.size();
+		//std::string entity_count_text = "Entity Count:  " + std::to_string(entity_count);
 
 		FunctionQueue delete_queue;
 
 		FlexECS::Entity entity_to_delete = FlexECS::Entity::Null;
 
 		ImGui::Begin("Scene Hierarchy");
-		ImGui::Text(entity_count_text.c_str());
+		//ImGui::Text(entity_count_text.c_str());
 
 
 
@@ -67,8 +67,8 @@ namespace ChronoShift
 		{
 			ImGui::PushID(imgui_id++);
 			FlexECS::Entity entity(id);
-			std::string name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<EntityName>());
 
+			std::string name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<EntityName>());
 			ImGuiTreeNodeFlags node_flags =
 				ImGuiTreeNodeFlags_DefaultOpen |
 				ImGuiTreeNodeFlags_FramePadding |

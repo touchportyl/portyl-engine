@@ -35,6 +35,7 @@ namespace ChronoShift
 		auto scene = FlexECS::Scene::GetActiveScene();
 		auto entity = Editor::GetInstance()->GetSelectedEntity();
 
+		//std::cout << Editor::GetInstance()->GetSelectedPrefab().get().string();
 
 		if (entity != FlexECS::Entity::Null)
 		{
@@ -84,7 +85,7 @@ namespace ChronoShift
 			{
 				auto type_descriptor = TYPE_DESCRIPTOR_LOOKUP[component_id];
 				std::string component_name = type_descriptor->ToString();
-				if (component_name == "Position" || component_name == "Rotation" || component_name == "Scale")
+				if (component_name == "Position" || component_name == "Rotation" || component_name == "Scale" || component_name == "IsActive")
 					continue;
 
 				if (ComponentViewRegistry::ViewerExists(component_name))

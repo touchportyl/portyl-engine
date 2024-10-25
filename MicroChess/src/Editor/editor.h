@@ -41,7 +41,7 @@ namespace ChronoShift
 
 		/*!***************************************************************************
 		* @brief
-		* Currently nothing inside.
+		* init
 		******************************************************************************/
 		void Init();
 
@@ -53,7 +53,7 @@ namespace ChronoShift
 
 		/*!***************************************************************************
 		* @brief
-		* Currently nothing inside.
+		* shutdun
 		******************************************************************************/
 		void Shutdown();
 
@@ -69,6 +69,8 @@ namespace ChronoShift
 		******************************************************************************/
 		void SelectEntity(FlexEngine::FlexECS::Entity);
 		FlexEngine::FlexECS::Entity GetSelectedEntity();
+
+
 
 	private:
 		bool m_initialized = false;
