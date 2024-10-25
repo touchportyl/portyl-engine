@@ -194,7 +194,6 @@
     <ClCompile Include="src\Editor\editor.cpp" />
     <ClCompile Include="src\Editor\editorgui.cpp" />
     <ClCompile Include="src\Editor\hierarchyview.cpp" />
-    <ClCompile Include="src\Editor\imguipayloads.cpp" />
     <ClCompile Include="src\Editor\inspector.cpp" />
     <ClCompile Include="src\Layers\base.cpp" />
     <ClCompile Include="src\Layers\battle.cpp" />

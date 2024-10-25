@@ -31,16 +31,33 @@ namespace ChronoShift
 	void HierarchyView::EditorUI()
 	{
 		auto scene = FlexECS::Scene::GetActiveScene();
-		//size_t entity_count = scene->entity_index.size();
-		//std::string entity_count_text = "Entity Count:  " + std::to_string(entity_count);
 
 		FunctionQueue delete_queue;
 
 		FlexECS::Entity entity_to_delete = FlexECS::Entity::Null;
 
 		ImGui::Begin("Scene Hierarchy");
+		//size_t entity_count = scene->entity_index.size();
+		//std::string entity_count_text = "Entity Count:  " + std::to_string(entity_count);
 		//ImGui::Text(entity_count_text.c_str());
+		
 
+		//Drag a sprite from assets to window to create entity with the sprite.
+		if (auto image = EditorGUI::StartPayloadReceiver<const char>(PayloadTags::IMAGE))
+		{
+			std::string image_key(image);
+			std::filesystem::path path = image_key;
+
+			FlexECS::Entity new_entity = scene->CreateEntity(path.filename().string());
+			new_entity.AddComponent<IsActive>({true});
+			new_entity.AddComponent<Position>({ Vector2::One * 500.0f });
+			new_entity.AddComponent<Rotation>({});
+			new_entity.AddComponent<Scale>({ Vector2::One * 100.0f });
+			new_entity.AddComponent<Transform>({});
+			new_entity.AddComponent<ZIndex>({});
+			new_entity.AddComponent<Sprite>({ FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(image_key) });
+			new_entity.AddComponent<Shader>({ FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(R"(\shaders\texture)") });
+		}
 
 
 		//Right click menu (create entity)
@@ -127,6 +144,9 @@ namespace ChronoShift
 		{
 			Editor::GetInstance()->SelectEntity(FlexECS::Entity::Null);  // Deselect when clicking in empty space
 		}
+
+
+
 
 		ImGui::End();
 

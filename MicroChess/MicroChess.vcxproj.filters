@@ -223,8 +223,5 @@
     <ClCompile Include="src\Editor\assetbrowser.cpp">
       <Filter>src\Editor</Filter>
     </ClCompile>
-    <ClCompile Include="src\Editor\imguipayloads.cpp">
-      <Filter>src\Editor</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

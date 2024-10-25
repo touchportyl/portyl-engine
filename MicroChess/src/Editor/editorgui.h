@@ -84,6 +84,7 @@ namespace ChronoShift
 
 		template <typename T>
 		static const T* StartPayloadReceiver(PayloadTags tag);
+
 		static void EndPayloadReceiver();
 
 		/*!***************************************************************************
@@ -100,4 +101,22 @@ namespace ChronoShift
 
 		static int m_id;
 	};
+
+
+	/*
+	Template functions
+	*/
+	template<typename T>
+	const T* EditorGUI::StartPayloadReceiver(PayloadTags tag)
+	{
+		if (ImGui::BeginDragDropTarget())
+		{
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GetPayloadTagString(tag));
+
+			if (payload) return static_cast<T*>(payload->Data);
+			else return nullptr;
+		}
+		return nullptr;
+
+	}
 }

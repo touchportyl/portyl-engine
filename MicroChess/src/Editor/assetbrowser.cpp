@@ -109,7 +109,7 @@ namespace ChronoShift
 					//}
 				}
 
-				//Drag and drop for sprite component
+				//Drag and drop assets
 				if (ImGui::BeginDragDropSource())
 				{
 					std::string payload(file.string());
