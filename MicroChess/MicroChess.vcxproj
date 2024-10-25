@@ -162,6 +162,7 @@
     <ClInclude Include="src\Editor\editorgui.h" />
     <ClInclude Include="src\Editor\editorpanel.h" />
     <ClInclude Include="src\Editor\hierarchyview.h" />
+    <ClInclude Include="src\Editor\imguipayloads.h" />
     <ClInclude Include="src\Editor\inspector.h" />
     <ClInclude Include="src\Layers.h" />
     <ClInclude Include="src\Layers\base.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="src\Editor\editor.cpp" />
     <ClCompile Include="src\Editor\editorgui.cpp" />
     <ClCompile Include="src\Editor\hierarchyview.cpp" />
+    <ClCompile Include="src\Editor\imguipayloads.cpp" />
     <ClCompile Include="src\Editor\inspector.cpp" />
     <ClCompile Include="src\Layers\base.cpp" />
     <ClCompile Include="src\Layers\battle.cpp" />

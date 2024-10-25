@@ -86,9 +86,8 @@ namespace ChronoShift
 			{
 				if (ImGui::BeginDragDropSource())
 				{
-					ImGui::SetDragDropPayload("ENTITY_DRAG", &entity.Get(), sizeof(FlexECS::EntityID));
-					ImGui::Text(name.c_str()); // Show the entity name during drag
-					ImGui::EndDragDropSource();
+					EditorGUI::StartPayload(PayloadTags::ENTITY, &entity.Get(), sizeof(FlexECS::EntityID), name.c_str());
+					EditorGUI::EndPayload();
 				}
 				ImGui::TreePop();
 			}

@@ -21,6 +21,11 @@ namespace ChronoShift
 {
 	int EditorGUI::m_id = 0;
 
+
+	/*!***************************************************************************
+	* Component viewers
+	******************************************************************************/
+
 	void EditorGUI::DragFloat2(Vector2& data, std::string title,
 		//std::string label1, std::string label2, 
 		float width, float drag_speed)
@@ -96,15 +101,13 @@ namespace ChronoShift
 			Editor::GetInstance()->SelectEntity(entity);
 		}
 
-		if (ImGui::BeginDragDropTarget())
+		if (auto payload = StartPayloadReceiver<FlexECS::EntityID>(PayloadTags::ENTITY))
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
-			{
-				FlexECS::Entity dropped_entity = *(FlexECS::EntityID*)payload->Data;
-				entity = dropped_entity;
-			}
-			ImGui::EndDragDropTarget();
+			FlexECS::Entity dropped_entity = *payload;
+			entity = dropped_entity;
+			EndPayloadReceiver();
 		}
+
 		ImGui::EndGroup();
 		PopID();
 	}
@@ -121,13 +124,11 @@ namespace ChronoShift
 		ImGui::SameLine();
 		ImGui::Button(filename.c_str());
 
-		if (ImGui::BeginDragDropTarget()) {
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SHADER_PATH")) {
-				const char* dropped_path = (const char*)payload->Data;
-				std::string new_file_path(dropped_path);
-				path = new_file_path; // Store the file path in the component
-			}
-			ImGui::EndDragDropTarget();
+		if (const char* data = StartPayloadReceiver<const char>(PayloadTags::SHADER))
+		{
+			std::string new_file_path(data);
+			path = new_file_path;
+			EndPayloadReceiver();
 		}
 
 		PopID();
@@ -145,14 +146,21 @@ namespace ChronoShift
 		ImGui::SameLine();
 		ImGui::Button(filename.c_str());
 
-		if (ImGui::BeginDragDropTarget()) {
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_PATH")) {
-				const char* dropped_path = (const char*)payload->Data;
-				std::string new_file_path(dropped_path);
-				path = new_file_path; // Store the file path in the component
-			}
-			ImGui::EndDragDropTarget();
+		if (const char* data = StartPayloadReceiver<const char>(PayloadTags::IMAGE))
+		{
+			std::string new_file_path(data);
+			path = new_file_path;
+			EndPayloadReceiver();
 		}
+		//if (ImGui::BeginDragDropTarget()) 
+		//{
+		//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_PATH")) {
+		//		const char* dropped_path = (const char*)payload->Data;
+		//		std::string new_file_path(dropped_path);
+		//		path = new_file_path; // Store the file path in the component
+		//	}
+		//	ImGui::EndDragDropTarget();
+		//}
 
 		if (filename != "(no sprite)")
 		{
@@ -229,6 +237,46 @@ namespace ChronoShift
 
 
 
+	/*!***************************************************************************
+	* payloads
+	******************************************************************************/
+	bool EditorGUI::StartPayload(PayloadTags tag, const void* data, size_t data_size, std::string tooltip)
+	{
+		bool result = ImGui::SetDragDropPayload(GetPayloadTagString(tag), data, data_size);
+		ImGui::Text("%s", tooltip.c_str());
+		return result;
+	}
+
+	void EditorGUI::EndPayload()
+	{
+		ImGui::EndDragDropSource();
+	}
+
+	template<typename T>
+	const T* EditorGUI::StartPayloadReceiver(PayloadTags tag)
+	{
+		if (ImGui::BeginDragDropTarget())
+		{
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GetPayloadTagString(tag));
+
+			if (payload) return static_cast<T*>(payload->Data);
+			else return nullptr;
+		}
+		return nullptr;
+
+	}
+
+	void EditorGUI::EndPayloadReceiver()
+	{
+		ImGui::EndDragDropTarget();
+	}
+
+
+
+
+	/*!***************************************************************************
+	* System
+	******************************************************************************/
 
 	void EditorGUI::StartFrame()
 	{

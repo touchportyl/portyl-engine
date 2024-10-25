@@ -18,6 +18,7 @@
 #include "Editor/editorgui.h"
 #include "Editor/assetbrowser.h"
 #include "Editor/componentviewer.h"
+#include "Editor/imguipayloads.h"
 
 #include "Components/rendering.h"
 

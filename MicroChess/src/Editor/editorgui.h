@@ -16,6 +16,7 @@
 #pragma once
 #include "FlexEngine.h"
 #include "editor.h"
+#include "imguipayloads.h"
 
 namespace ChronoShift
 {
@@ -72,6 +73,18 @@ namespace ChronoShift
 		static void Checkbox(bool& data, std::string title = "");
 
 		static void Mat44(FlexEngine::Matrix4x4& data, std::string title = "");
+
+
+
+		/*!***************************************************************************
+		* @brief payloads
+		******************************************************************************/
+		static bool StartPayload(PayloadTags tag, const void* data, size_t data_size, std::string tooltip);
+		static void EndPayload();
+
+		template <typename T>
+		static const T* StartPayloadReceiver(PayloadTags tag);
+		static void EndPayloadReceiver();
 
 		/*!***************************************************************************
 		* @brief

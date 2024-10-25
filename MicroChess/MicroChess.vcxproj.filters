@@ -136,6 +136,9 @@
     <ClInclude Include="src\Editor\editorpanel.h">
       <Filter>src\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="src\Editor\imguipayloads.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -218,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="src\CharacterPrefab\characterprefab.cpp" />
     <ClCompile Include="src\Editor\assetbrowser.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\imguipayloads.cpp">
       <Filter>src\Editor</Filter>
     </ClCompile>
   </ItemGroup>
