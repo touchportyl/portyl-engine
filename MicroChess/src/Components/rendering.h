@@ -131,7 +131,7 @@ using namespace FlexEngine;
   { FLX_REFL_SERIALIZABLE
   public:
     FlexECS::Scene::StringIndex texture;
-    Vector3 color = Vector3(1.0f, 0.0f, 1.0f);
+    Vector3 color = Vector3(1.0f, 0.0f, 0.5f);
     Vector3 color_to_add = Vector3::Zero;
     Vector3 color_to_multiply = Vector3::One;
     int alignment = Renderer2DProps::Alignment_Center;

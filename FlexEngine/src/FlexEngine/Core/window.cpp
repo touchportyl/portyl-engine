@@ -45,6 +45,7 @@ namespace FlexEngine
     for (auto& hint : s_props.window_hints)
     {
       glfwWindowHint(hint.first, hint.second);
+
     }
 
     // create window

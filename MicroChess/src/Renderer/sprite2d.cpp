@@ -182,9 +182,13 @@ namespace ChronoShift
         ////////////////////////////////////////////////////////////////////////////////
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
         
+        Matrix4x4 temp{};
+
         // Render all entities
         for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
         {
+            auto entity_name_component = entity.GetComponent<EntityName>();
+
             if (!entity.GetComponent<IsActive>()->is_active) continue;
             auto& z_index = entity.GetComponent<ZIndex>()->z;
             Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
@@ -200,11 +204,22 @@ namespace ChronoShift
             props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
             props.vbo_id = sprite->vbo_id;
 
-            if (sprite->post_processed)
+            if ("finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
+                non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", z_index});
+            else if (sprite->post_processed)
                 pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
             else
                 non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
+
         }
+
+        //TESTING FOR MORE THAN 2500
+        //int repeat_count = 2500;
+        //for (int i = 0; i < repeat_count; ++i) {
+        //    if (props.vbo_id != 0) { // Assuming a valid vbo_id was set in the previous loop
+        //        non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", 0 });
+        //    }
+        //}
 
         // push settings
         bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
@@ -216,14 +231,15 @@ namespace ChronoShift
         // batch-render scene
         OpenGLSpriteRenderer::Enable_EditorFBO_Layer();
         OpenGLSpriteRenderer::ClearFrameBuffer();
+        //auto start = std::chrono::high_resolution_clock::now();
         pp_render_queue.Flush(); //First Render pp objects first
         OpenGLSpriteRenderer::DrawPostProcessingLayer();
         OpenGLSpriteRenderer::Enable_DefaultFBO_Layer();
         non_pp_render_queue.Flush(); //Then Render non-pp objects second
+        //auto end = std::chrono::high_resolution_clock::now();
+        //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        //std::cout << "Time taken: " << duration << " ms" << std::endl;
 
-        // Draw Final Render
-        //Pending
-        
         // pop settings
         if (depth_test) OpenGLRenderer::EnableDepthTest();
         if (!blending) OpenGLRenderer::DisableBlending();

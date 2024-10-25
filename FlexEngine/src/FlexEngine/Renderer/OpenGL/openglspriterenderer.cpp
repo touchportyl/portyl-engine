@@ -50,8 +50,8 @@ namespace FlexEngine
     Asset::Shader OpenGLSpriteRenderer::m_bloom_finalcomp_shader;
 
     //////////////////////////////////////////////////////////////
-    GLuint OpenGLSpriteRenderer::samples = 8;
-    float OpenGLSpriteRenderer::gamma = 2.2f;
+    //GLuint OpenGLSpriteRenderer::samples = 8;
+    //float OpenGLSpriteRenderer::gamma = 2.2f;
     float OpenGLSpriteRenderer::m_PPopacity = 0.8f;
     GLuint OpenGLSpriteRenderer::m_postProcessingFBO = 0;
     GLuint OpenGLSpriteRenderer::m_pingpongFBO[2] = {};
@@ -163,6 +163,21 @@ namespace FlexEngine
     *****************************************************************************/
     GLuint OpenGLSpriteRenderer::GetVAO_ID(Renderer2DProps::VBO_Type type) { return m_vbos[type].vao; }
 
+    GLuint OpenGLSpriteRenderer::GetCreatedTexture(CreatedTextureID id)
+    {
+        switch (id)
+        {
+        case CreatedTextureID::CID_finalRender:
+            return m_postProcessingTex;
+        case CreatedTextureID::CID_brightnessPass:
+            return m_brightnessTex;
+        case CreatedTextureID::CID_blur:
+            return m_pingpongTex[0];
+        case CreatedTextureID::CID_editor:
+        default:
+            return m_editorTex;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
     
@@ -221,7 +236,7 @@ namespace FlexEngine
     void OpenGLSpriteRenderer::Init(const Vector2& windowSize)
     {
         /////////////////////////////////////////////////////////////////////////////////////
-        // Create VAOs and VBOs
+        // Create VAOs and VBOs (CAN BE DONE BETTER)
         VertexBufferObject basic;
         float vert[] = {
             // Position           // TexCoords
@@ -235,8 +250,21 @@ namespace FlexEngine
         InitQuadVAO_VBO(basic.vao, basic.vbo, vert, sizeof(vert) / sizeof(float));
         m_vbos.push_back(basic);
 
-        VertexBufferObject line;
+        VertexBufferObject basicinverted;
         float vert_1[] = {
+            // Position           // TexCoords
+            -0.5f, -0.5f, 0.0f,   1.0f, 1.0f,  // Bottom-left
+             0.5f, -0.5f, 0.0f,   0.0f, 1.0f,  // Bottom-right
+             0.5f,  0.5f, 0.0f,   0.0f, 0.0f,  // Top-right
+             0.5f,  0.5f, 0.0f,   0.0f, 0.0f,  // Top-right
+            -0.5f,  0.5f, 0.0f,   1.0f, 0.0f,  // Top-left
+            -0.5f, -0.5f, 0.0f,   1.0f, 1.0f   // Bottom-left
+        };
+        InitQuadVAO_VBO(basicinverted.vao, basicinverted.vbo, vert_1, sizeof(vert_1) / sizeof(float));
+        m_vbos.push_back(basicinverted);
+
+        VertexBufferObject line;
+        float vert_2[] = {
             // Position           // TexCoords
             -0.5f, -0.5f, 0.0f,   50.0f, 0.0f,  // Bottom-left
              0.5f, -0.5f, 0.0f,   0.0f, 0.0f,  // Bottom-right
@@ -245,11 +273,11 @@ namespace FlexEngine
             -0.5f,  0.5f, 0.0f,   48.0f, 48.0f,  // Top-left
             -0.5f, -0.5f, 0.0f,   48.0f, 0.0f   // Bottom-left
         };
-        InitQuadVAO_VBO(line.vao, line.vbo, vert_1, sizeof(vert_1) / sizeof(float));
+        InitQuadVAO_VBO(line.vao, line.vbo, vert_2, sizeof(vert_2) / sizeof(float));
         m_vbos.push_back(line);
 
         VertexBufferObject PProcessing;
-        float vert_2[] = {
+        float vert_3[] = {
             // Position        // TexCoords
             -1.0f, -1.f, 0.0f,   0.0f, 0.0f, // Bottom-left
              1.0f, -1.f, 0.0f,   1.0f, 0.0f, // Bottom-right
@@ -258,8 +286,9 @@ namespace FlexEngine
             -1.0f,  1.f, 0.0f,   0.0f, 1.0f, // Top-left
             -1.0f, -1.f, 0.0f,   0.0f, 0.0f  // Bottom-left
         };
-        InitQuadVAO_VBO(PProcessing.vao, PProcessing.vbo, vert_2, sizeof(vert_2) / sizeof(float));
+        InitQuadVAO_VBO(PProcessing.vao, PProcessing.vbo, vert_3, sizeof(vert_3) / sizeof(float));
         m_vbos.push_back(PProcessing);
+
         Log::Info("All VAOs & VBOs are setup.");
 
         /////////////////////////////////////////////////////////////////////////////////////
@@ -277,66 +306,6 @@ namespace FlexEngine
         );
         Log::Info("All post-processing shaders are created.");
 
-        m_bloom_finalcomp_shader.Use();
-        glUniform1i(glGetUniformLocation(m_bloom_finalcomp_shader.Get(), "screenTex"), 0);
-        glUniform1i(glGetUniformLocation(m_bloom_finalcomp_shader.Get(), "bloomVTex"), 1);
-        glUniform1i(glGetUniformLocation(m_bloom_finalcomp_shader.Get(), "bloomHTex"), 2);
-        glUniform1f(glGetUniformLocation(m_bloom_finalcomp_shader.Get(), "opacity"), m_PPopacity);
-        m_bloom_gaussianblur_shader.Use();
-        glUniform1i(glGetUniformLocation(m_bloom_gaussianblur_shader.Get(), "scene"), 0);
-        glUniform1i(glGetUniformLocation(m_bloom_gaussianblur_shader.Get(), "blurDistance"), 2.0f);
-        glUniform1i(glGetUniformLocation(m_bloom_gaussianblur_shader.Get(), "intensity"), 6);
-
-        #if 0
-        // Enables the Depth Buffer
-        glEnable(GL_DEPTH_TEST);
-
-        // Enables Multisampling
-        glEnable(GL_MULTISAMPLE);
-
-        // Enables Cull Facing
-        glEnable(GL_CULL_FACE);
-        // Keeps front faces
-        glCullFace(GL_FRONT);
-        // Uses counter clock-wise standard
-        glFrontFace(GL_CCW);
-        //REMOVE
-        //const float vertices[] = {
-        //    // Position        // TexCoords
-        //    -1.0f, -1.f, 0.0f,   0.0f, 0.0f, // Bottom-left
-        //     1.0f, -1.f, 0.0f,   1.0f, 0.0f, // Bottom-right
-        //     1.0f,  1.f, 0.0f,   1.0f, 1.0f, // Top-right
-        //     1.0f,  1.f, 0.0f,   1.0f, 1.0f, // Top-right
-        //    -1.0f,  1.f, 0.0f,   0.0f, 1.0f, // Top-left
-        //    -1.0f, -1.f, 0.0f,   0.0f, 0.0f  // Bottom-left
-        //};
-        float vert[] = {
-            // Position           // TexCoords
-            -0.5f, -0.5f, 0.0f,   1.0f, 0.0f,  // Bottom-left
-             0.5f, -0.5f, 0.0f,   0.0f, 0.0f,  // Bottom-right
-             0.5f,  0.5f, 0.0f,   0.0f, 1.0f,  // Top-right
-             0.5f,  0.5f, 0.0f,   0.0f, 1.0f,  // Top-right
-            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f,  // Top-left
-            -0.5f, -0.5f, 0.0f,   1.0f, 0.0f   // Bottom-left
-        };
-        //Disable for now
-        
-        
-
-        // Set up VAO and VBO
-        //glGenVertexArrays(1, &m_rectVAO);
-        //glGenBuffers(1, &m_rectVBO);
-        //glBindVertexArray(m_rectVAO);
-        //glBindBuffer(GL_ARRAY_BUFFER, m_rectVBO);
-        //// Correct the usage of vertices in glBufferData
-        //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        //// Position attribute (3 floats: x, y, z)
-        //glEnableVertexAttribArray(0);
-        //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(5 * sizeof(float)), (void*)0); // 5 * sizeof(float) is correct for the stride.
-        //// Texture coordinates attribute (2 floats: u, v), starting after the position
-        //glEnableVertexAttribArray(1);
-        //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(5 * sizeof(float)), (void*)(3 * sizeof(float))); // Offset to the 4th element (3 floats).
-        #endif
         //////////////////////////////////////////////////////////////////////////////////////////////////
         // Create relevant FBO 
         glGenFramebuffers(1, &m_postProcessingFBO); //For final composite post-process
@@ -474,6 +443,46 @@ namespace FlexEngine
         glBindVertexArray(0);
     }
 
+    void OpenGLSpriteRenderer::DrawTexture2D(GLuint TextureID, const Renderer2DProps& props)
+    {
+        // Guard
+        if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
+            Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
+        if (props.shader == "" || props.transform == Matrix4x4::Zero)
+            return;
+
+        // Bind all
+        glBindVertexArray(m_vbos[props.vbo_id].vao);
+
+        // Apply Shader
+        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, props.shader);
+        asset_shader.Use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, TextureID); // Original scene texture
+
+        // Apply Texture
+        asset_shader.SetUniform_bool("u_use_texture", true);
+        asset_shader.SetUniform_int("u_texture", 0);
+        asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
+        asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
+
+        // Transformation & Orthographic Projection
+        asset_shader.SetUniform_mat4("u_model", props.transform);
+        static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
+        Matrix4x4 projection_view = Matrix4x4::Orthographic(
+          0.0f, props.window_size.x,
+          props.window_size.y, 0.0f,
+          -2.0f, 2.0f
+        ) * view_matrix;
+        asset_shader.SetUniform_mat4("u_projection_view", projection_view);
+
+        // Draw
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        m_draw_calls++;
+
+        glBindVertexArray(0);
+    }
+
     /*!***************************************************************************
     * \brief
     * Draws the post-processing layer after all other rendering operations.
@@ -482,7 +491,7 @@ namespace FlexEngine
     {
         Enable_PPFBO_Layer();
 
-        // Step 3: Brightness Pass - Extract bright areas
+        // Brightness Pass - Extract bright areas
         m_bloom_brightness_shader.Use();
         m_bloom_brightness_shader.SetUniform_float("u_Threshold", 0.55f);
 
@@ -491,8 +500,7 @@ namespace FlexEngine
         m_bloom_brightness_shader.SetUniform_int("scene", 0);
 
         // Render brightness to first ping-pong buffer
-        //glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[0]); // Use ping-pong framebuffer for blur
-        glBindVertexArray(m_vbos[2].vao);
+        glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
 
@@ -517,13 +525,14 @@ namespace FlexEngine
             m_bloom_gaussianblur_shader.SetUniform_float("blurDistance", 10.0f);
             m_bloom_gaussianblur_shader.SetUniform_int("intensity", 12);
 
-            glBindVertexArray(m_vbos[2].vao);
+            glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             m_draw_calls++;
             horizontal = !horizontal;
         }
 
-        // Step 5: Final Composition
+        // Final Composition
+        //Enable_EditorFBO_Layer();
         Enable_DefaultFBO_Layer();
         m_bloom_finalcomp_shader.Use();
         glActiveTexture(GL_TEXTURE0);
@@ -535,13 +544,50 @@ namespace FlexEngine
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, m_pingpongTex[1]); // Blur Horizontal
         m_bloom_finalcomp_shader.SetUniform_int("bloomHTex", 2);
+        m_bloom_finalcomp_shader.SetUniform_float("opacity" , m_PPopacity);
 
-        glBindVertexArray(m_vbos[2].vao);
+        glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
 
         // Clean-up
+        Enable_DefaultFBO_Layer();
         glBindVertexArray(0);
     }
 
+
+    void OpenGLSpriteRenderer::DrawFinalRender(std::string t_shader, Matrix4x4 removelater)
+    {
+        // Bind
+        glBindVertexArray(m_vbos[0].vao);
+
+        // Apply Shader
+        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, t_shader);
+        asset_shader.Use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_editorTex); // Original scene texture
+
+        // Apply Texture
+        asset_shader.SetUniform_bool("u_use_texture", true);
+        asset_shader.SetUniform_int("u_texture", 0);
+        //asset_shader.SetUniform_vec3("u_color", Vector3::One);
+        asset_shader.SetUniform_vec3("u_color_to_add", Vector3::Zero);
+        asset_shader.SetUniform_vec3("u_color_to_multiply", Vector3::One);
+
+        // Transformation & Orthographic Projection
+        asset_shader.SetUniform_mat4("u_model", removelater);
+        static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
+        Matrix4x4 projection_view = Matrix4x4::Orthographic(
+          0.0f, 1280,
+          750, 0.0f,
+          -2.0f, 2.0f
+        ) * view_matrix;
+        asset_shader.SetUniform_mat4("u_projection_view", projection_view);
+
+        // Draw
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        m_draw_calls++;
+
+        glBindVertexArray(0);
+    }
 }

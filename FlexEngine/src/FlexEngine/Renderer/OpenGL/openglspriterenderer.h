@@ -73,6 +73,7 @@ namespace FlexEngine
         enum __FLX_API VBO_Type
         {
             VBO_Basic,                /*!< Basic VBO for standard rendering */
+            VBO_BasicInverted,        /*!< Basic VBO for opengl texture rendering */
             VBO_Line,                 /*!< VBO for line rendering */
             VBO_PProcessing,          /*!< VBO for post-processing effects */
         };
@@ -103,6 +104,7 @@ namespace FlexEngine
         GLuint vbo = 0;
     };
 
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*!***************************************************************************
@@ -129,7 +131,7 @@ namespace FlexEngine
         static Asset::Shader m_bloom_finalcomp_shader;
 
         //Currently have 6 FBOs - including default
-        static GLuint m_postProcessingFBO;            /*!< Framebuffer Object for post-processing */
+        static GLuint m_postProcessingFBO;            /*!< Framebuffer Object for generic post_processing */
         static GLuint m_pingpongFBO[2]; 
         static GLuint m_editorFBO;       //0 - Basic, 1 - Finalized
         //4 Textures going to be created, 2 for post_processing and 2 for editor and game
@@ -137,16 +139,22 @@ namespace FlexEngine
         static GLuint m_pingpongTex[2];            /*!< Ping-pong buffers for intermediate processing */
         static GLuint m_postProcessingTex;
         static GLuint m_editorTex;           /*!<0 for editor, 1 for in game */         
+        static float m_PPopacity;
 
         // Testing variables (subject to change)
-        static GLuint samples;                         /*!< Number of samples per pixel for MSAA anti-aliasing */
-        static float gamma;                            /*!< Controls the gamma function */
-        static float m_PPopacity;
-        //static GLuint m_rectVAO;                      /*!< VAO for rendering rectangles */
-        //static GLuint m_rectVBO;                      /*!< VBO for rendering rectangles */
-        //static GLuint m_colorBuffer;                   /*!< Color buffer for rendering */
-        //static GLuint m_brightBuffer;                  /*!< Brightness buffer for bloom effects */
+        //static GLuint samples;                         /*!< Number of samples per pixel for MSAA anti-aliasing */
+        //static float gamma;                            /*!< Controls the gamma function */
+
     public:
+
+        enum __FLX_API CreatedTextureID
+        {
+            CID_editor,
+            CID_finalRender,
+            CID_brightnessPass,
+            CID_blur,
+        };
+
         /*!***************************************************************************
         * \brief
         * Retrieves the total number of draw calls made.
@@ -244,6 +252,7 @@ namespace FlexEngine
         *****************************************************************************/
         static GLuint GetVAO_ID(Renderer2DProps::VBO_Type type);
 
+        static GLuint GetCreatedTexture(CreatedTextureID id = CID_editor);
         /*!***************************************************************************
         * \brief
         * Creates a VAO and VBO with the specified vertices.
@@ -282,11 +291,14 @@ namespace FlexEngine
         *              texture, color, and transformations.
         *****************************************************************************/
         static void DrawTexture2D(const Renderer2DProps& props = {});
-
+        static void DrawTexture2D(GLuint TextureID, const Renderer2DProps& props = {});
         /*!***************************************************************************
         * \brief
         * Draws the post-processing layer after all other rendering operations.
         *****************************************************************************/
         static void DrawPostProcessingLayer();
+
+        //TEST
+        static void DrawFinalRender(std::string t_shader, Matrix4x4 removelater);
     };
 }
