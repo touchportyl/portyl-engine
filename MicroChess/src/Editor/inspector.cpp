@@ -146,8 +146,9 @@ namespace ChronoShift
 				ImGui::EndPopup();
 			}
 		}
-	}
 
+		ImGui::End();
+	}
 }
 
 /*

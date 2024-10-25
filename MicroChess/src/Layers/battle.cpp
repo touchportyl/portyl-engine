@@ -147,7 +147,7 @@ namespace ChronoShift {
 
     for (size_t i = 0; i < m_battlesystem.GetCharacterCount(); i++)
     {
-      FlexECS::Entity display_slot = FlexECS::Scene::CreateEntity();
+      FlexECS::Entity display_slot = FlexECS::Scene::CreateEntity("TurnOrder" + std::to_string(i));
       display_slot.AddComponent<TurnOrderDisplay>({});
       display_slot.AddComponent<IsActive>({ false });
       display_slot.AddComponent<Position>({ });
