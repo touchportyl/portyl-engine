@@ -98,5 +98,31 @@ namespace ChronoShift
 	}
 
 
+
+
 }
 
+/*
+		File& prefab_file = File::Open(path);
+		// Formatter to parse metadata first, then deserialize the prefab data
+		FlxFmtFile formatter = FlexFormatter::Parse(prefab_file, FlxFmtFileType::Prefab);
+		std::string contents = formatter.data;
+
+		// Make it a valid JSON object in the form of an array
+		contents.append("]");
+		contents.insert(0, "[");
+
+		// Passing it into rapidjson to make life easier
+		Document document;
+		document.Parse(contents.c_str());
+
+		// Loop through each member
+		//for (auto& member : document.GetArray())
+		//{
+		//	if (member.IsObject() && member["type"].IsString())
+		//	{
+		//		std::string component_name = member["type"].GetString();
+
+		//	}
+		//}
+		*/

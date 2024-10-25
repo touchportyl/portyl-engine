@@ -1,3 +1,5 @@
+#pragma once
+
 #include "FlexEngine.h"
 #include "editorpanel.h"
 

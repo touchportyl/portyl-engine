@@ -18,6 +18,9 @@
 
 namespace ChronoShift
 {
+	// COMPONENT_VIEWER_START(PrefabView)
+	// COMPONENT_VIEWER_END(PrefabView)
+
 	std::unordered_map<std::string, ComponentViewer> ComponentViewRegistry::m_component_viewer;
 	std::unordered_map<std::string, ComponentViewer> ComponentViewRegistry::m_component_adder;
 	std::unordered_map<std::string, ComponentViewer> ComponentViewRegistry::m_component_remover;

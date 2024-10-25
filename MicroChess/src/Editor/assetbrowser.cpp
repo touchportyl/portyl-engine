@@ -1,3 +1,4 @@
+#include "editor.h"
 #include "assetbrowser.h"
 #include <filesystem>
 
@@ -102,6 +103,10 @@ namespace ChronoShift
 				if (ImGui::IsItemClicked())
 				{
 					m_selected_file = file;
+					//if (FLX_EXTENSIONS_CHECK_SAFETY("flx", file.extension().string()))
+					//{
+					//	Editor::GetInstance()->SelectPrefab(file);
+					//}
 				}
 
 				//Drag and drop for sprite component
@@ -113,6 +118,19 @@ namespace ChronoShift
 					if (FLX_EXTENSIONS_CHECK_SAFETY("image", file.extension().string()))
 					{
 						ImGui::SetDragDropPayload("IMAGE_PATH", payload.c_str(), payload.size() + 1);	//+ 1 for null terminating
+						ImGui::Text(file.filename().string().c_str()); // Show the name during drag
+						ImGui::EndDragDropSource();
+					}
+					else if (FLX_EXTENSIONS_CHECK_SAFETY("shader", file.extension().string()))
+					{
+						payload = payload.substr(0, payload.find_last_of('.')); //to fit the AssetKey::Shader format
+						ImGui::SetDragDropPayload("SHADER_PATH", payload.c_str(), payload.size() + 1);	//+ 1 for null terminating
+						ImGui::Text(file.filename().string().c_str()); // Show the name during drag
+						ImGui::EndDragDropSource();
+					}
+					else if (FLX_EXTENSIONS_CHECK_SAFETY("flx", file.extension().string()))
+					{
+						ImGui::SetDragDropPayload("PREFAB_PATH", payload.c_str(), payload.size() + 1);	//+ 1 for null terminating
 						ImGui::Text(file.filename().string().c_str()); // Show the name during drag
 						ImGui::EndDragDropSource();
 					}

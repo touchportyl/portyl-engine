@@ -18,6 +18,10 @@
 
 namespace ChronoShift
 {
+	// class PrefabView
+	// { FLX_REFL_SERIALIZABLE
+	// };
+
 	//Each component should provide it's own display functionality for the editor,
 	//via a function pointer. Check the macros at the bottom to make it easier.
 	using ComponentViewer = std::function<void(FlexEngine::FlexECS::Entity)>;
@@ -110,7 +114,14 @@ void COMPONENT_REMOVER_##TYPE(FlexEngine::FlexECS::Entity entity) \
 void COMPONENT_VIEWER_##TYPE(FlexEngine::FlexECS::Entity entity) \
 { \
   using T = TYPE;
+
+
 	
+
+	//////////////////////////////////////////////
+	//Viewers for each variable in the component//
+	//////////////////////////////////////////////
+
 	#define COMPONENT_VIEWER_DRAG_VECTOR2(name) \
   EditorGUI::DragFloat2(entity.GetComponent<T>()->name, #name);
 
@@ -127,15 +138,19 @@ void COMPONENT_VIEWER_##TYPE(FlexEngine::FlexECS::Entity entity) \
   EditorGUI::Color3(entity.GetComponent<T>()->name, #name); 
 
 	#define COMPONENT_VIEWER_EDITABLE_STRING(name) \
-	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<T>()->name); \
+	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
 	EditorGUI::EditableTextField(str, #name);
+
+	#define COMPONENT_VIEWER_SHADER_PATH(name) \
+	std::string& path = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
+	EditorGUI::ShaderPath(path);
 
 	#define COMPONENT_VIEWER_TEXTURE_PATH(name) \
 	std::string& path = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
 	EditorGUI::TexturePath(path);
 
 	#define COMPONENT_VIEWER_STRING(name) \
-	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<T>()->name); \
+	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
 	EditorGUI::TextField(str);
 
 	#define COMPONENT_VIEWER_BOOL(name) \
