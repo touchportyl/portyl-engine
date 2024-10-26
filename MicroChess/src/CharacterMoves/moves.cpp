@@ -36,7 +36,6 @@ namespace ChronoShift
 	}
 
 	void Move_DualStrike(std::vector<FlexECS::Entity> targets) {
-		// Example of Two Enemy Damage
 		for (FlexECS::Entity target : targets)
 		{
 			target.GetComponent<Character>()->current_health -= 1;
@@ -44,7 +43,6 @@ namespace ChronoShift
 	}
 
 	void Move_Whirlwind(std::vector<FlexECS::Entity> targets) {
-		// Example of Three Enemy Damage
 		for (FlexECS::Entity target : targets)
 		{
 			target.GetComponent<Character>()->current_health -= 2;
@@ -58,7 +56,6 @@ namespace ChronoShift
 	}
 
 	void Move_RiftSurge(std::vector<FlexECS::Entity> targets) {
-		// Example of Five Enemy Damage
 		for (FlexECS::Entity target : targets)
 		{
 			target.GetComponent<Character>()->current_health -= 3;
@@ -66,43 +63,19 @@ namespace ChronoShift
 	}
 
 	void Move_Flashbang(std::vector<FlexECS::Entity> targets) {
-		// Example of Single Enemy Damage
 		for (FlexECS::Entity target : targets)
 		{
 			target.GetComponent<Character>()->current_health -= 2;
-			//Add dizzy
-		}
-	}
-
-	void Move_Heal(std::vector<FlexECS::Entity> targets) {
-		// Example of Ally and Self Heal
-		for (FlexECS::Entity target : targets)
-		{
-			target.GetComponent<Character>()->current_health += 2;
-			//Add dizzy
-		}
-	}
-
-	void Move_FullRecovery(std::vector<FlexECS::Entity> targets) {
-		// Example of Team Heal
-		for (FlexECS::Entity target : targets)
-		{
-			target.GetComponent<Character>()->current_health += 2;
 			//Add dizzy
 		}
 	}
 
 	void Move_TemporalWave(std::vector<FlexECS::Entity> targets) {
-		// Example of 
 		for (FlexECS::Entity target : targets)
-		{
-			target.GetComponent<Character>()->current_health -= 2;
-		}
-		/*for (FlexECS::Entity target : targets)
 		{
 			target.GetComponent<StatusEffects>()->speed.value -= 1;
 			target.GetComponent<StatusEffects>()->speed.duration = 5;
-		}*/
+		}
 	}
 
 	void Move_Poke(std::vector<FlexECS::Entity> targets) {
@@ -123,24 +96,18 @@ namespace ChronoShift
 	//declaration of statics
 	std::unordered_map<std::string, Move> MoveRegistry::s_move_registry;
 
-	enum : int
-	{
-		
-	};
 	// Should i add the chrono gears with the moves list or should i create a seperate list?
 	void MoveRegistry::RegisterMoves()
 	{
 		FlexEngine::Log::Debug("Registering Moves:");
 		//Move EMPTY{ "", "YO", 0, MOVE_TARGET_NONE, 0, Move_Empty };
-		Move dual_strike{ "Dual Strike", "Hit target 2 times for 1 damage", 4, false, MOVE_TARGET_DOUBLE, 2, Move_DualStrike };
-		Move whirlwind{ "Whirlwind", "Hits 2 Targets for 2 damage. Increases self speed by 1.", 7, false, MOVE_TARGET_TRIPLE, 2, Move_Whirlwind };
+		Move dual_strike{ "Dual Strike", "Hit target 2 times for 1 damage", 4, false, MOVE_TARGET_SINGLE, 2, Move_DualStrike };
+		Move whirlwind{ "Whirlwind", "Hits 2 Targets for 2 damage. Increases self speed by 1.", 7, false, MOVE_TARGET_SINGLE, 2, Move_Whirlwind };
 		Move block{ "Block", "Takes no damage from moves.", 5, true, MOVE_TARGET_SELF, 0, Move_Block };
-		Move rift_surge{ "Rift Surge", "Hits 2 targets for 3 damage", 7, false, MOVE_TARGET_TRIPLE, 2, Move_RiftSurge };
+		Move rift_surge{ "Rift Surge", "Hits 2 targets for 3 damage", 7, false, MOVE_TARGET_SINGLE, 2, Move_RiftSurge };
 		Move flashbang{ "Flashbang", "Hit 1 target for 2 damage and adds dizzy.", 5, false, MOVE_TARGET_SINGLE, 1, Move_Flashbang };
-		Move temporal_wave{ "Temporal Wave", "Increase all drifter’s speed by 1.", 7, true, MOVE_TARGET_ALL, 0, Move_TemporalWave };
-		Move full_recovery{ "Full Recovery", "Heals Entire team to max HP", 7, true, MOVE_TARGET_ALL, 0, Move_FullRecovery };
+		Move temporal_wave{ "Temporal Wave", "Increase all drifter’s speed by 1.", 7, true, MOVE_TARGET_ALL_PLAYER, 0, Move_TemporalWave };
 		Move poke{ "Poke", "Owie.", 7, true, MOVE_TARGET_SINGLE, 1, Move_Poke };
-		Move heal{ "Heal", "Heal 1 Ally for 5 HP.", 5, true, MOVE_TARGET_SINGLE, 1, Move_Heal };
 
 		//s_move_registry[EMPTY.name] = EMPTY;
 		s_move_registry[dual_strike.name] = dual_strike;
@@ -150,8 +117,6 @@ namespace ChronoShift
 		s_move_registry[flashbang.name] = flashbang;
 		s_move_registry[temporal_wave.name] = temporal_wave;
 		s_move_registry[poke.name] = poke;
-		s_move_registry[full_recovery.name] = full_recovery;
-		s_move_registry[heal.name] = heal;
 		FlexEngine::Log::Debug("Registering Moves finished");
 	}
 

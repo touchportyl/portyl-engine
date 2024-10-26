@@ -47,7 +47,7 @@ namespace ChronoShift {
     auto scene = FlexECS::Scene::GetActiveScene();
 
     //battle positions for characters
-    m_battlesystem.SetUpBattleScene(3, 2);
+    m_battlesystem.InitializeBattleSlots();
     #pragma region Chrono Gear Main Stats
     /*FlexECS::Entity main_hp = FlexECS::Scene::CreateEntity("Flat HP");
     main_hp.AddComponent<Stat>({
@@ -91,70 +91,50 @@ namespace ChronoShift {
     #pragma endregion
 
     #pragma region Character Components
-    //scene->Internal_StringStorage_New("White Queen"); //27
-    //scene->Internal_StringStorage_New("White King");    //28
-    //scene->Internal_StringStorage_New("Black Knight");  // 29
-    //scene->Internal_StringStorage_New("Black Bishop"); // 30
-    //scene->Internal_StringStorage_New("Black Pawn");   // 31
+    scene->Internal_StringStorage_New("White Queen");
+    scene->Internal_StringStorage_New("White King");
+    scene->Internal_StringStorage_New("Black Knight");
+    scene->Internal_StringStorage_New("Black Bishop");
+    scene->Internal_StringStorage_New("Black Pawn");
 
-    //scene->Internal_StringStorage_New("Enemy Weapon"); // 32
-    //scene->Internal_StringStorage_New("Dummy Weapon"); // 33
-    //scene->Internal_StringStorage_New("Poke");         // 34
+    scene->Internal_StringStorage_New("Enemy Weapon");
+    scene->Internal_StringStorage_New("Dummy Weapon");
+    scene->Internal_StringStorage_New("Poke");
 
-    //scene->Internal_StringStorage_New("Plasma Blade"); // 35
-    //scene->Internal_StringStorage_New("Blade made of plasma");
-    //scene->Internal_StringStorage_New("Dual Strike"); // Double Enemy Target
-    //scene->Internal_StringStorage_New("Whirlwind"); // Entire Enemy Target
-    //scene->Internal_StringStorage_New("Block"); // Self Target
-    //scene->Internal_StringStorage_New("Flashbang"); // Single Enemy Target
+    scene->Internal_StringStorage_New("Plasma Blade");
+    scene->Internal_StringStorage_New("Blade made of plasma");
+    scene->Internal_StringStorage_New("Dual Strike");
+    scene->Internal_StringStorage_New("Whirlwind");
+    scene->Internal_StringStorage_New("Block");
 
-    //scene->Internal_StringStorage_New("Electric Railgun");
-    //scene->Internal_StringStorage_New("Railgun that uses electromagnetic force");
-    //scene->Internal_StringStorage_New("Rift Surge"); // Double Ally Target
-    //scene->Internal_StringStorage_New("Full Recovery"); // Entire Team Target
-    //scene->Internal_StringStorage_New("Heal"); // Single Ally Target
+    scene->Internal_StringStorage_New("Electric Railgun");
+    scene->Internal_StringStorage_New("Railgun that uses electromagnetic force");
+    scene->Internal_StringStorage_New("Rift Surge");
+    scene->Internal_StringStorage_New("Flashbang");
+    scene->Internal_StringStorage_New("Temporal Wave");
 
-    //scene->Internal_StringStorage_New("Demo Chrono Gear");
-    //scene->Internal_StringStorage_New("Revives a dead drifter");
-    //scene->Internal_StringStorage_New("Instant Win");
+    scene->Internal_StringStorage_New("Demo Chrono Gear");
+    scene->Internal_StringStorage_New("Revives a dead drifter");
+    scene->Internal_StringStorage_New("Instant Win");
 
-    //FlexECS::Scene::StringIndex shdr_path = scene->Internal_StringStorage_New(R"(\shaders\texture)");
-    //scene->Internal_StringStorage_New(R"(\images\chess_queen.png)");
-    //scene->Internal_StringStorage_New(R"(\images\chess_king.png)");
-    //scene->Internal_StringStorage_New(R"(\images\chess_knight.png)");
-    //scene->Internal_StringStorage_New(R"(\images\chess_bishop.png)");
-    //scene->Internal_StringStorage_New(R"(\images\chess_pawn.png)");
-
-    File& file = File::Open(Path::current().append("pee.flxscene"));
-    auto loaded_scene = FlexECS::Scene::Load(file);
-    FlexECS::Scene::SetActiveScene(loaded_scene);
+    FlexECS::Scene::StringIndex shdr_path = scene->Internal_StringStorage_New(R"(\shaders\texture)");
+    scene->Internal_StringStorage_New(R"(\images\chess_queen.png)");
+    scene->Internal_StringStorage_New(R"(\images\chess_king.png)");
+    scene->Internal_StringStorage_New(R"(\images\chess_knight.png)");
+    scene->Internal_StringStorage_New(R"(\images\chess_bishop.png)");
+    scene->Internal_StringStorage_New(R"(\images\chess_pawn.png)");
     
-    #if 0
     FlexECS::Entity player1 = LoadCharacter("White Queen");
     FlexECS::Entity player2 = LoadCharacter("White King");
     FlexECS::Entity enemy1 = LoadCharacter("Black Knight");
     FlexECS::Entity enemy2 = LoadCharacter("Black Bishop");
     FlexECS::Entity enemy3 = LoadCharacter("Black Pawn");
 
-    Asset::FlxData flex("/data/BlackBishop.flxdata");
-    flex.SetBool("test", true);
-    flex.SetString("tester", "Hello2 World!");
-    flex.SetInt("testint", 1243);
-    flex.Save();
-
-    std::vector<FlexECS::Entity> list_of_characters;
-    list_of_characters.push_back(player1);
-    list_of_characters.push_back(player2);
-    list_of_characters.push_back(enemy1);
-    list_of_characters.push_back(enemy2);
-    list_of_characters.push_back(enemy3);
-    m_battlesystem.AddCharacters(list_of_characters);
-
-    /*m_battlesystem.AddCharacter(player1, 0);
+    m_battlesystem.AddCharacter(player1, 0);
     m_battlesystem.AddCharacter(player2, 1);
-    m_battlesystem.AddCharacter(enemy1, 2);
-    m_battlesystem.AddCharacter(enemy2, 3);
-    m_battlesystem.AddCharacter(enemy3, 4);*/
+    m_battlesystem.AddCharacter(enemy1, 4);
+    m_battlesystem.AddCharacter(enemy2, 5);
+    m_battlesystem.AddCharacter(enemy3, 6);
 
     player1.AddComponent<Transform>({ });
     player2.AddComponent<Transform>({ });
@@ -181,12 +161,11 @@ namespace ChronoShift {
 
     #pragma endregion
 
+    MoveRegistry::RegisterMoves();
+
     FlexECS::Entity battle_state = FlexECS::Scene::CreateEntity("BattleState");
     battle_state.AddComponent<BattleState>({});
-    #endif
 
-    MoveRegistry::RegisterMoves();
-    m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->View<Character>());
     m_battlesystem.BeginBattle();
   }
 
