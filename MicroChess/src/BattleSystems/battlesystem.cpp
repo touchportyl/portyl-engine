@@ -66,7 +66,7 @@ namespace ChronoShift {
       if (is_player_slot) position = { 200.f + 120.f * i, 600.f };
       else                position = { 700.f + 120.f * (i - 4), 200.f };
 
-      FlexECS::Entity slot = FlexECS::Scene::CreateEntity();
+      FlexECS::Entity slot = FlexECS::Scene::CreateEntity("Slot" + std::to_string(i));
       slot.AddComponent<BattleSlot>({ i, FlexECS::Entity::Null });
       slot.AddComponent<OnHover>({});
       slot.AddComponent<OnClick>({});
@@ -91,7 +91,7 @@ namespace ChronoShift {
     {
       Vector2 position = { 900.f, 450.f + (80.f * i) };
 
-      FlexECS::Entity move_button = FlexECS::Scene::CreateEntity();
+      FlexECS::Entity move_button = FlexECS::Scene::CreateEntity("MoveButton" + std::to_string(i));
       move_button.AddComponent<MoveButton>({ i });
       move_button.AddComponent<OnHover>({});
       move_button.AddComponent<OnClick>({});

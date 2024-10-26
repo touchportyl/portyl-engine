@@ -19,31 +19,73 @@ namespace ChronoShift
 {
 	Editor* Editor::GetInstance()
 	{
-		static bool initialized = false;
 		static Editor instance{};
-		if (!initialized) instance.Init();
+		if (!instance.m_initialized)
+		{
+			instance.Init();
+		}
 
 		return &instance;
 	}
 
 	void Editor::Init()
 	{
+		if (m_initialized) return;
+		m_initialized = true;
 
+		m_panels.emplace_back(std::make_unique<HierarchyView>());
+		m_panels.emplace_back(std::make_unique<Inspector>());
+		m_panels.emplace_back(std::make_unique<AssetBrowser>());
+
+		for (auto& panel : m_panels)
+		{
+			panel->Init();
+		}
 	}
 
 	//ImGui startframe endframe already called in States::Window
 	void Editor::Update()
 	{
-		EditorUI::StartFrame();
-		
-		DisplaySceneHierarchy();
-		DisplayInspector();
-		
-		EditorUI::EndFrame();
+		//ImGui::ShowDemoWindow();
+
+		EditorGUI::StartFrame();
+		for (auto& panel : m_panels)
+		{
+			panel->Update();
+		}
+
+		for (auto& panel : m_panels)
+		{
+			panel->EditorUI();
+		}
+
+		EditorGUI::EndFrame();
 	}
+
+
 	void Editor::Shutdown()
 	{
+		for (auto& panel : m_panels)
+		{
+			panel->Shutdown();
+		}
 	}
+
+
+
+
+	template<typename T>
+	T* Editor::GetPanel()
+	{
+		for (const auto& panel : m_panels) {
+			if (T* cast = dynamic_cast<T*>(panel.get())) 
+			{
+				return cast;  // Return if successful cast
+			}
+		}
+		return nullptr;
+	}
+
 
 	void Editor::SelectEntity(FlexECS::Entity entity)
 	{
@@ -55,5 +97,32 @@ namespace ChronoShift
 		return m_selected_entity;
 	}
 
+
+
+
 }
 
+/*
+		File& prefab_file = File::Open(path);
+		// Formatter to parse metadata first, then deserialize the prefab data
+		FlxFmtFile formatter = FlexFormatter::Parse(prefab_file, FlxFmtFileType::Prefab);
+		std::string contents = formatter.data;
+
+		// Make it a valid JSON object in the form of an array
+		contents.append("]");
+		contents.insert(0, "[");
+
+		// Passing it into rapidjson to make life easier
+		Document document;
+		document.Parse(contents.c_str());
+
+		// Loop through each member
+		//for (auto& member : document.GetArray())
+		//{
+		//	if (member.IsObject() && member["type"].IsString())
+		//	{
+		//		std::string component_name = member["type"].GetString();
+
+		//	}
+		//}
+		*/

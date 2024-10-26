@@ -19,9 +19,14 @@
 using namespace FlexEngine;
 namespace ChronoShift
 {
-	int EditorUI::m_id = 0;
+	int EditorGUI::m_id = 0;
 
-	void EditorUI::DragFloat2(Vector2& data, std::string title,
+
+	/*!***************************************************************************
+	* Component viewers
+	******************************************************************************/
+
+	void EditorGUI::DragFloat2(Vector2& data, std::string title,
 		//std::string label1, std::string label2, 
 		float width, float drag_speed)
 	{
@@ -44,7 +49,7 @@ namespace ChronoShift
 		PopID();
 	}
 
-	void EditorUI::DragFloat3(Vector3& data, std::string title,
+	void EditorGUI::DragFloat3(Vector3& data, std::string title,
 		//std::string label1, std::string label2, std::string label3,
 		float width, float drag_speed)
 	{
@@ -74,7 +79,7 @@ namespace ChronoShift
 		PopID();
 	}
 
-	void EditorUI::DragInt(int& data, std::string title, float width, float drag_speed)
+	void EditorGUI::DragInt(int& data, std::string title, float width, float drag_speed)
 	{
 		PushID();
 		ImGui::PushItemWidth(width);
@@ -84,7 +89,7 @@ namespace ChronoShift
 		PopID();
 	}
 
-	void EditorUI::EntityReference(FlexECS::Entity& entity, std::string title)
+	void EditorGUI::EntityReference(FlexECS::Entity& entity, std::string title)
 	{
 		PushID();
 		std::string entity_name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<FlexEngine::FlexECS::Scene::StringIndex>());
@@ -96,68 +101,198 @@ namespace ChronoShift
 			Editor::GetInstance()->SelectEntity(entity);
 		}
 
-		if (ImGui::BeginDragDropTarget())
+		if (auto payload = StartPayloadReceiver<FlexECS::EntityID>(PayloadTags::ENTITY))
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
-			{
-				// Assuming the payload is the Entity ID (you can customize this)
-				FlexECS::Entity dropped_entity = *(FlexECS::EntityID*)payload->Data;
-				entity = dropped_entity;
-			}
-			ImGui::EndDragDropTarget();
+			FlexECS::Entity dropped_entity = *payload;
+			entity = dropped_entity;
+			EndPayloadReceiver();
 		}
+
 		ImGui::EndGroup();
 		PopID();
 	}
 
-	void EditorUI::Color3(Vector3& data, std::string title)
+	void EditorGUI::ShaderPath(std::string& path, std::string title)
+	{
+		PushID();
+
+		std::filesystem::path current_texture = path;
+		std::string filename = current_texture.filename().string();
+		if (filename == "") filename = "(no shader)";
+
+		ImGui::Text("Shader");
+		ImGui::SameLine();
+		ImGui::Button(filename.c_str());
+
+		if (const char* data = StartPayloadReceiver<const char>(PayloadTags::SHADER))
+		{
+			std::string new_file_path(data);
+			path = new_file_path;
+			EndPayloadReceiver();
+		}
+
+		PopID();
+	}
+
+	void EditorGUI::TexturePath(std::string& path, std::string title)
+	{
+		PushID();
+		
+		std::filesystem::path current_texture = path;
+		std::string filename = current_texture.filename().string();
+		if (filename == "") filename = "(no sprite)";
+
+		ImGui::Text("Sprite");
+		ImGui::SameLine();
+		ImGui::Button(filename.c_str());
+
+		if (const char* data = StartPayloadReceiver<const char>(PayloadTags::IMAGE))
+		{
+			std::string new_file_path(data);
+			path = new_file_path;
+			EndPayloadReceiver();
+		}
+
+		if (filename != "(no sprite)")
+		{
+			std::string asset_key = current_texture.string();
+			AssetVariant* asset_ptr = AssetManager::Get(asset_key);
+			if (asset_ptr)
+			{
+				Asset::Texture& texture = std::get<Asset::Texture>(*asset_ptr);
+				ImGui::Image(texture.GetTextureImGui(), ImVec2(60.0f, 60.0f));
+			}
+		}
+
+		PopID();
+	}
+
+	void EditorGUI::Color3(Vector3& data, std::string title)
 	{
 		PushID();
 		ImGui::ColorEdit3(title.c_str(), data.data);
 		PopID();
 	}
 
-	void EditorUI::EditableTextField(std::string& data, std::string title)
+	void EditorGUI::EditableTextField(std::string& data, std::string title)
 	{
 		PushID();
 		char text_buffer[128];
 		strncpy_s(text_buffer, data.c_str(), sizeof(text_buffer));
 		text_buffer[sizeof(text_buffer) - 1] = '\0';
-		if (ImGui::InputText(title.c_str(), text_buffer, IM_ARRAYSIZE(text_buffer)))
+		ImGui::Text(title.c_str());
+		ImGui::SameLine();
+		PushID();
+		if (ImGui::InputText("##", text_buffer, IM_ARRAYSIZE(text_buffer)))
 		{
 			data = std::string(text_buffer);
 		}
 		PopID();
+		PopID();
 	}
 
-	void EditorUI::TextField(const std::string& data)
+	void EditorGUI::TextField(const std::string& data)
 	{
 		PushID();
 		ImGui::Text(data.c_str());
 		PopID();
 	}
 
+	void EditorGUI::Checkbox(bool& data, std::string title)
+	{
+		PushID();
+		ImGui::Checkbox(title.c_str(), &data);
+		PopID();
+	}
 
-	void EditorUI::StartFrame()
+	void EditorGUI::Mat44(FlexEngine::Matrix4x4& data, std::string title)
+	{
+		PushID();
+		
+		// Create a label for the matrix
+		ImGui::Text("%s", title.c_str());
+
+		ImGui::PushItemWidth(60.0f);
+
+		for (int row = 0; row < 4; ++row)
+		{
+			for (int col = 0; col < 4; ++col)
+			{
+				PushID();
+				ImGui::DragFloat("##", &data(row, col), 0.1f);
+				PopID();
+
+				if (col < 3) ImGui::SameLine();
+			}
+		}
+		ImGui::PopItemWidth();
+
+		PopID();
+	}
+
+
+
+	/*!***************************************************************************
+	* payloads
+	******************************************************************************/
+	bool EditorGUI::StartPayload(PayloadTags tag, const void* data, size_t data_size, std::string tooltip)
+	{
+		bool result = ImGui::SetDragDropPayload(GetPayloadTagString(tag), data, data_size);
+		ImGui::Text("%s", tooltip.c_str());
+		return result;
+	}
+
+	void EditorGUI::EndPayload()
+	{
+		ImGui::EndDragDropSource();
+	}
+
+
+
+	void EditorGUI::EndPayloadReceiver()
+	{
+		ImGui::EndDragDropTarget();
+	}
+
+
+
+
+	/*!***************************************************************************
+	* System
+	******************************************************************************/
+
+	void EditorGUI::StartFrame()
 	{
 		m_id = 0;
 	}
 
-	void EditorUI::EndFrame()
+	void EditorGUI::EndFrame()
 	{
 		m_id = 0;
 	}
 
-	int EditorUI::PushID()
+	int EditorGUI::PushID()
 	{
 		ImGui::PushID(m_id);
 		return m_id++;
 	}
 
-	void EditorUI::PopID()
+	void EditorGUI::PopID()
 	{
 		ImGui::PopID();
 	}
 
 
 }
+
+
+
+//if (ImGui::BeginDragDropTarget()) 
+//{
+//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_PATH")) {
+//		const char* dropped_path = (const char*)payload->Data;
+//		std::string new_file_path(dropped_path);
+//		path = new_file_path; // Store the file path in the component
+//	}
+//	ImGui::EndDragDropTarget();
+//}
