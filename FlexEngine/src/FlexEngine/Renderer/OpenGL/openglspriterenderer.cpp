@@ -304,21 +304,21 @@ namespace FlexEngine
 
         /////////////////////////////////////////////////////////////////////////////////////
         // Batch Rendering setup
-        m_instanceData.reserve(m_maxInstances);
-        // Generate the instance VBO to hold per-instance data (for instancing)
-        glGenBuffers(1, &m_instanceVBO);
-        float vertices[] = {
-            // Positions         // Texture Coords
-            -0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
-             0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
-             0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
-             0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
-            -0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
-            -0.5f, -0.5f, 0.0f,  1.0f, 0.0f
-        };
-        
-        // Call InitQuadVAO_VBO to set up the quad's VAO and VBO with instance data
-        InitQuadVAO_VBO(m_quadVAO, m_quadVBO, vertices, sizeof(vertices) / sizeof(float));
+        //m_instanceData.reserve(m_maxInstances);
+        //// Generate the instance VBO to hold per-instance data (for instancing)
+        //glGenBuffers(1, &m_instanceVBO);
+        //float vertices[] = {
+        //    // Positions         // Texture Coords
+        //    -0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
+        //     0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+        //     0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
+        //     0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
+        //    -0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
+        //    -0.5f, -0.5f, 0.0f,  1.0f, 0.0f
+        //};
+        //
+        //// Call InitQuadVAO_VBO to set up the quad's VAO and VBO with instance data
+        //InitQuadVAO_VBO(m_quadVAO, m_quadVBO, vertices, sizeof(vertices) / sizeof(float));
 
 
         /////////////////////////////////////////////////////////////////////////////////////
@@ -632,8 +632,7 @@ namespace FlexEngine
 
 
     //BELOW HERE IS STILL IN DEVELOPMENT (NOT WORKING)
-
-
+    #if 0 
     void OpenGLSpriteRenderer::BeginBatch() {
         m_instanceData.clear();
     }
@@ -684,7 +683,7 @@ namespace FlexEngine
         glBufferSubData(GL_ARRAY_BUFFER, 0, m_instanceData.size() * sizeof(InstanceData), m_instanceData.data());
 
         // Render all instances with one draw call
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, m_instanceData.size());
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6,(GLsizei)m_instanceData.size());
         m_draw_calls++;
 
         glBindVertexArray(0);
@@ -732,4 +731,5 @@ namespace FlexEngine
 
         glBindVertexArray(0);
     }
+    #endif
 }

@@ -309,8 +309,10 @@ namespace FlexEngine
         static void ApplyGaussianBlur(int blurDrawPasses = 4, float blurDistance = 10.0f, int intensity = 12);
         static void ApplyBloomFinalComposition(float opacity = 1.0f);
 
+        #if 0
         static void BeginBatch();
         static void AddToBatch(const Renderer2DProps& props);
         static void EndBatch(const std::string& shaderName);
+        #endif
     };
 }
