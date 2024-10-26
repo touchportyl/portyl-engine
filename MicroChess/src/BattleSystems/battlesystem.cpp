@@ -258,8 +258,8 @@ namespace ChronoShift {
             FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(
               character_moves[move_decision]));
           std::cout << "Move Selected: " << player_move.name << std::endl;
-          if (player_move.is_target_player) selected_num = m_players.begin();
-          else selected_num = m_enemies.begin();
+          if (player_move.is_target_enemy) selected_num = m_enemies.begin();
+          else selected_num = m_players.begin();
           //selected_num = (!player_move.is_target_player * players_displayed);
           //selected_num += (!player_move.is_target_player * players_displayed);
         }
@@ -313,7 +313,7 @@ namespace ChronoShift {
       // number of targets
       // selection of adjecent targets should only apply when target count is less than 5
       size_t no_of_targets = 0;
-      if (selected_move.is_target_player) {
+      if (!selected_move.is_target_enemy) {
         // means is player target
         no_of_targets = players_displayed;
         min_targets = m_players.begin();
@@ -323,7 +323,7 @@ namespace ChronoShift {
         // means is enemy target
         no_of_targets = enemies_displayed;
       }
-      if (selected_move.target_count < no_of_targets) {
+      if (selected_move.target_type < no_of_targets) {
         // targetting system
         if (Input::GetKeyDown(GLFW_KEY_D)) {
           if (selected_num != (max_targets - 1)) selected_num++;
@@ -338,11 +338,11 @@ namespace ChronoShift {
         // This needs to be resolved ASAP
         // display sprites when selected, adjacency matters
         if (selected_num != min_targets || selected_num != (max_targets - 1)) {
-          if (selected_move.target_count == 3) {
+          if (selected_move.target_type == MOVE_TARGET_TRIPLE) {
             (*(selected_num - 1)).GetComponent<IsActive>()->is_active = true;
             (*(selected_num + 1)).GetComponent<IsActive>()->is_active = true;
           }
-          else if (selected_move.target_count == 2) {
+          else if (selected_move.target_type == MOVE_TARGET_DOUBLE) {
             (*(selected_num + adjacent)).GetComponent<IsActive>()->is_active = true;
           }
         }
@@ -424,19 +424,19 @@ namespace ChronoShift {
       //  result.push_back(Range(min, max).Get());
       //}
       int max = 0;
-      if (selected_move.is_target_player) {
+      if (!selected_move.is_target_enemy) {
         max = players_displayed;
         min_targets = m_players.begin();
       }
       else max = enemies_displayed;
       int random_selection = Range(0, max).Get();
-      if (selected_move.target_count < max) {
+      if (selected_move.target_type < max) {
         if (random_selection != 0 || random_selection != max) {
-          if (selected_move.target_count == 3) {
+          if (selected_move.target_type == MOVE_TARGET_TRIPLE) {
             result.push_back((*(min_targets + 1)).GetComponent<BattleSlot>()->character);
             result.push_back((*(min_targets - 1)).GetComponent<BattleSlot>()->character);
           }
-          else if (selected_move.target_count == 2) result.push_back((*(min_targets - 1)).GetComponent<BattleSlot>()->character);
+          else if (selected_move.target_type == MOVE_TARGET_DOUBLE) result.push_back((*(min_targets - 1)).GetComponent<BattleSlot>()->character);
         }
         else {
           if (random_selection == max) result.push_back((*(min_targets - 1)).GetComponent<BattleSlot>()->character);
@@ -447,7 +447,7 @@ namespace ChronoShift {
       else {
         // all the slots are to be targetted
         for (int i = 0; i < max; i++) {
-          result.push_back(*(min_targets + i));
+          result.push_back((*(min_targets + i)).GetComponent<BattleSlot>()->character);
         }
       }
     }

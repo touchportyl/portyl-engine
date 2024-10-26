@@ -122,6 +122,7 @@ namespace ChronoShift
 
 	//declaration of statics
 	std::unordered_map<std::string, Move> MoveRegistry::s_move_registry;
+	std::unordered_map<int, MoveEffect> MoveRegistry::s_move_function_registry;
 
 	enum : int
 	{
@@ -130,17 +131,39 @@ namespace ChronoShift
 	// Should i add the chrono gears with the moves list or should i create a seperate list?
 	void MoveRegistry::RegisterMoves()
 	{
+		/*
+		Asset::FlxData& f = FLX_ASSET_GET(Asset::FlxData, "/data/flxer.flxdata");
+                if (f.GetBool("test", false) == false) Log::Warning("Failed to get bool");
+                if (f.GetString("tester", "") != "Hello2 World!") Log::Warning("Failed to get string");
+                if (f.GetInt("testint", 0) != 1243) Log::Warning("Failed to get int");
+		//Asset::FlxData flex("/data/flxer.flxdata");
+    //flex.SetBool("test", true);
+    //flex.SetString("tester", "Hello2 World!");
+    //flex.SetInt("testint", 1243);
+    //flex.Save();
+		*/
+		/*Asset::FlxData move("/data/Dual Strike.flxdata");
+		move.SetString("name", "Dual Strike");
+		move.SetString("description", "Hit target 2 times for 1 damage");
+		move.SetInt("speed_cost", 4);
+		move.SetBool("is_target_enemy", true);
+		move.SetInt("target_type", MOVE_TARGET_DOUBLE);
+		move.SetInt("damage", 2);
+		move.SetInt("Function", 0);
+		move.Save();*/
+		s_move_function_registry[REDUCE_HP] = Move_DualStrike;
+
 		FlexEngine::Log::Debug("Registering Moves:");
 		//Move EMPTY{ "", "YO", 0, MOVE_TARGET_NONE, 0, Move_Empty };
-		Move dual_strike{ "Dual Strike", "Hit target 2 times for 1 damage", 4, false, MOVE_TARGET_DOUBLE, 2, Move_DualStrike };
-		Move whirlwind{ "Whirlwind", "Hits 2 Targets for 2 damage. Increases self speed by 1.", 7, false, MOVE_TARGET_TRIPLE, 2, Move_Whirlwind };
-		Move block{ "Block", "Takes no damage from moves.", 5, true, MOVE_TARGET_SELF, 0, Move_Block };
-		Move rift_surge{ "Rift Surge", "Hits 2 targets for 3 damage", 7, false, MOVE_TARGET_TRIPLE, 2, Move_RiftSurge };
-		Move flashbang{ "Flashbang", "Hit 1 target for 2 damage and adds dizzy.", 5, false, MOVE_TARGET_SINGLE, 1, Move_Flashbang };
+		Move dual_strike{ "Dual Strike", "Hit target 2 times for 1 damage", 4, true, MOVE_TARGET_DOUBLE, 2, Move_DualStrike };
+		Move whirlwind{ "Whirlwind", "Hits 2 Targets for 2 damage. Increases self speed by 1.", 7, true, MOVE_TARGET_TRIPLE, 2, Move_Whirlwind };
+		Move block{ "Block", "Takes no damage from moves.", 5, false, MOVE_TARGET_SELF, 0, Move_Block };
+		Move rift_surge{ "Rift Surge", "Hits 2 targets for 3 damage", 7, true, MOVE_TARGET_TRIPLE, 2, Move_RiftSurge };
+		Move flashbang{ "Flashbang", "Hit 1 target for 2 damage and adds dizzy.", 5, true, MOVE_TARGET_SINGLE, 1, Move_Flashbang };
 		Move temporal_wave{ "Temporal Wave", "Increase all drifter’s speed by 1.", 7, true, MOVE_TARGET_ALL, 0, Move_TemporalWave };
-		Move full_recovery{ "Full Recovery", "Heals Entire team to max HP", 7, true, MOVE_TARGET_ALL, 0, Move_FullRecovery };
-		Move poke{ "Poke", "Owie.", 7, true, MOVE_TARGET_SINGLE, 1, Move_Poke };
-		Move heal{ "Heal", "Heal 1 Ally for 5 HP.", 5, true, MOVE_TARGET_SINGLE, 1, Move_Heal };
+		Move full_recovery{ "Full Recovery", "Heals Entire team to max HP", 7, false, MOVE_TARGET_ALL, 0, Move_FullRecovery };
+		Move poke{ "Poke", "Owie.", 7, false, MOVE_TARGET_SINGLE, 1, Move_Poke };
+		Move heal{ "Heal", "Heal 1 Ally for 5 HP.", 5, false, MOVE_TARGET_SINGLE, 1, Move_Heal };
 
 		//s_move_registry[EMPTY.name] = EMPTY;
 		s_move_registry[dual_strike.name] = dual_strike;
@@ -159,8 +182,17 @@ namespace ChronoShift
 	
 	Move MoveRegistry::GetMove(std::string name)
 	{
+		Asset::FlxData& move = FLX_ASSET_GET(Asset::FlxData, "/data/" + name + ".flxdata");
+		Move result;
+		result.name = move.GetString("name", "");
+		result.description = move.GetString("description", "");
+		result.cost = move.GetInt("speed_cost", 0);
+		result.is_target_enemy = move.GetBool("is_target_enemy", false);
+		result.target_type = move.GetInt("target_type", 0);
+		result.damage = move.GetInt("damage", 0);
+		result.effect = s_move_function_registry[move.GetInt("Function", 0)];
 		//return Instance().s_move_registry[name];
-		return s_move_registry[name];
+		return result;
 	}
 
 
