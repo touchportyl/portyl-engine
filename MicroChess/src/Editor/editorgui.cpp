@@ -180,10 +180,14 @@ namespace ChronoShift
 		char text_buffer[128];
 		strncpy_s(text_buffer, data.c_str(), sizeof(text_buffer));
 		text_buffer[sizeof(text_buffer) - 1] = '\0';
-		if (ImGui::InputText(title.c_str(), text_buffer, IM_ARRAYSIZE(text_buffer)))
+		ImGui::Text(title.c_str());
+		ImGui::SameLine();
+		PushID();
+		if (ImGui::InputText("##", text_buffer, IM_ARRAYSIZE(text_buffer)))
 		{
 			data = std::string(text_buffer);
 		}
+		PopID();
 		PopID();
 	}
 

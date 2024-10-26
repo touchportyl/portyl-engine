@@ -138,20 +138,20 @@ void COMPONENT_VIEWER_##TYPE(FlexEngine::FlexECS::Entity entity) \
   EditorGUI::Color3(entity.GetComponent<T>()->name, #name); 
 
 	#define COMPONENT_VIEWER_EDITABLE_STRING(name) \
-	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
-	EditorGUI::EditableTextField(str, #name);
+	std::string& str_##name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
+	EditorGUI::EditableTextField(str_##name, #name);
 
 	#define COMPONENT_VIEWER_SHADER_PATH(name) \
-	std::string& path = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
-	EditorGUI::ShaderPath(path);
+	std::string& path_##name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
+	EditorGUI::ShaderPath(path_##name);
 
 	#define COMPONENT_VIEWER_TEXTURE_PATH(name) \
-	std::string& path = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
-	EditorGUI::TexturePath(path);
+	std::string& path_##name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
+	EditorGUI::TexturePath(path_##name);
 
 	#define COMPONENT_VIEWER_STRING(name) \
-	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
-	EditorGUI::TextField(str);
+	std::string& str_##name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<T>()->name); \
+	EditorGUI::TextField(str_##name);
 
 	#define COMPONENT_VIEWER_BOOL(name) \
 	EditorGUI::Checkbox(entity.GetComponent<T>()->name, #name);

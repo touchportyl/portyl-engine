@@ -176,7 +176,6 @@ namespace ChronoShift {
     // ECS Setup
     auto scene = FlexECS::Scene::CreateScene();
     FlexECS::Scene::SetActiveScene(scene);
-    RegisterRenderingComponents();
 
     // Setup the board
     SetupBattle();
