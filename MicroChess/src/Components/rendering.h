@@ -136,7 +136,7 @@ using namespace FlexEngine;
     Vector3 color_to_multiply = Vector3::One;
     int alignment = Renderer2DProps::Alignment_Center;
     GLuint vbo_id = Renderer2DProps::VBO_Basic;
-
+    bool post_processed = false;
   };
   
   /*!***************************************************************************
