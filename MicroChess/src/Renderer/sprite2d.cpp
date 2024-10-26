@@ -183,71 +183,108 @@ namespace ChronoShift
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
 
         // Render all entities
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+        #if 1
         {
-            auto entity_name_component = entity.GetComponent<EntityName>();
 
-            if (!entity.GetComponent<IsActive>()->is_active) continue;
-            auto& z_index = entity.GetComponent<ZIndex>()->z;
-            Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
-            auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
-            auto sprite = entity.GetComponent<Sprite>();
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+            {
+                auto entity_name_component = entity.GetComponent<EntityName>();
 
-            props.shader = shader;
-            props.transform = transform;
-            props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
-            props.color = sprite->color;
-            props.color_to_add = sprite->color_to_add;
-            props.color_to_multiply = sprite->color_to_multiply;
-            props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
-            props.vbo_id = sprite->vbo_id;
+                if (!entity.GetComponent<IsActive>()->is_active) continue;
+                auto& z_index = entity.GetComponent<ZIndex>()->z;
+                Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
+                auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
+                auto sprite = entity.GetComponent<Sprite>();
 
-            //FIRST TWO IFS SHOULD NOT BE HERE
-            if ("finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", z_index });
-            else if ("editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_finalRender),props); }, "", z_index });
-            else if (sprite->post_processed)
-                pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
-            else
-                non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
+                props.shader = shader;
+                props.transform = transform;
+                props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
+                props.color = sprite->color;
+                props.color_to_add = sprite->color_to_add;
+                props.color_to_multiply = sprite->color_to_multiply;
+                props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
+                props.vbo_id = sprite->vbo_id;
 
+                //FIRST TWO IFS SHOULD NOT BE HERE
+                if ("finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
+                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", z_index });
+                else if ("editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
+                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_finalRender),props); }, "", z_index });
+                else if (sprite->post_processed)
+                    pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
+                else
+                    non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
+
+            }
+
+            //Push Settings
+            bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
+            if (depth_test) OpenGLRenderer::DisableDepthTest();
+
+            bool blending = OpenGLRenderer::IsBlendingEnabled();
+            if (!blending) OpenGLRenderer::EnableBlending();
+
+            //auto start = std::chrono::high_resolution_clock::now();
+
+            //Batch Rendering objs in scene
+            {
+                // Set up Editor Frame Buffer for batch-rendering in the editor
+                OpenGLSpriteRenderer::SetEditorFrameBuffer();
+                OpenGLSpriteRenderer::ClearFrameBuffer();
+
+                // Render post-processing objects as the background layer
+                pp_render_queue.Flush();
+                OpenGLSpriteRenderer::DrawPostProcessingLayer();
+
+                // Render non-post-processing objects on top
+                non_pp_render_queue.Flush();
+            }
+
+            // Switch to default frame buffer for final output rendering
+            OpenGLSpriteRenderer::SetDefaultFrameBuffer();
+            finalized_render_queue.Flush();  // Final rendering (UI, etc.)
+
+            //auto end = std::chrono::high_resolution_clock::now();
+            //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+            //std::cout << "Time taken: " << duration << " ms" << std::endl;
+
+            // pop settings
+            if (depth_test) OpenGLRenderer::EnableDepthTest();
+            if (!blending) OpenGLRenderer::DisableBlending();
         }
+        #endif
 
-        //Push Settings
-        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
-        if (depth_test) OpenGLRenderer::DisableDepthTest();
-
-        bool blending = OpenGLRenderer::IsBlendingEnabled();
-        if (!blending) OpenGLRenderer::EnableBlending();
-
-        //auto start = std::chrono::high_resolution_clock::now();
-        
-        //Batch Rendering objs in scene
+        // Test Batch Rendering all entities
+        #if 0
         {
-            // Set up Editor Frame Buffer for batch-rendering in the editor
-            OpenGLSpriteRenderer::SetEditorFrameBuffer();
-            OpenGLSpriteRenderer::ClearFrameBuffer();
+            OpenGLSpriteRenderer::BeginBatch();
 
-            // Render post-processing objects as the background layer
-            pp_render_queue.Flush();
-            OpenGLSpriteRenderer::DrawPostProcessingLayer();
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+            {
+                auto entity_name_component = entity.GetComponent<EntityName>();
+                if (!entity.GetComponent<IsActive>()->is_active || 
+                    "finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component) ||
+                    "editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component)) continue;
 
-            // Render non-post-processing objects on top
-            non_pp_render_queue.Flush();
+                // Gather properties
+                Renderer2DProps props;
+                props.transform = entity.GetComponent<Transform>()->transform;
+                props.shader = "\\shaders\\batchtexture";
+                auto sprite = entity.GetComponent<Sprite>();
+
+                props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
+                props.color = sprite->color;
+                props.color_to_add = sprite->color_to_add;
+                props.color_to_multiply = sprite->color_to_multiply;
+                props.vbo_id = sprite->vbo_id;
+
+                OpenGLSpriteRenderer::AddToBatch(props);
+            }
+
+            OpenGLSpriteRenderer::SetDefaultFrameBuffer();
+            OpenGLSpriteRenderer::EndBatch("\\shaders\\batchtexture"); // Shader name to batch with
         }
-
-        // Switch to default frame buffer for final output rendering
-        OpenGLSpriteRenderer::SetDefaultFrameBuffer();
-        finalized_render_queue.Flush();  // Final rendering (UI, etc.)
-        
-        //auto end = std::chrono::high_resolution_clock::now();
-        //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-        //std::cout << "Time taken: " << duration << " ms" << std::endl;
-
-        // pop settings
-        if (depth_test) OpenGLRenderer::EnableDepthTest();
-        if (!blending) OpenGLRenderer::DisableBlending();
+        #endif
     }
 
 }

@@ -104,6 +104,13 @@ namespace FlexEngine
         GLuint vbo = 0;
     };
 
+    struct __FLX_API InstanceData {
+        std::string textureID;     // Texture ID
+        Matrix4x4 transform;       // Transformation matrix per instance
+        Vector3 color;             // Per-instance color
+        Vector3 color_to_add;      // Color addition effect
+        Vector3 color_to_multiply; // Color multiplication effect
+    };
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,6 +128,7 @@ namespace FlexEngine
     {
         static uint32_t m_draw_calls;                 /*!< Total number of draw calls made */
         static uint32_t m_draw_calls_last_frame;      /*!< Draw calls made in the last frame */
+        static uint32_t m_maxInstances; // Maximum number of instances allowed in one batch
         static bool m_depth_test;                      /*!< Flag for enabling depth testing */
         static bool m_blending;                        /*!< Flag for enabling blending */
 
@@ -149,6 +157,9 @@ namespace FlexEngine
         //static GLuint samples;                         /*!< Number of samples per pixel for MSAA anti-aliasing */
         //static float gamma;                            /*!< Controls the gamma function */
 
+
+        static GLuint m_instanceVBO;
+        static std::vector<InstanceData> m_instanceData; // Collection of instance data for batch rendering
     public:
 
         enum __FLX_API CreatedTextureID
@@ -270,7 +281,7 @@ namespace FlexEngine
         * \param vertexCount The number of vertices in the array.
         *****************************************************************************/
         static void InitQuadVAO_VBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
-        
+        static void InitSQuadVAO_VBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
         /*!***************************************************************************
         * \brief
         * Initializes the VBOs.
@@ -297,5 +308,9 @@ namespace FlexEngine
         static void ApplyBrightnessPass(float threshold = 1.0f);
         static void ApplyGaussianBlur(int blurDrawPasses = 4, float blurDistance = 10.0f, int intensity = 12);
         static void ApplyBloomFinalComposition(float opacity = 1.0f);
+
+        static void BeginBatch();
+        static void AddToBatch(const Renderer2DProps& props);
+        static void EndBatch(const std::string& shaderName);
     };
 }

@@ -35,10 +35,13 @@ namespace FlexEngine
     // static member initialization
     uint32_t OpenGLSpriteRenderer::m_draw_calls = 0;
     uint32_t OpenGLSpriteRenderer::m_draw_calls_last_frame = 0;
+    uint32_t OpenGLSpriteRenderer::m_maxInstances = 2500;
     bool OpenGLSpriteRenderer::m_depth_test = false;
     bool OpenGLSpriteRenderer::m_blending = false;
 
     std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
+    GLuint OpenGLSpriteRenderer::m_instanceVBO = 0;
+    std::vector<InstanceData> OpenGLSpriteRenderer::m_instanceData;
 
     std::filesystem::path curr_file_path = __FILE__;
     std::filesystem::path shared_vert_path(curr_file_path.parent_path() / "../../../../assets/shader/Shared.vert");
@@ -171,8 +174,6 @@ namespace FlexEngine
         {
         case CreatedTextureID::CID_finalRender:
             return m_finalRenderTex;
-        //case CreatedTextureID::CID_brightnessPass:
-        //    return m_brightnessTex;
         case CreatedTextureID::CID_blur:
             return m_pingpongTex[0];
         case CreatedTextureID::CID_editor:
@@ -235,6 +236,7 @@ namespace FlexEngine
     *
     * \param windowSize The size of the rendering window as a Vector2.
     *****************************************************************************/
+    GLuint m_quadVAO, m_quadVBO;
     void OpenGLSpriteRenderer::Init(const Vector2& windowSize)
     {
         /////////////////////////////////////////////////////////////////////////////////////
@@ -299,6 +301,25 @@ namespace FlexEngine
         }
 
         Log::Info("All VAOs & VBOs are set up.");
+
+        /////////////////////////////////////////////////////////////////////////////////////
+        // Batch Rendering setup
+        m_instanceData.reserve(m_maxInstances);
+        // Generate the instance VBO to hold per-instance data (for instancing)
+        glGenBuffers(1, &m_instanceVBO);
+        float vertices[] = {
+            // Positions         // Texture Coords
+            -0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
+             0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+             0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
+             0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
+            -0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
+            -0.5f, -0.5f, 0.0f,  1.0f, 0.0f
+        };
+        
+        // Call InitQuadVAO_VBO to set up the quad's VAO and VBO with instance data
+        InitQuadVAO_VBO(m_quadVAO, m_quadVBO, vertices, sizeof(vertices) / sizeof(float));
+
 
         /////////////////////////////////////////////////////////////////////////////////////
         // Linking shaders
@@ -604,5 +625,110 @@ namespace FlexEngine
         glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
+    }
+
+
+
+
+    //BELOW HERE IS STILL IN DEVELOPMENT (NOT WORKING)
+
+
+    void OpenGLSpriteRenderer::BeginBatch() {
+        m_instanceData.clear();
+    }
+
+    void OpenGLSpriteRenderer::AddToBatch(const Renderer2DProps& props) {
+        // Ensure VBO and shader validation occurs once per batch.
+        if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0) {
+            Log::Fatal("Invalid VBO ID. Check value or revert to 0.");
+            return;
+        }
+        if (props.shader.empty() || props.transform == Matrix4x4::Zero) {
+            return;
+        }
+
+        InstanceData instance;
+        instance.transform = props.transform;
+        instance.color = props.color;
+        instance.color_to_add = props.color_to_add;
+        instance.color_to_multiply = props.color_to_multiply;
+        instance.textureID = props.texture;
+
+        m_instanceData.push_back(instance);
+    }
+
+    void OpenGLSpriteRenderer::EndBatch(const std::string& shaderName) {
+        if (m_instanceData.empty()) return;
+
+        SetDefaultFrameBuffer();
+        glBindVertexArray(m_quadVAO); // Assuming all instances use the same VAO
+
+        // Bind and configure shader
+        auto& shader = FLX_ASSET_GET(Asset::Shader, shaderName);
+        shader.Use();
+
+        // Set texture (if available) for all instances
+        if (!m_instanceData[0].textureID.empty()) {
+            auto& texture = FLX_ASSET_GET(Asset::Texture, m_instanceData[0].textureID);
+            texture.Bind(shader, "u_texture", 0);
+            shader.SetUniform_bool("u_use_texture", true);
+        }
+        else {
+            shader.SetUniform_bool("u_use_texture", false);
+            shader.SetUniform_vec3("u_color", m_instanceData[0].color);
+        }
+
+        // Update instance VBO with instance data
+        glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, m_instanceData.size() * sizeof(InstanceData), m_instanceData.data());
+
+        // Render all instances with one draw call
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, m_instanceData.size());
+        m_draw_calls++;
+
+        glBindVertexArray(0);
+    }
+
+
+    void OpenGLSpriteRenderer::InitSQuadVAO_VBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount) 
+    {
+        glGenVertexArrays(1, &vao);
+        glGenBuffers(1, &vbo);
+
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(float), vertices, GL_STATIC_DRAW);
+
+        // Position and Texture Coords (non-instanced attributes)
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+        // Now bind and configure the instance VBO for per-instance data
+        glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
+        glBufferData(GL_ARRAY_BUFFER, m_maxInstances * sizeof(InstanceData), nullptr, GL_DYNAMIC_DRAW);
+
+        // Instance attributes (Transform Matrix - 4 x vec4)
+        for (unsigned int i = 0; i < 4; i++) {
+            glEnableVertexAttribArray(2 + i);
+            glVertexAttribPointer(2 + i, 4, GL_FLOAT, GL_FALSE, sizeof(InstanceData), (void*)(i * sizeof(Vector4)));
+            glVertexAttribDivisor(2 + i, 1); // Update every instance
+        }
+
+        // Instance attributes (Color and additional color effects)
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, sizeof(InstanceData), (void*)offsetof(InstanceData, color));
+        glVertexAttribDivisor(6, 1);
+
+        glEnableVertexAttribArray(7);
+        glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, sizeof(InstanceData), (void*)offsetof(InstanceData, color_to_add));
+        glVertexAttribDivisor(7, 1);
+
+        glEnableVertexAttribArray(8);
+        glVertexAttribPointer(8, 3, GL_FLOAT, GL_FALSE, sizeof(InstanceData), (void*)offsetof(InstanceData, color_to_multiply));
+        glVertexAttribDivisor(8, 1);
+
+        glBindVertexArray(0);
     }
 }
