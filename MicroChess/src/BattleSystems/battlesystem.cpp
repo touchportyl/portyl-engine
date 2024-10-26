@@ -37,6 +37,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 namespace ChronoShift {
 
+  bool BattleSystem::is_battle_finished = false;
 
   //Sorting functions
   struct SortLowestSpeed
@@ -54,15 +55,14 @@ namespace ChronoShift {
   {
   }
   
-  void BattleSystem::SetUpBattleScene(int num_of_enemies, int num_of_players) {
-    enemies_displayed = num_of_enemies;
-    players_displayed = num_of_players;
-
+  void BattleSystem::SetUpBattleScene() {
+    // WIP: enable the battle scene to have waves of enemies as well
     auto scene = FlexECS::Scene::GetActiveScene();
 
-    for (int i = 0; i < (num_of_players + num_of_enemies); i++) {
-      FlexECS::Entity slot = FlexECS::Scene::CreateEntity("Slot" + std::to_string(i));
-      slot.AddComponent<BattleSlot>({ FlexECS::Entity::Null });
+    for (int i = 0; i < (players_displayed + enemies_displayed); i++) {
+      FlexECS::Entity slot; //FlexECS::Scene::CreateEntity("Slot" + std::to_string(i));
+      if (i < players_displayed) slot = m_players[i];
+      else slot = m_enemies[i-players_displayed];
       slot.AddComponent<OnClick>({});
       slot.AddComponent<IsActive>({ false });
       slot.AddComponent<Position>({});
@@ -85,17 +85,18 @@ namespace ChronoShift {
       // and divide it equally so that they are equally spaced out. When there is character death, the positions will be
       // updated again with the same formula in the character death function
       // Note: position of slots to be stored in m_slots
-      if (i < num_of_players) {
+      if (i < players_displayed) {
         slot.GetComponent<Position>()->position = { SLOT_POS_HOR_PLAYER + 120.f * i, SLOT_POS_VERT_PLAYER };
-        m_players.push_back(slot);
+        //m_players.push_back(slot);
       }
       else {
-        slot.GetComponent<Position>()->position = { SLOT_POS_HOR_ENEMY + 120.f * (i - num_of_players), SLOT_POS_VERT_ENEMY };
-        m_enemies.push_back(slot);
+        slot.GetComponent<Position>()->position = { SLOT_POS_HOR_ENEMY + 120.f * (i - players_displayed), SLOT_POS_VERT_ENEMY };
+        //m_enemies.push_back(slot);
       }
       //m_slots.push_back(slot);
     }
     // Move Buttons for Mouse Click Selection of Moves
+    if (!move_buttons.empty()) return;
     for (int i = 0; i < 4; i++)
     {
       Vector2 position = { 900.f, 450.f + (80.f * i) };
@@ -118,17 +119,37 @@ namespace ChronoShift {
         Renderer2DProps::Alignment_Center
        });
       move_button.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+      move_buttons.push_back(move_button);
     }
   }
 
   void BattleSystem::AddCharacters(std::vector<FlexECS::Entity> characters) {
+    if (!m_characters.empty()) m_characters.clear();
+    if (!m_enemies.empty()) {
+      for (auto& e : m_enemies) {
+        FlexECS::Scene::DestroyEntity(e);
+      }
+      m_enemies.clear();
+    }
+    if (!m_players.empty()) {
+      for (auto& p : m_players) {
+        FlexECS::Scene::DestroyEntity(p);
+      }
+      m_players.clear();
+    }
     // positions of character sprites should be updated according to the slot positions
     for (size_t i = 0; i < characters.size(); i++) {
       m_characters.push_back(characters[i]);
-      if (i < players_displayed) m_players[i].GetComponent<BattleSlot>()->character = characters[i];
-      else m_enemies[i-players_displayed].GetComponent<BattleSlot>()->character = characters[i];
-      //m_slots[i].GetComponent<BattleSlot>()->character = characters[i];
+      FlexECS::Entity temp_character = FlexECS::Scene::CreateEntity();
+      temp_character.AddComponent<BattleSlot>({ characters[i] });
+      if (characters[i].GetComponent<Character>()->is_player) {
+        m_players.push_back(temp_character);
+      }
+      else m_enemies.push_back(temp_character);
     }
+    players_displayed = m_players.size();
+    enemies_displayed = m_enemies.size();
+    SetUpBattleScene();
   }
 
   void BattleSystem::BeginBattle()
@@ -188,6 +209,10 @@ namespace ChronoShift {
     else if (battle_phase == BP_MOVE_SELECTION) {
       PlayerMoveSelection();
     }
+    else if (battle_phase == BP_BATTLE_FINISH) {
+
+    }
+    if (battle_phase != BP_BATTLE_FINISH) EndBattleScene();
     /*else if (battle_phase == BP_MOVE_DEATH_PROCESSION) {
       DeathProcession();
     }*/
@@ -542,7 +567,7 @@ namespace ChronoShift {
       if ((*it).GetComponent<Character>()->is_player) {
         for (auto p = m_players.begin(); p != m_players.end(); p++) {
           if ((*p).GetComponent<BattleSlot>()->character == *it) {
-            (*p).GetComponent<IsActive>()->is_active = false;
+            FlexECS::Scene::DestroyEntity(*p);
             m_players.erase(p);
             players_displayed--;
             std::cout << (*it).GetComponent<Character>()->character_name << " has been removed from player list" << std::endl;
@@ -553,7 +578,7 @@ namespace ChronoShift {
       else {
         for (auto e = m_enemies.begin(); e != m_enemies.end(); e++) {
           if ((*e).GetComponent<BattleSlot>()->character == *it) {
-            (*e).GetComponent<IsActive>()->is_active = false;
+            FlexECS::Scene::DestroyEntity(*e);
             m_enemies.erase(e);
             enemies_displayed--;
             std::cout << (*it).GetComponent<Character>()->character_name << " has been removed from enemy list" << std::endl;
@@ -587,5 +612,16 @@ namespace ChronoShift {
     //  }
     //}
     battle_state.GetComponent<BattleState>()->phase = BP_PROCESSING;
+  }
+  void BattleSystem::EndBattleScene() {
+    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
+    if (m_enemies.empty()) {
+      std::cout << "VICTORY!!!!" << std::endl;
+      battle_state.GetComponent<BattleState>()->phase = BP_BATTLE_FINISH;
+    }
+    if (m_players.empty()) {
+      std::cout << "DEFEAT. Click R to try again." << std::endl;
+      battle_state.GetComponent<BattleState>()->phase = BP_BATTLE_FINISH;
+    }
   }
 }

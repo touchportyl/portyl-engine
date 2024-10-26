@@ -169,6 +169,7 @@ namespace ChronoShift
     BP_MOVE_EXECUTION, //Animation playing
     BP_PROCESSING,    //Speed stack moving around, showing who's next
     BP_MOVE_SELECTION,
+    BP_BATTLE_FINISH,
   };
   
   class BattleState 

@@ -37,7 +37,8 @@ namespace ChronoShift
     ~BattleSystem();
 
     void AddCharacters(std::vector<FlexECS::Entity> characters);
-    void SetUpBattleScene(int num_of_enemies, int num_of_players);
+    void SetUpBattleScene();
+    //void SetUpBattleScene(int num_of_enemies, int num_of_players);
 
     void BeginBattle();
     void Update();
@@ -45,12 +46,19 @@ namespace ChronoShift
     size_t GetCharacterCount() { return m_characters.size(); };
     std::vector<FlexECS::Entity>& GetTurnOrder() { return m_characters; };
   private:
+    static bool is_battle_finished;
+    // Currently for my convenience but should be more useful and applicable
+    // in the future if we got waves of enemies in one battle scene
     int enemies_displayed;
     int players_displayed;
+    // Used for speed queue
     std::vector<FlexECS::Entity> m_characters;
     //std::vector<FlexECS::Entity> m_slots;
-
+    // These 2 vectors are gonna replace m_slots instead cause god bless me
     std::vector<FlexECS::Entity> m_players;
+    std::vector<FlexECS::Entity> m_enemies;
+
+    std::list<FlexECS::Entity> move_buttons;
 
     // This should store all the enemies in the battle scene
     // Let's say you have 15 enemies coming out in waves of 5
@@ -60,12 +68,12 @@ namespace ChronoShift
     // first wave of 5 has been defeated then those five should be deleted from
     // this vector as well. Battle Victory will be determined by whether this
     // vector is empty.
-    std::vector<FlexECS::Entity> m_enemies;
     
     //BattleState m_battle_state;
     void UpdateSpeedStack();
     void PlayerMoveSelection();
     void DeathProcession(std::vector<FlexECS::Entity> list_of_deaths);
     void ExecuteMove(FlexECS::Scene::StringIndex move_id, std::vector<FlexECS::Entity> selected_targets);
+    void EndBattleScene();
   };
 }

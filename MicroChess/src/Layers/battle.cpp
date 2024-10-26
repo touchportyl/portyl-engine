@@ -47,7 +47,7 @@ namespace ChronoShift {
     auto scene = FlexECS::Scene::GetActiveScene();
 
     //battle positions for characters
-    m_battlesystem.SetUpBattleScene(3, 2);
+    //m_battlesystem.SetUpBattleScene();
     #pragma region Chrono Gear Main Stats
     /*FlexECS::Entity main_hp = FlexECS::Scene::CreateEntity("Flat HP");
     main_hp.AddComponent<Stat>({
@@ -215,11 +215,14 @@ namespace ChronoShift {
     UpdateSprite2DMatrix();
     RendererSprite2D();
     
-    if (Input::GetKeyDown(GLFW_KEY_S)) {
-      SaveCharacters();
-    }
-    else if (Input::GetKeyDown(GLFW_KEY_R)) {
+    //if (Input::GetKeyDown(GLFW_KEY_S)) {
+    //  // i would recommend never clicking this ever again
+    //  SaveCharacters();
+    //}
+    if (Input::GetKeyDown(GLFW_KEY_R)) {
       ResetCharacters();
+      m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->View<Character>());
+      m_battlesystem.BeginBattle();
     }
   }
 }
