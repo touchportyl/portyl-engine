@@ -130,12 +130,11 @@ namespace FlexEngine
         static Asset::Shader m_bloom_gaussianblur_shader;
         static Asset::Shader m_bloom_finalcomp_shader;
 
-        //Currently have 6 FBOs - including default
-        static GLuint m_postProcessingFBO;            /*!< Framebuffer Object for generic post_processing */
-        static GLuint m_pingpongFBO[2]; 
-        static GLuint m_editorFBO;       //0 - Basic, 1 - Finalized
+        static GLuint m_editorFBO;           //replace default framebuffer
+        static GLuint m_postProcessingFBO;         //framebuffer to handle post-processing
+        static GLuint m_bloomFBO;           //framebuffer to handle bloom exclusively
+         
         //4 Textures going to be created, 2 for post_processing and 2 for editor and game
-        static GLuint m_brightnessTex;                    /*!< Texture used for bloom effects */
         static GLuint m_pingpongTex[2];            /*!< Ping-pong buffers for intermediate processing */
         static GLuint m_postProcessingTex;
         static GLuint m_editorTex;
@@ -212,23 +211,15 @@ namespace FlexEngine
         *****************************************************************************/
         static void DisableBlending();
 
+
+        static void SetDefaultFrameBuffer();
+        static void SetEditorFrameBuffer();
         /*!***************************************************************************
         * \brief
         * Enables post-processing effects for rendering.
         *****************************************************************************/
         static void SetPPFrameBuffer();
-
-        /*!***************************************************************************
-        * \brief
-        * Disables post-processing effects for rendering.
-        *****************************************************************************/
-        static void SetDefaultFrameBuffer();
-
-        /*!***************************************************************************
-        * \brief
-        * Disables post-processing effects for rendering.
-        *****************************************************************************/
-        static void SetEditorFrameBuffer();
+        static void SetBloomFrameBuffer();
 
         /*!***************************************************************************
         * \brief
