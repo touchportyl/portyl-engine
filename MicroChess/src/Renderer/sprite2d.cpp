@@ -182,8 +182,6 @@ namespace ChronoShift
         ////////////////////////////////////////////////////////////////////////////////
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
 
-        Matrix4x4 temp{};
-
         // Render all entities
         for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
         {
@@ -215,14 +213,6 @@ namespace ChronoShift
                 non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
 
         }
-
-        //TESTING FOR MORE THAN 2500
-        //int repeat_count = 2500;
-        //for (int i = 0; i < repeat_count; ++i) {
-        //    if (props.vbo_id != 0) { // Assuming a valid vbo_id was set in the previous loop
-        //        non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", 0 });
-        //    }
-        //}
 
         //Push Settings
         bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
