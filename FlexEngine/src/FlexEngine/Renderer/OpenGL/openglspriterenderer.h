@@ -130,6 +130,10 @@ namespace FlexEngine
         static Asset::Shader m_bloom_gaussianblur_shader;
         static Asset::Shader m_bloom_finalcomp_shader;
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        // TODO:
+        //  ALL FBOS should be moved to seperate files  to handle post-processing
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         static GLuint m_editorFBO;           //replace default framebuffer
         static GLuint m_postProcessingFBO;         //framebuffer to handle post-processing
         static GLuint m_bloomFBO;           //framebuffer to handle bloom exclusively

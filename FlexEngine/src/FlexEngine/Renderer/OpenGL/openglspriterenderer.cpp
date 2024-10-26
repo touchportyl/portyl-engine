@@ -239,59 +239,66 @@ namespace FlexEngine
     {
         /////////////////////////////////////////////////////////////////////////////////////
         // Create VAOs and VBOs (CAN BE DONE BETTER)
-        VertexBufferObject basic;
-        float vert[] = {
-            // Position           // TexCoords
-            -0.5f, -0.5f, 0.0f,   1.0f, 0.0f,  // Bottom-left
-             0.5f, -0.5f, 0.0f,   0.0f, 0.0f,  // Bottom-right
-             0.5f,  0.5f, 0.0f,   0.0f, 1.0f,  // Top-right
-             0.5f,  0.5f, 0.0f,   0.0f, 1.0f,  // Top-right
-            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f,  // Top-left
-            -0.5f, -0.5f, 0.0f,   1.0f, 0.0f   // Bottom-left
+        struct VertexData {
+            VertexBufferObject buffer;
+            const float* vertices;
+            int count;
         };
-        InitQuadVAO_VBO(basic.vao, basic.vbo, vert, sizeof(vert) / sizeof(float));
-        m_vbos.push_back(basic);
 
-        VertexBufferObject basicinverted;
-        float vert_1[] = {
-            // Position           // TexCoords
-            -0.5f, -0.5f, 0.0f,   1.0f, 1.0f,  // Bottom-left
-             0.5f, -0.5f, 0.0f,   0.0f, 1.0f,  // Bottom-right
-             0.5f,  0.5f, 0.0f,   0.0f, 0.0f,  // Top-right
-             0.5f,  0.5f, 0.0f,   0.0f, 0.0f,  // Top-right
-            -0.5f,  0.5f, 0.0f,   1.0f, 0.0f,  // Top-left
-            -0.5f, -0.5f, 0.0f,   1.0f, 1.0f   // Bottom-left
+        float quadVertices[] = {
+            // Positions         // TexCoords
+            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  
+             0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+             0.5f,  0.5f, 0.0f, 0.0f, 1.0f,  
+             0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 
+            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f
         };
-        InitQuadVAO_VBO(basicinverted.vao, basicinverted.vbo, vert_1, sizeof(vert_1) / sizeof(float));
-        m_vbos.push_back(basicinverted);
-
-        VertexBufferObject line;
-        float vert_2[] = {
-            // Position           // TexCoords
-            -0.5f, -0.5f, 0.0f,   50.0f, 0.0f,  // Bottom-left
-             0.5f, -0.5f, 0.0f,   0.0f, 0.0f,  // Bottom-right
-             0.5f,  0.5f, 0.0f,   0.0f, 48.0f,  // Top-right
-             0.5f,  0.5f, 0.0f,   0.0f, 48.0f,  // Top-right
-            -0.5f,  0.5f, 0.0f,   48.0f, 48.0f,  // Top-left
-            -0.5f, -0.5f, 0.0f,   48.0f, 0.0f   // Bottom-left
+        float quadInvertedVertices[] = {
+            // Positions         // TexCoords
+            -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,  
+             0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+             0.5f,  0.5f, 0.0f, 0.0f, 0.0f,  
+             0.5f,  0.5f, 0.0f, 0.0f, 0.0f,
+            -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 
+            -0.5f, -0.5f, 0.0f, 1.0f, 1.0f
         };
-        InitQuadVAO_VBO(line.vao, line.vbo, vert_2, sizeof(vert_2) / sizeof(float));
-        m_vbos.push_back(line);
-
-        VertexBufferObject PProcessing;
-        float vert_3[] = {
-            // Position        // TexCoords
-            -1.0f, -1.f, 0.0f,   0.0f, 0.0f, // Bottom-left
-             1.0f, -1.f, 0.0f,   1.0f, 0.0f, // Bottom-right
-             1.0f,  1.f, 0.0f,   1.0f, 1.0f, // Top-right
-             1.0f,  1.f, 0.0f,   1.0f, 1.0f, // Top-right
-            -1.0f,  1.f, 0.0f,   0.0f, 1.0f, // Top-left
-            -1.0f, -1.f, 0.0f,   0.0f, 0.0f  // Bottom-left
+        float lineVertices[] = 
+        {
+            // Positions         // TexCoords
+            -0.5f, -0.5f, 0.0f, 50.0f, 0.0f,  
+             0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+             0.5f,  0.5f, 0.0f, 0.0f, 48.0f,  
+             0.5f,  0.5f, 0.0f, 0.0f, 48.0f,
+            -0.5f,  0.5f, 0.0f, 48.0f, 48.0f, 
+            -0.5f, -0.5f, 0.0f, 48.0f, 0.0f
         };
-        InitQuadVAO_VBO(PProcessing.vao, PProcessing.vbo, vert_3, sizeof(vert_3) / sizeof(float));
-        m_vbos.push_back(PProcessing);
+        float postProcessingVertices[] = 
+        {
+            // Positions         // TexCoords
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f
+        };
 
-        Log::Info("All VAOs & VBOs are setup.");
+        VertexData vertexData[] = 
+        {
+            {VertexBufferObject(), quadVertices, sizeof(quadVertices) / sizeof(float)},
+            {VertexBufferObject(), quadInvertedVertices, sizeof(quadInvertedVertices) / sizeof(float)},
+            {VertexBufferObject(), lineVertices, sizeof(lineVertices) / sizeof(float)},
+            {VertexBufferObject(), postProcessingVertices, sizeof(postProcessingVertices) / sizeof(float)}
+        };
+
+        for (auto& data : vertexData) 
+        {
+            InitQuadVAO_VBO(data.buffer.vao, data.buffer.vbo, data.vertices, data.count);
+            m_vbos.push_back(data.buffer);
+        }
+
+        Log::Info("All VAOs & VBOs are set up.");
 
         /////////////////////////////////////////////////////////////////////////////////////
         // Linking shaders
