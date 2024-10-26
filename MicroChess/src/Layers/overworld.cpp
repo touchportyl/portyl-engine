@@ -205,7 +205,7 @@ namespace ChronoShift {
             box7.AddComponent<ZIndex>({ 10 });
             box7.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
-                { 1.2f, 0.78f, 1.30f },
+                { 1.2f, 1.0f, 1.30f },
                 Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
@@ -336,9 +336,9 @@ namespace ChronoShift {
        });
       thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
-      for (size_t x = 0; x < 50; x++)
+      for (size_t x = 0; x < 10; x++)
       {
-        for (size_t y = 0; y < 50; y++)
+        for (size_t y = 0; y < 10; y++)
         {
           FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
           auto& position = cloned_thing.GetComponent<Position>()->position;

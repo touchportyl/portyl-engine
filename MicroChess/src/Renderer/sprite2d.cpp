@@ -181,7 +181,7 @@ namespace ChronoShift
         // Potential Issues
         ////////////////////////////////////////////////////////////////////////////////
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
-        
+
         Matrix4x4 temp{};
 
         // Render all entities
@@ -206,7 +206,7 @@ namespace ChronoShift
 
             //FIRST TWO IFS SHOULD NOT BE HERE
             if ("finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_finalRender),props); }, "", z_index});
+                finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_finalRender),props); }, "", z_index });
             else if ("editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
                 finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", z_index });
             else if (sprite->post_processed)
@@ -224,27 +224,33 @@ namespace ChronoShift
         //    }
         //}
 
-        // push settings
+        //Push Settings
         bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
         if (depth_test) OpenGLRenderer::DisableDepthTest();
 
         bool blending = OpenGLRenderer::IsBlendingEnabled();
         if (!blending) OpenGLRenderer::EnableBlending();
 
-        // batch-render scene on editor
-        OpenGLSpriteRenderer::Enable_EditorFBO_Layer();
-        OpenGLSpriteRenderer::ClearFrameBuffer();
         //auto start = std::chrono::high_resolution_clock::now();
-        pp_render_queue.Flush(); //First Render pp objects first
-        OpenGLSpriteRenderer::DrawPostProcessingLayer();
-        //OpenGLSpriteRenderer::Enable_DefaultFBO_Layer();
-        OpenGLSpriteRenderer::Enable_EditorFBO_Layer();
-        non_pp_render_queue.Flush(); //Then Render non-pp objects second
+        
+        //Batch Rendering objs in scene
+        {
+            // Set up Editor Frame Buffer for batch-rendering in the editor
+            OpenGLSpriteRenderer::SetEditorFrameBuffer();
+            OpenGLSpriteRenderer::ClearFrameBuffer();
 
-        //Render editor and final render
-        OpenGLSpriteRenderer::Enable_DefaultFBO_Layer();
-        finalized_render_queue.Flush();
+            // Render post-processing objects as the background layer
+            pp_render_queue.Flush();
+            OpenGLSpriteRenderer::DrawPostProcessingLayer();
 
+            // Render non-post-processing objects on top
+            non_pp_render_queue.Flush();
+        }
+
+        // Switch to default frame buffer for final output rendering
+        OpenGLSpriteRenderer::SetDefaultFrameBuffer();
+        finalized_render_queue.Flush();  // Final rendering (UI, etc.)
+        
         //auto end = std::chrono::high_resolution_clock::now();
         //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
         //std::cout << "Time taken: " << duration << " ms" << std::endl;

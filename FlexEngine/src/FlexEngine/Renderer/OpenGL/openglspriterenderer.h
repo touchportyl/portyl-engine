@@ -216,19 +216,19 @@ namespace FlexEngine
         * \brief
         * Enables post-processing effects for rendering.
         *****************************************************************************/
-        static void Enable_PPFBO_Layer();
+        static void SetPPFrameBuffer();
 
         /*!***************************************************************************
         * \brief
         * Disables post-processing effects for rendering.
         *****************************************************************************/
-        static void Enable_DefaultFBO_Layer();
+        static void SetDefaultFrameBuffer();
 
         /*!***************************************************************************
         * \brief
         * Disables post-processing effects for rendering.
         *****************************************************************************/
-        static void Enable_EditorFBO_Layer();
+        static void SetEditorFrameBuffer();
 
         /*!***************************************************************************
         * \brief
@@ -299,7 +299,8 @@ namespace FlexEngine
         *****************************************************************************/
         static void DrawPostProcessingLayer();
 
-        //TEST
-        static void DrawFinalRender(std::string t_shader, Matrix4x4 removelater);
+        static void ApplyBrightnessPass(float threshold = 1.0f);
+        static void ApplyGaussianBlur(int blurDrawPasses = 4, float blurDistance = 10.0f, int intensity = 12);
+        static void ApplyBloomFinalComposition(float opacity = 1.0f);
     };
 }

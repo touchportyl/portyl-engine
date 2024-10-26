@@ -83,9 +83,9 @@ namespace FlexEngine
     *****************************************************************************/
     uint32_t OpenGLSpriteRenderer::GetDrawCallsLastFrame() { return m_draw_calls_last_frame; }
 
-    void OpenGLSpriteRenderer::Enable_PPFBO_Layer() { glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);}
-    void OpenGLSpriteRenderer::Enable_DefaultFBO_Layer() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
-    void OpenGLSpriteRenderer::Enable_EditorFBO_Layer() { glBindFramebuffer(GL_FRAMEBUFFER, m_editorFBO); }
+    void OpenGLSpriteRenderer::SetPPFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO);}
+    void OpenGLSpriteRenderer::SetDefaultFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+    void OpenGLSpriteRenderer::SetEditorFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_editorFBO); }
     
     /*!***************************************************************************
     * \brief
@@ -310,7 +310,7 @@ namespace FlexEngine
         //////////////////////////////////////////////////////////////////////////////////////////////////
         // Create relevant FBO 
         glGenFramebuffers(1, &m_postProcessingFBO); //For final composite post-process
-        Enable_PPFBO_Layer();
+        SetPPFrameBuffer();
         width = windowSize.x;
         height = windowSize.y;
         // Create brightness pass texture
@@ -357,7 +357,7 @@ namespace FlexEngine
         }
         // Create editor FBO
         glGenFramebuffers(1, &m_editorFBO);
-        Enable_EditorFBO_Layer();
+        SetEditorFrameBuffer();
         glGenTextures(1, &m_editorTex);
         glBindTexture(GL_TEXTURE_2D, m_editorTex);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -381,7 +381,7 @@ namespace FlexEngine
             Log::Fatal("Editor Framebuffer error: " + fboStatus);
 
         // Unbind frame buffer
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        SetDefaultFrameBuffer();
 
         FreeQueue::Push(
         [=]()
@@ -502,24 +502,58 @@ namespace FlexEngine
     *****************************************************************************/
     void OpenGLSpriteRenderer::DrawPostProcessingLayer()
     {
-        Enable_PPFBO_Layer();
+        SetPPFrameBuffer(); // Initial Frame Buffer Setup
 
-        // Brightness Pass - Extract bright areas
+        //CURRENT POST-PROCESS(PP) BEING HANDLED:
+        // 1) Reflection / Gloss
+        {
+            //Pending
+        }
+        // 2) Bloom
+        {
+            // Step 1: Brightness Extraction
+            ApplyBrightnessPass(0.55f);
+
+            // Step 2: Gaussian Blur
+            ApplyGaussianBlur(4, 10.0f, 12);
+
+            // Step 3: Final Composition
+            ApplyBloomFinalComposition(m_PPopacity);
+        }
+        // 3) Blur / Focal Adjust
+        {
+            //Pending
+        }
+        // 4) Lens Flare
+        {
+            //Pending
+        }
+ 
+        // Clean-up
+        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+        glDrawBuffers(2, drawBuffers);
+        glBindVertexArray(0);
+    }
+
+    // Brightness extraction pass
+    void OpenGLSpriteRenderer::ApplyBrightnessPass(float threshold)
+    {
         m_bloom_brightness_shader.Use();
-        m_bloom_brightness_shader.SetUniform_float("u_Threshold", 0.55f);
-
+        m_bloom_brightness_shader.SetUniform_float("u_Threshold", threshold);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_editorTex); // Texture rendered in the previous step (scene texture)
+        glBindTexture(GL_TEXTURE_2D, m_editorTex); // Input: scene texture
         m_bloom_brightness_shader.SetUniform_int("scene", 0);
 
-        // Render brightness to first ping-pong buffer
         glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
+    }
 
-        // Step 4: Gaussian Blur Pass
+    // Gaussian blur pass with ping-pong technique
+    void OpenGLSpriteRenderer::ApplyGaussianBlur(int blurDrawPasses, float blurDistance, int intensity)
+    {
         m_bloom_gaussianblur_shader.Use();
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_postProcessingFBO);
+        bool horizontal = true;
         glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_brightnessTex, 0);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_pingpongFBO[0]);
         glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongTex[0], 0);
@@ -527,28 +561,30 @@ namespace FlexEngine
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_pingpongFBO[1]);
         glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongTex[1], 0);
         glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-        bool horizontal = true;
-        for (int i = 0; i < 4; ++i)
+        for (int i = 0; i < blurDrawPasses; ++i)
         {
             glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[horizontal]);
             m_bloom_gaussianblur_shader.SetUniform_int("horizontal", horizontal);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, m_pingpongTex[!horizontal]);
             m_bloom_gaussianblur_shader.SetUniform_int("scene", 0);
-            m_bloom_gaussianblur_shader.SetUniform_float("blurDistance", 10.0f);
-            m_bloom_gaussianblur_shader.SetUniform_int("intensity", 12);
+            m_bloom_gaussianblur_shader.SetUniform_float("blurDistance", blurDistance);
+            m_bloom_gaussianblur_shader.SetUniform_int("intensity", intensity);
 
             glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             m_draw_calls++;
             horizontal = !horizontal;
         }
+    }
 
-        // Final Composition
-        Enable_EditorFBO_Layer();
+    // Final composition pass
+    void OpenGLSpriteRenderer::ApplyBloomFinalComposition(float opacity)
+    {
+        SetEditorFrameBuffer();
         GLenum drawBuffer = GL_COLOR_ATTACHMENT1;
         glDrawBuffers(1, &drawBuffer);
-        //Enable_DefaultFBO_Layer();
+
         m_bloom_finalcomp_shader.Use();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_editorTex); // Original scene texture
@@ -559,53 +595,84 @@ namespace FlexEngine
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, m_pingpongTex[1]); // Blur Horizontal
         m_bloom_finalcomp_shader.SetUniform_int("bloomHTex", 2);
-        m_bloom_finalcomp_shader.SetUniform_float("opacity" , m_PPopacity);
+        m_bloom_finalcomp_shader.SetUniform_float("opacity", opacity);
 
         glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
-
-        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-        glDrawBuffers(2, drawBuffers);
-
-        // Clean-up
-        Enable_DefaultFBO_Layer();
-        glBindVertexArray(0);
-    }
-
-
-    void OpenGLSpriteRenderer::DrawFinalRender(std::string t_shader, Matrix4x4 removelater)
-    {
-        // Bind
-        glBindVertexArray(m_vbos[0].vao);
-
-        // Apply Shader
-        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, t_shader);
-        asset_shader.Use();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_editorTex); // Original scene texture
-
-        // Apply Texture
-        asset_shader.SetUniform_bool("u_use_texture", true);
-        asset_shader.SetUniform_int("u_texture", 0);
-        //asset_shader.SetUniform_vec3("u_color", Vector3::One);
-        asset_shader.SetUniform_vec3("u_color_to_add", Vector3::Zero);
-        asset_shader.SetUniform_vec3("u_color_to_multiply", Vector3::One);
-
-        // Transformation & Orthographic Projection
-        asset_shader.SetUniform_mat4("u_model", removelater);
-        static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
-        Matrix4x4 projection_view = Matrix4x4::Orthographic(
-          0.0f, 1280,
-          750, 0.0f,
-          -2.0f, 2.0f
-        ) * view_matrix;
-        asset_shader.SetUniform_mat4("u_projection_view", projection_view);
-
-        // Draw
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        m_draw_calls++;
-
-        glBindVertexArray(0);
     }
 }
+
+
+
+//void OpenGLSpriteRenderer::DrawPostProcessingLayer()
+//{
+//    SetPPFrameBuffer();
+//
+//    // Brightness Pass - Extract bright areas
+//    m_bloom_brightness_shader.Use();
+//    m_bloom_brightness_shader.SetUniform_float("u_Threshold", 0.55f);
+//
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(GL_TEXTURE_2D, m_editorTex); // Texture rendered in the previous step (scene texture)
+//    m_bloom_brightness_shader.SetUniform_int("scene", 0);
+//
+//    // Render brightness to first ping-pong buffer
+//    glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
+//    glDrawArrays(GL_TRIANGLES, 0, 6);
+//    m_draw_calls++;
+//
+//    // Step 4: Gaussian Blur Pass
+//    m_bloom_gaussianblur_shader.Use();
+//    SetPPFrameBuffer();
+//    glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_brightnessTex, 0);
+//    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_pingpongFBO[0]);
+//    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongTex[0], 0);
+//    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+//    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_pingpongFBO[1]);
+//    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongTex[1], 0);
+//    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+//    bool horizontal = true;
+//    for (int i = 0; i < 4; ++i)
+//    {
+//        glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[horizontal]);
+//        m_bloom_gaussianblur_shader.SetUniform_int("horizontal", horizontal);
+//        glActiveTexture(GL_TEXTURE0);
+//        glBindTexture(GL_TEXTURE_2D, m_pingpongTex[!horizontal]);
+//        m_bloom_gaussianblur_shader.SetUniform_int("scene", 0);
+//        m_bloom_gaussianblur_shader.SetUniform_float("blurDistance", 10.0f);
+//        m_bloom_gaussianblur_shader.SetUniform_int("intensity", 12);
+//
+//        glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
+//        glDrawArrays(GL_TRIANGLES, 0, 6);
+//        m_draw_calls++;
+//        horizontal = !horizontal;
+//    }
+//
+//    // Final Composition
+//    SetEditorFrameBuffer();
+//    GLenum drawBuffer = GL_COLOR_ATTACHMENT1;
+//    glDrawBuffers(1, &drawBuffer);
+//    //Enable_DefaultFBO_Layer();
+//    m_bloom_finalcomp_shader.Use();
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(GL_TEXTURE_2D, m_editorTex); // Original scene texture
+//    m_bloom_finalcomp_shader.SetUniform_int("screenTex", 0);
+//    glActiveTexture(GL_TEXTURE1);
+//    glBindTexture(GL_TEXTURE_2D, m_pingpongTex[0]); // Blur Vertical
+//    m_bloom_finalcomp_shader.SetUniform_int("bloomVTex", 1);
+//    glActiveTexture(GL_TEXTURE2);
+//    glBindTexture(GL_TEXTURE_2D, m_pingpongTex[1]); // Blur Horizontal
+//    m_bloom_finalcomp_shader.SetUniform_int("bloomHTex", 2);
+//    m_bloom_finalcomp_shader.SetUniform_float("opacity", m_PPopacity);
+//
+//    glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
+//    glDrawArrays(GL_TRIANGLES, 0, 6);
+//    m_draw_calls++;
+//
+//    GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+//    glDrawBuffers(2, drawBuffers);
+//
+//    // Clean-up
+//    glBindVertexArray(0);
+//}
