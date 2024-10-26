@@ -33,12 +33,11 @@ namespace ChronoShift
 	class Editor
 	{
 	public:
-
 		/*!***************************************************************************
 		* @brief
 		* Getter for our singleton class.
 		******************************************************************************/
-		static Editor* GetInstance();
+		static Editor& GetInstance();
 
 		/*!***************************************************************************
 		* @brief
@@ -60,7 +59,7 @@ namespace ChronoShift
 
 		//consider shared_ptr instead?
 		template <typename T>
-		T* GetPanel();
+		T& GetPanel();
 
 		/*!***************************************************************************
 		* @brief
@@ -75,8 +74,11 @@ namespace ChronoShift
 
 	private:
 		bool m_initialized = false;
-		std::vector<std::unique_ptr<EditorPanel>> m_panels;
-		
+		std::vector<EditorPanel*> m_panels;
+
+		HierarchyView m_hierarchy;
+		Inspector m_inspector;
+		AssetBrowser m_assetbrowser;
 
 		//wtf move this out to inspector or something else
 		FlexEngine::FlexECS::Entity m_selected_entity = FlexEngine::FlexECS::Entity::Null;	//Which entity the inspector panel should focus on.

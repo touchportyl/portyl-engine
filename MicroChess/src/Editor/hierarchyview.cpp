@@ -92,7 +92,7 @@ namespace ChronoShift
 				ImGuiTreeNodeFlags_OpenOnArrow |
 				ImGuiTreeNodeFlags_SpanAvailWidth;
 
-			bool is_selected = (entity == Editor::GetInstance()->GetSelectedEntity());
+			bool is_selected = (entity == Editor::GetInstance().GetSelectedEntity());
 			if (is_selected)
 			{
 				node_flags |= ImGuiTreeNodeFlags_Selected;
@@ -111,14 +111,14 @@ namespace ChronoShift
 
 			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left) && !ImGui::IsMouseDragging(ImGuiMouseButton_Left))
 			{
-				Editor::GetInstance()->SelectEntity(entity);
+				Editor::GetInstance().SelectEntity(entity);
 			}
 
 
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
 				ImGui::OpenPopup("EntityOptions");
-				Editor::GetInstance()->SelectEntity(entity);
+				Editor::GetInstance().SelectEntity(entity);
 			}
 			if (ImGui::BeginPopup("EntityOptions"))
 			{
@@ -129,7 +129,7 @@ namespace ChronoShift
 				if (ImGui::MenuItem("Destroy Entity"))
 				{
 					delete_queue.Insert({ [scene, entity]() {scene->DestroyEntity(entity); }, "", 0 });
-					Editor::GetInstance()->SelectEntity(FlexECS::Entity::Null);
+					Editor::GetInstance().SelectEntity(FlexECS::Entity::Null);
 				}
 				ImGui::EndPopup();
 			}
@@ -142,7 +142,7 @@ namespace ChronoShift
 		//Deselect focused entity
 		if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0))
 		{
-			Editor::GetInstance()->SelectEntity(FlexECS::Entity::Null);  // Deselect when clicking in empty space
+			Editor::GetInstance().SelectEntity(FlexECS::Entity::Null);  // Deselect when clicking in empty space
 		}
 
 

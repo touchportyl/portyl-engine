@@ -33,9 +33,7 @@ namespace ChronoShift
 		ImGui::Begin("Inspector");
 
 		auto scene = FlexECS::Scene::GetActiveScene();
-		auto entity = Editor::GetInstance()->GetSelectedEntity();
-
-		//std::cout << Editor::GetInstance()->GetSelectedPrefab().get().string();
+		auto entity = Editor::GetInstance().GetSelectedEntity();
 
 		if (entity != FlexECS::Entity::Null)
 		{
