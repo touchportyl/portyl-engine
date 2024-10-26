@@ -290,7 +290,4 @@ namespace ChronoShift
     FlexECS::Scene::StringIndex character_passive_name;
     FlexECS::Scene::StringIndex character_passive_description;
   };
-
-
-  void RegisterBattleComponents();
 }
