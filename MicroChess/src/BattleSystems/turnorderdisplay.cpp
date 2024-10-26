@@ -24,7 +24,7 @@ namespace ChronoShift
 {
 
 	//The Sprite2d renderer will automatically draw it, so we just set the positions, colors, etc.
-	void DisplayTurnOrder(std::list<FlexECS::Entity> &queue)
+	void DisplayTurnOrder(std::vector<FlexECS::Entity> &queue)
 	{
 		auto scene = FlexECS::Scene::GetActiveScene();
 		int i{ 0 };
@@ -35,7 +35,7 @@ namespace ChronoShift
 				entity.GetComponent<IsActive>()->is_active = false;
 				continue;
 			}
-			std::list<FlexECS::Entity>::const_iterator it = queue.begin();
+			std::vector<FlexECS::Entity>::const_iterator it = queue.begin();
 			std::advance(it, i);
 			auto character = *it;
 
