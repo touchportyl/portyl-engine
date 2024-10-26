@@ -21,21 +21,45 @@ using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
 
 namespace ChronoShift
 {
-	void DisplaySceneHierarchy()
+	void HierarchyView::Init()
+	{
+	}
+	void HierarchyView::Update()
+	{
+	}
+
+	void HierarchyView::EditorUI()
 	{
 		auto scene = FlexECS::Scene::GetActiveScene();
-		size_t entity_count = scene->entity_index.size();
-		std::string entity_count_text = "Entity Count:  " + std::to_string(entity_count);
-		
+
 		FunctionQueue delete_queue;
 
 		FlexECS::Entity entity_to_delete = FlexECS::Entity::Null;
 
 		ImGui::Begin("Scene Hierarchy");
-		ImGui::Text(entity_count_text.c_str());
-
-
+		//size_t entity_count = scene->entity_index.size();
+		//std::string entity_count_text = "Entity Count:  " + std::to_string(entity_count);
+		//ImGui::Text(entity_count_text.c_str());
 		
+
+		//Drag a sprite from assets to window to create entity with the sprite.
+		if (auto image = EditorGUI::StartPayloadReceiver<const char>(PayloadTags::IMAGE))
+		{
+			std::string image_key(image);
+			std::filesystem::path path = image_key;
+
+			FlexECS::Entity new_entity = scene->CreateEntity(path.filename().string());
+			new_entity.AddComponent<IsActive>({true});
+			new_entity.AddComponent<Position>({ Vector2::One * 500.0f });
+			new_entity.AddComponent<Rotation>({});
+			new_entity.AddComponent<Scale>({ Vector2::One * 100.0f });
+			new_entity.AddComponent<Transform>({});
+			new_entity.AddComponent<ZIndex>({});
+			new_entity.AddComponent<Sprite>({ FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(image_key) });
+			new_entity.AddComponent<Shader>({ FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(R"(\shaders\texture)") });
+		}
+
+
 		//Right click menu (create entity)
 		if (ImGui::IsWindowHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
 		{
@@ -60,8 +84,8 @@ namespace ChronoShift
 		{
 			ImGui::PushID(imgui_id++);
 			FlexECS::Entity entity(id);
+
 			std::string name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<EntityName>());
-			
 			ImGuiTreeNodeFlags node_flags =
 				ImGuiTreeNodeFlags_DefaultOpen |
 				ImGuiTreeNodeFlags_FramePadding |
@@ -79,9 +103,8 @@ namespace ChronoShift
 			{
 				if (ImGui::BeginDragDropSource())
 				{
-					ImGui::SetDragDropPayload("ENTITY_DRAG", &entity.Get(), sizeof(FlexECS::EntityID));
-					ImGui::Text(name.c_str()); // Show the entity name during drag
-					ImGui::EndDragDropSource();
+					EditorGUI::StartPayload(PayloadTags::ENTITY, &entity.Get(), sizeof(FlexECS::EntityID), name.c_str());
+					EditorGUI::EndPayload();
 				}
 				ImGui::TreePop();
 			}
@@ -90,7 +113,7 @@ namespace ChronoShift
 			{
 				Editor::GetInstance()->SelectEntity(entity);
 			}
-			
+
 
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
@@ -99,11 +122,11 @@ namespace ChronoShift
 			}
 			if (ImGui::BeginPopup("EntityOptions"))
 			{
-				if (ImGui::MenuItem("Duplicate Entity")) 
+				if (ImGui::MenuItem("Duplicate Entity"))
 				{
 					scene->CloneEntity(entity);
 				}
-				if (ImGui::MenuItem("Destroy Entity")) 
+				if (ImGui::MenuItem("Destroy Entity"))
 				{
 					delete_queue.Insert({ [scene, entity]() {scene->DestroyEntity(entity); }, "", 0 });
 					Editor::GetInstance()->SelectEntity(FlexECS::Entity::Null);
@@ -114,17 +137,26 @@ namespace ChronoShift
 			ImGui::PopID();
 		}
 
-		
+
 		//Track Clicks when not inside tree node
 		//Deselect focused entity
 		if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0))
 		{
 			Editor::GetInstance()->SelectEntity(FlexECS::Entity::Null);  // Deselect when clicking in empty space
 		}
-		
+
+
+
+
 		ImGui::End();
 
 		delete_queue.Flush();
 	}
+
+	void HierarchyView::Shutdown()
+	{
+	}
+
+
 }
 

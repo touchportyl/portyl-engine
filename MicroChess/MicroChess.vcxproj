@@ -156,10 +156,13 @@
     <ClInclude Include="src\Components\characterinput.h" />
     <ClInclude Include="src\Components\physics.h" />
     <ClInclude Include="src\Components\rendering.h" />
+    <ClInclude Include="src\Editor\assetbrowser.h" />
     <ClInclude Include="src\Editor\componentviewer.h" />
     <ClInclude Include="src\Editor\editor.h" />
     <ClInclude Include="src\Editor\editorgui.h" />
+    <ClInclude Include="src\Editor\editorpanel.h" />
     <ClInclude Include="src\Editor\hierarchyview.h" />
+    <ClInclude Include="src\Editor\imguipayloads.h" />
     <ClInclude Include="src\Editor\inspector.h" />
     <ClInclude Include="src\Layers.h" />
     <ClInclude Include="src\Layers\base.h" />
@@ -186,6 +189,7 @@
     <ClCompile Include="src\Components\characterinput.cpp" />
     <ClCompile Include="src\Components\physics.cpp" />
     <ClCompile Include="src\Components\rendering.cpp" />
+    <ClCompile Include="src\Editor\assetbrowser.cpp" />
     <ClCompile Include="src\Editor\componentviewer.cpp" />
     <ClCompile Include="src\Editor\editor.cpp" />
     <ClCompile Include="src\Editor\editorgui.cpp" />
