@@ -31,7 +31,7 @@ namespace ChronoShift
     REDUCE_HP = 1,
     INCREASE_HP = 2,
   };
-  using MoveEffect = std::function<void(std::vector<FlexECS::Entity> targets)>;
+  using MoveEffect = std::function<void(std::vector<FlexECS::Entity> targets, int value)>;
   struct Move {
     std::string name; //use to access map of moves
     std::string description;
@@ -58,7 +58,7 @@ namespace ChronoShift
     MoveRegistry();
     ~MoveRegistry();
 
-    static std::unordered_map<std::string, Move> s_move_registry;  //this one used for the moves in the specific battle only
+    //static std::unordered_map<std::string, Move> s_move_registry;  //this one used for the moves in the specific battle only
     static std::unordered_map<int, MoveEffect> s_move_function_registry;
   };
 }

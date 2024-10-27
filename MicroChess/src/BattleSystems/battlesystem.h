@@ -49,8 +49,8 @@ namespace ChronoShift
     static bool is_battle_finished;
     // Currently for my convenience but should be more useful and applicable
     // in the future if we got waves of enemies in one battle scene
-    int enemies_displayed;
-    int players_displayed;
+    size_t enemies_displayed;
+    size_t players_displayed;
     // Used for speed queue
     std::vector<FlexECS::Entity> m_characters;
     //std::vector<FlexECS::Entity> m_slots;

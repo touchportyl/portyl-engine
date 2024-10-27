@@ -265,22 +265,22 @@ namespace ChronoShift
     bool is_player = true;
     FlexECS::Scene::StringIndex character_name;
     FlexECS::Scene::StringIndex character_status;   // Character Status Effects Description
-    int character_class;                            // Character Class and Weapon Type needs to be the same
-    int base_health;
-    int current_health;
-    int base_speed;
-    int current_speed;
+    int character_class = 0;                            // Character Class and Weapon Type needs to be the same
+    int base_health = 0;
+    int current_health = 0;
+    int base_speed = 0;
+    int current_speed = 0;
     
     FlexECS::Scene::StringIndex weapon_name;
     FlexECS::Scene::StringIndex weapon_description;
-    int weapon_type;
+    int weapon_type = 0;
     FlexECS::Scene::StringIndex weapon_move_one;
     FlexECS::Scene::StringIndex weapon_move_two;
     FlexECS::Scene::StringIndex weapon_move_three;
 
     FlexECS::Scene::StringIndex chrono_gear_name;
     FlexECS::Scene::StringIndex chrono_gear_description;
-    int chrono_gear_cooldown;
+    int chrono_gear_cooldown = 0;
 
     FlexECS::Scene::StringIndex character_ultimate;
     FlexECS::Scene::StringIndex character_ultimate_cooldown;

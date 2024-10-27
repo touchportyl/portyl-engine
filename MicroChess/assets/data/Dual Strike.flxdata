@@ -1,11 +1,11 @@
 {
     "flxdata": {
         "name": "Dual Strike",
-        "description": "Hit target 2 times for 1 damage",
+        "description": "Hit 2 targets for 1 damage each",
         "speed_cost": 4,
         "is_target_enemy": true,
         "target_type": 2,
-        "damage": 2,
+        "damage": 1,
         "Function": 1
     }
 }
