@@ -131,6 +131,9 @@ void COMPONENT_VIEWER_##TYPE(FlexEngine::FlexECS::Entity entity) \
 	#define COMPONENT_VIEWER_DRAG_INT(name) \
   EditorGUI::DragInt(entity.GetComponent<T>()->name, #name); 
 
+	#define COMPONENT_VIEWER_CHECKBOX(name) \
+  EditorGUI::CreateCheckbox(entity.GetComponent<T>()->name, #name); 
+
 	#define COMPONENT_VIEWER_ENTITY_REFERENCE(name) \
   EditorGUI::EntityReference(entity.GetComponent<T>()->name, #name); 
 

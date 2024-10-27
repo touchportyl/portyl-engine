@@ -36,13 +36,6 @@ using namespace FlexEngine;
 
 namespace ChronoShift
 {
-    /*!***************************************************************************
-    * \brief
-    * Updates the transformation matrix of 2D sprites within the scene. It ensures
-    * proper alignment and processing of entities in the scene, particularly
-    * their position and orientation in the hierarchy.
-    *****************************************************************************/
-	void UpdateSprite2DMatrix();
 
     /*!***************************************************************************
     * \brief

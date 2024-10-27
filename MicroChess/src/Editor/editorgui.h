@@ -53,6 +53,8 @@ namespace ChronoShift
 		static void DragInt(int& data, std::string label1 = "",
 			float width = 65.0f, float drag_speed = 0.1f);
 
+		static void CreateCheckbox(bool& value, std::string title = "");
+
 		/*!***************************************************************************
 		* @brief
 		* Displays reference to an entity in the scene.
