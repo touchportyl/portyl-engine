@@ -169,6 +169,7 @@ namespace ChronoShift
     BP_MOVE_EXECUTION, //Animation playing
     BP_PROCESSING,    //Speed stack moving around, showing who's next
     BP_MOVE_SELECTION,
+    BP_BATTLE_FINISH,
   };
   
   class BattleState 
@@ -188,7 +189,6 @@ namespace ChronoShift
   class BattleSlot
   { FLX_REFL_SERIALIZABLE
   public:
-    int slot_number;
     FlexECS::Entity character;
   };
 
@@ -236,13 +236,10 @@ namespace ChronoShift
 
   enum MoveTargetType : int {
     MOVE_TARGET_SELF = 1,
-    MOVE_TARGET_SINGLE = 2,
-    MOVE_TARGET_SINGLE_ENEMY = 3,
-    MOVE_TARGET_SINGLE_PLAYER = 4,
-    MOVE_TARGET_DOUBLE = 5,
-    MOVE_TARGET_TRIPLE = 6,
-    MOVE_TARGET_ALL_ENEMY = 7,
-    MOVE_TARGET_ALL_PLAYER = 8,
+    MOVE_TARGET_SINGLE = 1,
+    MOVE_TARGET_DOUBLE = 2,
+    MOVE_TARGET_TRIPLE = 3,
+    MOVE_TARGET_ALL = 5,
   };
 
   //struct Move {
