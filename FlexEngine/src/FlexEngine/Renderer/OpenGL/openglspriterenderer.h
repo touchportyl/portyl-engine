@@ -73,6 +73,7 @@ namespace FlexEngine
         enum __FLX_API VBO_Type
         {
             VBO_Basic,                /*!< Basic VBO for standard rendering */
+            VBO_BasicInverted,        /*!< Basic VBO for opengl texture rendering */
             VBO_Line,                 /*!< VBO for line rendering */
             VBO_PProcessing,          /*!< VBO for post-processing effects */
         };
@@ -103,6 +104,14 @@ namespace FlexEngine
         GLuint vbo = 0;
     };
 
+    struct __FLX_API InstanceData {
+        std::string textureID;     // Texture ID
+        Matrix4x4 transform;       // Transformation matrix per instance
+        Vector3 color;             // Per-instance color
+        Vector3 color_to_add;      // Color addition effect
+        Vector3 color_to_multiply; // Color multiplication effect
+    };
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*!***************************************************************************
@@ -119,25 +128,48 @@ namespace FlexEngine
     {
         static uint32_t m_draw_calls;                 /*!< Total number of draw calls made */
         static uint32_t m_draw_calls_last_frame;      /*!< Draw calls made in the last frame */
+        static uint32_t m_maxInstances; // Maximum number of instances allowed in one batch
         static bool m_depth_test;                      /*!< Flag for enabling depth testing */
         static bool m_blending;                        /*!< Flag for enabling blending */
 
         static std::vector<VertexBufferObject> m_vbos; /*!< Vector of Vertex Buffer Objects */
 
-        // Testing variables (subject to change)
-        static GLuint samples;                         /*!< Number of samples per pixel for MSAA anti-aliasing */
-        static float gamma;                            /*!< Controls the gamma function */
-        static GLuint m_rectVAO;                      /*!< VAO for rendering rectangles */
-        static GLuint m_rectVBO;                      /*!< VBO for rendering rectangles */
-        static GLuint m_postProcessingFBO;            /*!< Framebuffer Object for post-processing */
-        static GLuint m_colorBuffer;                   /*!< Color buffer for rendering */
-        static GLuint m_brightBuffer;                  /*!< Brightness buffer for bloom effects */
-        static GLuint bloomTexture;                    /*!< Texture used for bloom effects */
-        static GLuint postProcessingTexture;           /*!< Final texture after post-processing */
-        static GLuint m_pingpongFBO[2];               /*!< Ping-pong Framebuffer Objects */
-        static GLuint m_pingpongBuffer[2];            /*!< Ping-pong buffers for intermediate processing */
+        static Asset::Shader m_bloom_brightness_shader;
+        static Asset::Shader m_bloom_gaussianblur_shader;
+        static Asset::Shader m_bloom_finalcomp_shader;
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        // TODO:
+        //  ALL FBOS should be moved to seperate files  to handle post-processing
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        static GLuint m_editorFBO;           //replace default framebuffer
+        static GLuint m_postProcessingFBO;         //framebuffer to handle post-processing
+        static GLuint m_bloomFBO;           //framebuffer to handle bloom exclusively
+         
+        //4 Textures going to be created, 2 for post_processing and 2 for editor and game
+        static GLuint m_pingpongTex[2];            /*!< Ping-pong buffers for intermediate processing */
+        static GLuint m_postProcessingTex;
+        static GLuint m_editorTex;
+        static GLuint m_finalRenderTex;
+        static float m_PPopacity;
+
+        // Testing variables (subject to change)
+        //static GLuint samples;                         /*!< Number of samples per pixel for MSAA anti-aliasing */
+        //static float gamma;                            /*!< Controls the gamma function */
+
+
+        static GLuint m_instanceVBO;
+        static std::vector<InstanceData> m_instanceData; // Collection of instance data for batch rendering
     public:
+
+        enum __FLX_API CreatedTextureID
+        {
+            CID_editor,
+            CID_finalRender,
+            CID_brightnessPass,
+            CID_blur,
+        };
+
         /*!***************************************************************************
         * \brief
         * Retrieves the total number of draw calls made.
@@ -194,17 +226,15 @@ namespace FlexEngine
         *****************************************************************************/
         static void DisableBlending();
 
+
+        static void SetDefaultFrameBuffer();
+        static void SetEditorFrameBuffer();
         /*!***************************************************************************
         * \brief
         * Enables post-processing effects for rendering.
         *****************************************************************************/
-        static void EnablePostProcessing();
-
-        /*!***************************************************************************
-        * \brief
-        * Disables post-processing effects for rendering.
-        *****************************************************************************/
-        static void DisablePostProcessing();
+        static void SetPPFrameBuffer();
+        static void SetBloomFrameBuffer();
 
         /*!***************************************************************************
         * \brief
@@ -229,6 +259,7 @@ namespace FlexEngine
         *****************************************************************************/
         static GLuint GetVAO_ID(Renderer2DProps::VBO_Type type);
 
+        static GLuint GetCreatedTexture(CreatedTextureID id = CID_editor);
         /*!***************************************************************************
         * \brief
         * Creates a VAO and VBO with the specified vertices.
@@ -249,8 +280,8 @@ namespace FlexEngine
         * \param vertices Pointer to an array of vertex data.
         * \param vertexCount The number of vertices in the array.
         *****************************************************************************/
-        static void CreateVAOandVBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
-        
+        static void InitQuadVAO_VBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
+        static void InitSQuadVAO_VBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
         /*!***************************************************************************
         * \brief
         * Initializes the VBOs.
@@ -267,11 +298,21 @@ namespace FlexEngine
         *              texture, color, and transformations.
         *****************************************************************************/
         static void DrawTexture2D(const Renderer2DProps& props = {});
-
+        static void DrawTexture2D(GLuint TextureID, const Renderer2DProps& props = {});
         /*!***************************************************************************
         * \brief
         * Draws the post-processing layer after all other rendering operations.
         *****************************************************************************/
         static void DrawPostProcessingLayer();
+
+        static void ApplyBrightnessPass(float threshold = 1.0f);
+        static void ApplyGaussianBlur(int blurDrawPasses = 4, float blurDistance = 10.0f, int intensity = 12);
+        static void ApplyBloomFinalComposition(float opacity = 1.0f);
+
+        #if 0
+        static void BeginBatch();
+        static void AddToBatch(const Renderer2DProps& props);
+        static void EndBatch(const std::string& shaderName);
+        #endif
     };
 }
