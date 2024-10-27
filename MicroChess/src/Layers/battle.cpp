@@ -52,7 +52,7 @@ namespace ChronoShift {
     m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->View<Character>());
     m_battlesystem.BeginBattle();
 
-
+    auto scene = FlexECS::Scene::GetActiveScene();
     /*************************************************************************
     Waiting on Rocky to remove this once he has created a sprite to render on imgui
      - Collision is off due to editor render and final render is on a sprite

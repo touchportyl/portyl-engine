@@ -117,7 +117,6 @@ namespace ChronoShift
     COMPONENT_VIEWER_COLOR3(color)
     COMPONENT_VIEWER_COLOR3(color_to_add)
     COMPONENT_VIEWER_COLOR3(color_to_multiply)
-    COMPONENT_VIEWER_CHECKBOX(post_processed)
   COMPONENT_VIEWER_END(Sprite)
 
   void RegisterRenderingComponents()

@@ -160,6 +160,7 @@
     <ClInclude Include="src\Editor\editor.h" />
     <ClInclude Include="src\Editor\editorgui.h" />
     <ClInclude Include="src\Editor\hierarchyview.h" />
+    <ClInclude Include="src\Editor\imguipayloads.h" />
     <ClInclude Include="src\Editor\inspector.h" />
     <ClInclude Include="src\Layers.h" />
     <ClInclude Include="src\Layers\base.h" />
