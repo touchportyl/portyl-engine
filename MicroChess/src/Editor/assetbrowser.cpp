@@ -14,6 +14,8 @@ namespace ChronoShift
 	}
 	void AssetBrowser::Shutdown()
 	{
+		m_root_folder.subfolders.clear();
+		m_directories.clear();
 	}
 
 	void AssetBrowser::LoadAllDirectories()
@@ -105,7 +107,7 @@ namespace ChronoShift
 					m_selected_file = file;
 					//if (FLX_EXTENSIONS_CHECK_SAFETY("flx", file.extension().string()))
 					//{
-					//	Editor::GetInstance()->SelectPrefab(file);
+					//	Editor::GetInstance().SelectPrefab(file);
 					//}
 				}
 
@@ -152,7 +154,6 @@ namespace ChronoShift
 		}
 		ImGui::End();
 	}
-	
 }
 
 
