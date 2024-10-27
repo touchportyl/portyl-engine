@@ -1,0 +1,11 @@
+{
+    "flxdata": {
+        "name": "Rift Surge",
+        "description": "Hit entire enemy team for 2 damage each",
+        "speed_cost": 10,
+        "is_target_enemy": true,
+        "target_type": 5,
+        "damage": 2,
+        "Function": 1
+    }
+}

@@ -42,7 +42,7 @@ namespace ChronoShift
 			}
 			
 			std::string& name = scene->Internal_StringStorage_Get(*entity.GetComponent<EntityName>());
-			EditorUI::EditableTextField(name);
+			EditorGUI::EditableTextField(name);
 
 			//Your 3 basic transform components
 			if (entity.HasComponent<Position>())
@@ -50,7 +50,7 @@ namespace ChronoShift
 				auto& position = entity.GetComponent<Position>()->position;
 				if (ImGui::CollapsingHeader("Position"))
 				{
-					EditorUI::DragFloat2(position, "Position");
+					EditorGUI::DragFloat2(position, "Position");
 				}
 			}
 			if (entity.HasComponent<Rotation>())
@@ -58,7 +58,7 @@ namespace ChronoShift
 				auto& rotation = entity.GetComponent<Rotation>()->rotation;
 				if (ImGui::CollapsingHeader("Rotation"))
 				{
-					EditorUI::DragFloat3(rotation, "Rotation");
+					EditorGUI::DragFloat3(rotation, "Rotation");
 				}
 			}
 			if (entity.HasComponent<Scale>())
@@ -66,7 +66,7 @@ namespace ChronoShift
 				auto& scale = entity.GetComponent<Scale>()->scale;
 				if (ImGui::CollapsingHeader("Scale"))
 				{
-					EditorUI::DragFloat2(scale, "Scale");
+					EditorGUI::DragFloat2(scale, "Scale");
 				}
 			}
 

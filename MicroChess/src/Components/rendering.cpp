@@ -69,6 +69,8 @@ namespace ChronoShift
     FLX_REFL_REGISTER_PROPERTY(color_to_add)
     FLX_REFL_REGISTER_PROPERTY(color_to_multiply)
     FLX_REFL_REGISTER_PROPERTY(alignment)
+    FLX_REFL_REGISTER_PROPERTY(vbo_id)
+    FLX_REFL_REGISTER_PROPERTY(post_processed)
   FLX_REFL_REGISTER_END;
 
 

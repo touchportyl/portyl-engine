@@ -20,6 +20,13 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <FlexEngine.h>
 
 #include "CharacterMoves/moves.h"
+
+#define SLOT_COLOR_PLAYER Vector3{ 0.45f, 0.58f, 0.32f }
+#define SLOT_COLOR_ENEMY Vector3{ 0.77f, 0.12f, 0.23f }
+#define SLOT_POS_VERT_PLAYER 600.f
+#define SLOT_POS_VERT_ENEMY 200.f
+#define SLOT_POS_HOR_PLAYER 200.f
+#define SLOT_POS_HOR_ENEMY 700.f
 using namespace FlexEngine;
 
 namespace ChronoShift
@@ -29,26 +36,44 @@ namespace ChronoShift
     BattleSystem();
     ~BattleSystem();
 
-    void InitializeBattleSlots();
-    void AddCharacter(FlexECS::Entity character, int position);
+    void AddCharacters(std::vector<FlexECS::Entity> characters);
+    void SetUpBattleScene();
+    //void SetUpBattleScene(int num_of_enemies, int num_of_players);
 
     void BeginBattle();
     void Update();
 
     size_t GetCharacterCount() { return m_characters.size(); };
-    std::list<FlexECS::Entity>& GetTurnOrder() { return m_characters; };
+    std::vector<FlexECS::Entity>& GetTurnOrder() { return m_characters; };
   private:
-    std::list<FlexECS::Entity> m_characters;
-    std::vector<FlexECS::Entity> m_enemies;
+    static bool is_battle_finished;
+    // Currently for my convenience but should be more useful and applicable
+    // in the future if we got waves of enemies in one battle scene
+    size_t enemies_displayed;
+    size_t players_displayed;
+    // Used for speed queue
+    std::vector<FlexECS::Entity> m_characters;
+    //std::vector<FlexECS::Entity> m_slots;
+    // These 2 vectors are gonna replace m_slots instead cause god bless me
     std::vector<FlexECS::Entity> m_players;
-    //std::list<FlexECS::Entity> m_speedstack;
-    std::array<FlexECS::Entity, 9> m_slots; //player takes up first 4, enemy last 5
+    std::vector<FlexECS::Entity> m_enemies;
 
+    std::list<FlexECS::Entity> move_buttons;
+
+    // This should store all the enemies in the battle scene
+    // Let's say you have 15 enemies coming out in waves of 5
+    // The idea is all the 15 will be stored here with the first wave of 5
+    // being added to m_characters. Once that wave has been defeated, another
+    // wave of 5 will be taken from here and added to m_characters. After the
+    // first wave of 5 has been defeated then those five should be deleted from
+    // this vector as well. Battle Victory will be determined by whether this
+    // vector is empty.
+    
     //BattleState m_battle_state;
     void UpdateSpeedStack();
     void PlayerMoveSelection();
-    void DeathProcession();
-    void ExecuteMove(FlexECS::Scene::StringIndex move_id, std::vector<int> selected_targets);
+    void DeathProcession(std::vector<FlexECS::Entity> list_of_deaths);
+    void ExecuteMove(FlexECS::Scene::StringIndex move_id, std::vector<FlexECS::Entity> selected_targets);
+    void EndBattleScene();
   };
-
 }

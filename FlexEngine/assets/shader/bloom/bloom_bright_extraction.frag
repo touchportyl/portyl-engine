@@ -1,18 +1,21 @@
-#version 460 core
-
-//First part of bloom -> Brightness Extraction
-
-in vec2 TexCoords;
+#version 330 core
 out vec4 FragColor;
 
-uniform sampler2D scene;
+in vec2 tex_coord;
 
-void main() {
-    vec3 color = texture(scene, TexCoords).rgb;
-    float brightness = dot(color, vec3(0.2126, 0.7152, 0.0722));  // Luminance
-    if (brightness > 1.0) {
-        FragColor = vec4(color, 1.0);  // Keep bright areas
-    } else {
-        FragColor = vec4(0.0);  // Remove dark areas
+uniform sampler2D scene;
+uniform float u_Threshold; // Brightness threshold
+
+void main()
+{
+    vec3 color = texture(scene, tex_coord).rgb;
+    float brightness = dot(color, vec3(0.2126, 0.7152, 0.0722)); // Perceived brightness
+    if (brightness > u_Threshold)
+    {
+        FragColor = vec4(color,1.0);
+    }
+    else
+    {
+        FragColor = vec4(0.0,0.0,0.0,1.0); // Discard non-bright areas
     }
 }

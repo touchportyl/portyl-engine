@@ -169,6 +169,7 @@ namespace ChronoShift
     BP_MOVE_EXECUTION, //Animation playing
     BP_PROCESSING,    //Speed stack moving around, showing who's next
     BP_MOVE_SELECTION,
+    BP_BATTLE_FINISH,
   };
   
   class BattleState 
@@ -188,7 +189,6 @@ namespace ChronoShift
   class BattleSlot
   { FLX_REFL_SERIALIZABLE
   public:
-    int slot_number;
     FlexECS::Entity character;
   };
 
@@ -236,13 +236,11 @@ namespace ChronoShift
 
   enum MoveTargetType : int {
     MOVE_TARGET_SELF = 1,
-    MOVE_TARGET_SINGLE = 2,
-    MOVE_TARGET_SINGLE_ENEMY = 3,
-    MOVE_TARGET_SINGLE_PLAYER = 4,
-    MOVE_TARGET_DOUBLE = 5,
-    MOVE_TARGET_TRIPLE = 6,
-    MOVE_TARGET_ALL_ENEMY = 7,
-    MOVE_TARGET_ALL_PLAYER = 8,
+    MOVE_TARGET_SINGLE = 1,
+    MOVE_TARGET_DOUBLE = 2,
+    MOVE_TARGET_TRIPLE = 3,
+    MOVE_TARGET_QUADRUPLE = 4,
+    MOVE_TARGET_ALL = 5,
   };
 
   //struct Move {
@@ -267,22 +265,22 @@ namespace ChronoShift
     bool is_player = true;
     FlexECS::Scene::StringIndex character_name;
     FlexECS::Scene::StringIndex character_status;   // Character Status Effects Description
-    int character_class;                            // Character Class and Weapon Type needs to be the same
-    int base_health;
-    int current_health;
-    int base_speed;
-    int current_speed;
+    int character_class = 0;                            // Character Class and Weapon Type needs to be the same
+    int base_health = 0;
+    int current_health = 0;
+    int base_speed = 0;
+    int current_speed = 0;
     
     FlexECS::Scene::StringIndex weapon_name;
     FlexECS::Scene::StringIndex weapon_description;
-    int weapon_type;
+    int weapon_type = 0;
     FlexECS::Scene::StringIndex weapon_move_one;
     FlexECS::Scene::StringIndex weapon_move_two;
     FlexECS::Scene::StringIndex weapon_move_three;
 
     FlexECS::Scene::StringIndex chrono_gear_name;
     FlexECS::Scene::StringIndex chrono_gear_description;
-    int chrono_gear_cooldown;
+    int chrono_gear_cooldown = 0;
 
     FlexECS::Scene::StringIndex character_ultimate;
     FlexECS::Scene::StringIndex character_ultimate_cooldown;

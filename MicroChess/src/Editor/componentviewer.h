@@ -86,27 +86,30 @@ void COMPONENT_VIEWER_##TYPE(FlexEngine::FlexECS::Entity entity) \
   using T = TYPE;
 	
 	#define COMPONENT_VIEWER_DRAG_VECTOR2(name) \
-  EditorUI::DragFloat2(entity.GetComponent<T>()->name, #name);
+  EditorGUI::DragFloat2(entity.GetComponent<T>()->name, #name);
 
 	#define COMPONENT_VIEWER_DRAG_VECTOR3(name) \
-  EditorUI::DragFloat3(entity.GetComponent<T>()->name, #name); 
+  EditorGUI::DragFloat3(entity.GetComponent<T>()->name, #name); 
 
 	#define COMPONENT_VIEWER_DRAG_INT(name) \
-  EditorUI::DragInt(entity.GetComponent<T>()->name, #name); 
+  EditorGUI::DragInt(entity.GetComponent<T>()->name, #name); 
+
+	#define COMPONENT_VIEWER_CHECKBOX(name) \
+  EditorGUI::CreateCheckbox(entity.GetComponent<T>()->name, #name); 
 
 	#define COMPONENT_VIEWER_ENTITY_REFERENCE(name) \
-  EditorUI::EntityReference(entity.GetComponent<T>()->name, #name); 
+  EditorGUI::EntityReference(entity.GetComponent<T>()->name, #name); 
 
 	#define COMPONENT_VIEWER_COLOR3(name) \
-  EditorUI::Color3(entity.GetComponent<T>()->name, #name); 
+  EditorGUI::Color3(entity.GetComponent<T>()->name, #name); 
 
 	#define COMPONENT_VIEWER_EDITABLE_STRING(name) \
 	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<T>()->name); \
-	EditorUI::EditableTextField(str, #name);
+	EditorGUI::EditableTextField(str, #name);
 
 	#define COMPONENT_VIEWER_STRING(name) \
 	std::string& str = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<T>()->name); \
-	EditorUI::TextField(str);
+	EditorGUI::TextField(str);
 
 	#define COMPONENT_VIEWER_END(name) \
 }
