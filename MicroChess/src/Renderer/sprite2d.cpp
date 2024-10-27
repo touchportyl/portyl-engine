@@ -183,7 +183,7 @@ namespace ChronoShift
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
 
         // Render all entities
-        #if 1
+        #if 0
         {
 
             for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
@@ -255,21 +255,26 @@ namespace ChronoShift
         #endif
 
         // Test Batch Rendering all entities
-        #if 0
+        #if 1
         {
+            //Push Settings
+            bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
+            if (depth_test) OpenGLRenderer::DisableDepthTest();
+
+            bool blending = OpenGLRenderer::IsBlendingEnabled();
+            if (!blending) OpenGLRenderer::EnableBlending();
+
             OpenGLSpriteRenderer::BeginBatch();
 
             for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
-                if (!entity.GetComponent<IsActive>()->is_active || 
-                    "finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component) ||
-                    "editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component)) continue;
+                if (!entity.GetComponent<IsActive>()->is_active) continue;
 
                 // Gather properties
                 Renderer2DProps props;
                 props.transform = entity.GetComponent<Transform>()->transform;
-                props.shader = "\\shaders\\batchtexture";
+                props.shader = "\\shaders\\texture";
                 auto sprite = entity.GetComponent<Sprite>();
 
                 props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
@@ -278,11 +283,17 @@ namespace ChronoShift
                 props.color_to_multiply = sprite->color_to_multiply;
                 props.vbo_id = sprite->vbo_id;
 
-                OpenGLSpriteRenderer::AddToBatch(props);
+                //OpenGLSpriteRenderer::AddToBatch(props);
+                OpenGLSpriteRenderer::EndBatch(props);
             }
 
             OpenGLSpriteRenderer::SetDefaultFrameBuffer();
-            OpenGLSpriteRenderer::EndBatch("\\shaders\\batchtexture"); // Shader name to batch with
+            //OpenGLSpriteRenderer::EndBatch("\\shaders\\batch2.0"); // Shader name to batch with
+        
+
+            // pop settings
+            if (depth_test) OpenGLRenderer::EnableDepthTest();
+            if (!blending) OpenGLRenderer::DisableBlending();
         }
         #endif
     }

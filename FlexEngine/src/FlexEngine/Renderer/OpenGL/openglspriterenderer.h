@@ -159,7 +159,7 @@ namespace FlexEngine
 
 
         static GLuint m_instanceVBO;
-        static std::vector<InstanceData> m_instanceData; // Collection of instance data for batch rendering
+        static std::vector<Matrix4x4> m_instanceData; // Collection of instance data for batch rendering
     public:
 
         enum __FLX_API CreatedTextureID
@@ -281,7 +281,7 @@ namespace FlexEngine
         * \param vertexCount The number of vertices in the array.
         *****************************************************************************/
         static void InitQuadVAO_VBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
-        static void InitSQuadVAO_VBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
+        static void createVAOWithSSBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
         /*!***************************************************************************
         * \brief
         * Initializes the VBOs.
@@ -309,10 +309,10 @@ namespace FlexEngine
         static void ApplyGaussianBlur(int blurDrawPasses = 4, float blurDistance = 10.0f, int intensity = 12);
         static void ApplyBloomFinalComposition(float opacity = 1.0f);
 
-        #if 0
+        
         static void BeginBatch();
         static void AddToBatch(const Renderer2DProps& props);
-        static void EndBatch(const std::string& shaderName);
-        #endif
+        static void EndBatch(const Renderer2DProps& props);
+        static void updateInstanceTransforms(Matrix4x4* mappedBuffer, const std::vector<Matrix4x4>& instanceTransforms);
     };
 }

@@ -24,6 +24,7 @@ namespace ChronoShift {
         //@anyone, liase with me(wei jie) for if you want the tilt of the background to be more slanted or anything you wish
         //Tried to just simply rotate on x-axis of a wrapped vbo but kenah the orthographic camera cut off
         //so no choice do lame method
+        #if 0
         FlexECS::Entity background = FlexECS::Scene::CreateEntity("bg");
         background.AddComponent<IsActive>({ true });
         background.AddComponent<Position>({ {650, 600} });
@@ -215,8 +216,40 @@ namespace ChronoShift {
             box7.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box7.AddComponent<Parent>({ box6 });
         }
+        #endif
 
-        FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
+        FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
+        thing.AddComponent<IsActive>({ true });
+        thing.AddComponent<Position>({ {300,100} });
+        thing.AddComponent<Rotation>({ });
+        thing.AddComponent<Scale>({ { 150,150 } });
+        thing.AddComponent<ZIndex>({ 10 });
+        thing.AddComponent<Transform>({ });
+        thing.AddComponent<Sprite>({
+          scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
+          Vector3::One,
+          Vector3::Zero,
+          Vector3::One,
+          Renderer2DProps::Alignment_Center,
+          Renderer2DProps::VBO_Basic,
+          true
+         });
+        thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+
+        /*for (size_t x = 0; x < 10; x++)
+        {
+            for (size_t y = 0; y < 10; y++)
+            {
+                if (x == 9 && y == 9)break;
+                FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
+                auto& position = cloned_thing.GetComponent<Position>()->position;
+                position.x = static_cast<float>(15 * (x + 1));
+                position.y = static_cast<float>(15 * (y + 1));
+
+            }
+        }*/
+
+       /* FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
         editorRender.AddComponent<IsActive>({ true });
         editorRender.AddComponent<Position>({ {600, 300 } });
         editorRender.AddComponent<Scale>({ { 800,800} });
@@ -250,7 +283,7 @@ namespace ChronoShift {
             Renderer2DProps::VBO_BasicInverted,
             false
            });
-        finalRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+        finalRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });*/
   }
 
 
@@ -336,9 +369,9 @@ namespace ChronoShift {
        });
       thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
-      for (size_t x = 0; x < 10; x++)
+      for (size_t x = 0; x < 50; x++)
       {
-        for (size_t y = 0; y < 10; y++)
+        for (size_t y = 0; y < 50; y++)
         {
           FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
           auto& position = cloned_thing.GetComponent<Position>()->position;
