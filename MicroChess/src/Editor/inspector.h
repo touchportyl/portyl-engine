@@ -13,15 +13,19 @@
 
 #pragma once
 #include "FlexEngine.h"
+#include "editorpanel.h"
+
 
 namespace ChronoShift
 {
 
-	/*!***************************************************************************
-	* @brief
-	* Call in Update() function of EditorLayer().
-	******************************************************************************/
-	void DisplayInspector();
-
+	class Inspector : public EditorPanel
+	{
+	public:
+		void Init();
+		void Update();
+		void EditorUI();
+		void Shutdown();
+	};
 
 }

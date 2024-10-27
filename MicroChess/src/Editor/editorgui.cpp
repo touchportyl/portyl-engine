@@ -89,6 +89,15 @@ namespace ChronoShift
 		PopID();
 	}
 
+	void EditorGUI::CreateCheckbox(bool& value, std::string title)
+	{
+		PushID();
+		ImGui::Text(title.c_str());  // Display the title label
+		ImGui::SameLine();           // Place the checkbox next to the title
+		ImGui::Checkbox("", &value); // Create the checkbox widget
+		PopID();
+	}
+
 	void EditorGUI::EntityReference(FlexECS::Entity& entity, std::string title)
 	{
 		PushID();
@@ -137,7 +146,7 @@ namespace ChronoShift
 	void EditorGUI::TexturePath(std::string& path, std::string title)
 	{
 		PushID();
-
+		
 		std::filesystem::path current_texture = path;
 		std::string filename = current_texture.filename().string();
 		if (filename == "") filename = "(no sprite)";
@@ -208,7 +217,7 @@ namespace ChronoShift
 	void EditorGUI::Mat44(FlexEngine::Matrix4x4& data, std::string title)
 	{
 		PushID();
-
+		
 		// Create a label for the matrix
 		ImGui::Text("%s", title.c_str());
 
