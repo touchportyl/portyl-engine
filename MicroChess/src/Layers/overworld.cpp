@@ -222,7 +222,7 @@ namespace ChronoShift {
         thing.AddComponent<IsActive>({ true });
         thing.AddComponent<Position>({ {300,100} });
         thing.AddComponent<Rotation>({ });
-        thing.AddComponent<Scale>({ { 150,150 } });
+        thing.AddComponent<Scale>({ { 15,15} });
         thing.AddComponent<ZIndex>({ 10 });
         thing.AddComponent<Transform>({ });
         thing.AddComponent<Sprite>({
@@ -236,19 +236,22 @@ namespace ChronoShift {
          });
         thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
-        /*for (size_t x = 0; x < 10; x++)
+        for (size_t x = 0; x < 50; x++)
         {
-            for (size_t y = 0; y < 10; y++)
+            for (size_t y = 0; y < 50; y++)
             {
-                if (x == 9 && y == 9)break;
+                if (x == 49 && y == 49)break;
                 FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
                 auto& position = cloned_thing.GetComponent<Position>()->position;
-                position.x = static_cast<float>(15 * (x + 1));
-                position.y = static_cast<float>(15 * (y + 1));
+                position.x += static_cast<float>(15 * (x + 1));
+                position.y += static_cast<float>(15 * (y + 1));
 
             }
-        }*/
+        }
 
+        //FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
+        //auto& position = cloned_thing.GetComponent<Position>()->position;
+        //position.x += static_cast<float>(150);
        /* FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
         editorRender.AddComponent<IsActive>({ true });
         editorRender.AddComponent<Position>({ {600, 300 } });

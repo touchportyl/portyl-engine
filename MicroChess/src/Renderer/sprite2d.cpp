@@ -265,16 +265,16 @@ namespace ChronoShift
             if (!blending) OpenGLRenderer::EnableBlending();
 
             OpenGLSpriteRenderer::BeginBatch();
-
+            Renderer2DProps props;
             for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
                 if (!entity.GetComponent<IsActive>()->is_active) continue;
 
                 // Gather properties
-                Renderer2DProps props;
+               
                 props.transform = entity.GetComponent<Transform>()->transform;
-                props.shader = "\\shaders\\texture";
+                props.shader = "\\shaders\\batch2.0";
                 auto sprite = entity.GetComponent<Sprite>();
 
                 props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
@@ -283,12 +283,12 @@ namespace ChronoShift
                 props.color_to_multiply = sprite->color_to_multiply;
                 props.vbo_id = sprite->vbo_id;
 
-                //OpenGLSpriteRenderer::AddToBatch(props);
-                OpenGLSpriteRenderer::EndBatch(props);
+                OpenGLSpriteRenderer::AddToBatch(props);
+                //OpenGLSpriteRenderer::EndBatch(props);
             }
 
             OpenGLSpriteRenderer::SetDefaultFrameBuffer();
-            //OpenGLSpriteRenderer::EndBatch("\\shaders\\batch2.0"); // Shader name to batch with
+            OpenGLSpriteRenderer::EndBatch(props); // Shader name to batch with
         
 
             // pop settings

@@ -8,10 +8,11 @@ layout (location = 1) in vec2 m_tex_coord;
 //{
 //    mat4 m_instanceTransforms[]; // Array of transformations for each instance
 //};
-layout(std140) uniform Matrices 
-{
-    mat4 transformations[100];
-};
+//layout(std140) uniform Matrices 
+//{
+//    mat4 transformations[100];
+//};
+layout(location = 2) in mat4 instanceMatrix;  // First column of mat4
 
 // Uniforms
 //uniform mat4 u_model;       // converts local space to world space
@@ -24,11 +25,9 @@ out vec2 tex_coord;
 
 void main()
 {
-  // Use gl_InstanceID to fetch the specific transformation matrix for this instance
-  mat4 instanceTransform = transformations[gl_InstanceID];
 
   // multiplication is right to left
-  gl_Position = u_projection_view * instanceTransform * vec4(m_position, 1.0);
+  gl_Position = u_projection_view * instanceMatrix * vec4(m_position, 1.0);
 
   // data passthrough
   tex_coord = m_tex_coord;
