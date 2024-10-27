@@ -1,6 +1,5 @@
 #include "editorlayer.h"
 #include "Components/physics.h"
-#include "Components/battlecomponents.h"
 #include "Editor/editor.h"
 
 #include "FlexEngine/Core/imguiwrapper.h"
@@ -13,14 +12,12 @@ namespace ChronoShift
   {
     FLX_FLOW_BEGINSCOPE();
     Editor::GetInstance()->Init();
-
-    RegisterRenderingComponents();
-    RegisterBattleComponents();
   }
 
   void EditorLayer::OnDetach()
   {
     FLX_FLOW_ENDSCOPE();
+
   }
 
   void EditorLayer::Update()

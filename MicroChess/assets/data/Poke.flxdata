@@ -1,0 +1,11 @@
+{
+    "flxdata": {
+        "name": "Poke",
+        "description": "Owie",
+        "speed_cost": 7,
+        "is_target_enemy": false,
+        "target_type": 1,
+        "damage": 1,
+        "Function": 1
+    }
+}

@@ -43,7 +43,6 @@ namespace ChronoShift
     window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
     window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
 
-
     // Renderer Setup
 
     OpenGLRenderer::EnableBlending();
@@ -62,6 +61,16 @@ namespace ChronoShift
 
   void BaseLayer::Update()
   {
+    #pragma region M1 Controls
+    if (Input::GetKeyDown(GLFW_KEY_1))
+    {
+      FMODWrapper::Core::PlaySound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/test.mp3")));
+    }
+    if (Input::GetKeyDown(GLFW_KEY_2))
+    {
+      FMODWrapper::Core::StopSound("mario");
+    }
+    #pragma endregion
     OpenGLRenderer::ClearFrameBuffer();
 
     FunctionQueue function_queue;
@@ -331,42 +340,6 @@ ImGui::EndMainMenuBar();
 
     #pragma endregion
 
-
-    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_B))
-    {
-      function_queue.Insert({
-        []()
-        {
-          FlexEngine::Window* window = Application::GetCurrentWindow();
-          window->PopLayer();
-          //window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
-          //window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
-        }
-      });
-    }
-    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_N))
-    {
-      function_queue.Insert({
-        []()
-        {
-          FlexEngine::Window* window = Application::GetCurrentWindow();
-          //window->PopLayer();
-          //window->PopLayer();
-          window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
-          window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
-      }
-      });
-    }
-    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_M))
-    {
-      function_queue.Insert({
-        []()
-        {
-          FlexEngine::Window* window = Application::GetCurrentWindow();
-          window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
-      }
-      });
-    }
 
     function_queue.Flush();
 
