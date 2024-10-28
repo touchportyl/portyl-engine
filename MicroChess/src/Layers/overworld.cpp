@@ -24,7 +24,7 @@ namespace ChronoShift {
         //@anyone, liase with me(wei jie) for if you want the tilt of the background to be more slanted or anything you wish
         //Tried to just simply rotate on x-axis of a wrapped vbo but kenah the orthographic camera cut off
         //so no choice do lame method
-        #if 0
+        #if 1
         FlexECS::Entity background = FlexECS::Scene::CreateEntity("bg");
         background.AddComponent<IsActive>({ true });
         background.AddComponent<Position>({ {650, 600} });
@@ -33,7 +33,6 @@ namespace ChronoShift {
         background.AddComponent<ZIndex>({ 0 });
         background.AddComponent<Sprite>({
             scene->Internal_StringStorage_New(R"(\images\misc\wireframe_darkbg.png)"),
-            Vector3::One,
             Vector3::Zero,
             Vector3::One,
             Renderer2DProps::Alignment_Center,
@@ -54,8 +53,6 @@ namespace ChronoShift {
         player1.AddComponent<ZIndex>({ 10 });
         player1.AddComponent<Sprite>({
           scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
-          //scene->Internal_StringStorage_New(R"()"),
-          Vector3::One,
           Vector3::Zero,
           Vector3::One,
           Renderer2DProps::Alignment_Center
@@ -75,7 +72,6 @@ namespace ChronoShift {
         house.AddComponent<Sprite>({
             scene->Internal_StringStorage_New(R"()"),
             { 0.45f, 0.58f, 0.32f },
-            Vector3::Zero,
             Vector3::One,
             Renderer2DProps::Alignment_Center
            });
@@ -92,7 +88,6 @@ namespace ChronoShift {
         box.AddComponent<Sprite>({
             scene->Internal_StringStorage_New(R"()"),
             { 0.35f, 0.58f, 0.80f },
-            Vector3::Zero,
             Vector3::One,
             Renderer2DProps::Alignment_Center,
             0,
@@ -112,7 +107,6 @@ namespace ChronoShift {
             box2.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 0.35f, 0.08f, 1.80f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -131,7 +125,6 @@ namespace ChronoShift {
             box3.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 1.35f, 0.08f, 0.80f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -150,7 +143,6 @@ namespace ChronoShift {
             box4.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 0.1f, 0.08f, 0.80f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -169,7 +161,6 @@ namespace ChronoShift {
             box5.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 0.2f, 0.78f, 0.30f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -188,7 +179,6 @@ namespace ChronoShift {
             box6.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 1.2f, 0.78f, 0.30f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -207,7 +197,6 @@ namespace ChronoShift {
             box7.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 1.2f, 1.0f, 1.30f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -216,9 +205,43 @@ namespace ChronoShift {
             box7.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box7.AddComponent<Parent>({ box6 });
         }
+
+        FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
+        editorRender.AddComponent<IsActive>({ true });
+        editorRender.AddComponent<Position>({ {600, 300 } });
+        editorRender.AddComponent<Scale>({ { 800,800} });
+        editorRender.AddComponent<Rotation>({ });
+        editorRender.AddComponent<Transform>({});
+        editorRender.AddComponent<ZIndex>({ 9 });
+        editorRender.AddComponent<Sprite>({
+            scene->Internal_StringStorage_New(R"()"),
+            Vector3::Zero,
+            Vector3::One,
+            Renderer2DProps::Alignment_Center,
+            Renderer2DProps::VBO_BasicInverted,
+            false
+           });
+        editorRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+
+        FlexECS::Entity finalRender = FlexECS::Scene::CreateEntity("finalRender");
+        finalRender.AddComponent<IsActive>({ true });
+        finalRender.AddComponent<Position>({ {300, 600 } });
+        finalRender.AddComponent<Scale>({ { 300,300} });
+        finalRender.AddComponent<Rotation>({ });
+        finalRender.AddComponent<Transform>({});
+        finalRender.AddComponent<ZIndex>({ 10 });
+        finalRender.AddComponent<Sprite>({
+            scene->Internal_StringStorage_New(R"()"),
+            Vector3::Zero,
+            Vector3::One,
+            Renderer2DProps::Alignment_Center,
+            Renderer2DProps::VBO_BasicInverted,
+            false
+           });
+        finalRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
         #endif
 
-        FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
+        /*FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
         thing.AddComponent<IsActive>({ true });
         thing.AddComponent<Position>({ {300,100} });
         thing.AddComponent<Rotation>({ });
@@ -245,49 +268,19 @@ namespace ChronoShift {
                 auto& position = cloned_thing.GetComponent<Position>()->position;
                 position.x += static_cast<float>(15 * (x + 1));
                 position.y += static_cast<float>(15 * (y + 1));
-
+                auto& color_to_add = cloned_thing.GetComponent<Sprite>()->color_to_add;
+                color_to_add.r = static_cast<float>(rand()) / RAND_MAX;
+                color_to_add.g = static_cast<float>(rand()) / RAND_MAX;
+                color_to_add.b = static_cast<float>(rand()) / RAND_MAX;
+                auto& color_to_multiply = cloned_thing.GetComponent<Sprite>()->color_to_multiply;
+                color_to_multiply.r = static_cast<float>(rand()) / RAND_MAX;
+                color_to_multiply.g = static_cast<float>(rand()) / RAND_MAX;
+                color_to_multiply.b = static_cast<float>(rand()) / RAND_MAX;
             }
-        }
+        }*/
 
-        //FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
-        //auto& position = cloned_thing.GetComponent<Position>()->position;
-        //position.x += static_cast<float>(150);
-       /* FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
-        editorRender.AddComponent<IsActive>({ true });
-        editorRender.AddComponent<Position>({ {600, 300 } });
-        editorRender.AddComponent<Scale>({ { 800,800} });
-        editorRender.AddComponent<Rotation>({ });
-        editorRender.AddComponent<Transform>({});
-        editorRender.AddComponent<ZIndex>({ 9 });
-        editorRender.AddComponent<Sprite>({
-            scene->Internal_StringStorage_New(R"()"),
-            { 0.0f,0.0f, 0.0f },
-            Vector3::Zero,
-            Vector3::One,
-            Renderer2DProps::Alignment_Center,
-            Renderer2DProps::VBO_BasicInverted,
-            false
-           });
-        editorRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
-        FlexECS::Entity finalRender = FlexECS::Scene::CreateEntity("finalRender");
-        finalRender.AddComponent<IsActive>({ true });
-        finalRender.AddComponent<Position>({ {300, 600 } });
-        finalRender.AddComponent<Scale>({ { 300,300} });
-        finalRender.AddComponent<Rotation>({ });
-        finalRender.AddComponent<Transform>({});
-        finalRender.AddComponent<ZIndex>({ 10 });
-        finalRender.AddComponent<Sprite>({
-            scene->Internal_StringStorage_New(R"()"),
-            { 0.0f,0.0f, 0.0f },
-            Vector3::Zero,
-            Vector3::One,
-            Renderer2DProps::Alignment_Center,
-            Renderer2DProps::VBO_BasicInverted,
-            false
-           });
-        finalRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });*/
-  }
+    }
 
 
 

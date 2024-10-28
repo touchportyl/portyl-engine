@@ -42,8 +42,7 @@ namespace FlexEngine
     std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
     GLuint OpenGLSpriteRenderer::m_instanceVBO = 0;
     GLuint m_quadVAO, m_quadVBO;
-    std::vector<Matrix4x4> OpenGLSpriteRenderer::m_instanceData = {};
-    //Matrix4x4 m_minstanceData[100] = {};
+    std::vector<Renderer2DProps::InstanceData> OpenGLSpriteRenderer::m_instanceData = {};
 
     std::filesystem::path curr_file_path = __FILE__;
     std::filesystem::path shared_vert_path(curr_file_path.parent_path() / "../../../../assets/shader/Shared.vert");
@@ -432,7 +431,7 @@ namespace FlexEngine
         // Guard
         if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
             Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
-        if (props.shader == "" || props.transform == Matrix4x4::Zero)
+        if (props.shader == "" || props.m_instancedata.transform == Matrix4x4::Zero)
             return;
 
         // Bind all
@@ -450,20 +449,17 @@ namespace FlexEngine
             //std::cout << props.texture << "\n";
             asset_texture.Bind(asset_shader, "u_texture", 0);
         }
-        else if (props.color != Vector3::Zero)
-        {
-            asset_shader.SetUniform_bool("u_use_texture", false);
-            asset_shader.SetUniform_vec3("u_color", props.color);
-        }
         else
         {
-            Log::Fatal("No texture or color specified for texture shader.");
+            asset_shader.SetUniform_bool("u_use_texture", false);
+            asset_shader.SetUniform_vec3("u_color", props.m_instancedata.color_to_add);
         }
-        asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
-        asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
+
+        asset_shader.SetUniform_vec3("u_color_to_add", props.m_instancedata.color_to_add);
+        asset_shader.SetUniform_vec3("u_color_to_multiply", props.m_instancedata.color_to_multiply);
 
         // Transformation & Orthographic Projection
-        asset_shader.SetUniform_mat4("u_model", props.transform);
+        asset_shader.SetUniform_mat4("u_model", props.m_instancedata.transform);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           0.0f, props.window_size.x,
@@ -484,7 +480,7 @@ namespace FlexEngine
         // Guard
         if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
             Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
-        if (props.shader == "" || props.transform == Matrix4x4::Zero)
+        if (props.shader == "" || props.m_instancedata.transform == Matrix4x4::Zero)
             return;
 
         // Bind all
@@ -499,11 +495,11 @@ namespace FlexEngine
         // Apply Texture
         asset_shader.SetUniform_bool("u_use_texture", true);
         asset_shader.SetUniform_int("u_texture", 0);
-        asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
-        asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
+        asset_shader.SetUniform_vec3("u_color_to_add", props.m_instancedata.color_to_add);
+        asset_shader.SetUniform_vec3("u_color_to_multiply", props.m_instancedata.color_to_multiply);
 
         // Transformation & Orthographic Projection
-        asset_shader.SetUniform_mat4("u_model", props.transform);
+        asset_shader.SetUniform_mat4("u_model", props.m_instancedata.transform);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           0.0f, props.window_size.x,
@@ -644,9 +640,14 @@ namespace FlexEngine
         //    Log::Fatal("Invalid VBO ID. Check value or revert to 0.");
         //    return;
         //}
-        if (props.shader.empty() || props.transform == Matrix4x4::Zero) {
+        if (props.shader.empty() || props.m_instancedata.transform == Matrix4x4::Zero) {
             return;
         }
+
+        Renderer2DProps::InstanceData t_instance;
+        t_instance.transform = props.m_instancedata.transform;
+        t_instance.color_to_add = props.m_instancedata.color_to_add;
+        t_instance.color_to_multiply = props.m_instancedata.color_to_multiply;
 
         //InstanceData instance;
         //instance.transform = props.transform;
@@ -655,37 +656,30 @@ namespace FlexEngine
         //instance.color_to_multiply = props.color_to_multiply;
         //instance.textureID = props.texture;
 
-        m_instanceData.push_back(props.transform);
+        m_instanceData.push_back(t_instance);
     }
 
-    void OpenGLSpriteRenderer::EndBatch(const Renderer2DProps& props) {
-        //if (m_instanceData.empty()) return;
+    void OpenGLSpriteRenderer::EndBatch(/*const Renderer2DProps& props*/) {
+        if (m_instanceData.empty()) return;
 
         SetDefaultFrameBuffer();
 
-        //static int test = 0;
-        //if (test == 0)
-        {
-            //test++;
-            glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, m_instanceData.size() * sizeof(Matrix4x4), m_instanceData.data());
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        //glBindVertexArray(m_quadVAO); // Assuming all instances use the same VAO
+        glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, m_instanceData.size() * sizeof(Matrix4x4), m_instanceData.data());
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
         glBindVertexArray(m_quadVAO);
         // Bind and configure shader
-        auto& shader = FLX_ASSET_GET(Asset::Shader, props.shader);
+        auto& shader = FLX_ASSET_GET(Asset::Shader, "\\shaders\\batch2.0");
         shader.Use();
 
         // Set texture (if available) for all instances
         auto& texture = FLX_ASSET_GET(Asset::Texture, "\\images\\chess_queen.png");
         texture.Bind(shader, "u_texture", 0);
         shader.SetUniform_bool("u_use_texture", true);
-        shader.SetUniform_vec3("u_color", Vector3::One);
-        shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
-        shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
+        shader.SetUniform_vec3("u_color_to_add", m_instanceData[0].color_to_add);
+        shader.SetUniform_vec3("u_color_to_multiply", m_instanceData[0].color_to_multiply);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
-        shader.SetUniform_mat4("u_model", props.transform);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           0.0f, 1280,
           750, 0.0f,
