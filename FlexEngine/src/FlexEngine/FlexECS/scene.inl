@@ -23,6 +23,7 @@ std::vector<FlexEngine::FlexECS::Entity> FlexEngine::FlexECS::Scene::View()
     // check if the archetype has the requested components
     if (has_requested_components)
     {
+      // 2. Get the entities from the archetype
       entities.insert(entities.end(), archetype_storage.entities.begin(), archetype_storage.entities.end());
     }
   }
