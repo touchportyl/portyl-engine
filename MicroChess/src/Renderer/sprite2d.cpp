@@ -169,10 +169,9 @@ namespace ChronoShift
     *****************************************************************************/
     void RendererSprite2D()
     {
-        static int test = 0;
+        //TODO: Run through Update Queue instead of checking for bool isDirty
         //Update Transformation Matrix of All Entities
-        if (test == 0)
-            UpdateSprite2DMatrix();
+        UpdateSprite2DMatrix();
 
         WindowProps window_props = Application::GetCurrentWindow()->GetProps();
         Renderer2DProps props;
@@ -187,7 +186,7 @@ namespace ChronoShift
         // Render all entities
         #if 0
         {
-
+            //same thing as update transformations, flush update queue (lags if more than 2500 objects)
             for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
@@ -268,8 +267,6 @@ namespace ChronoShift
 
            
             static Renderer2DProps props;
-            if (test == 0)
-            {
                 OpenGLSpriteRenderer::BeginBatch();
                 
                 for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
@@ -292,8 +289,7 @@ namespace ChronoShift
                     OpenGLSpriteRenderer::AddToBatch(props);
                     //OpenGLSpriteRenderer::EndBatch(props);
                 }
-                test++;
-            }
+            
 
             
             OpenGLSpriteRenderer::SetDefaultFrameBuffer();

@@ -35,7 +35,7 @@ namespace FlexEngine
     // static member initialization
     uint32_t OpenGLSpriteRenderer::m_draw_calls = 0;
     uint32_t OpenGLSpriteRenderer::m_draw_calls_last_frame = 0;
-    uint32_t OpenGLSpriteRenderer::m_maxInstances = 10000;
+    uint32_t OpenGLSpriteRenderer::m_maxInstances = 3000; //Should be more than enough
     bool OpenGLSpriteRenderer::m_depth_test = false;
     bool OpenGLSpriteRenderer::m_blending = false;
 
@@ -739,7 +739,7 @@ namespace FlexEngine
         // Bind the SSBO to a binding point (e.g., 0)
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_instanceVBO);
         FreeQueue::Push(
-  [=]()
+        [=]()
         {
             glDeleteBuffers(1, &m_instanceVBO);
             glDeleteBuffers(1, &vbo);
