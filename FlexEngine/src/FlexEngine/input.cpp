@@ -38,6 +38,12 @@ namespace FlexEngine
     //m_key_down.fill(false);
     //m_key_up.fill(false);
 
+    if (key < 0 || key >= GLFW_KEY_LAST)
+    {
+      Log::Warning("A key not recognised by GLFW was entered");
+      return;
+    }
+
     switch (action)
     {
     case GLFW_PRESS:

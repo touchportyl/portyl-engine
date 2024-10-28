@@ -107,7 +107,7 @@ namespace ChronoShift
 		ImGui::Text(title.c_str()); ImGui::SameLine();
 		if (ImGui::Button(entity_name.c_str()))
 		{
-			Editor::GetInstance()->SelectEntity(entity);
+			Editor::GetInstance().SelectEntity(entity);
 		}
 
 		if (auto payload = StartPayloadReceiver<FlexECS::EntityID>(PayloadTags::ENTITY))
