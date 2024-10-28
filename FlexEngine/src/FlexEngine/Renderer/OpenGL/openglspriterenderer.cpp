@@ -41,8 +41,11 @@ namespace FlexEngine
 
     std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
     GLuint OpenGLSpriteRenderer::m_instanceVBO = 0;
+    GLuint OpenGLSpriteRenderer::m_colorVBO = 0;
     GLuint m_quadVAO, m_quadVBO;
-    std::vector<Renderer2DProps::InstanceData> OpenGLSpriteRenderer::m_instanceData = {};
+    std::vector<Vector3> OpenGLSpriteRenderer::m_colorData = {};
+    std::vector<Matrix4x4> OpenGLSpriteRenderer::m_instanceData = {};
+
 
     std::filesystem::path curr_file_path = __FILE__;
     std::filesystem::path shared_vert_path(curr_file_path.parent_path() / "../../../../assets/shader/Shared.vert");
@@ -307,7 +310,6 @@ namespace FlexEngine
         // Batch Rendering setup
         m_instanceData.reserve(m_maxInstances);
         // Generate the instance VBO to hold per-instance data (for instancing)
-        //glGenBuffers(1, &m_instanceVBO);
         float vertices[] = {
             // Positions         // Texture Coords
             -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
@@ -431,7 +433,7 @@ namespace FlexEngine
         // Guard
         if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
             Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
-        if (props.shader == "" || props.m_instancedata.transform == Matrix4x4::Zero)
+        if (props.shader == "" || props.transform == Matrix4x4::Zero)
             return;
 
         // Bind all
@@ -452,14 +454,14 @@ namespace FlexEngine
         else
         {
             asset_shader.SetUniform_bool("u_use_texture", false);
-            asset_shader.SetUniform_vec3("u_color", props.m_instancedata.color_to_add);
+            asset_shader.SetUniform_vec3("u_color", props.color_to_add);
         }
 
-        asset_shader.SetUniform_vec3("u_color_to_add", props.m_instancedata.color_to_add);
-        asset_shader.SetUniform_vec3("u_color_to_multiply", props.m_instancedata.color_to_multiply);
+        asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
+        asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
 
         // Transformation & Orthographic Projection
-        asset_shader.SetUniform_mat4("u_model", props.m_instancedata.transform);
+        asset_shader.SetUniform_mat4("u_model", props.transform);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           0.0f, props.window_size.x,
@@ -480,7 +482,7 @@ namespace FlexEngine
         // Guard
         if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
             Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
-        if (props.shader == "" || props.m_instancedata.transform == Matrix4x4::Zero)
+        if (props.shader == "" || props.transform == Matrix4x4::Zero)
             return;
 
         // Bind all
@@ -495,11 +497,11 @@ namespace FlexEngine
         // Apply Texture
         asset_shader.SetUniform_bool("u_use_texture", true);
         asset_shader.SetUniform_int("u_texture", 0);
-        asset_shader.SetUniform_vec3("u_color_to_add", props.m_instancedata.color_to_add);
-        asset_shader.SetUniform_vec3("u_color_to_multiply", props.m_instancedata.color_to_multiply);
+        asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
+        asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
 
         // Transformation & Orthographic Projection
-        asset_shader.SetUniform_mat4("u_model", props.m_instancedata.transform);
+        asset_shader.SetUniform_mat4("u_model", props.transform);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           0.0f, props.window_size.x,
@@ -640,14 +642,14 @@ namespace FlexEngine
         //    Log::Fatal("Invalid VBO ID. Check value or revert to 0.");
         //    return;
         //}
-        if (props.shader.empty() || props.m_instancedata.transform == Matrix4x4::Zero) {
+        if (props.shader.empty() || props.transform == Matrix4x4::Zero) {
             return;
         }
 
-        Renderer2DProps::InstanceData t_instance;
-        t_instance.transform = props.m_instancedata.transform;
-        t_instance.color_to_add = props.m_instancedata.color_to_add;
-        t_instance.color_to_multiply = props.m_instancedata.color_to_multiply;
+        //Renderer2DProps::InstanceData t_instance;
+        
+        //t_instance.color_to_add = props.m_instancedata.color_to_add;
+        //t_instance.color_to_multiply = props.m_instancedata.color_to_multiply;
 
         //InstanceData instance;
         //instance.transform = props.transform;
@@ -656,7 +658,8 @@ namespace FlexEngine
         //instance.color_to_multiply = props.color_to_multiply;
         //instance.textureID = props.texture;
 
-        m_instanceData.push_back(t_instance);
+        m_instanceData.push_back(props.transform);
+        m_colorData.push_back(props.color_to_add);
     }
 
     void OpenGLSpriteRenderer::EndBatch(/*const Renderer2DProps& props*/) {
@@ -664,9 +667,11 @@ namespace FlexEngine
 
         SetDefaultFrameBuffer();
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, m_instanceData.size() * sizeof(Matrix4x4), m_instanceData.data());
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_instanceVBO);
+        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, m_instanceData.size() * sizeof(Matrix4x4), m_instanceData.data());
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_colorVBO);
+        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, m_colorData.size() * sizeof(Vector3), m_colorData.data());
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         glBindVertexArray(m_quadVAO);
         // Bind and configure shader
@@ -676,9 +681,9 @@ namespace FlexEngine
         // Set texture (if available) for all instances
         auto& texture = FLX_ASSET_GET(Asset::Texture, "\\images\\chess_queen.png");
         texture.Bind(shader, "u_texture", 0);
-        shader.SetUniform_bool("u_use_texture", true);
-        shader.SetUniform_vec3("u_color_to_add", m_instanceData[0].color_to_add);
-        shader.SetUniform_vec3("u_color_to_multiply", m_instanceData[0].color_to_multiply);
+        shader.SetUniform_bool("u_use_texture", false);
+        //shader.SetUniform_vec3("u_color_to_add", m_instanceData[0].color_to_add);
+        shader.SetUniform_vec3("u_color_to_multiply", Vector3::One);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           0.0f, 1280,
@@ -729,36 +734,24 @@ namespace FlexEngine
         glGenBuffers(1, &m_instanceVBO);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_instanceVBO);
         glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Matrix4x4), m_instanceData.data(), GL_DYNAMIC_DRAW);
-
         // Bind the SSBO to a binding point (e.g., 0)
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_instanceVBO);
+
+        glGenBuffers(1, &m_colorVBO);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_colorVBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Vector3), m_colorData.data(), GL_DYNAMIC_DRAW);
+        // Bind the SSBO to a binding point (e.g., 0)
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_colorVBO);
+
         FreeQueue::Push(
         [=]()
         {
             glDeleteBuffers(1, &m_instanceVBO);
+            glDeleteBuffers(1, &m_colorVBO);
             glDeleteBuffers(1, &vbo);
             glDeleteVertexArrays(1, &vao);
         }
         );
-
-        //glVertexAttribDivisor(2, 1);
-        
-        // Now bind and configure the instance VBO for per-instance data
-//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_instanceVBO);
-////glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Matrix4x4), nullptr, GL_DYNAMIC_DRAW);
-////glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_instanceVBO); // Bind SSBO to binding point 0
-//glBufferStorage(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Matrix4x4), nullptr,
-//        GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-//Matrix4x4* mappedBuffer = (Matrix4x4*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0,
-//                    m_maxInstances * sizeof(Matrix4x4),
-//                    GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-///Matrix4x4
-
-        // Bind UBO to the shader's uniform block index (assuming the block index is 0)
-        //auto& shader = FLX_ASSET_GET(Asset::Shader, "\\shaders\\batch2.0");
-        //GLuint blockIndex = glGetUniformBlockIndex(shader.Get(), "Matrices");
-        //glUniformBlockBinding(shader.Get(), blockIndex, 0);
-        
 
         // Instance attributes (Transform Matrix - 4 x vec4)
         //for (unsigned int i = 0; i < 4; i++) {

@@ -24,7 +24,7 @@ namespace ChronoShift {
         //@anyone, liase with me(wei jie) for if you want the tilt of the background to be more slanted or anything you wish
         //Tried to just simply rotate on x-axis of a wrapped vbo but kenah the orthographic camera cut off
         //so no choice do lame method
-        #if 1
+        #if 0
         FlexECS::Entity background = FlexECS::Scene::CreateEntity("bg");
         background.AddComponent<IsActive>({ true });
         background.AddComponent<Position>({ {650, 600} });
@@ -241,7 +241,7 @@ namespace ChronoShift {
         finalRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
         #endif
 
-        /*FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
+        FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
         thing.AddComponent<IsActive>({ true });
         thing.AddComponent<Position>({ {300,100} });
         thing.AddComponent<Rotation>({ });
@@ -250,7 +250,6 @@ namespace ChronoShift {
         thing.AddComponent<Transform>({ });
         thing.AddComponent<Sprite>({
           scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
-          Vector3::One,
           Vector3::Zero,
           Vector3::One,
           Renderer2DProps::Alignment_Center,
@@ -269,15 +268,26 @@ namespace ChronoShift {
                 position.x += static_cast<float>(15 * (x + 1));
                 position.y += static_cast<float>(15 * (y + 1));
                 auto& color_to_add = cloned_thing.GetComponent<Sprite>()->color_to_add;
-                color_to_add.r = static_cast<float>(rand()) / RAND_MAX;
-                color_to_add.g = static_cast<float>(rand()) / RAND_MAX;
-                color_to_add.b = static_cast<float>(rand()) / RAND_MAX;
                 auto& color_to_multiply = cloned_thing.GetComponent<Sprite>()->color_to_multiply;
-                color_to_multiply.r = static_cast<float>(rand()) / RAND_MAX;
-                color_to_multiply.g = static_cast<float>(rand()) / RAND_MAX;
-                color_to_multiply.b = static_cast<float>(rand()) / RAND_MAX;
+                int color_choice = (x + y) % 3;
+                // Reset both colors to zero initially
+                color_to_add = { 0.0f, 0.0f, 0.0f };
+                color_to_multiply = { 1.0f, 1.0f, 1.0f };
+                if (color_choice == 0) {
+                    // Red
+                    color_to_add = { 1.0f, 0.0f, 0.0f };
+                }
+                else if (color_choice == 1) {
+                    // Green
+                    color_to_add = { 0.0f, 1.0f, 0.0f };
+                }
+                else {
+                    // Blue
+                    color_to_add = { 0.0f, 0.0f, 1.0f };
+
+                }
             }
-        }*/
+        }
 
 
     }

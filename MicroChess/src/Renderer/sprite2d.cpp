@@ -184,7 +184,7 @@ namespace ChronoShift
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
 
         // Render all entities
-        #if 1
+        #if 0
         {
             //same thing as update transformations, flush update queue (lags if more than 2500 objects)
             for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
@@ -256,7 +256,7 @@ namespace ChronoShift
         #endif
 
         // Test Batch Rendering all entities
-        #if 0
+        #if 1
         {
             //Push Settings
             bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
@@ -276,12 +276,12 @@ namespace ChronoShift
 
                     // Gather properties
 
-                    props.transform = entity.GetComponent<Transform>()->transform;
+                    
                     props.shader = "\\shaders\\batch2.0";
                     auto sprite = entity.GetComponent<Sprite>();
 
                     props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
-                    props.color = sprite->color;
+                    props.transform = entity.GetComponent<Transform>()->transform;
                     props.color_to_add = sprite->color_to_add;
                     props.color_to_multiply = sprite->color_to_multiply;
                     props.vbo_id = sprite->vbo_id;
@@ -293,7 +293,7 @@ namespace ChronoShift
 
             
             OpenGLSpriteRenderer::SetDefaultFrameBuffer();
-            OpenGLSpriteRenderer::EndBatch(props); // Shader name to batch with
+            OpenGLSpriteRenderer::EndBatch(); // Shader name to batch with
 
 
             // pop settings
