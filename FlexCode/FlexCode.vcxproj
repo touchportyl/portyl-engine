@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClCompile Include="src\Code\layer_code.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\States\mainstate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Code\layer_code.h" />
+    <ClInclude Include="src\States\mainstate.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

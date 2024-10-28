@@ -1,3 +1,18 @@
+// WLVERSE [https://wlverse.web.app]
+// flexlogger.h
+// 
+// Debug logger implementation for logging debug messages,
+// flow of the application, informational messages, warnings,
+// errors, and fatal errors.
+// 
+// The logger will dump the logs to a file when the application closes.
+//
+// AUTHORS
+// [100%] Chan Wen Loong (wenloong.c\@digipen.edu)
+//   - Main Author
+// 
+// Copyright (c) 2024 DigiPen, All rights reserved.
+
 #pragma once
 
 #include "flx_api.h"

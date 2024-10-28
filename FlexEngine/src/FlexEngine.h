@@ -1,5 +1,6 @@
-#pragma once
-
+// WLVERSE [https://wlverse.web.app]
+// FlexEngine.h
+// 
 // FlexEngine Main Include File
 // This file includes all the necessary files to use the FlexEngine library.
 // 
@@ -8,6 +9,14 @@
 // - Tools . . . . . . Tools for logging, timing, and other utilities.
 // - Wrappers  . . . . Wrappers for external libraries and tools.
 // - Data Structures . Data structures used in the engine.
+//
+// AUTHORS
+// [100%] Chan Wen Loong (wenloong.c\@digipen.edu)
+//   - Main Author
+// 
+// Copyright (c) 2024 DigiPen, All rights reserved.
+
+#pragma once
 
 
 /* |----------------------------| */
