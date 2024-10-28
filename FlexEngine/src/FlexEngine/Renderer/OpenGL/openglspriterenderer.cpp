@@ -35,12 +35,13 @@ namespace FlexEngine
     // static member initialization
     uint32_t OpenGLSpriteRenderer::m_draw_calls = 0;
     uint32_t OpenGLSpriteRenderer::m_draw_calls_last_frame = 0;
-    uint32_t OpenGLSpriteRenderer::m_maxInstances = 100;
+    uint32_t OpenGLSpriteRenderer::m_maxInstances = 10000;
     bool OpenGLSpriteRenderer::m_depth_test = false;
     bool OpenGLSpriteRenderer::m_blending = false;
 
     std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
     GLuint OpenGLSpriteRenderer::m_instanceVBO = 0;
+    GLuint m_quadVAO, m_quadVBO;
     std::vector<Matrix4x4> OpenGLSpriteRenderer::m_instanceData = {};
     //Matrix4x4 m_minstanceData[100] = {};
 
@@ -237,7 +238,7 @@ namespace FlexEngine
     *
     * \param windowSize The size of the rendering window as a Vector2.
     *****************************************************************************/
-    GLuint m_quadVAO, m_quadVBO;
+    
     void OpenGLSpriteRenderer::Init(const Vector2& windowSize)
     {
         /////////////////////////////////////////////////////////////////////////////////////
@@ -662,10 +663,14 @@ namespace FlexEngine
 
         SetDefaultFrameBuffer();
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, m_instanceData.size() * sizeof(Matrix4x4), m_instanceData.data());
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+        //static int test = 0;
+        //if (test == 0)
+        {
+            //test++;
+            glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, m_instanceData.size() * sizeof(Matrix4x4), m_instanceData.data());
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        }
         //glBindVertexArray(m_quadVAO); // Assuming all instances use the same VAO
         glBindVertexArray(m_quadVAO);
         // Bind and configure shader
@@ -714,8 +719,7 @@ namespace FlexEngine
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
-
-        int count = 2500;
+        #if 0
         glGenBuffers(1, &m_instanceVBO);
         glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
         glBufferData(GL_ARRAY_BUFFER, count * sizeof(Matrix4x4), m_instanceData.data(), GL_DYNAMIC_DRAW);
@@ -725,6 +729,24 @@ namespace FlexEngine
             glVertexAttribPointer(2 + i, 4, GL_FLOAT, GL_FALSE, sizeof(Matrix4x4), (void*)(i * sizeof(Vector4)));
             glVertexAttribDivisor(2 + i, 1); // Update every instance
         }
+        #endif
+
+        // Set up the SSBO for instance data
+        glGenBuffers(1, &m_instanceVBO);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_instanceVBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Matrix4x4), m_instanceData.data(), GL_DYNAMIC_DRAW);
+
+        // Bind the SSBO to a binding point (e.g., 0)
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_instanceVBO);
+        FreeQueue::Push(
+  [=]()
+        {
+            glDeleteBuffers(1, &m_instanceVBO);
+            glDeleteBuffers(1, &vbo);
+            glDeleteVertexArrays(1, &vao);
+        }
+        );
+
         //glVertexAttribDivisor(2, 1);
         
         // Now bind and configure the instance VBO for per-instance data

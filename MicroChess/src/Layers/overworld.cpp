@@ -311,6 +311,8 @@ namespace ChronoShift {
 
   void OverworldLayer::Update()
   {
+      auto start = std::chrono::high_resolution_clock::now();
+
     for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput>())
     {
       entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
@@ -386,7 +388,7 @@ namespace ChronoShift {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debug Tests
 //Key hold (Can just alter here, not very elegant but will do for now)
-    #if 1 //DEBUG
+    #if 0 //DEBUG
     if (Input::GetKey(GLFW_KEY_F))
     {
         m_ScaleDebugTest -= 0.008f;
@@ -426,10 +428,13 @@ namespace ChronoShift {
     }
     #endif
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     UpdatePhysicsSystem();
 
     //Render All Entities
+    
     RendererSprite2D();
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    //std::cout << "Time taken: " << duration << " ms" << std::endl;
   }
 }

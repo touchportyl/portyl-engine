@@ -169,8 +169,10 @@ namespace ChronoShift
     *****************************************************************************/
     void RendererSprite2D()
     {
+        static int test = 0;
         //Update Transformation Matrix of All Entities
-        UpdateSprite2DMatrix();
+        if (test == 0)
+            UpdateSprite2DMatrix();
 
         WindowProps window_props = Application::GetCurrentWindow()->GetProps();
         Renderer2DProps props;
@@ -264,32 +266,39 @@ namespace ChronoShift
             bool blending = OpenGLRenderer::IsBlendingEnabled();
             if (!blending) OpenGLRenderer::EnableBlending();
 
-            OpenGLSpriteRenderer::BeginBatch();
-            Renderer2DProps props;
-            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+           
+            static Renderer2DProps props;
+            if (test == 0)
             {
-                auto entity_name_component = entity.GetComponent<EntityName>();
-                if (!entity.GetComponent<IsActive>()->is_active) continue;
+                OpenGLSpriteRenderer::BeginBatch();
+                
+                for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+                {
+                    auto entity_name_component = entity.GetComponent<EntityName>();
+                    if (!entity.GetComponent<IsActive>()->is_active) continue;
 
-                // Gather properties
-               
-                props.transform = entity.GetComponent<Transform>()->transform;
-                props.shader = "\\shaders\\batch2.0";
-                auto sprite = entity.GetComponent<Sprite>();
+                    // Gather properties
 
-                props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
-                props.color = sprite->color;
-                props.color_to_add = sprite->color_to_add;
-                props.color_to_multiply = sprite->color_to_multiply;
-                props.vbo_id = sprite->vbo_id;
+                    props.transform = entity.GetComponent<Transform>()->transform;
+                    props.shader = "\\shaders\\batch2.0";
+                    auto sprite = entity.GetComponent<Sprite>();
 
-                OpenGLSpriteRenderer::AddToBatch(props);
-                //OpenGLSpriteRenderer::EndBatch(props);
+                    props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
+                    props.color = sprite->color;
+                    props.color_to_add = sprite->color_to_add;
+                    props.color_to_multiply = sprite->color_to_multiply;
+                    props.vbo_id = sprite->vbo_id;
+
+                    OpenGLSpriteRenderer::AddToBatch(props);
+                    //OpenGLSpriteRenderer::EndBatch(props);
+                }
+                test++;
             }
 
+            
             OpenGLSpriteRenderer::SetDefaultFrameBuffer();
             OpenGLSpriteRenderer::EndBatch(props); // Shader name to batch with
-        
+
 
             // pop settings
             if (depth_test) OpenGLRenderer::EnableDepthTest();
