@@ -42,8 +42,10 @@ namespace FlexEngine
     std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
     GLuint OpenGLSpriteRenderer::m_instanceVBO = 0;
     GLuint OpenGLSpriteRenderer::m_colorVBO = 0;
+    GLuint OpenGLSpriteRenderer::m_colorMultiplyVBO = 0;
     GLuint m_quadVAO, m_quadVBO;
     std::vector<Vector3> OpenGLSpriteRenderer::m_colorData = {};
+    std::vector<Vector3> OpenGLSpriteRenderer::m_colorMultiplyData = {};
     std::vector<Matrix4x4> OpenGLSpriteRenderer::m_instanceData = {};
 
 
@@ -660,6 +662,7 @@ namespace FlexEngine
 
         m_instanceData.push_back(props.transform);
         m_colorData.push_back(props.color_to_add);
+        m_colorMultiplyData.push_back(props.color_to_multiply);
     }
 
     void OpenGLSpriteRenderer::EndBatch(/*const Renderer2DProps& props*/) {
@@ -671,6 +674,8 @@ namespace FlexEngine
         glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, m_instanceData.size() * sizeof(Matrix4x4), m_instanceData.data());
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_colorVBO);
         glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, m_colorData.size() * sizeof(Vector3), m_colorData.data());
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_colorMultiplyVBO);
+        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, m_colorMultiplyData.size() * sizeof(Vector3), m_colorMultiplyData.data());
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         glBindVertexArray(m_quadVAO);
@@ -681,9 +686,9 @@ namespace FlexEngine
         // Set texture (if available) for all instances
         auto& texture = FLX_ASSET_GET(Asset::Texture, "\\images\\chess_queen.png");
         texture.Bind(shader, "u_texture", 0);
-        shader.SetUniform_bool("u_use_texture", false);
+        shader.SetUniform_bool("u_use_texture", true);
         //shader.SetUniform_vec3("u_color_to_add", m_instanceData[0].color_to_add);
-        shader.SetUniform_vec3("u_color_to_multiply", Vector3::One);
+        //shader.SetUniform_vec3("u_color_to_multiply", Vector3::One);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           0.0f, 1280,
@@ -699,6 +704,7 @@ namespace FlexEngine
         glBindVertexArray(0);
     }
 
+    //not used
     void OpenGLSpriteRenderer::updateInstanceTransforms(Matrix4x4* mappedBuffer, const std::vector<Matrix4x4>& instanceTransforms) {
         std::memcpy(mappedBuffer, instanceTransforms.data(), instanceTransforms.size() * sizeof(Matrix4x4));
     }
@@ -743,11 +749,19 @@ namespace FlexEngine
         // Bind the SSBO to a binding point (e.g., 0)
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_colorVBO);
 
+        glGenBuffers(1, &m_colorMultiplyVBO);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_colorMultiplyVBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Vector3), m_colorMultiplyData.data(), GL_DYNAMIC_DRAW);
+        // Bind the SSBO to a binding point (e.g., 0)
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_colorMultiplyVBO);
+
+
         FreeQueue::Push(
         [=]()
         {
             glDeleteBuffers(1, &m_instanceVBO);
             glDeleteBuffers(1, &m_colorVBO);
+            glDeleteBuffers(1, &m_colorMultiplyVBO);
             glDeleteBuffers(1, &vbo);
             glDeleteVertexArrays(1, &vao);
         }

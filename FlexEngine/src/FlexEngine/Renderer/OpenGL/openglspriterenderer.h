@@ -151,9 +151,9 @@ namespace FlexEngine
         //static float gamma;                            /*!< Controls the gamma function */
 
 
-        static GLuint m_instanceVBO, m_colorVBO;
+        static GLuint m_instanceVBO, m_colorVBO, m_colorMultiplyVBO;
         static std::vector<Matrix4x4> m_instanceData; // Collection of instance data for batch rendering
-        static std::vector<Vector3> m_colorData;
+        static std::vector<Vector3> m_colorData, m_colorMultiplyData;
     public:
 
         enum __FLX_API CreatedTextureID

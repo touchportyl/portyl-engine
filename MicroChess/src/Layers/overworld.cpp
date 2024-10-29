@@ -276,14 +276,17 @@ namespace ChronoShift {
                 if (color_choice == 0) {
                     // Red
                     color_to_add = { 1.0f, 0.0f, 0.0f };
+                    color_to_multiply = { 1.0f, 0.0f, 0.0f };
                 }
                 else if (color_choice == 1) {
                     // Green
                     color_to_add = { 0.0f, 1.0f, 0.0f };
+                    color_to_multiply = { 0.0f, 1.0f, 0.0f };
                 }
                 else {
                     // Blue
                     color_to_add = { 0.0f, 0.0f, 1.0f };
+                    color_to_multiply = { 0.0f, 0.0f, 1.0f };
 
                 }
             }

@@ -22,7 +22,10 @@ layout(std430, binding = 0) buffer InstanceDataBuffer {
 };
 // SSBO for colors (binding point 1)
 layout(std430, binding = 1) buffer ColorBuffer {
-    vec3 u_Color[];
+    vec3 u_Color_to_add[];
+};
+layout(std430, binding = 2) buffer ColorMultiplyBuffer {
+    vec3 u_Color_to_multiply[];
 };
 
 // Uniforms
@@ -34,6 +37,7 @@ uniform mat4 u_projection_view;
 // Output data
 out vec2 tex_coord;
 out vec3 u_color_to_add;
+out vec3 u_color_to_multiply;
 
 void main()
 {
@@ -43,5 +47,6 @@ void main()
 
   // data passthrough
   tex_coord = m_tex_coord;
-  u_color_to_add = u_Color[gl_InstanceID];
+  u_color_to_add = u_Color_to_add[gl_InstanceID];
+  u_color_to_multiply = u_Color_to_multiply[gl_InstanceID];
 }
