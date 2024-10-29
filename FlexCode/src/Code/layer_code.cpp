@@ -66,7 +66,7 @@ namespace FlexCode
   {
     FLX_FLOW_FUNCTION();
 
-    flexengine_logo.Load(Path::current("FlexEngine/assets/images/flexengine/flexengine_logo_white.png"));
+    flexengine_logo.Load(Path::current("assets/images/flexengine/flexengine_logo_white.png"));
   }
 
   void CodeLayer::OnDetach()
