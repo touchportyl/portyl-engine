@@ -1,29 +1,29 @@
 /*!************************************************************************
-// WLVERSE [https://wlverse.web.app]
-// openglspriterenderer.cpp
-//
-// This file implements the OpenGLSpriteRenderer class, which is responsible
-// for handling 2D sprite rendering within the game engine. It provides
-// functions for rendering sprites, applying post-processing effects,
-// and managing the necessary OpenGL resources such as shaders and
-// framebuffers.
-//
-// Key functionalities include:
-// - Rendering 2D sprites with texture binding and transformations.
-// - Supporting post-processing effects such as Gaussian Blur and Bloom.
-// - Providing wrapper functions for commonly used OpenGL operations,
-//   ensuring streamlined usage across the codebase.
-//
-// The renderer is built with a focus on performance and flexibility,
-// allowing for easy customization and extension of rendering capabilities.
-//
-// AUTHORS
-// [100%] Soh Wei Jie (weijie.soh@digipen.edu)
-//   - Main Author
-//   - Developed the core rendering functionalities and post-processing
-//     pipeline, ensuring compatibility with the game engine's architecture.
-//
-// Copyright (c) 2024 DigiPen, All rights reserved.
+* WLVERSE [https://wlverse.web.app]
+* openglspriterenderer.cpp
+*
+* This file implements the OpenGLSpriteRenderer class, which is responsible
+* for handling 2D sprite rendering within the game engine. It provides
+* functions for rendering sprites, applying post-processing effects,
+* and managing the necessary OpenGL resources such as shaders and
+* framebuffers.
+*
+* Key functionalities include:
+* - Rendering 2D sprites with texture binding and transformations.
+* - Supporting post-processing effects such as Gaussian Blur and Bloom.
+* - Providing wrapper functions for commonly used OpenGL operations,
+*   ensuring streamlined usage across the codebase.
+*
+* The renderer is built with a focus on performance and flexibility,
+* allowing for easy customization and extension of rendering capabilities.
+*
+* AUTHORS
+* [100%] Soh Wei Jie (weijie.soh@digipen.edu)
+*   - Main Author
+*   - Developed the core rendering functionalities and post-processing
+*     pipeline, ensuring compatibility with the game engine's architecture.
+*
+* Copyright (c) 2024 DigiPen, All rights reserved.
 **************************************************************************/
 #include "openglspriterenderer.h"
 
