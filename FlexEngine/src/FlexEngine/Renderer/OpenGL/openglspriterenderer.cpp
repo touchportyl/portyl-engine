@@ -40,14 +40,7 @@ namespace FlexEngine
     bool OpenGLSpriteRenderer::m_blending = false;
 
     std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
-    GLuint OpenGLSpriteRenderer::m_instanceVBO = 0;
-    GLuint OpenGLSpriteRenderer::m_colorVBO = 0;
-    GLuint OpenGLSpriteRenderer::m_colorMultiplyVBO = 0;
-    GLuint m_quadVAO, m_quadVBO;
-    std::vector<Vector3> OpenGLSpriteRenderer::m_colorData = {};
-    std::vector<Vector3> OpenGLSpriteRenderer::m_colorMultiplyData = {};
-    std::vector<Matrix4x4> OpenGLSpriteRenderer::m_instanceData = {};
-
+    std::vector<GLuint> OpenGLSpriteRenderer::m_batchSSBOs;
 
     std::filesystem::path curr_file_path = __FILE__;
     std::filesystem::path shared_vert_path(curr_file_path.parent_path() / "../../../../assets/shader/Shared.vert");
@@ -236,13 +229,43 @@ namespace FlexEngine
         );
     }
 
+    void OpenGLSpriteRenderer::InitBatchSSBO()
+    {
+        // Set up the SSBO for instance data
+        GLuint t_tempSSBO;
+        glGenBuffers(1, &t_tempSSBO);
+        m_batchSSBOs.emplace_back(t_tempSSBO);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, t_tempSSBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Matrix4x4), nullptr, GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, t_tempSSBO);
+
+        glGenBuffers(1, &t_tempSSBO);
+        m_batchSSBOs.emplace_back(t_tempSSBO);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, t_tempSSBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Vector3), nullptr, GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, t_tempSSBO);
+
+        glGenBuffers(1, &t_tempSSBO);
+        m_batchSSBOs.emplace_back(t_tempSSBO);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, t_tempSSBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Vector3), nullptr, GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, t_tempSSBO);
+
+
+        FreeQueue::Push(
+        [=]()
+        {
+            for (GLuint iter : m_batchSSBOs)
+                glDeleteBuffers(1, &iter);
+        }
+        );
+    }
     /*!***************************************************************************
     * \brief
     * Initializes the VBOs.
     *
     * \param windowSize The size of the rendering window as a Vector2.
     *****************************************************************************/
-    
     void OpenGLSpriteRenderer::Init(const Vector2& windowSize)
     {
         /////////////////////////////////////////////////////////////////////////////////////
@@ -255,33 +278,33 @@ namespace FlexEngine
 
         float quadVertices[] = {
             // Positions         // TexCoords
-            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  
+            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
              0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-             0.5f,  0.5f, 0.0f, 0.0f, 1.0f,  
              0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-            -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 
+             0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
             -0.5f, -0.5f, 0.0f, 1.0f, 0.0f
         };
         float quadInvertedVertices[] = {
             // Positions         // TexCoords
-            -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,  
+            -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
              0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-             0.5f,  0.5f, 0.0f, 0.0f, 0.0f,  
              0.5f,  0.5f, 0.0f, 0.0f, 0.0f,
-            -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 
+             0.5f,  0.5f, 0.0f, 0.0f, 0.0f,
+            -0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
             -0.5f, -0.5f, 0.0f, 1.0f, 1.0f
         };
-        float lineVertices[] = 
+        float lineVertices[] =
         {
             // Positions         // TexCoords
-            -0.5f, -0.5f, 0.0f, 50.0f, 0.0f,  
+            -0.5f, -0.5f, 0.0f, 50.0f, 0.0f,
              0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
-             0.5f,  0.5f, 0.0f, 0.0f, 48.0f,  
              0.5f,  0.5f, 0.0f, 0.0f, 48.0f,
-            -0.5f,  0.5f, 0.0f, 48.0f, 48.0f, 
+             0.5f,  0.5f, 0.0f, 0.0f, 48.0f,
+            -0.5f,  0.5f, 0.0f, 48.0f, 48.0f,
             -0.5f, -0.5f, 0.0f, 48.0f, 0.0f
         };
-        float postProcessingVertices[] = 
+        float postProcessingVertices[] =
         {
             // Positions         // TexCoords
             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
@@ -292,7 +315,7 @@ namespace FlexEngine
             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f
         };
 
-        VertexData vertexData[] = 
+        VertexData vertexData[] =
         {
             {VertexBufferObject(), quadVertices, sizeof(quadVertices) / sizeof(float)},
             {VertexBufferObject(), quadInvertedVertices, sizeof(quadInvertedVertices) / sizeof(float)},
@@ -300,7 +323,7 @@ namespace FlexEngine
             {VertexBufferObject(), postProcessingVertices, sizeof(postProcessingVertices) / sizeof(float)}
         };
 
-        for (auto& data : vertexData) 
+        for (auto& data : vertexData)
         {
             InitQuadVAO_VBO(data.buffer.vao, data.buffer.vbo, data.vertices, data.count);
             m_vbos.push_back(data.buffer);
@@ -309,21 +332,9 @@ namespace FlexEngine
         Log::Info("All VAOs & VBOs are set up.");
 
         /////////////////////////////////////////////////////////////////////////////////////
-        // Batch Rendering setup
-        m_instanceData.reserve(m_maxInstances);
-        // Generate the instance VBO to hold per-instance data (for instancing)
-        float vertices[] = {
-            // Positions         // Texture Coords
-            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-             0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-             0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-             0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-            -0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f
-        };
-        
-        // Call InitQuadVAO_VBO to set up the quad's VAO and VBO with instance data
-        createVAOWithSSBO(m_quadVAO, m_quadVBO, vertices, sizeof(vertices) / sizeof(float));
+        // Create SSBOs
+        InitBatchSSBO();
+        Log::Info("All SSBOs are set up.");
 
         /////////////////////////////////////////////////////////////////////////////////////
         // Linking shaders
@@ -381,7 +392,7 @@ namespace FlexEngine
         glDrawBuffers(2, drawBuffers);
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             Log::Fatal("Bloom Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
-        
+
         // Create editor FBO
         glGenFramebuffers(1, &m_editorFBO);
         SetEditorFrameBuffer();
@@ -519,6 +530,67 @@ namespace FlexEngine
         glBindVertexArray(0);
     }
 
+    void OpenGLSpriteRenderer::DrawBatchTexture2D(const Renderer2DProps& props, const BatchInstanceBlock& data)
+    {
+        // Guard
+        if (data.m_transformationData.size() != data.m_colorAddData.size() ||
+            data.m_colorAddData.size() != data.m_colorMultiplyData.size())
+        {
+            Log::Fatal("Instance batch data block is invalid (Check if all vectors are of same size)");
+        }
+        else if (data.m_transformationData.size() < 1)
+        {
+            Log::Debug("Instance batch data block is empty. Should not run render on this texture");
+            return;
+        }
+        if (props.shader == "")
+            return;
+        GLsizei dataSize = data.m_transformationData.size();
+
+        // Bind all
+        glBindVertexArray(m_vbos[props.vbo_id].vao);
+
+        // Apply Shader
+        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, "\\shaders\\batch2.0");
+        asset_shader.Use();
+
+        // Apply Texture
+        if (props.texture != "")
+        {
+            asset_shader.SetUniform_bool("u_use_texture", true);
+            auto& asset_texture = FLX_ASSET_GET(Asset::Texture, props.texture);
+            asset_texture.Bind(asset_shader, "u_texture", 0);
+        }
+        else
+        {
+            asset_shader.SetUniform_bool("u_use_texture", false);
+        }
+
+        //Apply SSBOs
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_batchSSBOs[0]);
+        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, dataSize * sizeof(Matrix4x4), data.m_transformationData.data());
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_batchSSBOs[1]);
+        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, dataSize * sizeof(Vector3), data.m_colorAddData.data());
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_batchSSBOs[2]);
+        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, dataSize * sizeof(Vector3), data.m_colorMultiplyData.data());
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+        // Orthographic Projection
+        static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
+        Matrix4x4 projection_view = Matrix4x4::Orthographic(
+          0.0f, props.window_size.x,
+          props.window_size.y, 0.0f,
+          -2.0f, 2.0f
+        ) * view_matrix;
+        asset_shader.SetUniform_mat4("u_projection_view", projection_view);
+
+        // Draw
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, dataSize);
+        m_draw_calls++;
+
+        glBindVertexArray(0);
+    }
+
     /*!***************************************************************************
     * \brief
     * Draws the post-processing layer after all other rendering operations.
@@ -628,154 +700,4 @@ namespace FlexEngine
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
     }
-
-
-
-
-    //BELOW HERE IS STILL IN DEVELOPMENT (NOT WORKING)
-    
-    void OpenGLSpriteRenderer::BeginBatch() {
-        m_instanceData.clear();
-    }
-
-    void OpenGLSpriteRenderer::AddToBatch(const Renderer2DProps& props) {
-        //// Ensure VBO and shader validation occurs once per batch.
-        //if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0) {
-        //    Log::Fatal("Invalid VBO ID. Check value or revert to 0.");
-        //    return;
-        //}
-        if (props.shader.empty() || props.transform == Matrix4x4::Zero) {
-            return;
-        }
-
-        //Renderer2DProps::InstanceData t_instance;
-        
-        //t_instance.color_to_add = props.m_instancedata.color_to_add;
-        //t_instance.color_to_multiply = props.m_instancedata.color_to_multiply;
-
-        //InstanceData instance;
-        //instance.transform = props.transform;
-        //instance.color = props.color;
-        //instance.color_to_add = props.color_to_add;
-        //instance.color_to_multiply = props.color_to_multiply;
-        //instance.textureID = props.texture;
-
-        m_instanceData.push_back(props.transform);
-        m_colorData.push_back(props.color_to_add);
-        m_colorMultiplyData.push_back(props.color_to_multiply);
-    }
-
-    void OpenGLSpriteRenderer::EndBatch(/*const Renderer2DProps& props*/) {
-        if (m_instanceData.empty()) return;
-
-        SetDefaultFrameBuffer();
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_instanceVBO);
-        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, m_instanceData.size() * sizeof(Matrix4x4), m_instanceData.data());
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_colorVBO);
-        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, m_colorData.size() * sizeof(Vector3), m_colorData.data());
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_colorMultiplyVBO);
-        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, m_colorMultiplyData.size() * sizeof(Vector3), m_colorMultiplyData.data());
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-        glBindVertexArray(m_quadVAO);
-        // Bind and configure shader
-        auto& shader = FLX_ASSET_GET(Asset::Shader, "\\shaders\\batch2.0");
-        shader.Use();
-
-        // Set texture (if available) for all instances
-        auto& texture = FLX_ASSET_GET(Asset::Texture, "\\images\\chess_queen.png");
-        texture.Bind(shader, "u_texture", 0);
-        shader.SetUniform_bool("u_use_texture", true);
-        //shader.SetUniform_vec3("u_color_to_add", m_instanceData[0].color_to_add);
-        //shader.SetUniform_vec3("u_color_to_multiply", Vector3::One);
-        static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
-        Matrix4x4 projection_view = Matrix4x4::Orthographic(
-          0.0f, 1280,
-          750, 0.0f,
-          -2.0f, 2.0f
-        ) * view_matrix;
-        shader.SetUniform_mat4("u_projection_view", projection_view);
-
-        // Render all instances with one draw call
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(m_instanceData.size()));
-        m_draw_calls++;
-
-        glBindVertexArray(0);
-    }
-
-    //not used
-    void OpenGLSpriteRenderer::updateInstanceTransforms(Matrix4x4* mappedBuffer, const std::vector<Matrix4x4>& instanceTransforms) {
-        std::memcpy(mappedBuffer, instanceTransforms.data(), instanceTransforms.size() * sizeof(Matrix4x4));
-    }
-    void OpenGLSpriteRenderer::createVAOWithSSBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount)
-    {
-        glGenVertexArrays(1, &vao);
-        glGenBuffers(1, &vbo);
-        glGenBuffers(1, &m_instanceVBO);
-
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(float), vertices, GL_STATIC_DRAW);
-
-        // Position and Texture Coords (non-instanced attributes)
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-
-        #if 0
-        glGenBuffers(1, &m_instanceVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
-        glBufferData(GL_ARRAY_BUFFER, count * sizeof(Matrix4x4), m_instanceData.data(), GL_DYNAMIC_DRAW);
-        // Instance attributes (Transform Matrix - 4 x vec4)
-        for (unsigned int i = 0; i < 4; i++) {
-            glEnableVertexAttribArray(2 + i);
-            glVertexAttribPointer(2 + i, 4, GL_FLOAT, GL_FALSE, sizeof(Matrix4x4), (void*)(i * sizeof(Vector4)));
-            glVertexAttribDivisor(2 + i, 1); // Update every instance
-        }
-        #endif
-
-        // Set up the SSBO for instance data
-        glGenBuffers(1, &m_instanceVBO);
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_instanceVBO);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Matrix4x4), m_instanceData.data(), GL_DYNAMIC_DRAW);
-        // Bind the SSBO to a binding point (e.g., 0)
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_instanceVBO);
-
-        glGenBuffers(1, &m_colorVBO);
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_colorVBO);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Vector3), m_colorData.data(), GL_DYNAMIC_DRAW);
-        // Bind the SSBO to a binding point (e.g., 0)
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_colorVBO);
-
-        glGenBuffers(1, &m_colorMultiplyVBO);
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_colorMultiplyVBO);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Vector3), m_colorMultiplyData.data(), GL_DYNAMIC_DRAW);
-        // Bind the SSBO to a binding point (e.g., 0)
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_colorMultiplyVBO);
-
-
-        FreeQueue::Push(
-        [=]()
-        {
-            glDeleteBuffers(1, &m_instanceVBO);
-            glDeleteBuffers(1, &m_colorVBO);
-            glDeleteBuffers(1, &m_colorMultiplyVBO);
-            glDeleteBuffers(1, &vbo);
-            glDeleteVertexArrays(1, &vao);
-        }
-        );
-
-        // Instance attributes (Transform Matrix - 4 x vec4)
-        //for (unsigned int i = 0; i < 4; i++) {
-        //    glEnableVertexAttribArray(2 + i);
-        //    glVertexAttribPointer(2 + i, 4, GL_FLOAT, GL_FALSE, sizeof(InstanceData), (void*)(i * sizeof(Vector4)));
-        //    glVertexAttribDivisor(2 + i, 1); // Update every instance
-        //}
-        //glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-    }
-    
-    
 }

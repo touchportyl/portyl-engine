@@ -4,27 +4,17 @@
 layout (location = 0) in vec3 m_position;
 layout (location = 1) in vec2 m_tex_coord;
 
-//layout(std140, binding = 0) buffer m_InstanceTransforms 
-//{
-//    mat4 m_instanceTransforms[]; // Array of transformations for each instance
-//};
-// SSBO for instance data
- //   struct InstanceData {
- //       mat4 transform;            // Transformation matrix
- //       vec3 color_to_add;         // Color addition effect
- //       float padding1;
- //       vec3 color_to_multiply;    // Color multiplication effect
- //       float padding2;            
- //   };
-
-layout(std430, binding = 0) buffer InstanceDataBuffer {
-    mat4 transformation[];  // Array of instance data
+// Input SSBO data
+layout(std430, binding = 0) buffer InstanceDataBuffer 
+{
+    mat4 transformation[];
 };
-// SSBO for colors (binding point 1)
-layout(std430, binding = 1) buffer ColorBuffer {
+layout(std430, binding = 1) buffer ColorBuffer 
+{
     vec3 u_Color_to_add[];
 };
-layout(std430, binding = 2) buffer ColorMultiplyBuffer {
+layout(std430, binding = 2) buffer ColorMultiplyBuffer 
+{
     vec3 u_Color_to_multiply[];
 };
 

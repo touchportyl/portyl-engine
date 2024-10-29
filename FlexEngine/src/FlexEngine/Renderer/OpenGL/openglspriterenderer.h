@@ -78,13 +78,11 @@ namespace FlexEngine
             VBO_PProcessing,          /*!< VBO for post-processing effects */
         };
 
+        std::string shader = R"(/shaders/texture)";                       /*!< Path to the shader used for rendering textures */
+        std::string texture = R"(/images/flexengine/flexengine-256.png)"; /*!< Default texture path */
         Matrix4x4 transform = Matrix4x4::Identity;       // Transformation matrix per instance
         Vector3 color_to_add = Vector3(0.0f, 0.0f, 0.0f);        // Color addition effect
         Vector3 color_to_multiply = Vector3(1.0f, 1.0f, 1.0f); // Color multiplication effect
-        std::string shader = R"(/shaders/texture)";                       /*!< Path to the shader used for rendering textures */
-        std::string texture = R"(/images/flexengine/flexengine-256.png)"; /*!< Default texture path */
-        //Vector3 color = Vector3(1.0f, 0.0f, 1.0f);                        /*!< Base color for the sprite */                                      /*!< Transformation matrix for the sprite */
-        //InstanceData m_instancedata{};
         Vector2 window_size = Vector2(800.0f, 600.0f);                    /*!< Size of the rendering window */
         Alignment alignment = Alignment_Center;                           /*!< Alignment option for the sprite */
         GLuint vbo_id = VBO_Basic;                                                /*!< ID for the Vertex Buffer Object */
@@ -103,6 +101,14 @@ namespace FlexEngine
     {
         GLuint vao = 0;
         GLuint vbo = 0;
+    };
+
+    struct __FLX_API BatchInstanceBlock
+    {
+        GLuint m_vboid;
+
+        std::vector<Matrix4x4> m_transformationData;
+        std::vector<Vector3> m_colorAddData, m_colorMultiplyData;
     };
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,6 +132,7 @@ namespace FlexEngine
         static bool m_blending;                        /*!< Flag for enabling blending */
 
         static std::vector<VertexBufferObject> m_vbos; /*!< Vector of Vertex Buffer Objects */
+        static std::vector<GLuint> m_batchSSBOs;
 
         static Asset::Shader m_bloom_brightness_shader;
         static Asset::Shader m_bloom_gaussianblur_shader;
@@ -149,11 +156,6 @@ namespace FlexEngine
         // Testing variables (subject to change)
         //static GLuint samples;                         /*!< Number of samples per pixel for MSAA anti-aliasing */
         //static float gamma;                            /*!< Controls the gamma function */
-
-
-        static GLuint m_instanceVBO, m_colorVBO, m_colorMultiplyVBO;
-        static std::vector<Matrix4x4> m_instanceData; // Collection of instance data for batch rendering
-        static std::vector<Vector3> m_colorData, m_colorMultiplyData;
     public:
 
         enum __FLX_API CreatedTextureID
@@ -275,7 +277,8 @@ namespace FlexEngine
         * \param vertexCount The number of vertices in the array.
         *****************************************************************************/
         static void InitQuadVAO_VBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
-        static void createVAOWithSSBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
+        static void InitBatchSSBO();
+        //static void createVAOWithSSBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
         /*!***************************************************************************
         * \brief
         * Initializes the VBOs.
@@ -293,6 +296,8 @@ namespace FlexEngine
         *****************************************************************************/
         static void DrawTexture2D(const Renderer2DProps& props = {});
         static void DrawTexture2D(GLuint TextureID, const Renderer2DProps& props = {});
+        static void DrawBatchTexture2D(const Renderer2DProps& props = {}, const BatchInstanceBlock& data = {});
+
         /*!***************************************************************************
         * \brief
         * Draws the post-processing layer after all other rendering operations.
@@ -302,12 +307,6 @@ namespace FlexEngine
         static void ApplyBrightnessPass(float threshold = 1.0f);
         static void ApplyGaussianBlur(int blurDrawPasses = 4, float blurDistance = 10.0f, int intensity = 12);
         static void ApplyBloomFinalComposition(float opacity = 1.0f);
-
-        
-        static void BeginBatch();
-        static void AddToBatch(const Renderer2DProps& props);
-        static void EndBatch(/*const Renderer2DProps& props*/);
-        static void updateInstanceTransforms(Matrix4x4* mappedBuffer, const std::vector<Matrix4x4>& instanceTransforms);
     };
 }
 

@@ -22,7 +22,7 @@ void main()
   }
   else
   {
-    diffuse = u_color_to_add;
+    diffuse = vec3(0.0, 0.0, 0.0);
     alpha = 1.0;
   }
 
