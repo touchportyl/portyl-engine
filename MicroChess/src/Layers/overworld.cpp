@@ -204,6 +204,36 @@ namespace ChronoShift {
                });
             box7.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box7.AddComponent<Parent>({ box6 });
+
+          #pragma region Delete this debug code before pushing!!!!
+          ///// COPY PASTA BEGINS HERE
+          FlexECS::Entity thing2 = FlexECS::Scene::CreateEntity("White Queen");
+          thing2.AddComponent<IsActive>({ true });
+          thing2.AddComponent<Position>({ {0,0} });
+          thing2.AddComponent<Rotation>({ });
+          thing2.AddComponent<Scale>({ { 15,15 } });
+          thing2.AddComponent<ZIndex>({ 10 });
+          thing2.AddComponent<Transform>({ });
+          thing2.AddComponent<Sprite>({
+            scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
+            Vector3::One,
+            Vector3::Zero,
+            Vector3::One,
+            Renderer2DProps::Alignment_Center
+           });
+          thing2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+
+          for (size_t x = 0; x < 50; x++)
+          {
+            for (size_t y = 0; y < 50; y++)
+            {
+              FlexECS::Entity cloned_thing = scene->CloneEntity(thing2);
+              auto& position = cloned_thing.GetComponent<Position>()->position;
+              position.x = static_cast<float>(15 * (x + 1));
+              position.y = static_cast<float>(15 * (y + 1));
+            }
+          }
+          #pragma endregion
         }
         #endif
 
@@ -319,7 +349,7 @@ namespace ChronoShift {
 
   void OverworldLayer::Update()
   {
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput>())
       {
           entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
           entity.GetComponent<CharacterInput>()->down = Input::GetKey(GLFW_KEY_S);
@@ -327,7 +357,7 @@ namespace ChronoShift {
           entity.GetComponent<CharacterInput>()->right = Input::GetKey(GLFW_KEY_D);
       }
 
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput, Rigidbody>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput, Rigidbody>())
       {
           auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
           velocity.x = 0.0f;
@@ -359,7 +389,7 @@ namespace ChronoShift {
       if (Input::GetKeyDown(GLFW_KEY_0))
       {
           auto scene = FlexECS::Scene::GetActiveScene();
-          for (auto& entity : FlexECS::Scene::GetActiveScene()->View<EntityName>())
+          for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<EntityName>())
           {
               scene->DestroyEntity(entity);
           }
@@ -394,7 +424,7 @@ namespace ChronoShift {
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Debug Tests
   //Key hold (Can just alter here, not very elegant but will do for now)
-      #if 0 //DEBUG
+      #if 1 //DEBUG
       if (Input::GetKey(GLFW_KEY_F))
       {
           m_ScaleDebugTest -= 0.008f;
@@ -415,7 +445,7 @@ namespace ChronoShift {
 
       //Altering entities scale and rotation while game is in debug mode
       // TEST ON EVERYTHING
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Transform>())
       {
           if (!entity.GetComponent<IsActive>()->is_active) continue;
 

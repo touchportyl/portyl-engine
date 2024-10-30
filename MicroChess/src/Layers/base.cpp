@@ -316,7 +316,7 @@ ImGui::EndMainMenuBar();
       if (ImGui::CollapsingHeader("Scene", tree_node_flags))
       {
         ImGui::Text("Active Scene: %s", current_save_name.c_str());
-        ImGui::Text("Entities: %d", FlexECS::Scene::GetActiveScene()->View<EntityName>().size());
+        ImGui::Text("Entities: %d", FlexECS::Scene::GetActiveScene()->CachedQuery<EntityName>().size());
         ImGui::Text("Archetypes: %d", ARCHETYPE_INDEX.size());
       }
 

@@ -165,7 +165,7 @@ namespace ChronoShift {
     }
     std::cout << "\n";
 
-    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
+    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->Query<BattleState>()[0];
     battle_state.GetComponent<BattleState>()->phase = BP_PROCESSING;
   }
 
@@ -184,14 +184,14 @@ namespace ChronoShift {
     }
     std::cout << "\n";
 
-    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
+    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->Query<BattleState>()[0];
     battle_state.GetComponent<BattleState>()->active_character = m_characters.front();
     battle_state.GetComponent<BattleState>()->phase = BP_MOVE_SELECTION;
   }
 
   void BattleSystem::Update()
   {
-    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
+    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->Query<BattleState>()[0];
     int battle_phase = battle_state.GetComponent<BattleState>()->phase;
     if (battle_phase == BP_PROCESSING) {
       UpdateSpeedStack();
@@ -224,12 +224,12 @@ namespace ChronoShift {
       move_decision = Range(0, 2).Get();
     }
     else {
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, MoveButton>()) {
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<IsActive, MoveButton>()) {
         entity.GetComponent<IsActive>()->is_active = true;
       }
       // move selection system by mouse click for players
       GetMoveSelection();
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<OnClick, MoveButton>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<OnClick, MoveButton>())
       {
         auto& click_status = entity.GetComponent<OnClick>()->is_clicked;
         if (click_status == true) {
@@ -348,7 +348,7 @@ namespace ChronoShift {
   void BattleSystem::ExecuteMove(FlexECS::Scene::StringIndex move_id, std::vector<FlexECS::Entity> selected_targets)
   {
     //get the move user
-    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
+    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->Query<BattleState>()[0];
     FlexECS::Entity user = battle_state.GetComponent<BattleState>()->active_character;
     Move move = MoveRegistry::GetMove(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(move_id));
     std::vector<FlexECS::Entity> targets;
@@ -394,7 +394,7 @@ namespace ChronoShift {
   }
 
   void BattleSystem::DeathProcession(std::vector<FlexECS::Entity> list_of_deaths) {
-    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
+    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->Query<BattleState>()[0];
     for (auto it = list_of_deaths.begin(); it != list_of_deaths.end(); it++) {
       for (auto c = m_characters.begin(); c != m_characters.end(); c++) {
         if (*c == *it) {
@@ -429,7 +429,7 @@ namespace ChronoShift {
     battle_state.GetComponent<BattleState>()->phase = BP_PROCESSING;
   }
   void BattleSystem::EndBattleScene() {
-    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
+    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->Query<BattleState>()[0];
     if (m_enemies.empty()) {
       std::cout << "VICTORY!!!!" << std::endl;
       battle_state.GetComponent<BattleState>()->phase = BP_BATTLE_FINISH;

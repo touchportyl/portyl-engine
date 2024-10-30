@@ -28,7 +28,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 void SaveCharacters() {
   auto scene = FlexECS::Scene::GetActiveScene();
-  for (auto& entity : scene->View<ChronoShift::Character>()) {
+  for (auto& entity : scene->Query<ChronoShift::Character>()) {
     scene->SaveEntityAsPrefab(entity, scene->Internal_StringStorage_Get(*(entity.GetComponent<EntityName>())));
   }
   std::cout << "Saved Completed" << std::endl;
@@ -36,7 +36,7 @@ void SaveCharacters() {
 
 void ResetCharacters() {
   auto scene = FlexECS::Scene::GetActiveScene();
-  for (auto& entity : scene->View<ChronoShift::Character>()) {
+  for (auto& entity : scene->Query<ChronoShift::Character>()) {
     auto character = entity.GetComponent<Character>();
     character->current_health = character->base_health;
     character->current_speed = character->base_speed;
@@ -53,7 +53,7 @@ void CreateCharacter(Character parameters) {
 
 void EditCharacter(std::string character_name, Character parameters) {
   auto scene = FlexECS::Scene::GetActiveScene();
-  for (auto& entity : scene->View<ChronoShift::Character>()) {
+  for (auto& entity : scene->Query<ChronoShift::Character>()) {
     std::string name_to_check = scene->Internal_StringStorage_Get(*(entity.GetComponent<EntityName>()));
     if (name_to_check == character_name) {
       entity.RemoveComponent<Character>();

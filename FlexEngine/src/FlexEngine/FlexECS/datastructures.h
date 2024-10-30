@@ -241,8 +241,12 @@ namespace FlexEngine
     public:
       // Returns an entity list based off the list of components
       template <typename... Ts>
-      std::vector<Entity> View();
-      //#define FLX_ECS_VIEW(...) for (FlexEngine::FlexECS::Entity& entity : FlexEngine::FlexECS::Scene::GetActiveScene()->View<__VA_ARGS__>())
+      std::vector<Entity> Query();
+
+      template <typename... Ts>
+      std::vector<Entity>& CachedQuery();
+      
+      std::map<ComponentIDList, std::vector<Entity>> query_cache;
 
       #pragma endregion
 
