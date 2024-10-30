@@ -205,6 +205,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglbuffer.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengldebugrenderer.cpp" />
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglfont.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglfreetype.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmaterial.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmesh.cpp" />
@@ -237,7 +238,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="openglfreetype.h" />
     <ClInclude Include="src\FlexEngine\AssetManager\assetkey.h" />
     <ClInclude Include="src\FlexEngine\AssetManager\assetmanager.h" />
     <ClInclude Include="src\FlexEngine\Core\frameratecontroller.h" />
@@ -273,6 +273,8 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglbuffer.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengldebugrenderer.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglfont.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglfreetype.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmaterial.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmesh.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmodel.h" />

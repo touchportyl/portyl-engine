@@ -138,6 +138,18 @@ using namespace FlexEngine;
     bool post_processed = false;
   };
   
+  class Text
+  {
+      FLX_REFL_SERIALIZABLE
+  public:
+      FlexECS::Scene::StringIndex fonttype = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+      std::string text = "TEST";
+      Vector3 color_to_add = Vector3::Zero;
+      Vector3 color_to_multiply = Vector3::One;
+      int alignment = Renderer2DProps::Alignment_Center;
+      GLuint vbo_id = Renderer2DProps::VBO_Basic;
+  };
+
   /*!***************************************************************************
   * \class Camera
   * \brief

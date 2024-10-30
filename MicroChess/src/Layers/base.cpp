@@ -49,6 +49,7 @@ namespace ChronoShift
     OpenGLRenderer::EnableBlending();
     Vector2 windowsize{ static_cast<float>(window->GetWidth()), static_cast<float>(window->GetHeight()) };
     OpenGLSpriteRenderer::Init(windowsize);
+    OpenGLFreeType::Init();
   }
 
   void BaseLayer::OnDetach()

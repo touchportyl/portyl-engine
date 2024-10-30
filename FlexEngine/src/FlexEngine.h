@@ -131,6 +131,9 @@
 #include "FlexEngine/Renderer/OpenGL/openglrenderer.h"
 // The current implementation is exclusively for OpenGL. For 2D sprites
 #include "FlexEngine/Renderer/OpenGL/openglspriterenderer.h"
+// The current implementation is exclusively for OpenGL. For freetype text
+#include "FlexEngine/Renderer/OpenGL/openglfreetype.h"
+
 
 // Stores one vertex for the mesh.
 // The current implementation is exclusively for OpenGL.

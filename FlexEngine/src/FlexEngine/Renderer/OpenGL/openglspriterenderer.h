@@ -105,7 +105,7 @@ namespace FlexEngine
 
     struct __FLX_API BatchInstanceBlock
     {
-        GLuint m_vboid;
+        GLuint m_vboid = 0;
 
         std::vector<Matrix4x4> m_transformationData;
         std::vector<Vector3> m_colorAddData, m_colorMultiplyData;

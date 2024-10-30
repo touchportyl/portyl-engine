@@ -157,6 +157,17 @@ namespace FlexEngine
             FLX_FLOW_ENDSCOPE();
           }
         }
+        else if (FLX_EXTENSIONS_CHECK_SAFETY("font", file_extension.string()))
+        {
+            // create an asset key
+            AssetKey key = file.path.string().substr(default_directory_length);
+            
+            // load font
+            FLX_FLOW_BEGINSCOPE();
+            assets[key] = Asset::Font{key};
+            FLX_FLOW_ENDSCOPE();
+            Log::Info("Loaded font path: " + key);
+        }
       }
     );
 
@@ -204,6 +215,10 @@ namespace FlexEngine
           else if constexpr (std::is_same_v<T, Asset::Shader>)
           {
             arg.Destroy();
+          }
+          else if constexpr (std::is_same_v<T, Asset::Font>)
+          {
+            arg.Unload();
           }
         },
         asset

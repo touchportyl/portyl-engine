@@ -12,7 +12,6 @@
 
 #include "Renderer/sprite2d.h"
 
-
 namespace ChronoShift {
     float OverworldLayer::m_ScaleDebugTest = 0.8f;
     Vector3 OverworldLayer::m_RotateDebugTest = Vector3(0.f, 0.f, 0.f);
@@ -24,6 +23,7 @@ namespace ChronoShift {
         //@anyone, liase with me(wei jie) for if you want the tilt of the background to be more slanted or anything you wish
         //Tried to just simply rotate on x-axis of a wrapped vbo but kenah the orthographic camera cut off
         //so no choice do lame method
+        //Normal Gameobject
         #if 1
         FlexECS::Entity background = FlexECS::Scene::CreateEntity("bg");
         background.AddComponent<IsActive>({ true });
@@ -206,7 +206,7 @@ namespace ChronoShift {
             box7.AddComponent<Parent>({ box6 });
         }
         #endif
-
+        //2500 objs
         #if 0
         FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
         thing.AddComponent<IsActive>({ true });
@@ -261,6 +261,26 @@ namespace ChronoShift {
             }
         }
         #endif
+        //Text
+        #if 1
+        FlexECS::Entity testText = FlexECS::Scene::CreateEntity("testText");
+        testText.AddComponent<IsActive>({ true });
+        testText.AddComponent<Position>({ {550, 300 } });
+        testText.AddComponent<Scale>({ { 800,800} });
+        testText.AddComponent<Rotation>({ });
+        testText.AddComponent<Transform>({});
+        testText.AddComponent<ZIndex>({ 9 });
+        testText.AddComponent<Text>({
+            scene->Internal_StringStorage_New(R"(\fonts\Bangers\Bangers-Regular.ttf)"),
+            "> TEST INPUT I HOPE THIS WORKS <",
+            Vector3::One,
+            Vector3::One,
+            Renderer2DProps::Alignment_Center,
+            Renderer2DProps::VBO_BasicInverted
+        });
+        testText.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+        
+        #endif
 
         FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
         editorRender.AddComponent<IsActive>({ true });
@@ -295,149 +315,150 @@ namespace ChronoShift {
             false
            });
         finalRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+
     }
 
 
 
-  void OverworldLayer::OnAttach()
-  {
-    FLX_FLOW_BEGINSCOPE();
+    void OverworldLayer::OnAttach()
+    {
+        FLX_FLOW_BEGINSCOPE();
 
-    // ECS Setup
-    auto scene = FlexECS::Scene::CreateScene();
-    FlexECS::Scene::SetActiveScene(scene);
+        // ECS Setup
+        auto scene = FlexECS::Scene::CreateScene();
+        FlexECS::Scene::SetActiveScene(scene);
 
-    RegisterRenderingComponents();
+        RegisterRenderingComponents();
 
-    SetupWorld();
-  }
+        SetupWorld();
+    }
 
-  void OverworldLayer::OnDetach()
-  {
-    FLX_FLOW_ENDSCOPE();
-  }
+    void OverworldLayer::OnDetach()
+    {
+        FLX_FLOW_ENDSCOPE();
+    }
 
-  void OverworldLayer::Update()
-  {
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput>())
-      {
-          entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
-          entity.GetComponent<CharacterInput>()->down = Input::GetKey(GLFW_KEY_S);
-          entity.GetComponent<CharacterInput>()->left = Input::GetKey(GLFW_KEY_A);
-          entity.GetComponent<CharacterInput>()->right = Input::GetKey(GLFW_KEY_D);
-      }
+    void OverworldLayer::Update()
+    {
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput>())
+        {
+            entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
+            entity.GetComponent<CharacterInput>()->down = Input::GetKey(GLFW_KEY_S);
+            entity.GetComponent<CharacterInput>()->left = Input::GetKey(GLFW_KEY_A);
+            entity.GetComponent<CharacterInput>()->right = Input::GetKey(GLFW_KEY_D);
+        }
 
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput, Rigidbody>())
-      {
-          auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
-          velocity.x = 0.0f;
-          velocity.y = 0.0f;
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput, Rigidbody>())
+        {
+            auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
+            velocity.x = 0.0f;
+            velocity.y = 0.0f;
 
-          if (entity.GetComponent<CharacterInput>()->up)
-          {
-              velocity.y = -300.0f;
-          }
+            if (entity.GetComponent<CharacterInput>()->up)
+            {
+                velocity.y = -300.0f;
+            }
 
-          if (entity.GetComponent<CharacterInput>()->down)
-          {
-              velocity.y = 300.0f;
-          }
+            if (entity.GetComponent<CharacterInput>()->down)
+            {
+                velocity.y = 300.0f;
+            }
 
-          if (entity.GetComponent<CharacterInput>()->left)
-          {
-              velocity.x = -300.0f;
-          }
+            if (entity.GetComponent<CharacterInput>()->left)
+            {
+                velocity.x = -300.0f;
+            }
 
-          if (entity.GetComponent<CharacterInput>()->right)
-          {
-              velocity.x = 300.0f;
-          }
-      }
+            if (entity.GetComponent<CharacterInput>()->right)
+            {
+                velocity.x = 300.0f;
+            }
+        }
 
-      //For testing 2500 objects
-      //Create one, then clone the rest
-      if (Input::GetKeyDown(GLFW_KEY_0))
-      {
-          auto scene = FlexECS::Scene::GetActiveScene();
-          for (auto& entity : FlexECS::Scene::GetActiveScene()->View<EntityName>())
-          {
-              scene->DestroyEntity(entity);
-          }
+        //For testing 2500 objects
+        //Create one, then clone the rest
+        if (Input::GetKeyDown(GLFW_KEY_0))
+        {
+            auto scene = FlexECS::Scene::GetActiveScene();
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<EntityName>())
+            {
+                scene->DestroyEntity(entity);
+            }
 
-          FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
-          thing.AddComponent<IsActive>({ true });
-          thing.AddComponent<Position>({ {0,0} });
-          thing.AddComponent<Rotation>({ });
-          thing.AddComponent<Scale>({ { 15,15 } });
-          thing.AddComponent<ZIndex>({ 10 });
-          thing.AddComponent<Transform>({ });
-          thing.AddComponent<Sprite>({
-            scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
-            Vector3::One,
-            Vector3::Zero,
-            Vector3::One,
-            Renderer2DProps::Alignment_Center
-           });
-          thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+            FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
+            thing.AddComponent<IsActive>({ true });
+            thing.AddComponent<Position>({ {0,0} });
+            thing.AddComponent<Rotation>({ });
+            thing.AddComponent<Scale>({ { 15,15 } });
+            thing.AddComponent<ZIndex>({ 10 });
+            thing.AddComponent<Transform>({ });
+            thing.AddComponent<Sprite>({
+              scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
+              Vector3::One,
+              Vector3::Zero,
+              Vector3::One,
+              Renderer2DProps::Alignment_Center
+             });
+            thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
-          for (size_t x = 0; x < 50; x++)
-          {
-              for (size_t y = 0; y < 50; y++)
-              {
-                  FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
-                  auto& position = cloned_thing.GetComponent<Position>()->position;
-                  position.x = static_cast<float>(15 * (x + 1));
-                  position.y = static_cast<float>(15 * (y + 1));
-              }
-          }
-      }
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Debug Tests
-  //Key hold (Can just alter here, not very elegant but will do for now)
-      #if 0 //DEBUG
-      if (Input::GetKey(GLFW_KEY_F))
-      {
-          m_ScaleDebugTest -= 0.008f;
-      }
-      else if (Input::GetKey(GLFW_KEY_G))
-      {
-          m_ScaleDebugTest += 0.008f;
-      }
+            for (size_t x = 0; x < 50; x++)
+            {
+                for (size_t y = 0; y < 50; y++)
+                {
+                    FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
+                    auto& position = cloned_thing.GetComponent<Position>()->position;
+                    position.x = static_cast<float>(15 * (x + 1));
+                    position.y = static_cast<float>(15 * (y + 1));
+                }
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Debug Tests
+    //Key hold (Can just alter here, not very elegant but will do for now)
+        #if 0 //DEBUG
+        if (Input::GetKey(GLFW_KEY_F))
+        {
+            m_ScaleDebugTest -= 0.008f;
+        }
+        else if (Input::GetKey(GLFW_KEY_G))
+        {
+            m_ScaleDebugTest += 0.008f;
+        }
 
-      if (Input::GetKey(GLFW_KEY_Q))
-      {
-          m_RotateDebugTest.z += 1.0f;
-      }
-      else if (Input::GetKey(GLFW_KEY_E))
-      {
-          m_RotateDebugTest.z -= 1.0f;
-      }
+        if (Input::GetKey(GLFW_KEY_Q))
+        {
+            m_RotateDebugTest.z += 1.0f;
+        }
+        else if (Input::GetKey(GLFW_KEY_E))
+        {
+            m_RotateDebugTest.z -= 1.0f;
+        }
 
-      //Altering entities scale and rotation while game is in debug mode
-      // TEST ON EVERYTHING
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
-      {
-          if (!entity.GetComponent<IsActive>()->is_active) continue;
+        //Altering entities scale and rotation while game is in debug mode
+        // TEST ON EVERYTHING
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+        {
+            if (!entity.GetComponent<IsActive>()->is_active) continue;
 
-          //Search function for a specific object to test and NOT everything
-          auto entity_name_component = entity.GetComponent<EntityName>();
-          //Change "" to whatever object or comment the line to affect everything
-          if ("box2" != FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component)) continue;
+            //Search function for a specific object to test and NOT everything
+            auto entity_name_component = entity.GetComponent<EntityName>();
+            //Change "" to whatever object or comment the line to affect everything
+            if ("box2" != FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component)) continue;
 
-          auto& scale = entity.GetComponent<Scale>()->scale;
-          auto& rotation = entity.GetComponent<Rotation>()->rotation;
+            auto& scale = entity.GetComponent<Scale>()->scale;
+            auto& rotation = entity.GetComponent<Rotation>()->rotation;
 
-          scale = Vector2(m_ScaleDebugTest, m_ScaleDebugTest);
-          rotation = m_RotateDebugTest;
+            scale = Vector2(m_ScaleDebugTest, m_ScaleDebugTest);
+            rotation = m_RotateDebugTest;
 
-          entity.GetComponent<Transform>()->is_dirty = true;
-      }
-      #endif
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      UpdatePhysicsSystem();
+            entity.GetComponent<Transform>()->is_dirty = true;
+        }
+        #endif
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        UpdatePhysicsSystem();
 
-      //Render All Entities
+        //Render All Entities
 
-      RendererSprite2D();
-  }
+        RendererSprite2D();
+    }
 }
