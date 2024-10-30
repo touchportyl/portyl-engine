@@ -53,6 +53,7 @@ namespace FlexEngine
   bool Log::is_fatal = false;
   int Log::flow_scope = 0;
   bool Log::is_initialized = false;
+  Log::LogLevel Log::log_level = LogLevel_All;
 
   Log::Log()
   {
@@ -78,6 +79,8 @@ namespace FlexEngine
     log_stream.close();
 #endif
 
+    SetLogLevel();
+
     FLX_FLOW_BEGINSCOPE();
   }
   Log::~Log()
@@ -98,7 +101,27 @@ namespace FlexEngine
     is_initialized = false;
   }
 
-  void Log::Internal_Logger(WarningLevel level, const char* message)
+  Log::LogLevel Log::GetLogLevel()
+  {
+    return log_level;
+  }
+
+  void Log::SetLogLevel(LogLevel level)
+  {
+    log_level = level;
+  }
+
+  // Internal logger function
+  // 
+  // Flow:
+  // 1. Checks if the logger is initialized
+  // 2. Filters logs based on log level
+  // 3. Prepends log level and sets color
+  // 4. Appends flow scope
+  // 5. Appends message and resets color
+  // 6. Logs to console and file based on warning level
+  // 7. Quits application if fatal
+  void Log::Internal_Logger(LogLevel level, const char* message)
   {
     // default passthrough to std::cout if not initialized
     if (!is_initialized)
@@ -106,6 +129,9 @@ namespace FlexEngine
       std::cout << "The FlexLogger is not initialized. Message: " << message << std::endl;
       return;
     }
+
+    // filter logs based on log level
+    if (level < GetLogLevel()) return;
 
     // create string stream
     std::stringstream ss;
@@ -116,17 +142,17 @@ namespace FlexEngine
     // prepend warning level and set color
     switch (level)
     {
-    case WarningLevel::_Debug:   ss << TAG_COLOR_DEBUG   << " Debug"   " " << ANSI_RESET << " -> " << TEXT_COLOR_DEBUG   ; break;
-    case WarningLevel::_Flow:    ss << TAG_COLOR_FLOW    << " Flow"    " " << ANSI_RESET << " -> " << TEXT_COLOR_FLOW    ; break;
-    case WarningLevel::_Info:    ss << TAG_COLOR_INFO    << " Info"    " " << ANSI_RESET << " -> " << TEXT_COLOR_INFO    ; break;
-    case WarningLevel::_Warning: ss << TAG_COLOR_WARNING << " Warning" " " << ANSI_RESET << " -> " << TEXT_COLOR_WARNING ; break;
-    case WarningLevel::_Error:   ss << TAG_COLOR_ERROR   << " Error"   " " << ANSI_RESET << " -> " << TEXT_COLOR_ERROR   ; break;
-    case WarningLevel::_Fatal:   ss << TAG_COLOR_FATAL   << " Fatal"   " " << ANSI_RESET << " -> " << TEXT_COLOR_FATAL   ; break;
-    default:                     ss << TAG_COLOR_DEFAULT << " Unknown" " " << ANSI_RESET << " -> " << TEXT_COLOR_DEFAULT ; break;
+    case LogLevel_Debug:    ss << TAG_COLOR_DEBUG   << " Debug"   " " << ANSI_RESET << " -> " << TEXT_COLOR_DEBUG   ; break;
+    case LogLevel_Flow:     ss << TAG_COLOR_FLOW    << " Flow"    " " << ANSI_RESET << " -> " << TEXT_COLOR_FLOW    ; break;
+    case LogLevel_Info:     ss << TAG_COLOR_INFO    << " Info"    " " << ANSI_RESET << " -> " << TEXT_COLOR_INFO    ; break;
+    case LogLevel_Warning:  ss << TAG_COLOR_WARNING << " Warning" " " << ANSI_RESET << " -> " << TEXT_COLOR_WARNING ; break;
+    case LogLevel_Error:    ss << TAG_COLOR_ERROR   << " Error"   " " << ANSI_RESET << " -> " << TEXT_COLOR_ERROR   ; break;
+    case LogLevel_Fatal:    ss << TAG_COLOR_FATAL   << " Fatal"   " " << ANSI_RESET << " -> " << TEXT_COLOR_FATAL   ; break;
+    default:                ss << TAG_COLOR_DEFAULT << " Unknown" " " << ANSI_RESET << " -> " << TEXT_COLOR_DEFAULT ; break;
     }
 
     // append flow scope
-    if (level == WarningLevel::_Flow)
+    if (level == LogLevel_Flow)
     {
       ss << ANSI_RESET;
       for (int i = 0; i < flow_scope; i++) ss << "| ";
@@ -136,10 +162,11 @@ namespace FlexEngine
     // append message and reset color
     // extra space for fatal messages
     ss
-      << std::string((level == WarningLevel::_Fatal), ' ')
+      << std::string((level == LogLevel_Fatal), ' ')
       << message
-      << std::string((level == WarningLevel::_Fatal), ' ')
-      << ANSI_RESET<< "\n";
+      << std::string((level == LogLevel_Fatal), ' ')
+      << ANSI_RESET<< "\n"
+    ;
 
     // clean the stream of ANSI color codes for file logging
     std::string log_string = ss.str();
@@ -151,7 +178,6 @@ namespace FlexEngine
       log_string.erase(pos, end - pos + 1);
     }
 
-
     // log to console and file based on warning level
 #ifdef _DEBUG
     std::cout << ss.str();
@@ -161,12 +187,6 @@ namespace FlexEngine
     log_stream << log_string;
     log_stream.close();
 #else
-    // log everything except debug messages to console
-    if (level != WarningLevel::_Debug)
-    {
-      std::cout << ss.str();
-    }
-
     // full logs will be saved in release mode
     if (!log_stream.is_open())
     {
@@ -176,7 +196,7 @@ namespace FlexEngine
 #endif
 
     // quit application if fatal
-    if (level == WarningLevel::_Fatal)
+    if (level == LogLevel_Fatal)
     {
       Log::DumpLogs();
       std::exit(EXIT_FAILURE);

@@ -94,8 +94,6 @@ bool FlexEngine::FlexECS::Entity::TryGetComponent(T* out)
 template <typename T>
 void FlexEngine::FlexECS::Entity::AddComponent(const T& data)
 {
-  FLX_FLOW_BEGINSCOPE();
-
   // cache the entity id
   EntityID entity = entity_id;
 
@@ -122,8 +120,6 @@ void FlexEngine::FlexECS::Entity::AddComponent(const T& data)
     archetype.edges[component].add != nullptr // check if the archetype exists
   )
   {
-    Log::Flow("Graph traversal using edges");
-
     // get the archetype
     Archetype& next_archetype = *archetype.edges[component].add;
 
@@ -146,8 +142,6 @@ void FlexEngine::FlexECS::Entity::AddComponent(const T& data)
     // find the archetype
     if (ARCHETYPE_INDEX.count(new_type) != 0)
     {
-      Log::Flow("Find archetype using archetype_index");
-
       // get the archetype
       Archetype& next_archetype = ARCHETYPE_INDEX[new_type];
 
@@ -165,8 +159,6 @@ void FlexEngine::FlexECS::Entity::AddComponent(const T& data)
     // archetype doesn't exist, create it
     else
     {
-      Log::Flow("Create a new archetype");
-
       // create a new archetype
       // add the component to the type
       Archetype& new_archetype = Internal_CreateArchetype(new_type);
@@ -184,16 +176,12 @@ void FlexEngine::FlexECS::Entity::AddComponent(const T& data)
     }
 
   }
-
-  FLX_FLOW_ENDSCOPE();
 }
 
 // Do the opposite of AddComponent
 template <typename T>
 void FlexEngine::FlexECS::Entity::RemoveComponent()
 {
-  FLX_FLOW_BEGINSCOPE();
-
   // cache the entity id
   EntityID entity = entity_id;
 
@@ -210,8 +198,6 @@ void FlexEngine::FlexECS::Entity::RemoveComponent()
     archetype.edges[component].remove != nullptr // check if the archetype exists
   )
   {
-    Log::Flow("Graph traversal using edges");
-
     // get the archetype
     Archetype& next_archetype = *archetype.edges[component].remove;
 
@@ -231,8 +217,6 @@ void FlexEngine::FlexECS::Entity::RemoveComponent()
     // find the archetype
     if (ARCHETYPE_INDEX.count(new_type) != 0)
     {
-      Log::Flow("Find archetype using archetype_index");
-
       // get the archetype
       Archetype& next_archetype = ARCHETYPE_INDEX[new_type];
 
@@ -246,8 +230,6 @@ void FlexEngine::FlexECS::Entity::RemoveComponent()
     // archetype doesn't exist, create it
     else
     {
-      Log::Flow("Create a new archetype");
-
       // create a new archetype
       // add the component to the type
       Archetype& new_archetype = Internal_CreateArchetype(new_type);
@@ -261,6 +243,4 @@ void FlexEngine::FlexECS::Entity::RemoveComponent()
     }
 
   }
-
-  FLX_FLOW_ENDSCOPE();
 }

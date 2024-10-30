@@ -65,8 +65,6 @@ namespace FlexEngine
     // the ComponentIDList is sorted
     Archetype& Entity::Internal_CreateArchetype(ComponentIDList type)
     {
-      FLX_FLOW_FUNCTION();
-
       // create a new archetype
       Archetype& archetype = ARCHETYPE_INDEX[type];
 
@@ -83,6 +81,16 @@ namespace FlexEngine
         archetype.archetype_table.push_back(Column()); // create a column for each component
       }
 
+      // debugging
+      std::stringstream ss;
+      ss << "Created a new archetype: ";
+      for (ComponentID c : archetype.type)
+      {
+        ss << c;
+        if (c != archetype.type.back()) ss << ", ";
+      }
+      Log::Debug(ss);
+
       return archetype;
     }
 
@@ -96,8 +104,6 @@ namespace FlexEngine
     // like in the properties inspector, use flags instead
     void Entity::Internal_MoveEntity(EntityID entity, Archetype& from, size_t from_row, Archetype& to)
     {
-      FLX_FLOW_FUNCTION();
-
       // 1. Add the entity to the destination archetype's columns and entities vector
       // If the destination archetype does not have the component, it is being removed from the entity
       #pragma region Step 1
