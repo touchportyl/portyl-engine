@@ -208,10 +208,10 @@
     <ClCompile Include="src\FlexEngine\FlexMath\matrix3x3.cpp">
       <Filter>src\FlexEngine\FlexMath</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglfreetype.cpp">
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglfont.cpp">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglfont.cpp">
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengltextrenderer.cpp">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
@@ -405,10 +405,10 @@
     <ClInclude Include="src\FlexEngine\Renderer\alphabetstorage.h">
       <Filter>src\FlexEngine\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglfreetype.h">
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglfont.h">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglfont.h">
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengltextrenderer.h">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>

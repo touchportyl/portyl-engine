@@ -283,8 +283,8 @@ namespace FlexEngine
     //  Internal_LoadDefaultTexture(&m_font_data, &m_font, m_width, m_height);
     //}
 
-    void Font::Load(const Path& path_to_texture)
-    {
+    //void Font::Load(const Path& path_to_texture)
+    //{
       // always unload the texture before loading
       //Unload();
 
@@ -293,34 +293,31 @@ namespace FlexEngine
       //{
       //    Log::Fatal("Invalid font file, pls check file.");
       //}
-    }
+    //}
 
     void Font::Unload()
     {
-        std::string familyName = s_face ? s_face->family_name : "";
-        std::string styleName = s_face ? s_face->style_name : "";
-        if (styleName != "" && familyName != "") Log::Info("Unloaded font: " + familyName + " " + styleName);
-        
         //Free the FreeType face object
         if (s_face)
         {
+            Log::Debug("Unloaded font: " + std::string(s_face->family_name) + " " + std::string(s_face->style_name));
             FT_Done_Face(s_face);
             s_face = nullptr;
             --s_facesCount;
         }
 
         //Free the FreeType library object
-        if (s_facesCount<=0 && s_library)
+        if (s_facesCount <= 0 && s_library)
         {
             FT_Done_FreeType(s_library);
             s_library = nullptr;
+            Log::Info("All fonts unloaded.");
         }
 
         //Delete all textures in m_glyphs
         for (auto& pair : m_glyphs)
-        {
             glDeleteTextures(1, &pair.second.textureID);
-        }
+
         m_glyphs.clear();
     }
 
@@ -346,6 +343,23 @@ namespace FlexEngine
 
     #pragma endregion
 
+    #pragma region Getter functions
+    const Glyph& Font::GetGlyph(char c) const 
+    {
+        auto it = m_glyphs.find(c);
+        if (it != m_glyphs.end()) 
+        {
+            return it->second;
+        }
+        else 
+        {
+            Log::Warning("Font: Doesn't have this glyph/character.");
+            // Handle missing glyph case: return a default or error glyph
+            static Glyph defaultGlyph; // Define a default empty Glyph, if desired
+            return defaultGlyph;
+        }
+    }
+    #pragma endregion
   }
 
 }

@@ -373,16 +373,30 @@ namespace ChronoShift
         {
 
             FunctionQueue text_render_queue;
-
+            Renderer2DText sample;
             for (auto& txtentity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Text>())
             {
                 /////////////////////////////////////
                 //How to retrieve
                 /////////////////////////////////////
-               auto i = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->fonttype);
-               auto& asset_font = FLX_ASSET_GET(Asset::Font, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->fonttype));
+               //auto i = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->fonttype);
+               //auto& asset_font = FLX_ASSET_GET(Asset::Font, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->fonttype));
 
-                //text_render_queue.Insert({ [props]() { /*OpenGLFreeType::DrawText2D(props);*/ }, "", z_index });
+                if (!txtentity.GetComponent<IsActive>()->is_active) continue;
+                Matrix4x4 transform = txtentity.GetComponent<Transform>()->transform;
+                auto shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Shader>()->shader);
+                auto font = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->fonttype);
+                
+                sample.m_words = txtentity.GetComponent<Text>()->text;
+                sample.m_shader = shader;
+                sample.m_fonttype = font;
+                sample.m_transform = transform;
+                //Remove
+                sample.m_pos = txtentity.GetComponent<Position>()->position;
+                sample.m_scale = txtentity.GetComponent<Scale>()->scale;
+                sample.m_color = txtentity.GetComponent<Text>()->color;
+                
+                text_render_queue.Insert({ [sample]() { OpenGLTextRenderer::DrawText2D(sample); }, "", 0 });
             }
 
             //Push Settings

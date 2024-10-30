@@ -98,6 +98,7 @@ namespace FlexEngine
 
       // getter functions
 
+      Glyph const& GetGlyph(char c) const;
       //unsigned int    GetFont()      const { return m_font; }
       //unsigned char*  GetFontData()  const { return m_font_data; }
       //int             GetWidth()        const { return m_width; }

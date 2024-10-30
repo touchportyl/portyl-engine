@@ -274,11 +274,10 @@ namespace ChronoShift {
             scene->Internal_StringStorage_New(R"(\fonts\Bangers\Bangers-Regular.ttf)"),
             "> TEST INPUT I HOPE THIS WORKS <",
             Vector3::One,
-            Vector3::One,
             Renderer2DProps::Alignment_Center,
             Renderer2DProps::VBO_BasicInverted
         });
-        testText.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+        testText.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\freetypetext)") });
         
         #endif
 

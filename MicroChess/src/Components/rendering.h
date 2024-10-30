@@ -144,8 +144,8 @@ using namespace FlexEngine;
   public:
       FlexECS::Scene::StringIndex fonttype = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
       std::string text = "TEST";
-      Vector3 color_to_add = Vector3::Zero;
-      Vector3 color_to_multiply = Vector3::One;
+      Vector3 color = Vector3::One;
+      // border color, border size, underline, etc
       int alignment = Renderer2DProps::Alignment_Center;
       GLuint vbo_id = Renderer2DProps::VBO_Basic;
   };
