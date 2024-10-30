@@ -21,8 +21,8 @@ namespace ChronoShift
 		ImGui::Begin("Scene", nullptr, window_flags);
 		{
 			ImVec2 panel_size = ImGui::GetWindowSize();
-			float width = FlexEngine::Application::GetCurrentWindow()->GetWidth();
-			float height = FlexEngine::Application::GetCurrentWindow()->GetHeight();
+			float width =  static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetWidth());
+			float height = static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetHeight());
 
 			if (height > panel_size.y)
 			{

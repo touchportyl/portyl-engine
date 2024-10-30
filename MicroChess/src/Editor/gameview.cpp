@@ -21,8 +21,8 @@ namespace ChronoShift
 		ImGui::Begin("Game", nullptr, window_flags);
 		{
 			ImVec2 panel_size = ImGui::GetWindowSize();
-			float width = FlexEngine::Application::GetCurrentWindow()->GetWidth();
-			float height = FlexEngine::Application::GetCurrentWindow()->GetHeight();
+			float width =  static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetWidth());
+			float height = static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetHeight());
 
 			if (height > panel_size.y)
 			{
@@ -35,7 +35,7 @@ namespace ChronoShift
 
 			ImGui::SetCursorPos(viewport_position);
 			//Note: need to invert UVs vertically.
-			ImGui::Image((ImTextureID)FlexEngine::OpenGLSpriteRenderer::GetCreatedTexture(FlexEngine::OpenGLSpriteRenderer::CreatedTextureID::CID_editor),
+			ImGui::Image((ImTextureID)FlexEngine::OpenGLSpriteRenderer::GetCreatedTexture(FlexEngine::OpenGLSpriteRenderer::CreatedTextureID::CID_finalRender),
 				viewport_size, ImVec2(0, 1), ImVec2(1, 0));
 		}
 		ImGui::End();

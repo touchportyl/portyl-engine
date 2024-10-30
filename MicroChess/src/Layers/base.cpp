@@ -33,9 +33,10 @@ namespace ChronoShift
     FreeQueue::Push(std::bind(&AssetManager::Unload), "MicroChess AssetManager");
 
     FlexEngine::Window* window = Application::GetCurrentWindow();
-    window->SetTargetFPS();
+    window->SetTargetFPS(40);
     window->SetVSync(false);
     window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_icon_white.png)"));
+    //glfwSetWindowSize(window->GetGLFWWindow(), 1600, 900);
 
     //window->PushLayer(std::make_shared<MenuLayer>());
     //window->PushLayer(std::make_shared<BoardLayer>());
@@ -67,7 +68,8 @@ namespace ChronoShift
     FunctionQueue function_queue;
 
     // setup dockspace
-    ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_NoDockingInCentralNode;
+    //ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_NoDockingInCentralNode;
+    ImGuiDockNodeFlags dockspace_flags = 0;
     #pragma warning(suppress: 4189) // local variable is initialized but not referenced
     ImGuiID dockspace_main_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), dockspace_flags);
     
