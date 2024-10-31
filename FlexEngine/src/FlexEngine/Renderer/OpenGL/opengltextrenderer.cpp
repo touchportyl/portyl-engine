@@ -231,19 +231,19 @@ namespace FlexEngine
 
         // Calculate position and size of the glyph
         float xpos = pos.x + glyph.bearing.x; //Might need fix
-        float ypos = pos.y - (glyph.size.y - glyph.bearing.y); // Align glyph to baseline
-        float w = glyph.size.x;
+        float ypos = pos.y + (glyph.bearing.y - glyph.size.y); // Align glyph to baseline
+        float w = -glyph.size.x;
         float h = glyph.size.y;
 
         // Define the vertices for a quad (two triangles) for the glyph
         float vertices[6][4] = {
-            { xpos,     ypos + h, 1.0f, 1.0f },
-            { xpos,     ypos,     1.0f, 0.0f },
-            { xpos + w, ypos,     0.0f, 0.0f },
+            { xpos,     ypos + h, 0.0f, 1.0f },
+            { xpos,     ypos,     0.0f, 0.0f },
+            { xpos + w, ypos,     1.0f, 0.0f },
 
-            { xpos,     ypos + h, 1.0f, 1.0f },
-            { xpos + w, ypos,     0.0f, 0.0f },
-            { xpos + w, ypos + h, 0.0f, 1.0f }
+            { xpos,     ypos + h, 0.0f, 1.0f },
+            { xpos + w, ypos,     1.0f, 0.0f },
+            { xpos + w, ypos + h, 1.0f, 1.0f }
         };
 
         // Update the VBO with the new vertices
