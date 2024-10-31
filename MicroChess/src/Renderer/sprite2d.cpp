@@ -387,7 +387,7 @@ namespace ChronoShift
                 auto shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Shader>()->shader);
                 auto font = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->fonttype);
                 
-                sample.m_words = txtentity.GetComponent<Text>()->text;
+                sample.m_words = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->text);
                 sample.m_shader = shader;
                 sample.m_fonttype = font;
                 sample.m_transform = transform;

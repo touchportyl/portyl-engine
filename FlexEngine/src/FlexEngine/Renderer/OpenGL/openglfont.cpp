@@ -158,7 +158,7 @@ namespace FlexEngine
         ++s_facesCount;
 
         //Load Glyphs
-        int font_size = 10; //Default
+        int font_size = 50; //Default
         FT_Set_Pixel_Sizes(s_face, 0, font_size); // Set font size
         LoadGlyphs(); //Seems correct lol
     }
@@ -199,7 +199,7 @@ namespace FlexEngine
                 GL_UNSIGNED_BYTE,
                 g->bitmap.buffer
             );
-
+            
             // Set texture options
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

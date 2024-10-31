@@ -265,20 +265,24 @@ namespace ChronoShift {
         #if 1
         FlexECS::Entity testText = FlexECS::Scene::CreateEntity("testText");
         testText.AddComponent<IsActive>({ true });
-        testText.AddComponent<Position>({ {550, 300 } });
-        testText.AddComponent<Scale>({ { 800,800} });
+        testText.AddComponent<Position>({ {-150, 300 } });
+        testText.AddComponent<Scale>({ { 0.5,0.5 } });
         testText.AddComponent<Rotation>({ });
         testText.AddComponent<Transform>({});
         testText.AddComponent<ZIndex>({ 9 });
+        std::string asciiTable;
+        for (int i = 0; i < 128; ++i) {
+            asciiTable += static_cast<char>(i);
+        }
         testText.AddComponent<Text>({
             scene->Internal_StringStorage_New(R"(\fonts\Bangers\Bangers-Regular.ttf)"),
-            "> TEST INPUT I HOPE THIS WORKS <",
+            scene->Internal_StringStorage_New(asciiTable), //"> TEST INPUT I HOPE THIS WORKS <" TODO WEIRD CHARACTERS DONT WORK
             Vector3::One,
             Renderer2DProps::Alignment_Center,
-            Renderer2DProps::VBO_BasicInverted
+            //Renderer2DProps::VBO_BasicInverted
         });
         testText.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\freetypetext)") });
-        
+        auto i = testText.GetComponent<Text>()->text;
         #endif
 
         FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");

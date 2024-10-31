@@ -193,8 +193,8 @@ namespace FlexEngine
         {
             Log::Fatal("Text Renderer: Unknown font type! Please check what u wrote!");
         }
-        asset_shader.SetUniform_vec3("textColor", text.m_color);
-
+        asset_shader.SetUniform_vec3("u_color", text.m_color);
+        asset_shader.SetUniform_mat4("u_model", text.m_transform);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           0.0f, 1280,
@@ -206,7 +206,7 @@ namespace FlexEngine
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(m_VAO);
         auto& asset_font = FLX_ASSET_GET(Asset::Font, text.m_fonttype);
-        Vector3 pen_pos = text.m_pos;
+        Vector3 pen_pos = Vector3::Zero; //This is where alignment comes to play
         // Iterate through all characters in the string
         for (char c : text.m_words) 
         {
@@ -217,7 +217,7 @@ namespace FlexEngine
             RenderGlyph(glyph, pen_pos, text.m_scale, text.m_color);
 
             // Advance to the next character's position
-            pen_pos.x += (glyph.advance >> 6) * text.m_scale.x; // Advance is typically in 1/64 pixels
+            pen_pos.x -= glyph.advance + 10.0f;/* * 10;*/ // Advance is typically in 1/64 pixels
         }
 
         glBindVertexArray(0);
@@ -230,20 +230,20 @@ namespace FlexEngine
         glBindTexture(GL_TEXTURE_2D, glyph.textureID);
 
         // Calculate position and size of the glyph
-        float xpos = pos.x + glyph.bearing.x * scale;
-        float ypos = pos.y - (glyph.size.y - glyph.bearing.y) * scale;
-        float w = glyph.size.x * scale;
-        float h = glyph.size.y * scale;
+        float xpos = pos.x + glyph.bearing.x; //Might need fix
+        float ypos = pos.y - (glyph.size.y - glyph.bearing.y); // Align glyph to baseline
+        float w = glyph.size.x;
+        float h = glyph.size.y;
 
         // Define the vertices for a quad (two triangles) for the glyph
         float vertices[6][4] = {
-            { xpos,     ypos + h, 0.0f, 0.0f },
-            { xpos,     ypos,     0.0f, 1.0f },
-            { xpos + w, ypos,     1.0f, 1.0f },
+            { xpos,     ypos + h, 1.0f, 1.0f },
+            { xpos,     ypos,     1.0f, 0.0f },
+            { xpos + w, ypos,     0.0f, 0.0f },
 
-            { xpos,     ypos + h, 0.0f, 0.0f },
-            { xpos + w, ypos,     1.0f, 1.0f },
-            { xpos + w, ypos + h, 1.0f, 0.0f }
+            { xpos,     ypos + h, 1.0f, 1.0f },
+            { xpos + w, ypos,     0.0f, 0.0f },
+            { xpos + w, ypos + h, 0.0f, 1.0f }
         };
 
         // Update the VBO with the new vertices

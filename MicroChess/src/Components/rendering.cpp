@@ -77,7 +77,7 @@ namespace ChronoShift
       FLX_REFL_REGISTER_PROPERTY(text)
       FLX_REFL_REGISTER_PROPERTY(color)
       FLX_REFL_REGISTER_PROPERTY(alignment)
-      FLX_REFL_REGISTER_PROPERTY(vbo_id)
+      //FLX_REFL_REGISTER_PROPERTY(vbo_id)
   FLX_REFL_REGISTER_END;
 
 
@@ -139,6 +139,13 @@ namespace ChronoShift
     COMPONENT_VIEWER_CHECKBOX(post_processed)
   COMPONENT_VIEWER_END(Sprite)
 
+  COMPONENT_VIEWER_START(Text)
+      COMPONENT_VIEWER_TEXTURE_PATH(fonttype)
+      COMPONENT_VIEWER_STRING(text)
+      COMPONENT_VIEWER_COLOR3(color)
+      //COMPONENT_VIEWER(alignment)
+  COMPONENT_VIEWER_END(Text)
+
   void RegisterRenderingComponents()
   {
     REGISTER_COMPONENT_VIEWER(Position);
@@ -150,5 +157,6 @@ namespace ChronoShift
     REGISTER_COMPONENT_VIEWER(Parent);
     REGISTER_COMPONENT_VIEWER(Shader);
     REGISTER_COMPONENT_VIEWER(Sprite);
+    REGISTER_COMPONENT_VIEWER(Text);
   }
 }
