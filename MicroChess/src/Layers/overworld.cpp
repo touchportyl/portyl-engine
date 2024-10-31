@@ -204,36 +204,6 @@ namespace ChronoShift {
                });
             box7.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box7.AddComponent<Parent>({ box6 });
-
-          #pragma region Delete this debug code before pushing!!!!
-          ///// COPY PASTA BEGINS HERE
-          FlexECS::Entity thing2 = FlexECS::Scene::CreateEntity("White Queen");
-          thing2.AddComponent<IsActive>({ true });
-          thing2.AddComponent<Position>({ {0,0} });
-          thing2.AddComponent<Rotation>({ });
-          thing2.AddComponent<Scale>({ { 15,15 } });
-          thing2.AddComponent<ZIndex>({ 10 });
-          thing2.AddComponent<Transform>({ });
-          thing2.AddComponent<Sprite>({
-            scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
-            Vector3::One,
-            Vector3::Zero,
-            Vector3::One,
-            Renderer2DProps::Alignment_Center
-           });
-          thing2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
-          for (size_t x = 0; x < 50; x++)
-          {
-            for (size_t y = 0; y < 50; y++)
-            {
-              FlexECS::Entity cloned_thing = scene->CloneEntity(thing2);
-              auto& position = cloned_thing.GetComponent<Position>()->position;
-              position.x = static_cast<float>(15 * (x + 1));
-              position.y = static_cast<float>(15 * (y + 1));
-            }
-          }
-          #pragma endregion
         }
         #endif
 
@@ -389,10 +359,6 @@ namespace ChronoShift {
       if (Input::GetKeyDown(GLFW_KEY_0))
       {
           auto scene = FlexECS::Scene::GetActiveScene();
-          for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<EntityName>())
-          {
-              scene->DestroyEntity(entity);
-          }
 
           FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
           thing.AddComponent<IsActive>({ true });
@@ -421,49 +387,7 @@ namespace ChronoShift {
               }
           }
       }
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Debug Tests
-  //Key hold (Can just alter here, not very elegant but will do for now)
-      #if 1 //DEBUG
-      if (Input::GetKey(GLFW_KEY_F))
-      {
-          m_ScaleDebugTest -= 0.008f;
-      }
-      else if (Input::GetKey(GLFW_KEY_G))
-      {
-          m_ScaleDebugTest += 0.008f;
-      }
 
-      if (Input::GetKey(GLFW_KEY_Q))
-      {
-          m_RotateDebugTest.z += 1.0f;
-      }
-      else if (Input::GetKey(GLFW_KEY_E))
-      {
-          m_RotateDebugTest.z -= 1.0f;
-      }
-
-      //Altering entities scale and rotation while game is in debug mode
-      // TEST ON EVERYTHING
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Transform>())
-      {
-          if (!entity.GetComponent<IsActive>()->is_active) continue;
-
-          //Search function for a specific object to test and NOT everything
-          auto entity_name_component = entity.GetComponent<EntityName>();
-          //Change "" to whatever object or comment the line to affect everything
-          if ("box2" != FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component)) continue;
-
-          auto& scale = entity.GetComponent<Scale>()->scale;
-          auto& rotation = entity.GetComponent<Rotation>()->rotation;
-
-          scale = Vector2(m_ScaleDebugTest, m_ScaleDebugTest);
-          rotation = m_RotateDebugTest;
-
-          entity.GetComponent<Transform>()->is_dirty = true;
-      }
-      #endif
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
       UpdatePhysicsSystem();
 
       //Render All Entities

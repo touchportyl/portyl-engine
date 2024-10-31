@@ -1,3 +1,16 @@
+// WLVERSE [https://wlverse.web.app]
+// datastructures.h
+// 
+// API for the ECS system
+//
+// AUTHORS
+// [90%] Chan Wen Loong (wenloong.c\@digipen.edu)
+//   - everything else
+// [10%] Kuan Yew Chong (yewchong.k\@digipen.edu)
+//   - cache query stuff, proxy container
+// 
+// Copyright (c) 2024 DigiPen, All rights reserved.
+
 #pragma once
 
 #include "flx_api.h"
@@ -244,9 +257,44 @@ namespace FlexEngine
       std::vector<Entity> Query();
 
       template <typename... Ts>
-      std::vector<Entity>& CachedQuery();
+      std::vector<Entity> CachedQuery();
+
+      // Proxy class to return the combined list of entities as if it was one list
+      class ProxyContainer
+      {
+      public:
+        ProxyContainer() : entity_ids() { }
+
+        // Constructor 
+        ProxyContainer(std::vector<std::vector<FlexEngine::FlexECS::Entity>*>& ptrs)
+        {
+          for (auto& ptr : ptrs)
+          {
+            entity_ids.push_back(ptr);
+          }
+        }
+
+        // Returns a vector which is the combined list of these vectors
+        std::vector<FlexEngine::FlexECS::Entity> Get()
+        {
+          std::vector<FlexEngine::FlexECS::Entity> combined;
+          for (auto& container : entity_ids)
+          {
+            combined.insert(combined.end(), container->begin(), container->end());
+          }
+          return combined;
+        }
+
+        void AddPtr(std::vector<FlexEngine::FlexECS::Entity>* ptr)
+        {
+          entity_ids.push_back(ptr);
+        }
+
+      private:
+        std::vector<std::vector<FlexEngine::FlexECS::Entity>*> entity_ids; // Container of pointers to std::vector<EntityID>
+      };
       
-      std::map<ComponentIDList, std::vector<Entity>> query_cache;
+      std::map<ComponentIDList, ProxyContainer> query_cache; // Cache for the query results, in the form of a proxy object
 
       #pragma endregion
 
