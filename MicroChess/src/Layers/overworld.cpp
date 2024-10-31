@@ -281,7 +281,7 @@ namespace ChronoShift {
             scene->Internal_StringStorage_New(R"(\fonts\Bangers\Bangers-Regular.ttf)"), // R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"),//R"(\fonts\Bangers\Bangers-Regular.ttf)" // R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"
             scene->Internal_StringStorage_New("> TEST INPUT I HOPE THIS WORKS <"), //"> TEST INPUT I HOPE THIS WORKS <" TODO WEIRD CHARACTERS DONT WORK
             Vector3::One,
-            Renderer2DProps::Alignment_Center,
+            {Renderer2DText::Alignment_Right,Renderer2DText::Alignment_Top}
             //Renderer2DProps::VBO_BasicInverted
         });
         testText.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\freetypetext)") });

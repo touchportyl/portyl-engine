@@ -145,7 +145,7 @@ using namespace FlexEngine;
       FlexECS::Scene::StringIndex text = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("TEST");
       Vector3 color = Vector3::One;
       // border color, border size, underline, etc
-      int alignment = Renderer2DProps::Alignment_Center;
+      std::pair<int,int> alignment = {Renderer2DText::Alignment_Center, Renderer2DText::Alignment_Middle}; // Default value: centered (all bits set)
   };
 
   /*!***************************************************************************

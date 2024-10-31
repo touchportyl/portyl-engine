@@ -39,7 +39,7 @@ namespace FlexEngine
     bool OpenGLSpriteRenderer::m_depth_test = false;
     bool OpenGLSpriteRenderer::m_blending = false;
 
-    std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
+    std::vector<MeshBuffer> OpenGLSpriteRenderer::m_vbos;
     std::vector<GLuint> OpenGLSpriteRenderer::m_batchSSBOs;
 
     std::filesystem::path curr_file_path = __FILE__;
@@ -271,7 +271,7 @@ namespace FlexEngine
         /////////////////////////////////////////////////////////////////////////////////////
         // Create VAOs and VBOs (CAN BE DONE BETTER)
         struct VertexData {
-            VertexBufferObject buffer;
+            MeshBuffer buffer;
             const float* vertices;
             int count;
         };
@@ -317,10 +317,10 @@ namespace FlexEngine
 
         VertexData vertexData[] =
         {
-            {VertexBufferObject(), quadVertices, sizeof(quadVertices) / sizeof(float)},
-            {VertexBufferObject(), quadInvertedVertices, sizeof(quadInvertedVertices) / sizeof(float)},
-            {VertexBufferObject(), lineVertices, sizeof(lineVertices) / sizeof(float)},
-            {VertexBufferObject(), postProcessingVertices, sizeof(postProcessingVertices) / sizeof(float)}
+            {MeshBuffer(), quadVertices, sizeof(quadVertices) / sizeof(float)},
+            {MeshBuffer(), quadInvertedVertices, sizeof(quadInvertedVertices) / sizeof(float)},
+            {MeshBuffer(), lineVertices, sizeof(lineVertices) / sizeof(float)},
+            {MeshBuffer(), postProcessingVertices, sizeof(postProcessingVertices) / sizeof(float)}
         };
 
         for (auto& data : vertexData)
@@ -530,7 +530,7 @@ namespace FlexEngine
         glBindVertexArray(0);
     }
 
-    void OpenGLSpriteRenderer::DrawBatchTexture2D(const Renderer2DProps& props, const BatchInstanceBlock& data)
+    void OpenGLSpriteRenderer::DrawBatchTexture2D(const Renderer2DProps& props, const Sprite_Batch_Inst& data)
     {
         // Guard
         if (data.m_transformationData.size() != data.m_colorAddData.size() ||

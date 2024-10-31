@@ -74,19 +74,19 @@ namespace ChronoShift
             default: case Renderer2DProps::Alignment::Alignment_Center: sprite_alignment = Vector2::Zero; break;
             }
         }
-        else if (currEntity.TryGetComponent<Text>(checkText))
-        {
-            //TODO DOUBLE CHECK THIS PART (SEEMS VERY INEFFICIENT)
-            //CHANGE TO BITWISE FOR BETTER ADAPTABILITY
-            switch (currEntity.GetComponent<Text>()->alignment)
-            {
-            case Renderer2DProps::Alignment::Alignment_TopLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, local_scale.y * 0.5f); break;
-            case Renderer2DProps::Alignment::Alignment_TopRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, local_scale.y * 0.5f); break;
-            case Renderer2DProps::Alignment::Alignment_BottomLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
-            case Renderer2DProps::Alignment::Alignment_BottomRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
-            default: case Renderer2DProps::Alignment::Alignment_Center: sprite_alignment = Vector2::Zero; break;
-            }
-        }
+        //else if (currEntity.TryGetComponent<Text>(checkText))
+        //{
+        //    //TODO DOUBLE CHECK THIS PART (SEEMS VERY INEFFICIENT)
+        //    //CHANGE TO BITWISE FOR BETTER ADAPTABILITY
+        //    switch (currEntity.GetComponent<Text>()->alignment)
+        //    {
+        //    case Renderer2DProps::Alignment::Alignment_TopLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, local_scale.y * 0.5f); break;
+        //    case Renderer2DProps::Alignment::Alignment_TopRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, local_scale.y * 0.5f); break;
+        //    case Renderer2DProps::Alignment::Alignment_BottomLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
+        //    case Renderer2DProps::Alignment::Alignment_BottomRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
+        //    default: case Renderer2DProps::Alignment::Alignment_Center: sprite_alignment = Vector2::Zero; break;
+        //    }
+        //}
 
         // calculate the transform
         Matrix4x4 translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, Vector3(-(local_position.x + sprite_alignment.x), local_position.y + sprite_alignment.y, 0.0f));
@@ -284,7 +284,7 @@ namespace ChronoShift
         // Integrating batching to pipeline
         #if 1
         {
-            std::unordered_map<std::string, BatchInstanceBlock> batchMap;
+            std::unordered_map<std::string, Sprite_Batch_Inst> batchMap;
 
             //same thing as update transformations, flush update queue (lags if more than 2500 objects)
             for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
@@ -324,10 +324,10 @@ namespace ChronoShift
                 // If a batch for this sprite type doesn't exist, create it
                 if (batchMap.find(batchKey) == batchMap.end())
                 {
-                    batchMap[batchKey] = BatchInstanceBlock();
+                    batchMap[batchKey] = Sprite_Batch_Inst();
                     batchMap[batchKey].m_vboid = sprite->vbo_id;
                 }
-                // Push transformation and color data to the BatchInstanceBlock
+                // Push transformation and color data to the Sprite_Batch_Inst
                 batchMap[batchKey].m_transformationData.push_back(transform);
                 batchMap[batchKey].m_colorAddData.push_back(props.color_to_add);
                 batchMap[batchKey].m_colorMultiplyData.push_back(props.color_to_multiply);
@@ -391,9 +391,10 @@ namespace ChronoShift
                 sample.m_shader = shader;
                 sample.m_fonttype = font;
                 sample.m_transform = transform;
-                //Remove
-                sample.m_pos = txtentity.GetComponent<Position>()->position;
-                sample.m_scale = txtentity.GetComponent<Scale>()->scale;
+                sample.m_alignment = {
+                    static_cast<Renderer2DText::AlignmentX>(txtentity.GetComponent<Text>()->alignment.first),
+                    static_cast<Renderer2DText::AlignmentY>(txtentity.GetComponent<Text>()->alignment.second)
+                };
                 sample.m_color = txtentity.GetComponent<Text>()->color;
                 
                 text_render_queue.Insert({ [sample]() { OpenGLTextRenderer::DrawText2D(sample); }, "", 0 });
