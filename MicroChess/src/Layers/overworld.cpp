@@ -265,6 +265,9 @@ namespace ChronoShift {
         #if 1
         FlexECS::Entity testText = FlexECS::Scene::CreateEntity("testText");
         testText.AddComponent<IsActive>({ true });
+        testText.AddComponent<CharacterInput>({ });
+        testText.AddComponent<Rigidbody>({ {}, false });
+        testText.AddComponent<BoundingBox2D>({ });
         testText.AddComponent<Position>({ {-150, 300 } });
         testText.AddComponent<Scale>({ { 0.5,0.5 } });
         testText.AddComponent<Rotation>({ });
@@ -275,14 +278,13 @@ namespace ChronoShift {
             asciiTable += static_cast<char>(i);
         }
         testText.AddComponent<Text>({
-            scene->Internal_StringStorage_New(R"(\fonts\Bangers\Bangers-Regular.ttf)"),
-            scene->Internal_StringStorage_New(asciiTable), //"> TEST INPUT I HOPE THIS WORKS <" TODO WEIRD CHARACTERS DONT WORK
+            scene->Internal_StringStorage_New(R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"),//R"(\fonts\Bangers\Bangers-Regular.ttf)" // R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"
+            scene->Internal_StringStorage_New("I will push tmr class because still not up to standard"), //"> TEST INPUT I HOPE THIS WORKS <" TODO WEIRD CHARACTERS DONT WORK
             Vector3::One,
             Renderer2DProps::Alignment_Center,
             //Renderer2DProps::VBO_BasicInverted
         });
         testText.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\freetypetext)") });
-        auto i = testText.GetComponent<Text>()->text;
         #endif
 
         FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
