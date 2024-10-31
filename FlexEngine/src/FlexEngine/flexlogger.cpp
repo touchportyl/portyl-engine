@@ -55,6 +55,9 @@ namespace FlexEngine
   bool Log::is_initialized = false;
   Log::LogLevel Log::log_level = LogLevel_All;
 
+  int Log::current_file_index = 0;
+  size_t Log::current_file_size = 0;
+
   Log::Log()
   {
     is_initialized = true;
@@ -109,6 +112,25 @@ namespace FlexEngine
   void Log::SetLogLevel(LogLevel level)
   {
     log_level = level;
+  }
+
+  void Log::Internal_IncrementLogFile()
+  {
+    // get filename
+    std::stringstream filename{};
+    filename << DateTime::GetFormattedDateTime("%Y-%m-%d") << "_" << std::setw(3) << std::setfill('0') << current_file_index << ".log";
+    std::filesystem::path new_log_file_path = log_base_path / filename.str();
+
+    // save log file
+    
+    // unhide the file
+    // open new log file
+
+    // increment file index
+    current_file_index++;
+
+    // reset file size
+    current_file_size = 0;
   }
 
   // Internal logger function
@@ -178,6 +200,14 @@ namespace FlexEngine
       log_string.erase(pos, end - pos + 1);
     }
 
+    current_file_size += log_string.size() + 1; // +1 for newline
+
+    // if log file is too large, increment log file
+    if (current_file_size > MAX_LOG_FILE_SIZE)
+    {
+      Internal_IncrementLogFile();
+    }
+
     // log to console and file based on warning level
 #ifdef _DEBUG
     std::cout << ss.str();
@@ -192,7 +222,7 @@ namespace FlexEngine
     {
       log_stream.open(log_file_path.string(), std::ios::out | std::ios::app);
     }
-    log_stream << ss.str();
+    log_stream << log_string;
 #endif
 
     // quit application if fatal

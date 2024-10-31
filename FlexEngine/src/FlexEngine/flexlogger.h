@@ -33,7 +33,6 @@
 
 namespace FlexEngine
 {
-
   class __FLX_API Log
   {
   public:
@@ -121,6 +120,18 @@ namespace FlexEngine
     static bool is_fatal;
     static int flow_scope;
     static LogLevel log_level;
+
+
+    // Maximum log size before it is dumped to a file
+    static constexpr size_t MAX_LOG_FILE_SIZE = 1024 * 1024 * 10; // 10MB
+
+    static int current_file_index;
+    static size_t current_file_size;
+
+    // INTERNAL FUNCTION
+    // Increments the log file number
+    static void Internal_IncrementLogFile();
+
 
     // INTERNAL FUNCTION
     // This handles the logging of messages
