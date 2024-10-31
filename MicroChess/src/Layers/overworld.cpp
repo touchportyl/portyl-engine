@@ -278,13 +278,16 @@ namespace ChronoShift {
             asciiTable += static_cast<char>(i);
         }
         testText.AddComponent<Text>({
-            scene->Internal_StringStorage_New(R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"),//R"(\fonts\Bangers\Bangers-Regular.ttf)" // R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"
-            scene->Internal_StringStorage_New("I will push tmr class because still not up to standard"), //"> TEST INPUT I HOPE THIS WORKS <" TODO WEIRD CHARACTERS DONT WORK
+            scene->Internal_StringStorage_New(R"(\fonts\Bangers\Bangers-Regular.ttf)"), // R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"),//R"(\fonts\Bangers\Bangers-Regular.ttf)" // R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"
+            scene->Internal_StringStorage_New("> TEST INPUT I HOPE THIS WORKS <"), //"> TEST INPUT I HOPE THIS WORKS <" TODO WEIRD CHARACTERS DONT WORK
             Vector3::One,
             Renderer2DProps::Alignment_Center,
             //Renderer2DProps::VBO_BasicInverted
         });
         testText.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\freetypetext)") });
+        //How to change font settings(CALL ONCE IF WANT CHANGE -> REGENRATE FONT FOR YOU)
+        auto& asset_font = FLX_ASSET_GET(Asset::Font, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(testText.GetComponent<Text>()->fonttype));
+        asset_font.SetFontSize(100);
         #endif
 
         FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
