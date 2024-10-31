@@ -146,7 +146,6 @@ using namespace FlexEngine;
       Vector3 color = Vector3::One;
       // border color, border size, underline, etc
       int alignment = Renderer2DProps::Alignment_Center;
-      //GLuint vbo_id = Renderer2DProps::VBO_Basic;
   };
 
   /*!***************************************************************************
