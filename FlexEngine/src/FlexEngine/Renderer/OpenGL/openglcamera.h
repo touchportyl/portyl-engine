@@ -9,11 +9,11 @@ namespace FlexEngine
 {
    
     /*!************************************************************************
-* \struct CameraData
-* \brief
-* Holds core camera properties, including position, orientation,
-* and transformation matrices.
-*************************************************************************/
+    * \struct CameraData
+    * \brief
+    * Holds core camera properties, including position, orientation,
+    * and transformation matrices.
+    *************************************************************************/
     struct CameraData
     {
         Vector3 position;        /*!< Camera position in world space */

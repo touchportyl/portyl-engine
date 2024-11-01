@@ -290,6 +290,17 @@ namespace ChronoShift {
         asset_font.SetFontSize(100);
         #endif
 
+        //Camera 
+        #if 1
+        FlexECS::Entity camera = FlexECS::Scene::CreateEntity("MainCamera");
+        camera.AddComponent<Position>({ {-150, 300 } });
+        camera.AddComponent<Scale>({ { 0.5,0.5 } });
+        camera.AddComponent<Rotation>({ });
+        camera.AddComponent<Transform>({});
+        camera.AddComponent<Camera>({});
+        
+        #endif
+
         FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
         editorRender.AddComponent<IsActive>({ true });
         editorRender.AddComponent<Position>({ {550, 300 } });
