@@ -62,7 +62,6 @@ namespace ChronoShift
         static Vector2 sprite_alignment = Vector2::Zero;
         // Get sprite component if it exists
         Sprite* checkSprite = nullptr;
-        Text* checkText = nullptr;
         if (currEntity.TryGetComponent<Sprite>(checkSprite))
         {
             switch (currEntity.GetComponent<Sprite>()->alignment)
@@ -74,19 +73,6 @@ namespace ChronoShift
             default: case Renderer2DProps::Alignment::Alignment_Center: sprite_alignment = Vector2::Zero; break;
             }
         }
-        //else if (currEntity.TryGetComponent<Text>(checkText))
-        //{
-        //    //TODO DOUBLE CHECK THIS PART (SEEMS VERY INEFFICIENT)
-        //    //CHANGE TO BITWISE FOR BETTER ADAPTABILITY
-        //    switch (currEntity.GetComponent<Text>()->alignment)
-        //    {
-        //    case Renderer2DProps::Alignment::Alignment_TopLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, local_scale.y * 0.5f); break;
-        //    case Renderer2DProps::Alignment::Alignment_TopRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, local_scale.y * 0.5f); break;
-        //    case Renderer2DProps::Alignment::Alignment_BottomLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
-        //    case Renderer2DProps::Alignment::Alignment_BottomRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
-        //    default: case Renderer2DProps::Alignment::Alignment_Center: sprite_alignment = Vector2::Zero; break;
-        //    }
-        //}
 
         // calculate the transform
         Matrix4x4 translation_matrix = Matrix4x4::Translate(Matrix4x4::Identity, Vector3(-(local_position.x + sprite_alignment.x), local_position.y + sprite_alignment.y, 0.0f));

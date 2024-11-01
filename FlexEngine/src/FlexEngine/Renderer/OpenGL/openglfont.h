@@ -1,88 +1,157 @@
 #pragma once
-
+/*!************************************************************************
+* WLVERSE [https://wlverse.web.app]
+* openglfont.h
+*
+* This file implements the Font class, responsible for font rendering using
+* FreeType and OpenGL. It loads font files, generates glyph textures,
+* manages font settings (size, hinting, kerning), and provides glyph data
+* for rendering.
+*
+* Key functionalities include:
+* - Font file loading and unloading via FreeType library.
+* - Dynamic font size adjustment and glyph reloading.
+* - Per-glyph OpenGL texture management for efficient rendering.
+*
+* AUTHORS
+* [100%] Soh Wei Jie (weijie.soh@digipen.edu)
+*   - Main Author
+*   - Developed font handling and texture generation with OpenGL.
+*
+* Copyright (c) 2024 DigiPen, All rights reserved.
+**************************************************************************/
 #include "flx_api.h"
-
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "Wrapper/file.h"
-#include "Renderer/OpenGL/openglshader.h"
+
+#include "FlexMath/matrix4x4.h"
 #include <glad/glad.h>
 #include <string>
 
-// Helper macro to display a texture for ImGui using the ImGui::Image function
-// Example usage: ImGui::Image(IMGUI_IMAGE(texture_variable));
-#define IMGUI_IMAGE(TEXTURE) TEXTURE.GetTextureImGui(), ImVec2(TEXTURE.GetWidthF(), TEXTURE.GetHeightF())
-
 namespace FlexEngine
 {
-  namespace Asset
-  {
-
-    struct __FLX_API Glyph
+    namespace Asset
     {
-        GLuint textureID;   // Texture ID
-        Vector2 size;    // Size of glyph
-        Vector2 bearing; // Offset from baseline to left/top of glyph
-        GLuint advance;     // Horizontal offset to advance to next glyph
-    };
+        /*!************************************************************************
+        * \struct Glyph
+        * \brief
+        * Represents a single glyph with texture and positioning data.
+        *************************************************************************/
+        struct __FLX_API Glyph
+        {
+            GLuint textureID = 0;   // Texture ID
+            Vector2 size;    // Size of glyph
+            Vector2 bearing; // Offset from baseline to left/top of glyph
+            GLuint advance = 0;      // Horizontal offset to advance to next glyph
+        };
 
-    class __FLX_API Font
-    {
-      // Static FreeType library and face for all Font instances
-      static FT_Library s_library;
-      static GLuint s_facesCount;
-      FT_Face s_face;
-      std::map<char, Glyph> m_glyphs;
+        /*!************************************************************************
+        * \class Font
+        * \brief
+        * Manages font loading, glyph generation, and rendering properties.
+        *************************************************************************/
+        class __FLX_API Font
+        {
+            // Static FreeType library and face for all Font instances
+            static FT_Library s_library; /*!< FreeType library instance */
+            static GLuint s_facesCount;  /*!< Count of active font faces */
+            FT_Face s_face;              /*!< FreeType face object */
+            std::map<char, Glyph> m_glyphs; /*!< Stores glyphs for ASCII characters */
 
-      // Font properties
-      int m_fontSize = 16;          // Default font size
-      bool m_hintingEnabled = true; // Hinting flag
-      bool m_kerningEnabled = true; // Kerning flag
+            // Font properties
+            int m_fontSize = 16;          // Default font size
+            bool m_hintingEnabled = true; // Hinting flag
+            bool m_kerningEnabled = true; // Kerning flag
 
-    public:
-      // Remove default constructor
-      Font() = delete;
+        public:
+            // Delete default constructor
+            Font() = delete;
 
-      // Explicitly require a key to initialize the font
-      explicit Font(std::string const& key);
+            /*!************************************************************************
+            * \brief
+            * Constructs a Font instance and loads font data.
+            * \param key Font file key within assets directory.
+            *************************************************************************/
+            explicit Font(std::string const& key);
 
-      #pragma region Font Management Functions
+            #pragma region Font Management Functions
 
-      // Load a texture from a path
-      //void Load(const Path& path_to_texture);
+            /*!************************************************************************
+            * \brief
+            * Frees all faces and library resources.
+            *************************************************************************/
+            void Unload();
 
-      //Free all faces and library 
-      void Unload();
-      //Set up freetype library if not yet setup.
-      void SetupLib();
-      // Load all glyphs
-      void LoadGlyphs();
+            /*!************************************************************************
+            * \brief
+            * Initializes the FreeType library if not already set up.
+            *************************************************************************/
+            void SetupLib();
 
-      // Setters for font properties
-      void SetFontSize(int size);
-      void SetHinting(bool enabled);
-      void SetKerning(bool enabled);
+            /*!************************************************************************
+            * \brief
+            * Loads all ASCII glyphs for rendering.
+            *************************************************************************/
+            void LoadGlyphs();
+            #pragma endregion
 
-      #pragma endregion
+            #pragma region Set Functions
 
-      #pragma region Binding functions for OpenGL
+            /*!************************************************************************
+            * \brief
+            * Sets font size and reloads glyphs.
+            * \param size New font size to set.
+            *************************************************************************/
+            void SetFontSize(int size);
 
-      //void Bind(const Shader& shader, const char* name = "u_texture_diffuse", unsigned int texture_unit = 0) const;
-      //void Unbind() const;
+            /*!************************************************************************
+            * \brief
+            * Enables or disables hinting.
+            * \param enabled True to enable hinting; false to disable.
+            *************************************************************************/
+            void SetHinting(bool enabled);
 
-      #pragma endregion
+            /*!************************************************************************
+            * \brief
+            * Enables or disables kerning.
+            * \param enabled True to enable kerning; false to disable.
+            *************************************************************************/
+            void SetKerning(bool enabled);
+            #pragma endregion
 
+            #pragma region Get Functions
 
-      #pragma region Get Functions
+            /*!************************************************************************
+            * \brief
+            * Retrieves a glyph for a specific character.
+            * \param c Character to retrieve glyph for.
+            * \return Reference to the glyph object.
+            *************************************************************************/
+            Glyph const& GetGlyph(char c) const;
 
-      Glyph const& GetGlyph(char c) const;
-      int GetFontSize() const { return m_fontSize; }
-      bool IsHintingEnabled() const { return m_hintingEnabled; }
-      bool IsKerningEnabled() const { return m_kerningEnabled; }
-      // Helper function for ImGui
-      //void*           GetFontImGui() const { return (void*)(intptr_t)m_font; }
-      #pragma endregion
-    };
+            /*!************************************************************************
+            * \brief
+            * Gets the current font size.
+            * \return Current font size.
+            *************************************************************************/
+            int GetFontSize() const { return m_fontSize; }
 
-  }
+            /*!************************************************************************
+            * \brief
+            * Checks if hinting is enabled.
+            * \return True if hinting is enabled, false otherwise.
+            *************************************************************************/
+            bool IsHintingEnabled() const { return m_hintingEnabled; }
+
+            /*!************************************************************************
+            * \brief
+            * Checks if kerning is enabled.
+            * \return True if kerning is enabled, false otherwise.
+            *************************************************************************/
+            bool IsKerningEnabled() const { return m_kerningEnabled; }
+            #pragma endregion
+        };
+
+    }
 }

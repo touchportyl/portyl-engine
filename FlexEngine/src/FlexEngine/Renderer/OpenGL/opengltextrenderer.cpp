@@ -18,6 +18,7 @@
 *
 * Copyright (c) 2024 DigiPen, All rights reserved.
 **************************************************************************/
+
 #include "opengltextrenderer.h"
 #include "FlexEngine/AssetManager/assetmanager.h" // FLX_ASSET_GET
 #include "FlexEngine/DataStructures/freequeue.h"
