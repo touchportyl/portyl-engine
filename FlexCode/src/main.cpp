@@ -1,7 +1,7 @@
 #include <FlexEngine.h>
 #include <FlexEngine/Core/EntryPoint.h>
 
-#include "layer_code.h"
+#include "States/mainstate.h"
 
 namespace FlexCode
 {
@@ -9,9 +9,8 @@ namespace FlexCode
   {
   public:
     FlexApplication()
-      : Application()
     {
-      PushLayer(new CodeLayer());
+      FlexEngine::ApplicationStateManager::SetState<MainState>();
     }
   };
 

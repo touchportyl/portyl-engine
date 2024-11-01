@@ -169,6 +169,7 @@ namespace ChronoShift
     *****************************************************************************/
     void RendererSprite2D()
     {
+        //TODO: Run through Update Queue instead of checking for bool isDirty
         //Update Transformation Matrix of All Entities
         UpdateSprite2DMatrix();
 
@@ -181,11 +182,16 @@ namespace ChronoShift
         // Potential Issues
         ////////////////////////////////////////////////////////////////////////////////
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
+        //Test Debug:
+        //auto start = std::chrono::high_resolution_clock::now();
+        //auto end = std::chrono::high_resolution_clock::now();
+        //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        //std::cout << "Time taken: " << duration << " ms" << std::endl;
 
-        // Render all entities
-        #if 1
+        // Render all entities via normal draw call(no batching)
+        #if 0
         {
-
+            //same thing as update transformations, flush update queue (lags if more than 2500 objects)
             for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
@@ -199,7 +205,7 @@ namespace ChronoShift
                 props.shader = shader;
                 props.transform = transform;
                 props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
-                props.color = sprite->color;
+                //props.color = sprite->color;
                 props.color_to_add = sprite->color_to_add;
                 props.color_to_multiply = sprite->color_to_multiply;
                 props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
@@ -219,7 +225,7 @@ namespace ChronoShift
             bool blending = OpenGLRenderer::IsBlendingEnabled();
             if (!blending) OpenGLRenderer::EnableBlending();
 
-            //auto start = std::chrono::high_resolution_clock::now();
+            
 
             //Batch Rendering objs in scene
             {
@@ -249,35 +255,91 @@ namespace ChronoShift
         }
         #endif
 
-        // Test Batch Rendering all entities
-        #if 0
+        // Integrating batching to pipeline
+        #if 1
         {
-            OpenGLSpriteRenderer::BeginBatch();
+            std::unordered_map<std::string, BatchInstanceBlock> batchMap;
 
+            //same thing as update transformations, flush update queue (lags if more than 2500 objects)
             for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
-                if (!entity.GetComponent<IsActive>()->is_active || 
-                    "finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component) ||
-                    "editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component)) continue;
 
-                // Gather properties
-                Renderer2DProps props;
-                props.transform = entity.GetComponent<Transform>()->transform;
-                props.shader = "\\shaders\\batchtexture";
+                if (!entity.GetComponent<IsActive>()->is_active) continue;
+
+                //auto& z_index = entity.GetComponent<ZIndex>()->z;
+                Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
+                auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
                 auto sprite = entity.GetComponent<Sprite>();
 
-                props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
-                props.color = sprite->color;
+                //Need for editor tex (Remove pls)
+                props.shader = shader;
+                props.transform = transform;
+                //props.texture 
                 props.color_to_add = sprite->color_to_add;
                 props.color_to_multiply = sprite->color_to_multiply;
+                props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
                 props.vbo_id = sprite->vbo_id;
 
-                OpenGLSpriteRenderer::AddToBatch(props);
+                //FIRST TWO IFS SHOULD NOT BE HERE
+                if ("finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
+                {
+                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", 1 });
+                    continue;
+                }
+                else if ("editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
+                {
+                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_finalRender),props); }, "", 0 });
+                    continue;
+                }
+                    
+                // Use texture as the unique key for batching (or combine multiple properties as needed)
+                std::string batchKey = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
+                // If a batch for this sprite type doesn't exist, create it
+                if (batchMap.find(batchKey) == batchMap.end()) 
+                {
+                    batchMap[batchKey] = BatchInstanceBlock();
+                    batchMap[batchKey].m_vboid = sprite->vbo_id;
+                }
+                // Push transformation and color data to the BatchInstanceBlock
+                batchMap[batchKey].m_transformationData.push_back(transform);
+                batchMap[batchKey].m_colorAddData.push_back(props.color_to_add);
+                batchMap[batchKey].m_colorMultiplyData.push_back(props.color_to_multiply);
+
+
             }
 
+            //Push Settings
+            bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
+            if (depth_test) OpenGLRenderer::DisableDepthTest();
+
+            bool blending = OpenGLRenderer::IsBlendingEnabled();
+            if (!blending) OpenGLRenderer::EnableBlending();
+
+            //Batch Rendering objs in scene
+            {
+                // Set up Editor Frame Buffer for batch-rendering in the editor
+                OpenGLSpriteRenderer::SetEditorFrameBuffer();
+                OpenGLSpriteRenderer::ClearFrameBuffer();
+
+                for (auto& [key, batchData] : batchMap) 
+                {
+                    props.texture = key;
+                    props.vbo_id = batchData.m_vboid;
+
+                    // Draw batch for this unique sprite
+                    OpenGLSpriteRenderer::DrawBatchTexture2D(props, batchData);
+                }
+                OpenGLSpriteRenderer::DrawPostProcessingLayer();
+            }
+
+            // Switch to default frame buffer for final output rendering
             OpenGLSpriteRenderer::SetDefaultFrameBuffer();
-            OpenGLSpriteRenderer::EndBatch("\\shaders\\batchtexture"); // Shader name to batch with
+            finalized_render_queue.Flush();  // Final rendering (UI, etc.)
+
+            // pop settings
+            if (depth_test) OpenGLRenderer::EnableDepthTest();
+            if (!blending) OpenGLRenderer::DisableBlending();
         }
         #endif
     }

@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClCompile Include="src\Code\layer_code.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\States\mainstate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Code\layer_code.h" />
+    <ClInclude Include="src\States\mainstate.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -78,12 +80,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)FlexCode\src\Code;$(SolutionDir)FlexCode\src;$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)$(IntDir);$(SolutionDir)third_party\lib\ImGui;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\fastgltf;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)FlexCode\src\Code;$(SolutionDir)FlexCode\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)third_party\ImGui\src;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\freetype;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\stb;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(SolutionDir)third_party\lib\assimp;$(SolutionDir)third_party\lib\fmod\core;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\freetype;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\ImGui;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)FlexCode\src\Code;$(SolutionDir)FlexCode\src;$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)FlexEngine\src;$(SolutionDir)third_party\inc\stb;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fastgltf;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\ImGui\src;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)$(IntDir);$(SolutionDir)third_party\lib\ImGui;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\fastgltf;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)FlexCode\src\Code;$(SolutionDir)FlexCode\src;$(SolutionDir)FlexEngine\src;$(SolutionDir)FlexEngine\src\FlexEngine;$(SolutionDir)third_party\ImGui\src;$(SolutionDir)third_party\inc;$(SolutionDir)third_party\inc\fmod\core;$(SolutionDir)third_party\inc\fmod\studio;$(SolutionDir)third_party\inc\freetype;$(SolutionDir)third_party\inc\glm;$(SolutionDir)third_party\inc\RapidJSON;$(SolutionDir)third_party\inc\stb;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(SolutionDir)third_party\lib\assimp;$(SolutionDir)third_party\lib\fmod\core;$(SolutionDir)third_party\lib\fmod\studio;$(SolutionDir)third_party\lib\freetype;$(SolutionDir)third_party\lib\GLFW;$(SolutionDir)third_party\lib\ImGui;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -126,7 +128,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrt.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>FlexEngine.lib;glfw3.lib;ImGuid.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FlexEngine.lib;opengl32.lib;glfw3.lib;ImGuid.lib;fmodstudioL_vc.lib;fmodL_vc.lib;assimp-vc143-mtd.lib;freetyped.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,7 +148,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrtd.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>FlexEngine.lib;glfw3.lib;ImGui.lib;fmodstudio_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FlexEngine.lib;opengl32.lib;glfw3.lib;ImGui.lib;fmodstudio_vc.lib;fmod_vc.lib;assimp-vc143-mt.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

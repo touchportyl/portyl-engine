@@ -65,7 +65,6 @@ namespace ChronoShift
   
   FLX_REFL_REGISTER_START(Sprite)
     FLX_REFL_REGISTER_PROPERTY(texture)
-    FLX_REFL_REGISTER_PROPERTY(color)
     FLX_REFL_REGISTER_PROPERTY(color_to_add)
     FLX_REFL_REGISTER_PROPERTY(color_to_multiply)
     FLX_REFL_REGISTER_PROPERTY(alignment)
@@ -128,7 +127,6 @@ namespace ChronoShift
 
   COMPONENT_VIEWER_START(Sprite)
     COMPONENT_VIEWER_TEXTURE_PATH(texture)
-    COMPONENT_VIEWER_COLOR3(color)
     COMPONENT_VIEWER_COLOR3(color_to_add)
     COMPONENT_VIEWER_COLOR3(color_to_multiply)
     COMPONENT_VIEWER_CHECKBOX(post_processed)

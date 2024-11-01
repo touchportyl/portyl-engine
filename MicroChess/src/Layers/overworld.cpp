@@ -24,6 +24,7 @@ namespace ChronoShift {
         //@anyone, liase with me(wei jie) for if you want the tilt of the background to be more slanted or anything you wish
         //Tried to just simply rotate on x-axis of a wrapped vbo but kenah the orthographic camera cut off
         //so no choice do lame method
+        #if 1
         FlexECS::Entity background = FlexECS::Scene::CreateEntity("bg");
         background.AddComponent<IsActive>({ true });
         background.AddComponent<Position>({ {650, 600} });
@@ -32,7 +33,6 @@ namespace ChronoShift {
         background.AddComponent<ZIndex>({ 0 });
         background.AddComponent<Sprite>({
             scene->Internal_StringStorage_New(R"(\images\misc\wireframe_darkbg.png)"),
-            Vector3::One,
             Vector3::Zero,
             Vector3::One,
             Renderer2DProps::Alignment_Center,
@@ -53,8 +53,6 @@ namespace ChronoShift {
         player1.AddComponent<ZIndex>({ 10 });
         player1.AddComponent<Sprite>({
           scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
-          //scene->Internal_StringStorage_New(R"()"),
-          Vector3::One,
           Vector3::Zero,
           Vector3::One,
           Renderer2DProps::Alignment_Center
@@ -74,7 +72,6 @@ namespace ChronoShift {
         house.AddComponent<Sprite>({
             scene->Internal_StringStorage_New(R"()"),
             { 0.45f, 0.58f, 0.32f },
-            Vector3::Zero,
             Vector3::One,
             Renderer2DProps::Alignment_Center
            });
@@ -91,7 +88,6 @@ namespace ChronoShift {
         box.AddComponent<Sprite>({
             scene->Internal_StringStorage_New(R"()"),
             { 0.35f, 0.58f, 0.80f },
-            Vector3::Zero,
             Vector3::One,
             Renderer2DProps::Alignment_Center,
             0,
@@ -111,7 +107,6 @@ namespace ChronoShift {
             box2.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 0.35f, 0.08f, 1.80f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -130,7 +125,6 @@ namespace ChronoShift {
             box3.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 1.35f, 0.08f, 0.80f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -149,7 +143,6 @@ namespace ChronoShift {
             box4.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 0.1f, 0.08f, 0.80f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -168,7 +161,6 @@ namespace ChronoShift {
             box5.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 0.2f, 0.78f, 0.30f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -187,7 +179,6 @@ namespace ChronoShift {
             box6.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 1.2f, 0.78f, 0.30f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -206,7 +197,6 @@ namespace ChronoShift {
             box7.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"()"),
                 { 1.2f, 1.0f, 1.30f },
-                Vector3::Zero,
                 Vector3::One,
                 Renderer2DProps::Alignment_Center,
                 0,
@@ -215,17 +205,72 @@ namespace ChronoShift {
             box7.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box7.AddComponent<Parent>({ box6 });
         }
+        #endif
+
+        #if 0
+        FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
+        thing.AddComponent<IsActive>({ true });
+        thing.AddComponent<Position>({ {300,100} });
+        thing.AddComponent<Rotation>({ });
+        thing.AddComponent<Scale>({ { 15,15} });
+        thing.AddComponent<ZIndex>({ 10 });
+        thing.AddComponent<Transform>({ });
+        thing.AddComponent<Sprite>({
+          scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
+          Vector3::Zero,
+          Vector3::One,
+          Renderer2DProps::Alignment_Center,
+          Renderer2DProps::VBO_Basic,
+          true
+         });
+        thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+
+        for (size_t x = 0; x < 50; x++)
+        {
+            for (size_t y = 0; y < 50; y++)
+            {
+                if (x == 49 && y == 49)break;
+                FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
+                auto& position = cloned_thing.GetComponent<Position>()->position;
+                position.x += static_cast<float>(15 * (x + 1));
+                position.y += static_cast<float>(15 * (y + 1));
+                auto& color_to_add = cloned_thing.GetComponent<Sprite>()->color_to_add;
+                auto& color_to_multiply = cloned_thing.GetComponent<Sprite>()->color_to_multiply;
+                auto& texture = cloned_thing.GetComponent<Sprite>()->texture;
+                int color_choice = (x + y) % 3;
+                // Reset both colors to zero initially
+                color_to_add = { 0.0f, 0.0f, 0.0f };
+                color_to_multiply = { 1.0f, 1.0f, 1.0f };
+                if (color_choice == 0) {
+                    // Red
+                    color_to_add = { 1.0f, 0.0f, 0.0f };
+                    color_to_multiply = { 1.0f, 0.0f, 0.0f };
+                }
+                else if (color_choice == 1) {
+                    // Green
+                    color_to_add = { 0.0f, 1.0f, 0.0f };
+                    color_to_multiply = { 0.0f, 1.0f, 0.0f };
+                    texture = scene->Internal_StringStorage_New(R"(\images\chess_king.png)");
+                }
+                else {
+                    // Blue
+                    color_to_add = { 0.0f, 0.0f, 1.0f };
+                    color_to_multiply = { 0.0f, 0.0f, 1.0f };
+                    texture = scene->Internal_StringStorage_New(R"(\images\chess_knight.png)");
+                }
+            }
+        }
+        #endif
 
         FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
         editorRender.AddComponent<IsActive>({ true });
-        editorRender.AddComponent<Position>({ {600, 300 } });
+        editorRender.AddComponent<Position>({ {550, 300 } });
         editorRender.AddComponent<Scale>({ { 800,800} });
         editorRender.AddComponent<Rotation>({ });
         editorRender.AddComponent<Transform>({});
         editorRender.AddComponent<ZIndex>({ 9 });
         editorRender.AddComponent<Sprite>({
             scene->Internal_StringStorage_New(R"()"),
-            { 0.0f,0.0f, 0.0f },
             Vector3::Zero,
             Vector3::One,
             Renderer2DProps::Alignment_Center,
@@ -236,14 +281,13 @@ namespace ChronoShift {
 
         FlexECS::Entity finalRender = FlexECS::Scene::CreateEntity("finalRender");
         finalRender.AddComponent<IsActive>({ true });
-        finalRender.AddComponent<Position>({ {300, 600 } });
+        finalRender.AddComponent<Position>({ {250, 550 } });
         finalRender.AddComponent<Scale>({ { 300,300} });
         finalRender.AddComponent<Rotation>({ });
         finalRender.AddComponent<Transform>({});
         finalRender.AddComponent<ZIndex>({ 10 });
         finalRender.AddComponent<Sprite>({
             scene->Internal_StringStorage_New(R"()"),
-            { 0.0f,0.0f, 0.0f },
             Vector3::Zero,
             Vector3::One,
             Renderer2DProps::Alignment_Center,
@@ -251,7 +295,7 @@ namespace ChronoShift {
             false
            });
         finalRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-  }
+    }
 
 
 
@@ -275,125 +319,125 @@ namespace ChronoShift {
 
   void OverworldLayer::Update()
   {
-    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput>())
-    {
-      entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
-      entity.GetComponent<CharacterInput>()->down = Input::GetKey(GLFW_KEY_S);
-      entity.GetComponent<CharacterInput>()->left = Input::GetKey(GLFW_KEY_A);
-      entity.GetComponent<CharacterInput>()->right = Input::GetKey(GLFW_KEY_D);
-    }
-
-    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput, Rigidbody>())
-    {
-      auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
-      velocity.x = 0.0f;
-      velocity.y = 0.0f;
-
-      if (entity.GetComponent<CharacterInput>()->up)
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput>())
       {
-        velocity.y = -300.0f;
+          entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
+          entity.GetComponent<CharacterInput>()->down = Input::GetKey(GLFW_KEY_S);
+          entity.GetComponent<CharacterInput>()->left = Input::GetKey(GLFW_KEY_A);
+          entity.GetComponent<CharacterInput>()->right = Input::GetKey(GLFW_KEY_D);
       }
 
-      if (entity.GetComponent<CharacterInput>()->down)
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput, Rigidbody>())
       {
-        velocity.y = 300.0f;
+          auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
+          velocity.x = 0.0f;
+          velocity.y = 0.0f;
+
+          if (entity.GetComponent<CharacterInput>()->up)
+          {
+              velocity.y = -300.0f;
+          }
+
+          if (entity.GetComponent<CharacterInput>()->down)
+          {
+              velocity.y = 300.0f;
+          }
+
+          if (entity.GetComponent<CharacterInput>()->left)
+          {
+              velocity.x = -300.0f;
+          }
+
+          if (entity.GetComponent<CharacterInput>()->right)
+          {
+              velocity.x = 300.0f;
+          }
       }
 
-      if (entity.GetComponent<CharacterInput>()->left)
+      //For testing 2500 objects
+      //Create one, then clone the rest
+      if (Input::GetKeyDown(GLFW_KEY_0))
       {
-        velocity.x = -300.0f;
+          auto scene = FlexECS::Scene::GetActiveScene();
+          for (auto& entity : FlexECS::Scene::GetActiveScene()->View<EntityName>())
+          {
+              scene->DestroyEntity(entity);
+          }
+
+          FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
+          thing.AddComponent<IsActive>({ true });
+          thing.AddComponent<Position>({ {0,0} });
+          thing.AddComponent<Rotation>({ });
+          thing.AddComponent<Scale>({ { 15,15 } });
+          thing.AddComponent<ZIndex>({ 10 });
+          thing.AddComponent<Transform>({ });
+          thing.AddComponent<Sprite>({
+            scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
+            Vector3::One,
+            Vector3::Zero,
+            Vector3::One,
+            Renderer2DProps::Alignment_Center
+           });
+          thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+
+          for (size_t x = 0; x < 50; x++)
+          {
+              for (size_t y = 0; y < 50; y++)
+              {
+                  FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
+                  auto& position = cloned_thing.GetComponent<Position>()->position;
+                  position.x = static_cast<float>(15 * (x + 1));
+                  position.y = static_cast<float>(15 * (y + 1));
+              }
+          }
+      }
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Debug Tests
+  //Key hold (Can just alter here, not very elegant but will do for now)
+      #if 0 //DEBUG
+      if (Input::GetKey(GLFW_KEY_F))
+      {
+          m_ScaleDebugTest -= 0.008f;
+      }
+      else if (Input::GetKey(GLFW_KEY_G))
+      {
+          m_ScaleDebugTest += 0.008f;
       }
 
-      if (entity.GetComponent<CharacterInput>()->right)
+      if (Input::GetKey(GLFW_KEY_Q))
       {
-        velocity.x = 300.0f;
+          m_RotateDebugTest.z += 1.0f;
       }
-    }
-
-    //For testing 2500 objects
-    //Create one, then clone the rest
-    if (Input::GetKeyDown(GLFW_KEY_0))
-    {
-      auto scene = FlexECS::Scene::GetActiveScene();
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<EntityName>()) 
+      else if (Input::GetKey(GLFW_KEY_E))
       {
-        scene->DestroyEntity(entity);
+          m_RotateDebugTest.z -= 1.0f;
       }
 
-      FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
-      thing.AddComponent<IsActive>({ true });
-      thing.AddComponent<Position>({ {0,0} });
-      thing.AddComponent<Rotation>({ });
-      thing.AddComponent<Scale>({ { 15,15 } });
-      thing.AddComponent<ZIndex>({ 10 });
-      thing.AddComponent<Transform>({ });
-      thing.AddComponent<Sprite>({
-        scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
-        Vector3::One,
-        Vector3::Zero,
-        Vector3::One,
-        Renderer2DProps::Alignment_Center
-       });
-      thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
-      for (size_t x = 0; x < 10; x++)
+      //Altering entities scale and rotation while game is in debug mode
+      // TEST ON EVERYTHING
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
       {
-        for (size_t y = 0; y < 10; y++)
-        {
-          FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
-          auto& position = cloned_thing.GetComponent<Position>()->position;
-          position.x = static_cast<float>(15 * (x + 1));
-          position.y = static_cast<float>(15 * (y + 1));
-        }
+          if (!entity.GetComponent<IsActive>()->is_active) continue;
+
+          //Search function for a specific object to test and NOT everything
+          auto entity_name_component = entity.GetComponent<EntityName>();
+          //Change "" to whatever object or comment the line to affect everything
+          if ("box2" != FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component)) continue;
+
+          auto& scale = entity.GetComponent<Scale>()->scale;
+          auto& rotation = entity.GetComponent<Rotation>()->rotation;
+
+          scale = Vector2(m_ScaleDebugTest, m_ScaleDebugTest);
+          rotation = m_RotateDebugTest;
+
+          entity.GetComponent<Transform>()->is_dirty = true;
       }
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Debug Tests
-//Key hold (Can just alter here, not very elegant but will do for now)
-    #if 1 //DEBUG
-    if (Input::GetKey(GLFW_KEY_F))
-    {
-        m_ScaleDebugTest -= 0.008f;
-    }
-    else if (Input::GetKey(GLFW_KEY_G))
-    {
-        m_ScaleDebugTest += 0.008f;
-    }
+      #endif
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      UpdatePhysicsSystem();
 
-    if (Input::GetKey(GLFW_KEY_Q))
-    {
-        m_RotateDebugTest.z += 1.0f;
-    }
-    else if (Input::GetKey(GLFW_KEY_E))
-    {
-        m_RotateDebugTest.z -= 1.0f;
-    }
+      //Render All Entities
 
-    //Altering entities scale and rotation while game is in debug mode
-    // TEST ON EVERYTHING
-    for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
-    {
-        if (!entity.GetComponent<IsActive>()->is_active) continue;
-
-        //Search function for a specific object to test and NOT everything
-        auto entity_name_component = entity.GetComponent<EntityName>();
-        //Change "" to whatever object or comment the line to affect everything
-        if ("box2" != FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component)) continue;
-
-        auto& scale = entity.GetComponent<Scale>()->scale;
-        auto& rotation = entity.GetComponent<Rotation>()->rotation;
-
-        scale = Vector2(m_ScaleDebugTest, m_ScaleDebugTest);
-        rotation = m_RotateDebugTest;
-
-        entity.GetComponent<Transform>()->is_dirty = true;
-    }
-    #endif
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    UpdatePhysicsSystem();
-
-    //Render All Entities
-    RendererSprite2D();
+      RendererSprite2D();
   }
 }

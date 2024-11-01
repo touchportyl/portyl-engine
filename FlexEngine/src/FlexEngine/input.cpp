@@ -1,3 +1,18 @@
+// WLVERSE [https://wlverse.web.app]
+// input.cpp
+// 
+// Input handling for the FlexEngine library
+// This file is used to handle input from the user
+// Uses GLFW key codes
+//
+// AUTHORS
+// [90%] Chan Wen Loong (wenloong.c\@digipen.edu)
+//   - Main Author
+// [10%] Kuan Yew Chong (yewchong.k\@digipen.edu)
+//   - Added check for unknown keys
+// 
+// Copyright (c) 2024 DigiPen, All rights reserved.
+
 #include "input.h"
 
 namespace FlexEngine
@@ -37,6 +52,12 @@ namespace FlexEngine
   {
     //m_key_down.fill(false);
     //m_key_up.fill(false);
+
+    if (key < 0 || key >= GLFW_KEY_LAST)
+    {
+      Log::Warning("A key not recognised by GLFW was entered");
+      return;
+    }
 
     switch (action)
     {
