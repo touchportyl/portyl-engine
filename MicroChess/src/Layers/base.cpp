@@ -33,10 +33,9 @@ namespace ChronoShift
     FreeQueue::Push(std::bind(&AssetManager::Unload), "MicroChess AssetManager");
 
     FlexEngine::Window* window = Application::GetCurrentWindow();
-    window->SetTargetFPS(40);
+    window->SetTargetFPS(60);
     window->SetVSync(false);
     window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_icon_white.png)"));
-    //glfwSetWindowSize(window->GetGLFWWindow(), 1600, 900);
 
     //window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
     window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
