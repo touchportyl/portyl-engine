@@ -52,48 +52,6 @@ namespace ChronoShift {
     MoveRegistry::RegisterMoves();
     m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->View<Character>());
     m_battlesystem.BeginBattle();
-
-    /*************************************************************************
-    Waiting on Rocky to remove this once he has created a sprite to render on imgui
-     - Collision is off due to editor render and final render is on a sprite
-     - This shouldnt be here, i just add this here as a quick fix because you wont see anything if so
-    ************************************************************************/
-    auto scene = FlexECS::Scene::GetActiveScene();
-    FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
-    editorRender.AddComponent<IsActive>({ true });
-    editorRender.AddComponent<Position>({ {600, 300 } });
-    editorRender.AddComponent<Scale>({ { 800,800} });
-    editorRender.AddComponent<Rotation>({ });
-    editorRender.AddComponent<Transform>({});
-    editorRender.AddComponent<ZIndex>({ 9 });
-    editorRender.AddComponent<Sprite>({
-        scene->Internal_StringStorage_New(R"()"),
-        { 0.0f,0.0f, 0.0f },
-        Vector3::Zero,
-        Vector3::One,
-        Renderer2DProps::Alignment_Center,
-        Renderer2DProps::VBO_BasicInverted,
-        false
-       });
-    editorRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
-    FlexECS::Entity finalRender = FlexECS::Scene::CreateEntity("finalRender");
-    finalRender.AddComponent<IsActive>({ true });
-    finalRender.AddComponent<Position>({ {300, 600 } });
-    finalRender.AddComponent<Scale>({ { 300,300} });
-    finalRender.AddComponent<Rotation>({ });
-    finalRender.AddComponent<Transform>({});
-    finalRender.AddComponent<ZIndex>({ 10 });
-    finalRender.AddComponent<Sprite>({
-        scene->Internal_StringStorage_New(R"()"),
-        { 0.0f,0.0f, 0.0f },
-        Vector3::Zero,
-        Vector3::One,
-        Renderer2DProps::Alignment_Center,
-        Renderer2DProps::VBO_BasicInverted,
-        false
-       });
-    finalRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
   }
 
   void BattleLayer::OnAttach()
@@ -119,7 +77,7 @@ namespace ChronoShift {
 
     DisplayTurnOrder(m_battlesystem.GetTurnOrder());
     RendererSprite2D();
-    
+
     if (Input::GetKeyDown(GLFW_KEY_S)) {
       SaveCharacters();
     }
