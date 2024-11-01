@@ -14,14 +14,14 @@ namespace FlexEngine
     * Holds core camera properties, including position, orientation,
     * and transformation matrices.
     *************************************************************************/
-    struct CameraData
+    struct __FLX_API CameraData
     {
-        Vector3 position;        /*!< Camera position in world space */
-        Vector3 direction;       /*!< Direction the camera is facing */
-        Vector3 up;              /*!< Up vector for the camera's orientation */
-        Vector3 right;           /*!< Right vector for the camera's orientation */
-        Matrix4x4 viewMatrix;    /*!< View matrix calculated from position and orientation */
-        Matrix4x4 projMatrix;    /*!< Projection matrix based on FOV and aspect ratio */
+        Vector3 position = Vector3::Zero;        /*!< Camera position in world space */
+        Vector3 direction = Vector3::Zero;       /*!< Direction the camera is facing */
+        Vector3 up = Vector3::Up;              /*!< Up vector for the camera's orientation */
+        Vector3 right = Vector3::Right;           /*!< Right vector for the camera's orientation */
+        Matrix4x4 viewMatrix = Matrix4x4::Zero;    /*!< View matrix calculated from position and orientation */
+        Matrix4x4 projMatrix = Matrix4x4::Zero;    /*!< Projection matrix based on FOV and aspect ratio */
         float fieldOfView = 45.0f; /*!< Field of view in degrees */
         float aspectRatio = 1.77f; /*!< Aspect ratio (width/height) */
         float nearClip = 0.1f;   /*!< Near clipping plane */
@@ -134,6 +134,12 @@ namespace FlexEngine
         *                 and y corresponds to up/down movement.
         *************************************************************************/
         void Move(const Vector2& movement);
+
+        /*!************************************************************************
+        * \brief
+        * Moves the camera in world space to argument position.
+        *************************************************************************/
+        void MoveTo(const Vector3& targetPosition);
 
         /*!************************************************************************
         * \brief

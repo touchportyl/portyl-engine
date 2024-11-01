@@ -161,17 +161,18 @@ using namespace FlexEngine;
       FLX_REFL_SERIALIZABLE
   public:
       bool is_dirty = true;
-      Vector3 front;
-      Vector3 right;
-      Vector3 up;
-      const Vector3 world_up = Vector3::Up;
-      Matrix4x4 view;
-      Matrix4x4 projection;
-      bool perspective = true;
-      float fov = 45.0f;
-      float near = 0.1f;
-      float far = 100.0f;
+      //Vector3 front;
+      //Vector3 right;
+      //Vector3 up;
+      //const Vector3 world_up = Vector3::Up;
+      //Matrix4x4 view;
+      //Matrix4x4 projection;
+      //bool perspective = true;
+      //float fov = 45.0f;
+      //float near = 0.1f;
+      //float far = 100.0f;
       //Integrate into opengl camera
+      //OpenGLCamera camera;
   };
 
   void RegisterRenderingComponents();

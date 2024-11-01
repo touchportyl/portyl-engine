@@ -46,26 +46,28 @@ namespace FlexEngine
 
     Vector2 OpenGLCamera::WorldToScreen(const Vector3& worldPos) const 
     {
-        // Transform world position to view space
-        Vector4 viewPos = m_cameraData.viewMatrix * Vector4(worldPos, 1.0f);
+        //// Transform world position to view space
+        //Vector4 viewPos = m_cameraData.viewMatrix * Vector4(worldPos, 1.0f);
 
-        // Transform view position to projection space
-        Vector4 projPos = m_cameraData.projMatrix * viewPos;
+        //// Transform view position to projection space
+        //Vector4 projPos = m_cameraData.projMatrix * viewPos;
 
-        // Normalize to screen space (-1 to 1 range)
-        Vector2 screenPos(projPos.x / projPos.w, projPos.y / projPos.w);
+        //// Normalize to screen space (-1 to 1 range)
+        //Vector2 screenPos(projPos.x / projPos.w, projPos.y / projPos.w);
 
-        // Convert from NDC (-1 to 1) to screen space (0 to 1)
-        return (screenPos + Vector2(1.0f, 1.0f)) * 0.5f;
+        //// Convert from NDC (-1 to 1) to screen space (0 to 1)
+        //return (screenPos + Vector2(1.0f, 1.0f)) * 0.5f;
+        return Vector2::Zero;
     }
 
     bool OpenGLCamera::IsInView(const Vector3& point) const 
     {
-        // Transform the point to view space
-        Vector4 viewPos = m_cameraData.viewMatrix * Vector4(point, 1.0f);
+        //// Transform the point to view space
+        //Vector4 viewPos = m_cameraData.viewMatrix * Vector4(point, 1.0f);
 
-        // Check if point is within the view frustum
-        return (viewPos.z > m_cameraData.nearClip && viewPos.z < m_cameraData.farClip);
+        //// Check if point is within the view frustum
+        //return (viewPos.z > m_cameraData.nearClip && viewPos.z < m_cameraData.farClip);
+        return false;
     }
     #pragma endregion
     #pragma region Cam Management
@@ -76,23 +78,23 @@ namespace FlexEngine
 
     void OpenGLCamera::Rotate(const Vector3& axis, float angle) 
     {
-        // Create a rotation matrix from axis and angle
-        Matrix4x4 rotationMatrix = Matrix4x4::Rotation(axis, angle);
+        //// Create a rotation matrix from axis and angle
+        //Matrix4x4 rotationMatrix = Matrix4x4::Rotation(axis, angle);
 
-        // Rotate direction and up vectors
-        m_cameraData.direction = rotationMatrix * m_cameraData.direction;
-        m_cameraData.up = rotationMatrix * m_cameraData.up;
+        //// Rotate direction and up vectors
+        //m_cameraData.direction = rotationMatrix * m_cameraData.direction;
+        //m_cameraData.up = rotationMatrix * m_cameraData.up;
 
-        UpdateViewMatrix(); // Update view matrix to reflect rotation
+        //UpdateViewMatrix(); // Update view matrix to reflect rotation
     }
 
     void OpenGLCamera::LookAt(const Vector3& target) 
     {
-        // Calculate new direction vector towards target
-        m_cameraData.direction = (target - m_cameraData.position).Normalized();
+        //// Calculate new direction vector towards target
+        //m_cameraData.direction = (target - m_cameraData.position).Normalized();
 
-        // Recalculate the view matrix with the updated direction
-        UpdateViewMatrix();
+        //// Recalculate the view matrix with the updated direction
+        //UpdateViewMatrix();
     }
 
     void OpenGLCamera::Move(const Vector2& movement) 
@@ -103,13 +105,22 @@ namespace FlexEngine
         UpdateViewMatrix(); // Update view matrix to reflect new position
     }
 
+    void OpenGLCamera::MoveTo(const Vector3& targetPosition) 
+    {
+        // Set the camera's position to the target position
+        m_cameraData.position = targetPosition;
+
+        // Update the view matrix to reflect the new position
+        UpdateViewMatrix();
+    }
+
     void OpenGLCamera::UpdateViewMatrix() 
     {
-        // Calculate the right vector using cross product of up and direction
-        m_cameraData.right = m_cameraData.up.Cross(m_cameraData.direction).Normalized();
+        //// Calculate the right vector using cross product of up and direction
+        //m_cameraData.right = m_cameraData.up.Cross(m_cameraData.direction).Normalized();
 
-        // Recalculate view matrix based on updated camera orientation and position
-        m_cameraData.viewMatrix = Matrix4x4::LookAt(m_cameraData.position, m_cameraData.position + m_cameraData.direction, m_cameraData.up);
+        //// Recalculate view matrix based on updated camera orientation and position
+        //m_cameraData.viewMatrix = Matrix4x4::LookAt(m_cameraData.position, m_cameraData.position + m_cameraData.direction, m_cameraData.up);
     }
 
     void OpenGLCamera::UpdateProjectionMatrix() 

@@ -30,6 +30,8 @@
 #include "flx_api.h"
 #include "FlexMath/vector4.h"
 #include "opengltexture.h"
+#include "../scenecamsorter.h"
+
 #include <glad/glad.h>
 
 namespace FlexEngine

@@ -292,13 +292,22 @@ namespace ChronoShift {
 
         //Camera 
         #if 1
-        FlexECS::Entity camera = FlexECS::Scene::CreateEntity("MainCamera");
-        camera.AddComponent<Position>({ {-150, 300 } });
-        camera.AddComponent<Scale>({ { 0.5,0.5 } });
-        camera.AddComponent<Rotation>({ });
-        camera.AddComponent<Transform>({});
-        camera.AddComponent<Camera>({});
-        
+        //FlexECS::Entity camera = FlexECS::Scene::CreateEntity("MainCamera");
+        //camera.AddComponent<Position>({ {-150, 300 } });
+        //camera.AddComponent<Scale>({ { 0.5,0.5 } });
+        //camera.AddComponent<Rotation>({ });
+        //camera.AddComponent<Transform>({});
+        //OpenGLCamera testcam;
+        //camera.AddComponent<Camera>({true, testcam});
+        OpenGLCamera* testcam = new OpenGLCamera();
+        SceneCamSorter::SetMainCamera(*testcam);
+        FreeQueue::Push(
+          [=]()
+        {
+            delete testcam;
+        }
+        );
+
         #endif
 
         FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
@@ -476,6 +485,26 @@ namespace ChronoShift {
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         UpdatePhysicsSystem();
 
+       #pragma region simpleCamMove i know its shit
+        OpenGLCamera* cam_entity = SceneCamSorter::GetMainCamera();
+            if (Input::GetKey(GLFW_KEY_UP))
+            {
+                cam_entity->Move(Vector2(0.0f, -5.f));
+            }
+            else if (Input::GetKey(GLFW_KEY_DOWN))
+            {
+                cam_entity->Move(Vector2(0.0f, 5.f));
+            }
+
+            if (Input::GetKey(GLFW_KEY_RIGHT))
+            {
+                cam_entity->Move(Vector2(5.f, 0.0f));
+            }
+            else if (Input::GetKey(GLFW_KEY_LEFT))
+            {
+                cam_entity->Move(Vector2(-5.f, 0.0f));
+            }
+        #pragma endregion
         //Render All Entities
 
         RendererSprite2D();

@@ -474,11 +474,13 @@ namespace FlexEngine
         asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
 
         // Transformation & Orthographic Projection
-        asset_shader.SetUniform_mat4("u_model", props.transform);
+        Vector2 camPos = Vector2::Zero;
+        if (SceneCamSorter::IsMainCameraActive())
+            camPos = SceneCamSorter::GetMainCamera()->GetPosition();
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
-          0.0f, props.window_size.x,
-          props.window_size.y, 0.0f,
+          camPos.x, camPos.x + props.window_size.x,
+          camPos.y + props.window_size.y, camPos.y,
           -2.0f, 2.0f
         ) * view_matrix;
         asset_shader.SetUniform_mat4("u_projection_view", projection_view);
@@ -576,10 +578,13 @@ namespace FlexEngine
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         // Orthographic Projection
+        Vector2 camPos = Vector2::Zero;
+        if (SceneCamSorter::IsMainCameraActive())
+            camPos = SceneCamSorter::GetMainCamera()->GetPosition();
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
-          0.0f, props.window_size.x,
-          props.window_size.y, 0.0f,
+          camPos.x, camPos.x + props.window_size.x,
+          camPos.y + props.window_size.y, camPos.y,
           -2.0f, 2.0f
         ) * view_matrix;
         asset_shader.SetUniform_mat4("u_projection_view", projection_view);

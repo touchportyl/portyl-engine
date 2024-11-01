@@ -6,7 +6,6 @@ namespace FlexEngine
     // Initialize static members
     OpenGLCamera* SceneCamSorter::mainCam = nullptr;
     OpenGLCamera* SceneCamSorter::editorCam = nullptr;
-    OpenGLCamera* SceneCamSorter::activeCam = nullptr;
     #pragma endregion
 
     #pragma region Set functions
@@ -17,7 +16,6 @@ namespace FlexEngine
     void SceneCamSorter::SetMainCamera(OpenGLCamera& mainCamtoSet)
     {
         mainCam = &mainCamtoSet;
-        if (activeCam == nullptr) activeCam = mainCam; // Set active if none
     }
 
     /*!************************************************************************
@@ -29,33 +27,9 @@ namespace FlexEngine
         editorCam = &editorCamtoSet;
     }
 
-    /*!************************************************************************
-    * \brief Switches the active camera to either main or editor camera.
-    * \param useMain If true, sets the main camera as active; otherwise, editor.
-    *************************************************************************/
-    void SceneCamSorter::SetActiveCamera(bool useMain)
-    {
-        if (useMain && mainCam)
-        {
-            activeCam = mainCam;
-        }
-        else if (editorCam)
-        {
-            activeCam = editorCam;
-        }
-    }
     #pragma endregion
 
     #pragma region Get functions
-    /*!************************************************************************
-    * \brief Retrieves the current active camera.
-    * \return Pointer to the active camera (either main or editor).
-    *************************************************************************/
-    OpenGLCamera* SceneCamSorter::GetActiveCamera()
-    {
-        return activeCam;
-    }
-
     /*!************************************************************************
     * \brief Retrieves the main camera.
     * \return Pointer to the main camera.
@@ -80,7 +54,7 @@ namespace FlexEngine
     *************************************************************************/
     bool SceneCamSorter::IsMainCameraActive()
     {
-        return activeCam == mainCam;
+        return mainCam != nullptr;
     }
 
     /*!************************************************************************
@@ -89,7 +63,7 @@ namespace FlexEngine
     *************************************************************************/
     bool SceneCamSorter::IsEditorCameraActive()
     {
-        return activeCam == editorCam;
+        return editorCam != nullptr;
     }
     #pragma endregion
 }

@@ -9,7 +9,6 @@ namespace FlexEngine
     {
         static OpenGLCamera* mainCam;   /*!< Pointer to the main camera */
         static OpenGLCamera* editorCam; /*!< Pointer to the editor camera */
-        static OpenGLCamera* activeCam; /*!< Pointer to the currently active camera */
     public:
         #pragma region Set functions
         /*!************************************************************************
@@ -23,20 +22,9 @@ namespace FlexEngine
         * \param editorCamtoSet The camera to set as the editor camera.
         *************************************************************************/
         static void SetEditorCamera(OpenGLCamera& editorCamtoSet);
-
-        /*!************************************************************************
-        * \brief Switches the active camera to either main or editor camera.
-        * \param useMain If true, sets the main camera as active; otherwise, editor.
-        *************************************************************************/
-        static void SetActiveCamera(bool useMain);
         #pragma endregion
 
         #pragma region Get functions
-        /*!************************************************************************
-        * \brief Retrieves the current active camera.
-        * \return Pointer to the active camera (either main or editor).
-        *************************************************************************/
-        static OpenGLCamera* GetActiveCamera();
 
         /*!************************************************************************
         * \brief Retrieves the main camera.

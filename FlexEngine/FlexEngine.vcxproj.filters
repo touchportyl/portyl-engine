@@ -217,6 +217,9 @@
     <ClCompile Include="src\FlexEngine\Renderer\scenecamsorter.cpp">
       <Filter>src\FlexEngine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglcamera.cpp">
+      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -416,6 +419,9 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Renderer\scenecamsorter.h">
       <Filter>src\FlexEngine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglcamera.h">
+      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
