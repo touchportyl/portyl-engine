@@ -69,7 +69,6 @@ namespace ChronoShift {
     editorRender.AddComponent<ZIndex>({ 9 });
     editorRender.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"()"),
-        { 0.0f,0.0f, 0.0f },
         Vector3::Zero,
         Vector3::One,
         Renderer2DProps::Alignment_Center,
@@ -87,7 +86,6 @@ namespace ChronoShift {
     finalRender.AddComponent<ZIndex>({ 10 });
     finalRender.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"()"),
-        { 0.0f,0.0f, 0.0f },
         Vector3::Zero,
         Vector3::One,
         Renderer2DProps::Alignment_Center,

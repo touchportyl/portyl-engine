@@ -1,3 +1,14 @@
+// WLVERSE [https://wlverse.web.app]
+// uuid.cpp
+// 
+// Rough implementation for UUID
+//
+// AUTHORS
+// [100%] Chan Wen Loong (wenloong.c\@digipen.edu)
+//   - Main Author
+// 
+// Copyright (c) 2024 DigiPen, All rights reserved.
+
 #include "uuid.h"
 
 #include <random> // std::random_device, std::mt19937_64, std::uniform_int_distribution

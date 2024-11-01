@@ -13,8 +13,7 @@ namespace FlexCode
 
     virtual void OnAttach() override;
     virtual void OnDetach() override;
-    virtual void OnUpdate() override;
-    virtual void OnImGuiRender() override;
+    virtual void Update() override;
   };
 
   class EditableFile
