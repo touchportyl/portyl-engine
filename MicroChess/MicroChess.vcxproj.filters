@@ -33,6 +33,8 @@
     <Filter Include="src\BattleSystems">
       <UniqueIdentifier>{61a2e2be-1880-4d04-bfd6-b8a5dcd4c6b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\CharacterPrefab">
+      <UniqueIdentifier>{8ed49ca6-4141-4522-a825-741823d3846e}</UniqueIdentifier>
     <Filter Include="src\Editor">
       <UniqueIdentifier>{fbdd6626-7250-4b66-a9d0-6bd2380b98f8}</UniqueIdentifier>
     </Filter>
@@ -100,6 +102,9 @@
     <ClInclude Include="src\BattleSystems\turnorderdisplay.h">
       <Filter>src\BattleSystems</Filter>
     </ClInclude>
+    <ClInclude Include="src\CharacterPrefab\characterprefab.h">
+      <Filter>src\CharacterPrefab</Filter>
+    </ClInclude>
     <ClInclude Include="src\Layers\overworld.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
@@ -125,18 +130,6 @@
       <Filter>src\Editor</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\componentviewer.h">
-      <Filter>src\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CharacterPrefab\characterprefab.h">
-      <Filter>assets</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\assetbrowser.h">
-      <Filter>src\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\editorpanel.h">
-      <Filter>src\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\imguipayloads.h">
       <Filter>src\Editor</Filter>
     </ClInclude>
   </ItemGroup>
@@ -192,6 +185,9 @@
     <ClCompile Include="src\BattleSystems\turnorderdisplay.cpp">
       <Filter>src\BattleSystems</Filter>
     </ClCompile>
+    <ClCompile Include="src\CharacterPrefab\characterprefab.cpp">
+      <Filter>src\CharacterPrefab</Filter>
+    </ClCompile>
     <ClCompile Include="src\Layers\overworld.cpp">
       <Filter>src\Layers</Filter>
     </ClCompile>
@@ -217,10 +213,6 @@
       <Filter>src\Editor</Filter>
     </ClCompile>
     <ClCompile Include="src\Editor\componentviewer.cpp">
-      <Filter>src\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CharacterPrefab\characterprefab.cpp" />
-    <ClCompile Include="src\Editor\assetbrowser.cpp">
       <Filter>src\Editor</Filter>
     </ClCompile>
   </ItemGroup>

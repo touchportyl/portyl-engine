@@ -13,20 +13,15 @@
 
 #pragma once
 
-#include "Editor/hierarchyview.h"
-#include "Editor/inspector.h"
-#include "Editor/editorgui.h"
-#include "Editor/assetbrowser.h"
-#include "Editor/componentviewer.h"
-#include "Editor/imguipayloads.h"
-
+#include "hierarchyview.h"
+#include "inspector.h"
+#include "editorgui.h"
+#include "componentviewer.h"
 #include "Components/rendering.h"
 
 #include "FlexEngine/Core/imguiwrapper.h"
 #include "FlexEngine/Renderer/DebugRenderer/debugrenderer.h"
 #include "FlexEngine.h"
-
-#include <memory>
 
 namespace ChronoShift
 {
@@ -42,7 +37,7 @@ namespace ChronoShift
 
 		/*!***************************************************************************
 		* @brief
-		* init
+		* Currently nothing inside.
 		******************************************************************************/
 		void Init();
 
@@ -54,13 +49,9 @@ namespace ChronoShift
 
 		/*!***************************************************************************
 		* @brief
-		* shutdun
+		* Currently nothing inside.
 		******************************************************************************/
 		void Shutdown();
-
-		//consider shared_ptr instead?
-		template <typename T>
-		T* GetPanel();
 
 		/*!***************************************************************************
 		* @brief
@@ -71,21 +62,9 @@ namespace ChronoShift
 		void SelectEntity(FlexEngine::FlexECS::Entity);
 		FlexEngine::FlexECS::Entity GetSelectedEntity();
 
-
-
 	private:
-		bool m_initialized = false;
-		std::vector<std::unique_ptr<EditorPanel>> m_panels;
-		
-
-		//wtf move this out to inspector or something else
 		FlexEngine::FlexECS::Entity m_selected_entity = FlexEngine::FlexECS::Entity::Null;	//Which entity the inspector panel should focus on.
-		
 		//ComponentViewRegistry m_component_registry;
-		//std::unordered_map<std::type_index, std::string> type_names;
-		//std::unordered_map<std::type_index, EditorPanel*> m_panels;
 	};
-
-
 
 }

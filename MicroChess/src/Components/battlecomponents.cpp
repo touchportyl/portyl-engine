@@ -18,7 +18,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /* End Header
 *******************************************************************/
 #include "battlecomponents.h"
-#include "Editor/componentviewer.h"
 
 namespace ChronoShift 
 {
@@ -53,7 +52,6 @@ namespace ChronoShift
   FLX_REFL_REGISTER_END;
 
   FLX_REFL_REGISTER_START(BattleSlot)
-    FLX_REFL_REGISTER_PROPERTY(slot_number)
     FLX_REFL_REGISTER_PROPERTY(character)
   FLX_REFL_REGISTER_END;
 
@@ -109,43 +107,4 @@ namespace ChronoShift
     FLX_REFL_REGISTER_PROPERTY(base_stat_value)
     FLX_REFL_REGISTER_PROPERTY(current_stat_value)
   FLX_REFL_REGISTER_END;
-
-
-  /*
-  Editor viewer
-  */
-  COMPONENT_VIEWER_START(Character)
-    COMPONENT_VIEWER_BOOL(is_player)
-    COMPONENT_VIEWER_EDITABLE_STRING(character_name)
-    COMPONENT_VIEWER_EDITABLE_STRING(character_status)
-    COMPONENT_VIEWER_DRAG_INT(character_class)
-    COMPONENT_VIEWER_DRAG_INT(base_health)
-    COMPONENT_VIEWER_DRAG_INT(current_health)
-    COMPONENT_VIEWER_DRAG_INT(base_speed)
-    COMPONENT_VIEWER_DRAG_INT(current_speed)
-
-    COMPONENT_VIEWER_EDITABLE_STRING(weapon_name)
-    COMPONENT_VIEWER_EDITABLE_STRING(weapon_description)
-    COMPONENT_VIEWER_DRAG_INT(weapon_type)
-    COMPONENT_VIEWER_EDITABLE_STRING(weapon_move_one)
-    COMPONENT_VIEWER_EDITABLE_STRING(weapon_move_two)
-    COMPONENT_VIEWER_EDITABLE_STRING(weapon_move_three)
-
-    COMPONENT_VIEWER_EDITABLE_STRING(chrono_gear_name)
-    COMPONENT_VIEWER_EDITABLE_STRING(chrono_gear_description)
-    COMPONENT_VIEWER_DRAG_INT(chrono_gear_cooldown)
-
-    COMPONENT_VIEWER_EDITABLE_STRING(character_ultimate)
-    COMPONENT_VIEWER_EDITABLE_STRING(character_ultimate_cooldown)
-
-    COMPONENT_VIEWER_EDITABLE_STRING(character_passive_name)
-    COMPONENT_VIEWER_EDITABLE_STRING(character_passive_description)
-  COMPONENT_VIEWER_END(Character)
-
-
-
-  void RegisterBattleComponents()
-  {
-    REGISTER_COMPONENT_VIEWER(Character);
-  }
 }
