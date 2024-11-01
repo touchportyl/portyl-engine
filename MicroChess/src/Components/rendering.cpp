@@ -72,10 +72,18 @@ namespace ChronoShift
     FLX_REFL_REGISTER_PROPERTY(post_processed)
   FLX_REFL_REGISTER_END;
 
+  FLX_REFL_REGISTER_START(Text)
+      FLX_REFL_REGISTER_PROPERTY(fonttype)
+      FLX_REFL_REGISTER_PROPERTY(text)
+      FLX_REFL_REGISTER_PROPERTY(color)
+      FLX_REFL_REGISTER_PROPERTY(alignment)
+      //FLX_REFL_REGISTER_PROPERTY(vbo_id)
+  FLX_REFL_REGISTER_END;
+
 
   FLX_REFL_REGISTER_START(Camera)
       FLX_REFL_REGISTER_PROPERTY(is_dirty)
-      FLX_REFL_REGISTER_PROPERTY(front)
+      /*FLX_REFL_REGISTER_PROPERTY(front)
       FLX_REFL_REGISTER_PROPERTY(right)
       FLX_REFL_REGISTER_PROPERTY(up)
       FLX_REFL_REGISTER_PROPERTY(world_up)
@@ -84,7 +92,8 @@ namespace ChronoShift
       FLX_REFL_REGISTER_PROPERTY(perspective)
       FLX_REFL_REGISTER_PROPERTY(fov)
       FLX_REFL_REGISTER_PROPERTY(near)
-      FLX_REFL_REGISTER_PROPERTY(far)
+      FLX_REFL_REGISTER_PROPERTY(far)*/
+      //FLX_REFL_REGISTER_PROPERTY(camera)
   FLX_REFL_REGISTER_END;
 
 
@@ -132,6 +141,14 @@ namespace ChronoShift
     COMPONENT_VIEWER_CHECKBOX(post_processed)
   COMPONENT_VIEWER_END(Sprite)
 
+  //TODO @ROCKY to add the font pic and have a dropbox of available fonts
+  COMPONENT_VIEWER_START(Text)
+      COMPONENT_VIEWER_STRING(fonttype)
+      COMPONENT_VIEWER_EDITABLE_STRING(text)
+      COMPONENT_VIEWER_COLOR3(color)
+      //COMPONENT_VIEWER(alignment)
+  COMPONENT_VIEWER_END(Text)
+
   void RegisterRenderingComponents()
   {
     REGISTER_COMPONENT_VIEWER(Position);
@@ -143,5 +160,6 @@ namespace ChronoShift
     REGISTER_COMPONENT_VIEWER(Parent);
     REGISTER_COMPONENT_VIEWER(Shader);
     REGISTER_COMPONENT_VIEWER(Sprite);
+    REGISTER_COMPONENT_VIEWER(Text);
   }
 }
