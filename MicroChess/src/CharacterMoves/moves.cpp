@@ -56,14 +56,16 @@ namespace ChronoShift
 		}
 	}
 
-	void Move_Immunity(std::vector<FlexECS::Entity> targets, int status_duration, int block_damage = 0) {
+	void Move_Immunity(std::vector<FlexECS::Entity> targets, int status_duration, int block_damage) {
+		UNREFERENCED_PARAMETER(block_damage);
 		for (FlexECS::Entity& t : targets) {
 			if (t.HasComponent<Immunity>()) t.GetComponent<Immunity>()->remaining_turns += status_duration;
 			else t.AddComponent<Immunity>({ status_duration }); // remaining turns
 		}
 	}
 
-	void Move_Stun(std::vector<FlexECS::Entity> targets, int status_duration, int stun_value = 0) {
+	void Move_Stun(std::vector<FlexECS::Entity> targets, int status_duration, int stun_value) {
+		UNREFERENCED_PARAMETER(stun_value);
 		for (FlexECS::Entity& t : targets) {
 			if (t.HasComponent<Stun>()) t.GetComponent<Stun>()->remaining_turns += status_duration;
 			else t.AddComponent<Stun>({ status_duration }); // remaining turns
