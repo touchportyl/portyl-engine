@@ -102,6 +102,7 @@ namespace ChronoShift
               [this]()
               {
                 //CreateDefaultScene();
+                FlexECS::Scene::SetActiveScene(std::make_shared<FlexECS::Scene>());
               }
             });
           }
