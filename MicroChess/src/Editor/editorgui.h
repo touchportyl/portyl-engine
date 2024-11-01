@@ -18,6 +18,7 @@
 #include "editor.h"
 #include "imguipayloads.h"
 
+#include "imgui_internal.h"
 namespace ChronoShift
 {
 
@@ -87,6 +88,9 @@ namespace ChronoShift
 		template <typename T>
 		static const T* StartPayloadReceiver(PayloadTags tag);
 
+		template <typename T>
+		static const T* StartWindowPayloadReceiver(PayloadTags tag);
+
 		static void EndPayloadReceiver();
 
 		/*!***************************************************************************
@@ -120,5 +124,33 @@ namespace ChronoShift
 		}
 		return nullptr;
 
+	}
+
+	//I dont know how imgui works very well yet
+	//https://github.com/ocornut/imgui/issues/5539
+	//copy paste for now
+	template <typename T>
+	const T* EditorGUI::StartWindowPayloadReceiver(PayloadTags tag)
+	{
+		using namespace ImGui;
+		ImRect inner_rect = GetCurrentWindow()->InnerRect;
+		if (BeginDragDropTargetCustom(inner_rect, GetID("##WindowBgArea")))
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GetPayloadTagString(tag), ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect))
+			{
+				if (payload->IsPreview())
+				{
+					ImDrawList* draw_list = ImGui::GetForegroundDrawList();
+					draw_list->AddRectFilled(inner_rect.Min, inner_rect.Max, GetColorU32(ImGuiCol_DragDropTarget, 0.05f));
+					draw_list->AddRect(inner_rect.Min, inner_rect.Max, GetColorU32(ImGuiCol_DragDropTarget), 0.0f, 0, 2.0f);
+				}
+				if (payload->IsDelivery())
+				{
+					return static_cast<T*>(payload->Data);
+				}
+			}
+			return nullptr;
+		}
+		return nullptr;
 	}
 }

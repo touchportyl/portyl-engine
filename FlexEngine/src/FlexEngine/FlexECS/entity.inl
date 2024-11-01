@@ -1,4 +1,12 @@
-// inline functions for Entity class
+// WLVERSE [https://wlverse.web.app]
+// entity.inl
+// 
+// Implementation of inline functions for Entity class. Describes the API for entities in the ECS system.
+//
+// AUTHORS
+// [100%] Chan Wen Loong (wenloong.c\@digipen.edu)
+// 
+// Copyright (c) 2024 DigiPen, All rights reserved.
 
 template <typename T>
 bool FlexEngine::FlexECS::Entity::HasComponent()

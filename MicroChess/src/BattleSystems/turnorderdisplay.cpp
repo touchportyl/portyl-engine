@@ -29,7 +29,7 @@ namespace ChronoShift
 		auto scene = FlexECS::Scene::GetActiveScene();
 
 		int i{ 0 };
-		for (auto entity : scene->View<TurnOrderDisplay, IsActive, ZIndex, Position, Scale, Shader, Sprite>())
+		for (auto entity : scene->Query<TurnOrderDisplay, IsActive, ZIndex, Position, Scale, Shader, Sprite>())
 		{
 			if (i >= queue.size())
 			{
