@@ -26,5 +26,5 @@ namespace ChronoShift
 	/*
 		\brief Displays the character's sprites according to queue order
 	*/
-	void DisplayTurnOrder(std::vector<FlexECS::Entity>& queue);
+	void DisplayTurnOrder(std::list<FlexECS::Entity>& queue);
 }
