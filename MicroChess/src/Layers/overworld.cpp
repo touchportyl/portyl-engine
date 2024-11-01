@@ -309,41 +309,6 @@ namespace ChronoShift {
         );
 
         #endif
-
-        FlexECS::Entity editorRender = FlexECS::Scene::CreateEntity("editorRender");
-        editorRender.AddComponent<IsActive>({ true });
-        editorRender.AddComponent<Position>({ {550, 300 } });
-        editorRender.AddComponent<Scale>({ { 800,800} });
-        editorRender.AddComponent<Rotation>({ });
-        editorRender.AddComponent<Transform>({});
-        editorRender.AddComponent<ZIndex>({ 9 });
-        editorRender.AddComponent<Sprite>({
-            scene->Internal_StringStorage_New(R"()"),
-            Vector3::Zero,
-            Vector3::One,
-            Renderer2DProps::Alignment_Center,
-            Renderer2DProps::VBO_BasicInverted,
-            false
-           });
-        editorRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
-        FlexECS::Entity finalRender = FlexECS::Scene::CreateEntity("finalRender");
-        finalRender.AddComponent<IsActive>({ true });
-        finalRender.AddComponent<Position>({ {250, 550 } });
-        finalRender.AddComponent<Scale>({ { 300,300} });
-        finalRender.AddComponent<Rotation>({ });
-        finalRender.AddComponent<Transform>({});
-        finalRender.AddComponent<ZIndex>({ 10 });
-        finalRender.AddComponent<Sprite>({
-            scene->Internal_StringStorage_New(R"()"),
-            Vector3::Zero,
-            Vector3::One,
-            Renderer2DProps::Alignment_Center,
-            Renderer2DProps::VBO_BasicInverted,
-            false
-           });
-        finalRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
     }
 
 

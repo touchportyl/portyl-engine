@@ -355,7 +355,7 @@ namespace ChronoShift
 
             FunctionQueue text_render_queue;
             Renderer2DText sample;
-            for (auto& txtentity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Text>())
+            for (auto& txtentity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Text>())
             {
                 /////////////////////////////////////
                 //How to retrieve
@@ -388,13 +388,13 @@ namespace ChronoShift
             bool blending = OpenGLRenderer::IsBlendingEnabled();
             if (!blending) OpenGLRenderer::EnableBlending();
 
-            OpenGLSpriteRenderer::SetDefaultFrameBuffer();
+            OpenGLSpriteRenderer::SetEditorFrameBuffer();
             text_render_queue.Flush();  // Final rendering (UI, etc.)
-
+            OpenGLSpriteRenderer::SetDefaultFrameBuffer();
             // pop settings
             if (depth_test) OpenGLRenderer::EnableDepthTest();
             if (!blending) OpenGLRenderer::DisableBlending();
-            #endif
+        #endif
         }
     }
 }
