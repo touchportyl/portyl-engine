@@ -388,6 +388,27 @@ namespace ChronoShift {
           }
       }
 
+      if (Input::GetKeyDown(GLFW_KEY_5))
+      {
+        FMODWrapper::Core::PlaySound("ding", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/ding-126626.mp3")));
+      }
+      if (Input::GetKeyDown(GLFW_KEY_6))
+      {
+        FMODWrapper::Core::PlaySound("boom", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/big-cine-boom-sound-effect-245851.mp3")));
+      }
+      if (Input::GetKeyDown(GLFW_KEY_7))
+      {
+        FMODWrapper::Core::PlaySound("wow", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/wow-171498.mp3")));
+      }
+      if (Input::GetKeyDown(GLFW_KEY_8))
+      {
+        FMODWrapper::Core::PlayLoopingSound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/mario.mp3")));
+      }
+      if (Input::GetKeyDown(GLFW_KEY_9))
+      {
+        FMODWrapper::Core::StopSound("mario");
+      }
+
       UpdatePhysicsSystem();
 
       //Render All Entities
