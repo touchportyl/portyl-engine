@@ -401,18 +401,6 @@ namespace ChronoShift {
                 }
             }
         }
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Debug Tests
-    //Key hold (Can just alter here, not very elegant but will do for now)
-        #if 0 //DEBUG
-        if (Input::GetKey(GLFW_KEY_F))
-        {
-            m_ScaleDebugTest -= 0.008f;
-        }
-        else if (Input::GetKey(GLFW_KEY_G))
-        {
-            m_ScaleDebugTest += 0.008f;
-        }
 
       if (Input::GetKeyDown(GLFW_KEY_5))
       {
@@ -434,6 +422,19 @@ namespace ChronoShift {
       {
         FMODWrapper::Core::StopSound("mario");
       }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Debug Tests
+        //Key hold (Can just alter here, not very elegant but will do for now)
+        #if 0 //DEBUG
+        if (Input::GetKey(GLFW_KEY_F))
+        {
+            m_ScaleDebugTest -= 0.008f;
+        }
+        else if (Input::GetKey(GLFW_KEY_G))
+        {
+            m_ScaleDebugTest += 0.008f;
+        }
 
       UpdatePhysicsSystem();
         if (Input::GetKey(GLFW_KEY_Q))
@@ -488,8 +489,8 @@ namespace ChronoShift {
                 cam_entity->Move(Vector2(-5.f, 0.0f));
             }
         #pragma endregion
-        //Render All Entities
 
+        //Render All Entities
         RendererSprite2D();
     }
 }
