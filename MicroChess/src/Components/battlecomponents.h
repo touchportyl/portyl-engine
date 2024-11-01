@@ -239,11 +239,11 @@ namespace ChronoShift
   };
 
   enum MoveTargetType : int {
-    MOVE_TARGET_SELF = 1,
+    MOVE_TARGET_SELF = -2,
+    MOVE_TARGET_ALL = -1,
     MOVE_TARGET_SINGLE = 1,
     MOVE_TARGET_DOUBLE = 2,
     MOVE_TARGET_TRIPLE = 3,
-    MOVE_TARGET_ALL = 5,
   };
 
   //struct Move {
