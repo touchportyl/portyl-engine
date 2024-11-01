@@ -47,6 +47,7 @@ namespace ChronoShift
     OpenGLRenderer::EnableBlending();
     Vector2 windowsize{ static_cast<float>(window->GetWidth()), static_cast<float>(window->GetHeight()) };
     OpenGLSpriteRenderer::Init(windowsize);
+    OpenGLTextRenderer::Init();
   }
 
   void BaseLayer::OnDetach()
@@ -330,46 +331,6 @@ ImGui::EndMainMenuBar();
     #endif
 
     #pragma endregion
-
-
-    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_B))
-    {
-      function_queue.Insert({
-        []()
-        {
-          FlexEngine::Window* window = Application::GetCurrentWindow();
-          window->PopLayer();
-          //window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
-          //window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
-        }
-      });
-    }
-    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_N))
-    {
-      function_queue.Insert({
-        []()
-        {
-          FlexEngine::Window* window = Application::GetCurrentWindow();
-          //window->PopLayer();
-          //window->PopLayer();
-          window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
-          window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
-      }
-      });
-    }
-    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_M))
-    {
-      function_queue.Insert({
-        []()
-        {
-          FlexEngine::Window* window = Application::GetCurrentWindow();
-          window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
-      }
-      });
-    }
-
-    function_queue.Flush();
-
   }
 
 }
