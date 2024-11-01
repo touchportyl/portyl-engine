@@ -45,6 +45,8 @@ namespace FlexEngine
 
         if (text.m_fonttype.empty())
             Log::Fatal("Text Renderer: Unknown font type! Please check what you wrote!");
+        if (text.m_words.empty())
+            return;
 
         asset_shader.SetUniform_vec3("u_color", text.m_color);
         asset_shader.SetUniform_mat4("u_model", text.m_transform);
@@ -56,13 +58,10 @@ namespace FlexEngine
         glBindVertexArray(m_VAO);
         auto& asset_font = FLX_ASSET_GET(Asset::Font, text.m_fonttype);
 
-        float maxWidth = 1280;
-        float maxHeight = 750.0f; // get screen height
-        float maxLineHeight = 0.0f; // Track the tallest character in the current line
-
         // Determine initial X position based on horizontal alignment
         Vector3 pen_pos = Vector3::Zero;
         float lineWidth = 0.0f;
+        float maxLineHeight = 0.0f;
 
         switch (static_cast<Renderer2DText::AlignmentX>(text.m_alignment.first))
         {
@@ -78,18 +77,18 @@ namespace FlexEngine
         }
 
         // Determine initial Y position based on vertical alignment (not working)
-        switch (static_cast<Renderer2DText::AlignmentY>(text.m_alignment.second))
-        {
-        case Renderer2DText::Alignment_Top:
-            pen_pos.y = 0.0f;
-            break;
-        case Renderer2DText::Alignment_Middle:
-            pen_pos.y = maxHeight / 2.0f;
-            break;
-        case Renderer2DText::Alignment_Bottom:
-            pen_pos.y = maxHeight;
-            break;
-        }
+        //switch (static_cast<Renderer2DText::AlignmentY>(text.m_alignment.second))
+        //{
+        //case Renderer2DText::Alignment_Top:
+        //    pen_pos.y = 0.0f;
+        //    break;
+        //case Renderer2DText::Alignment_Middle:
+        //    pen_pos.y = maxHeight / 2.0f;
+        //    break;
+        //case Renderer2DText::Alignment_Bottom:
+        //    pen_pos.y = maxHeight;
+        //    break;
+        //}
 
         // Iterate through all characters in the string
         for (char c : text.m_words)
