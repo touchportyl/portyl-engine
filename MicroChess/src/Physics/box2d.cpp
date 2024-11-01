@@ -14,7 +14,7 @@ namespace ChronoShift
     //bool mouse_clicked = Input::GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);
 
     //On Hover
-    //for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Parent, Position, Scale, Rotation, Transform, BoundingBox2D, OnHover>())
+    //for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<IsActive, Parent, Position, Scale, Rotation, Transform, BoundingBox2D, OnHover>())
     //{
     //  if (!entity.GetComponent<IsActive>()->is_active) continue;
 
@@ -77,7 +77,7 @@ namespace ChronoShift
     //  //}
     //}
     //On Click
-    //for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Parent, Position, Scale, Rotation, Transform, BoundingBox2D, OnClick>())
+    //for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<IsActive, Parent, Position, Scale, Rotation, Transform, BoundingBox2D, OnClick>())
     //{
     //  if (!entity.GetComponent<IsActive>()->is_active) continue;
 
@@ -119,7 +119,7 @@ namespace ChronoShift
     
     //TODO -> RUN THROUGH FOR LOOP FOR CHILDREN
     //No parent
-    //for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+    //for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<IsActive, Transform>())
     //{
     //    Parent* test = nullptr;
     //    if (!entity.GetComponent<IsActive>()->is_active /*|| entity.TryGetComponent<Parent>(test)*/) continue;
@@ -142,7 +142,7 @@ namespace ChronoShift
     //    Log::Debug(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<EntityName>()));
     //}
     //// With parent
-    //for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform, Parent>())
+    //for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<IsActive, Transform, Parent>())
     //{
     //    if (!entity.GetComponent<IsActive>()->is_active) continue;
 

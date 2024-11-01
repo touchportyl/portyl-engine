@@ -50,7 +50,7 @@ namespace ChronoShift {
     FlexECS::Scene::SetActiveScene(loaded_scene);
 
     MoveRegistry::RegisterMoves();
-    m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->View<Character>());
+    m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->Query<Character>());
     m_battlesystem.BeginBattle();
 
     /*************************************************************************
