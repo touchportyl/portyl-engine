@@ -19,6 +19,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 *******************************************************************/
 #pragma once
 #include <unordered_map>
+#include <typeindex>
 #include <functional>
 #include <string>
 #include <FlexEngine.h>
@@ -26,23 +27,23 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 using namespace FlexEngine;
 namespace ChronoShift
 {
-  enum MoveFunctions : int
-  {
-    REDUCE_HP = 1,
-    INCREASE_HP = 2,
-  };
-  using MoveEffect = std::function<void(std::vector<FlexECS::Entity> targets, int value)>;
+  using MoveFunction = std::function<void(std::vector<FlexECS::Entity> targets, int value)>;
+  using EffectFunction = std::function<void(std::vector<FlexECS::Entity> targets, int value, int duration)>;
+
   struct Move {
     std::string name; //use to access map of moves
     std::string description;
 
-    int cost;
+    int cost = 0;
 
-    bool is_target_enemy;
-    int target_type;
-    int damage; //how many times you need to target
-    //std::pair<MOVE_TARGET_TYPE, int>
-    MoveEffect effect;
+    bool is_target_enemy = true;
+    int target_type = 0;
+    int move_value = 0; 
+
+    MoveFunction move_function;
+    int effect_value = 0;
+    int effect_duration = 0;
+    EffectFunction effect_function;
   };
 
   class MoveRegistry {
@@ -50,7 +51,8 @@ namespace ChronoShift
     MoveRegistry(MoveRegistry&) = delete;
     MoveRegistry& operator=(MoveRegistry&) = delete;
 
-    static void RegisterMoves();
+    static void RegisterMoveFunctions();
+    static void RegisterStatusFunctions();
 
     static Move GetMove(std::string move_name);
 
@@ -58,6 +60,16 @@ namespace ChronoShift
     MoveRegistry();
     ~MoveRegistry();
 
-    static std::unordered_map<int, MoveEffect> s_move_function_registry;
+    static std::unordered_map<std::string, MoveFunction> s_move_function_registry;
+    static std::unordered_map<std::string, EffectFunction> s_status_function_registry;
+    static inline std::unordered_map<std::string, int> break_down_numerical_string = {
+      {"SINGLE", 1},
+      {"DOUBLE", 2},
+      {"TRIPLE", 3},
+      {"QUARUPLE", 4},
+      {"QUINTUPLE", 5},
+      {"SEXTUPLE", 6},
+      {"ALL", -1}
+    };
   };
 }

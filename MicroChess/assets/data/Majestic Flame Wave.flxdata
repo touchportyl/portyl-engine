@@ -1,0 +1,14 @@
+{
+    "flxdata": {
+        "name": "Majestic Flame Wave",
+        "description": "Hit entire enemy team for 5 damage each and inflicts burn on them for 2 turns",
+        "speed_cost": 25,
+        "is_target_enemy": true,
+        "target_type": "ALL",
+        "move_value": 5,
+        "move_function": "DAMAGE",
+	"effect_value": 2,
+	"effect_duration": 2,
+	"effect_function": "BURN"
+    }
+}

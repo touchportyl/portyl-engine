@@ -26,29 +26,48 @@ namespace ChronoShift
   FLX_REFL_REGISTER_START(Action)
     FLX_REFL_REGISTER_PROPERTY(move_to_use)
   FLX_REFL_REGISTER_END;
+  #pragma endregion
 
-  FLX_REFL_REGISTER_START(EffectValues)
-    FLX_REFL_REGISTER_PROPERTY(duration)
-    FLX_REFL_REGISTER_PROPERTY(value)
+  #pragma region Status Effect Components
+  FLX_REFL_REGISTER_START(Burn)
+    FLX_REFL_REGISTER_PROPERTY(remaining_turns)
+    FLX_REFL_REGISTER_PROPERTY(damage_value)
   FLX_REFL_REGISTER_END;
 
-  FLX_REFL_REGISTER_START(StatusEffects)
-    FLX_REFL_REGISTER_PROPERTY(strength)
-    FLX_REFL_REGISTER_PROPERTY(speed)
+  FLX_REFL_REGISTER_START(Shock)
+    FLX_REFL_REGISTER_PROPERTY(remaining_turns)
+    FLX_REFL_REGISTER_PROPERTY(damage_value)
   FLX_REFL_REGISTER_END;
 
+  FLX_REFL_REGISTER_START(Shear)
+    FLX_REFL_REGISTER_PROPERTY(remaining_turns)
+    FLX_REFL_REGISTER_PROPERTY(damage_value)
+  FLX_REFL_REGISTER_END;
+
+  FLX_REFL_REGISTER_START(Immunity)
+    FLX_REFL_REGISTER_PROPERTY(remaining_turns)
+  FLX_REFL_REGISTER_END;
+
+  FLX_REFL_REGISTER_START(Stun)
+    FLX_REFL_REGISTER_PROPERTY(remaining_turns)
+  FLX_REFL_REGISTER_END;
+
+  FLX_REFL_REGISTER_START(Recovery)
+    FLX_REFL_REGISTER_PROPERTY(remaining_turns)
+    FLX_REFL_REGISTER_PROPERTY(heal_value)
+  FLX_REFL_REGISTER_END;
   #pragma endregion
 
   #pragma region Battle Components
   FLX_REFL_REGISTER_START(BattleState)
     FLX_REFL_REGISTER_PROPERTY(phase)
-    FLX_REFL_REGISTER_PROPERTY(active_character)
-    FLX_REFL_REGISTER_PROPERTY(target_one)
-    FLX_REFL_REGISTER_PROPERTY(target_two)
-    FLX_REFL_REGISTER_PROPERTY(target_three)
-    FLX_REFL_REGISTER_PROPERTY(target_four)
-    FLX_REFL_REGISTER_PROPERTY(target_five)
-    FLX_REFL_REGISTER_PROPERTY(current_target_count)
+    //FLX_REFL_REGISTER_PROPERTY(active_character)
+    //FLX_REFL_REGISTER_PROPERTY(target_one)
+    //FLX_REFL_REGISTER_PROPERTY(target_two)
+    //FLX_REFL_REGISTER_PROPERTY(target_three)
+    //FLX_REFL_REGISTER_PROPERTY(target_four)
+    //FLX_REFL_REGISTER_PROPERTY(target_five)
+    //FLX_REFL_REGISTER_PROPERTY(current_target_count)
     //FLX_REFL_REGISTER_PROPERTY(selected_targets)
   FLX_REFL_REGISTER_END;
 
