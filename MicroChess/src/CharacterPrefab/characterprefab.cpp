@@ -43,22 +43,22 @@ void ResetCharacters() {
     character->current_health = character->base_health;
     character->current_speed = character->base_speed;
   }
-  for (auto& entity : scene->View<Shock>()) {
+  for (auto& entity : scene->Query<Shock>()) {
     entity.RemoveComponent<Shock>();
   }
-  for (auto& entity : scene->View<Burn>()) {
+  for (auto& entity : scene->Query<Burn>()) {
     entity.RemoveComponent<Burn>();
   }
-  for (auto& entity : scene->View<Shear>()) {
+  for (auto& entity : scene->Query<Shear>()) {
     entity.RemoveComponent<Shear>();
   }
-  for (auto& entity : scene->View<Immunity>()) {
+  for (auto& entity : scene->Query<Immunity>()) {
     entity.RemoveComponent<Immunity>();
   }
-  for (auto& entity : scene->View<Recovery>()) {
+  for (auto& entity : scene->Query<Recovery>()) {
     entity.RemoveComponent<Recovery>();
   }
-  for (auto& entity : scene->View<Stun>()) {
+  for (auto& entity : scene->Query<Stun>()) {
     entity.RemoveComponent<Stun>();
   }
   std::cout << "Reset Complete" << std::endl;

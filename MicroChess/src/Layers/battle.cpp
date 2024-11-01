@@ -84,7 +84,7 @@ namespace ChronoShift {
     }*/
     if (Input::GetKeyDown(GLFW_KEY_R)) {
       ResetCharacters();
-      m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->View<Character>());
+      m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->CachedQuery<Character>());
       m_battlesystem.BeginBattle();
     }
   }
