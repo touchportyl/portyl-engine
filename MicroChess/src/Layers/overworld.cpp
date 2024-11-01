@@ -366,21 +366,21 @@ namespace ChronoShift {
         FLX_FLOW_ENDSCOPE();
     }
 
-    void OverworldLayer::Update()
-    {
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput>())
-        {
-            entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
-            entity.GetComponent<CharacterInput>()->down = Input::GetKey(GLFW_KEY_S);
-            entity.GetComponent<CharacterInput>()->left = Input::GetKey(GLFW_KEY_A);
-            entity.GetComponent<CharacterInput>()->right = Input::GetKey(GLFW_KEY_D);
-        }
+  void OverworldLayer::Update()
+  {
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput>())
+      {
+          entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
+          entity.GetComponent<CharacterInput>()->down = Input::GetKey(GLFW_KEY_S);
+          entity.GetComponent<CharacterInput>()->left = Input::GetKey(GLFW_KEY_A);
+          entity.GetComponent<CharacterInput>()->right = Input::GetKey(GLFW_KEY_D);
+      }
 
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput, Rigidbody>())
-        {
-            auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
-            velocity.x = 0.0f;
-            velocity.y = 0.0f;
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput, Rigidbody>())
+      {
+          auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
+          velocity.x = 0.0f;
+          velocity.y = 0.0f;
 
             if (entity.GetComponent<CharacterInput>()->up)
             {
@@ -403,15 +403,11 @@ namespace ChronoShift {
             }
         }
 
-        //For testing 2500 objects
-        //Create one, then clone the rest
-        if (Input::GetKeyDown(GLFW_KEY_0))
-        {
-            auto scene = FlexECS::Scene::GetActiveScene();
-            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<EntityName>())
-            {
-                scene->DestroyEntity(entity);
-            }
+      //For testing 2500 objects
+      //Create one, then clone the rest
+      if (Input::GetKeyDown(GLFW_KEY_0))
+      {
+          auto scene = FlexECS::Scene::GetActiveScene();
 
             FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
             thing.AddComponent<IsActive>({ true });

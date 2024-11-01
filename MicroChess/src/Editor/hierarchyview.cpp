@@ -32,6 +32,8 @@ namespace ChronoShift
 	{
 		auto scene = FlexECS::Scene::GetActiveScene();
 
+
+
 		FunctionQueue delete_queue;
 
 		FlexECS::Entity entity_to_delete = FlexECS::Entity::Null;
@@ -41,9 +43,8 @@ namespace ChronoShift
 		//std::string entity_count_text = "Entity Count:  " + std::to_string(entity_count);
 		//ImGui::Text(entity_count_text.c_str());
 		
-
 		//Drag a sprite from assets to window to create entity with the sprite.
-		if (auto image = EditorGUI::StartPayloadReceiver<const char>(PayloadTags::IMAGE))
+		if (auto image = EditorGUI::StartWindowPayloadReceiver<const char>(PayloadTags::IMAGE))
 		{
 			std::string image_key(image);
 			std::filesystem::path path = image_key;
@@ -57,6 +58,7 @@ namespace ChronoShift
 			new_entity.AddComponent<ZIndex>({});
 			new_entity.AddComponent<Sprite>({ FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(image_key) });
 			new_entity.AddComponent<Shader>({ FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(R"(\shaders\texture)") });
+			EditorGUI::EndPayloadReceiver();
 		}
 
 

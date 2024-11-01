@@ -151,6 +151,12 @@
     <ClInclude Include="src\Editor\imguipayloads.h">
       <Filter>src\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="src\Editor\sceneview.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\gameview.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -233,6 +239,12 @@
     </ClCompile>
     <ClCompile Include="src\CharacterPrefab\characterprefab.cpp" />
     <ClCompile Include="src\Editor\assetbrowser.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\sceneview.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\gameview.cpp">
       <Filter>src\Editor</Filter>
     </ClCompile>
   </ItemGroup>

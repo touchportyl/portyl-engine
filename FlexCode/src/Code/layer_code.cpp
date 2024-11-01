@@ -66,7 +66,7 @@ namespace FlexCode
   {
     FLX_FLOW_FUNCTION();
 
-    flexengine_logo.Load("../FlexEngine/assets/images/flexengine/flexengine_logo_white.png");
+    flexengine_logo.Load(Path::current("assets/images/flexengine/flexengine_logo_white.png"));
   }
 
   void CodeLayer::OnDetach()
@@ -74,7 +74,7 @@ namespace FlexCode
     FLX_FLOW_FUNCTION();
   }
 
-  void CodeLayer::OnUpdate()
+  void CodeLayer::Update()
   {
 
     // get the current active file
@@ -102,7 +102,7 @@ namespace FlexCode
         }
       }
     }
-    
+
     // focused file shortcuts
     if (focused_file)
     {
@@ -113,10 +113,8 @@ namespace FlexCode
       }
     }
 
-  }
-
-  void CodeLayer::OnImGuiRender()
-  {
+    // render the ImGui layer
+    
     // check for viewport and docking
     ImGuiIO& io = ImGui::GetIO();
     FLX_ASSERT(
@@ -165,18 +163,18 @@ namespace FlexCode
               return;
             }
           }
-          Application::Get().Close();
+          Application::GetCurrentWindow()->Close();
         }
         ImGui::EndMenu();
       }
-    
+
       //if (ImGui::BeginMenu("Edit"))
       //{
       //  if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
       //  if (ImGui::MenuItem("Redo", "Ctrl+Y")) {}
       //  ImGui::EndMenu();
       //}
-    
+
       ImGui::EndMainMenuBar();
     }
 
@@ -275,7 +273,7 @@ namespace FlexCode
         file.to_dock = true;
       }
     }
-    
+
     // display all stored files
     // handle file closing, saving, and editing
     for (auto& file : files)
@@ -382,6 +380,7 @@ namespace FlexCode
     }
 
     #pragma endregion
+
   }
 
 }

@@ -252,22 +252,39 @@ namespace FlexEngine
         const_value_type s = sin(a);
 
         Vector3 axis = Vector3::Normalize(rotation_axis);
+
+        /*Matrix3x3 rotation;
+        result[0][0] = c;
+        result[0][1] = -s;
+        result[0][2] = axis.x - (c * axis.x - s * axis.y);
+        result[1][0] = s;
+        result[1][1] = c;
+        result[1][2] = axis.y - (s * axis.x + c * axis.y);
+        result[2][0] = 0;
+        result[2][1] = 0;
+        result[2][2] = 1;*/
+
         Vector3 temp((1.0f - c) * axis);
 
         Matrix3x3 rotation;
 
         rotation(0, 0) = c + temp[0] * axis[0];
-        rotation(0, 1) = temp[0] * axis[1];
+        rotation(0, 1) = temp[0] * axis[1] + s * axis[2];
+        rotation(0, 2) = temp[0] * axis[2] - s * axis[1];
 
-        rotation(1, 0) = temp[1] * axis[0];
+        rotation(1, 0) = temp[1] * axis[0] - s * axis[2];
         rotation(1, 1) = c + temp[1] * axis[1];
+        rotation(1, 2) = temp[1] * axis[2] + s * axis[0];
+
+        rotation(2, 0) = temp[2] * axis[0] + s * axis[1];
+        rotation(2, 1) = temp[2] * axis[1] - s * axis[0];
+        rotation(2, 2) = c + temp[2] * axis[2];
 
         Matrix3x3 result;
 
-        result.m0 = m0 * rotation(0, 0) + m1 * rotation(0, 1);
-        result.m1 = m0 * rotation(1, 0) + m1 * rotation(1, 1);
-        result.m2 = m2;
-
+        result.m0 = m0 * rotation(0, 0) + m1 * rotation(0, 1) + m2 * rotation(0, 2);
+        result.m1 = m0 * rotation(1, 0) + m1 * rotation(1, 1) + m2 * rotation(1, 2);
+        result.m2 = m0 * rotation(2, 0) + m1 * rotation(2, 1) + m2 * rotation(2, 2);
         return *this = result;
     }
 

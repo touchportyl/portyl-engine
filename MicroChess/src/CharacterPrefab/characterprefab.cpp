@@ -27,19 +27,39 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "characterprefab.h"
 
 void SaveCharacters() {
-  auto scene = FlexECS::Scene::GetActiveScene();
-  for (auto& entity : scene->View<ChronoShift::Character>()) {
+  /*auto scene = FlexECS::Scene::GetActiveScene();
+  for (auto& entity : scene->Query<ChronoShift::Character>()) {
     scene->SaveEntityAsPrefab(entity, scene->Internal_StringStorage_Get(*(entity.GetComponent<EntityName>())));
-  }
+  }*/
+  File& file = File::Open(Path::current().append("pee.flxscene"));
+  FlexECS::Scene::SaveActiveScene(file);
   std::cout << "Saved Completed" << std::endl;
 }
 
 void ResetCharacters() {
   auto scene = FlexECS::Scene::GetActiveScene();
-  for (auto& entity : scene->View<ChronoShift::Character>()) {
+  for (auto& entity : scene->Query<ChronoShift::Character>()) {
     auto character = entity.GetComponent<Character>();
     character->current_health = character->base_health;
     character->current_speed = character->base_speed;
+  }
+  for (auto& entity : scene->Query<Shock>()) {
+    entity.RemoveComponent<Shock>();
+  }
+  for (auto& entity : scene->Query<Burn>()) {
+    entity.RemoveComponent<Burn>();
+  }
+  for (auto& entity : scene->Query<Shear>()) {
+    entity.RemoveComponent<Shear>();
+  }
+  for (auto& entity : scene->Query<Immunity>()) {
+    entity.RemoveComponent<Immunity>();
+  }
+  for (auto& entity : scene->Query<Recovery>()) {
+    entity.RemoveComponent<Recovery>();
+  }
+  for (auto& entity : scene->Query<Stun>()) {
+    entity.RemoveComponent<Stun>();
   }
   std::cout << "Reset Complete" << std::endl;
 }
@@ -53,7 +73,7 @@ void CreateCharacter(Character parameters) {
 
 void EditCharacter(std::string character_name, Character parameters) {
   auto scene = FlexECS::Scene::GetActiveScene();
-  for (auto& entity : scene->View<ChronoShift::Character>()) {
+  for (auto& entity : scene->Query<ChronoShift::Character>()) {
     std::string name_to_check = scene->Internal_StringStorage_Get(*(entity.GetComponent<EntityName>()));
     if (name_to_check == character_name) {
       entity.RemoveComponent<Character>();

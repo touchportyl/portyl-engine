@@ -102,7 +102,7 @@ namespace ChronoShift
         static std::unordered_set<FlexECS::EntityID> t_processedEntities;
         t_processedEntities.clear();
 
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Transform>())
         {
             // Check if this entity has already been processed
             if (t_processedEntities.find(entity.Get()) != t_processedEntities.end() || !entity.GetComponent<IsActive>()->is_active) continue; //Skip
@@ -158,7 +158,7 @@ namespace ChronoShift
         //Log::Debug("****************************************************************");
 
         //Ensure all entities is no longer dirty
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Transform>())
         {
             if (!entity.GetComponent<IsActive>()->is_active) continue;
 
@@ -199,7 +199,7 @@ namespace ChronoShift
             FunctionQueue pp_render_queue, non_pp_render_queue;
 
             //same thing as update transformations, flush update queue (lags if more than 2500 objects)
-            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
 
@@ -218,12 +218,7 @@ namespace ChronoShift
                 props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
                 props.vbo_id = sprite->vbo_id;
 
-                //FIRST TWO IFS SHOULD NOT BE HERE
-                if ("finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", z_index });
-                else if ("editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_finalRender),props); }, "", z_index });
-                else if (sprite->post_processed)
+                if (sprite->post_processed)
                     pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
                 else
                     non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
@@ -273,7 +268,7 @@ namespace ChronoShift
             std::unordered_map<std::string, Sprite_Batch_Inst> batchMap;
 
             //same thing as update transformations, flush update queue (lags if more than 2500 objects)
-            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
 

@@ -405,7 +405,7 @@ ImGui::EndMainMenuBar();
       if (ImGui::CollapsingHeader("Scene", tree_node_flags))
       {
         ImGui::Text("Active Scene: %s", current_save_name.c_str());
-        ImGui::Text("Entities: %d", FlexECS::Scene::GetActiveScene()->View<EntityName>().size());
+        ImGui::Text("Entities: %d", FlexECS::Scene::GetActiveScene()->Query<EntityName>().size());
         ImGui::Text("Archetypes: %d", ARCHETYPE_INDEX.size());
       }
 
@@ -527,7 +527,7 @@ ImGui::EndMainMenuBar();
       ImGui::SeparatorText("Entities");
 
       // entities
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, LocalPosition, GlobalPosition, Rotation, Scale, Transform, Model>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<IsActive, LocalPosition, GlobalPosition, Rotation, Scale, Transform, Model>())
       {
         auto entity_name_component = entity.GetComponent<EntityName>();
         auto is_active = &entity.GetComponent<IsActive>()->is_active;
@@ -718,7 +718,7 @@ ImGui::EndMainMenuBar();
     #if 0
     {
       // Rotate all entities in the scene (except cameras)
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, GlobalPosition, Rotation, Transform>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<IsActive, GlobalPosition, Rotation, Transform>())
       {
         if (entity.HasComponent<Camera>()) continue;
         if (!entity.GetComponent<IsActive>()->is_active) continue;
@@ -755,7 +755,7 @@ ImGui::EndMainMenuBar();
     #if 0
     {
       // move the camera with WASD
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Camera, GlobalPosition, Rotation>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<Camera, GlobalPosition, Rotation>())
       {
         auto& global_position = entity.GetComponent<GlobalPosition>()->position;
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
@@ -852,7 +852,7 @@ ImGui::EndMainMenuBar();
     #if 1
     {
       // move the camera with mouse (orbiting)
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Camera, GlobalPosition, Rotation>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<Camera, GlobalPosition, Rotation>())
       {
         auto& global_position = entity.GetComponent<GlobalPosition>()->position;
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
@@ -918,7 +918,7 @@ ImGui::EndMainMenuBar();
     #if 1
     {
       // Updates the transform component
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, LocalPosition, GlobalPosition, Rotation, Scale, Transform>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<IsActive, LocalPosition, GlobalPosition, Rotation, Scale, Transform>())
       {
         if (!entity.GetComponent<IsActive>()->is_active) continue;
 
@@ -952,7 +952,7 @@ ImGui::EndMainMenuBar();
     #if 1
     {
       // Updates the camera component
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<GlobalPosition, Rotation, Camera>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<GlobalPosition, Rotation, Camera>())
       {
         auto& global_position = entity.GetComponent<GlobalPosition>()->position;
         auto& rotation = entity.GetComponent<Rotation>()->rotation;
@@ -1029,7 +1029,7 @@ ImGui::EndMainMenuBar();
       }
 
       // Render all entities
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<Transform, Mesh, Material, Shader>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<Transform, Mesh, Material, Shader>())
       {
         auto& transform = entity.GetComponent<Transform>()->transform;
         auto& mesh = entity.GetComponent<Mesh>()->mesh;
@@ -1112,7 +1112,7 @@ ImGui::EndMainMenuBar();
       }
 
       // Render all entities
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform, Model, Shader>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<IsActive, Transform, Model, Shader>())
       {
         if (!entity.GetComponent<IsActive>()->is_active) continue;
 
@@ -1225,7 +1225,7 @@ ImGui::EndMainMenuBar();
       if (!blending) OpenGLRenderer::EnableBlending();
 
       // Render all entities
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, GlobalPosition, Scale, Shader, Sprite>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->Query<IsActive, GlobalPosition, Scale, Shader, Sprite>())
       {
         if (!entity.GetComponent<IsActive>()->is_active) continue;
 

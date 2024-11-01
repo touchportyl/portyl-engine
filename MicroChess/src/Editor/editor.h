@@ -15,9 +15,11 @@
 
 #include "Editor/hierarchyview.h"
 #include "Editor/inspector.h"
-#include "Editor/editorgui.h"
 #include "Editor/assetbrowser.h"
+#include "Editor/sceneview.h"
+#include "Editor/gameview.h"
 #include "Editor/componentviewer.h"
+#include "Editor/editorgui.h"
 #include "Editor/imguipayloads.h"
 
 #include "Components/rendering.h"
@@ -79,6 +81,8 @@ namespace ChronoShift
 		HierarchyView m_hierarchy;
 		Inspector m_inspector;
 		AssetBrowser m_assetbrowser;
+		SceneView m_sceneview;
+		GameView m_gameview;
 
 		//wtf move this out to inspector or something else
 		FlexEngine::FlexECS::Entity m_selected_entity = FlexEngine::FlexECS::Entity::Null;	//Which entity the inspector panel should focus on.
