@@ -52,6 +52,7 @@ namespace ChronoShift {
     MoveRegistry::RegisterMoveFunctions();
     MoveRegistry::RegisterStatusFunctions();
     m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->View<Character>());
+
     m_battlesystem.BeginBattle();
 
     /*************************************************************************
@@ -68,31 +69,14 @@ namespace ChronoShift {
     editorRender.AddComponent<Transform>({});
     editorRender.AddComponent<ZIndex>({ 9 });
     editorRender.AddComponent<Sprite>({
-        scene->Internal_StringStorage_New(R"()"),
-        Vector3::Zero,
-        Vector3::One,
-        Renderer2DProps::Alignment_Center,
-        Renderer2DProps::VBO_BasicInverted,
-        false
-       });
+      scene->Internal_StringStorage_New(R"()"),
+      Vector3::Zero,
+      Vector3::One,
+      Renderer2DProps::Alignment_Center,
+      Renderer2DProps::VBO_BasicInverted,
+      false
+    });
     editorRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
-    FlexECS::Entity finalRender = FlexECS::Scene::CreateEntity("finalRender");
-    finalRender.AddComponent<IsActive>({ true });
-    finalRender.AddComponent<Position>({ {300, 600 } });
-    finalRender.AddComponent<Scale>({ { 300,300} });
-    finalRender.AddComponent<Rotation>({ });
-    finalRender.AddComponent<Transform>({});
-    finalRender.AddComponent<ZIndex>({ 10 });
-    finalRender.AddComponent<Sprite>({
-        scene->Internal_StringStorage_New(R"()"),
-        Vector3::Zero,
-        Vector3::One,
-        Renderer2DProps::Alignment_Center,
-        Renderer2DProps::VBO_BasicInverted,
-        false
-       });
-    finalRender.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
   }
 
   void BattleLayer::OnAttach()

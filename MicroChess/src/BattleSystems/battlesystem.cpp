@@ -67,10 +67,11 @@ namespace ChronoShift {
       slot.AddComponent<Sprite>({
         scene->Internal_StringStorage_New(R"()"),
         SLOT_COLOR_PLAYER,
-        Vector3::Zero,
         Vector3::One,
-        Renderer2DProps::Alignment_Center
-       });
+        Renderer2DProps::Alignment_Center,
+        Renderer2DProps::VBO_BasicInverted,
+        false
+      });
       slot.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
       if (i < players_displayed) {
@@ -135,6 +136,7 @@ namespace ChronoShift {
       }
       else m_enemies.push_back(temp_character);
     }
+
     players_displayed = m_players.size();
     enemies_displayed = m_enemies.size();
     SetUpBattleScene();

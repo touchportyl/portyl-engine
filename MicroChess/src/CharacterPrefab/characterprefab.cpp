@@ -27,10 +27,12 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "characterprefab.h"
 
 void SaveCharacters() {
-  auto scene = FlexECS::Scene::GetActiveScene();
+  /*auto scene = FlexECS::Scene::GetActiveScene();
   for (auto& entity : scene->View<ChronoShift::Character>()) {
     scene->SaveEntityAsPrefab(entity, scene->Internal_StringStorage_Get(*(entity.GetComponent<EntityName>())));
-  }
+  }*/
+  File& file = File::Open(Path::current().append("pee.flxscene"));
+  FlexECS::Scene::SaveActiveScene(file);
   std::cout << "Saved Completed" << std::endl;
 }
 
