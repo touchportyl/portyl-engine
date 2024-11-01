@@ -319,7 +319,7 @@ namespace ChronoShift {
 
   void OverworldLayer::Update()
   {
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput>())
       {
           entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
           entity.GetComponent<CharacterInput>()->down = Input::GetKey(GLFW_KEY_S);
@@ -327,7 +327,7 @@ namespace ChronoShift {
           entity.GetComponent<CharacterInput>()->right = Input::GetKey(GLFW_KEY_D);
       }
 
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<CharacterInput, Rigidbody>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput, Rigidbody>())
       {
           auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
           velocity.x = 0.0f;
@@ -359,10 +359,6 @@ namespace ChronoShift {
       if (Input::GetKeyDown(GLFW_KEY_0))
       {
           auto scene = FlexECS::Scene::GetActiveScene();
-          for (auto& entity : FlexECS::Scene::GetActiveScene()->View<EntityName>())
-          {
-              scene->DestroyEntity(entity);
-          }
 
           FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
           thing.AddComponent<IsActive>({ true });
@@ -391,49 +387,7 @@ namespace ChronoShift {
               }
           }
       }
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Debug Tests
-  //Key hold (Can just alter here, not very elegant but will do for now)
-      #if 0 //DEBUG
-      if (Input::GetKey(GLFW_KEY_F))
-      {
-          m_ScaleDebugTest -= 0.008f;
-      }
-      else if (Input::GetKey(GLFW_KEY_G))
-      {
-          m_ScaleDebugTest += 0.008f;
-      }
 
-      if (Input::GetKey(GLFW_KEY_Q))
-      {
-          m_RotateDebugTest.z += 1.0f;
-      }
-      else if (Input::GetKey(GLFW_KEY_E))
-      {
-          m_RotateDebugTest.z -= 1.0f;
-      }
-
-      //Altering entities scale and rotation while game is in debug mode
-      // TEST ON EVERYTHING
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
-      {
-          if (!entity.GetComponent<IsActive>()->is_active) continue;
-
-          //Search function for a specific object to test and NOT everything
-          auto entity_name_component = entity.GetComponent<EntityName>();
-          //Change "" to whatever object or comment the line to affect everything
-          if ("box2" != FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component)) continue;
-
-          auto& scale = entity.GetComponent<Scale>()->scale;
-          auto& rotation = entity.GetComponent<Rotation>()->rotation;
-
-          scale = Vector2(m_ScaleDebugTest, m_ScaleDebugTest);
-          rotation = m_RotateDebugTest;
-
-          entity.GetComponent<Transform>()->is_dirty = true;
-      }
-      #endif
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
       UpdatePhysicsSystem();
 
       //Render All Entities

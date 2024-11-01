@@ -37,7 +37,7 @@ namespace ChronoShift
 
     if (show_colliders)
     {
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<BoundingBox2D>())
+      for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<BoundingBox2D>())
       {
         const Vector3& max = entity.GetComponent<BoundingBox2D>()->max;
         const Vector3& min = entity.GetComponent<BoundingBox2D>()->min;

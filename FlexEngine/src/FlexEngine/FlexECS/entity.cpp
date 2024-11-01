@@ -1,3 +1,16 @@
+// WLVERSE [https://wlverse.web.app]
+// entity.cpp
+// 
+// Implementation of Entity class and functions that assist its management in the ECS
+//
+// AUTHORS
+// [90%] Chan Wen Loong (wenloong.c\@digipen.edu)
+//   - Everything else
+// [10%] Kuan Yew Chong (yewchong.k\@digipen.edu)
+//  - Update internal_addarchetype for updating caches
+// 
+// Copyright (c) 2024 DigiPen, All rights reserved.
+
 #include "datastructures.h"
 
 namespace FlexEngine
@@ -81,6 +94,27 @@ namespace FlexEngine
         //Log::Flow("Create new column (" + std::to_string(i) + ")");
         COMPONENT_INDEX[archetype.type[i]][archetype.id] = { i };
         archetype.archetype_table.push_back(Column()); // create a column for each component
+      }
+
+      // update caches with this archetype if needed
+      for (auto& a : Scene::GetActiveScene()->query_cache)
+      {
+        // check if new archetype fits any query
+        for (auto& component_to_find : archetype.type)
+        {
+          bool skip = false;
+
+          if (std::find(a.first.begin(), a.first.end(), component_to_find) == a.first.end())
+          {
+            skip = true;
+            break;
+          }
+
+          if (!skip)
+          {
+            a.second.AddPtr(reinterpret_cast<std::vector<FlexEngine::FlexECS::Entity>*>(&archetype.entities));
+          }
+        }
       }
 
       return archetype;

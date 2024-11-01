@@ -97,7 +97,7 @@ namespace ChronoShift
         static std::unordered_set<FlexECS::EntityID> t_processedEntities;
         t_processedEntities.clear();
 
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Transform>())
         {
             // Check if this entity has already been processed
             if (t_processedEntities.find(entity.Get()) != t_processedEntities.end() || !entity.GetComponent<IsActive>()->is_active) continue; //Skip
@@ -153,7 +153,7 @@ namespace ChronoShift
         //Log::Debug("****************************************************************");
         
         //Ensure all entities is no longer dirty
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Transform>())
         {
             if (!entity.GetComponent<IsActive>()->is_active) continue;
 
@@ -192,7 +192,7 @@ namespace ChronoShift
         #if 0
         {
             //same thing as update transformations, flush update queue (lags if more than 2500 objects)
-            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
 
@@ -261,7 +261,7 @@ namespace ChronoShift
             std::unordered_map<std::string, BatchInstanceBlock> batchMap;
 
             //same thing as update transformations, flush update queue (lags if more than 2500 objects)
-            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
 
