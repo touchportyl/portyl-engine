@@ -45,7 +45,7 @@ namespace ChronoShift {
   void BattleLayer::SetupBattle()
   {
 
-    File& file = File::Open(Path::current().append("demobattle.flxscene"));
+    File& file = File::Open(Path::current().append("pee.flxscene"));
     auto loaded_scene = FlexECS::Scene::Load(file);
     FlexECS::Scene::SetActiveScene(loaded_scene);
 

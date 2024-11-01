@@ -406,18 +406,9 @@ namespace ChronoShift {
         (*selected_num).GetComponent<IsActive>()->is_active = true;
       }
       else {
-        if (selected_move.target_type == MOVE_TARGET_SELF) {
-          for (auto i = min_targets; i != max_targets; i++) {
-            if ((*i).GetComponent<BattleSlot>()->character == m_characters.front()) {
-              (*i).GetComponent<IsActive>()->is_active = true;
-            }
-          }
-        }
-        else {
-          // all the slots are to be targetted
-          for (auto i = min_targets; i != max_targets; i++) {
-            (*i).GetComponent<IsActive>()->is_active = true;
-          }
+        // all the slots are to be targetted
+        for (auto i = min_targets; i != max_targets; i++) {
+          (*i).GetComponent<IsActive>()->is_active = true;
         }
       }
       if (Input::GetKeyDown(GLFW_KEY_SPACE)) {

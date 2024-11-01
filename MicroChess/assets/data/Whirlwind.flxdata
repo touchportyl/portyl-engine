@@ -1,0 +1,13 @@
+{
+    "flxdata": {
+        "name": "Whirlwind",
+        "description": "Hit 3 targets for 2 damage each and become immune to damage for 1 turn",
+        "speed_cost": 6,
+        "is_target_enemy": true,
+        "target_type": "TRIPLE",
+        "move_value": 2,
+        "move_function": "DAMAGE",
+	"effect_duration": 1,
+	"effect_function": "IMMUNITY"
+    }
+}
