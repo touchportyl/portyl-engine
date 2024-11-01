@@ -31,9 +31,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Physics/box2d.h"
 #include "Renderer/sprite2d.h"
 
-// temporary
-#include "CharacterPrefab/characterprefab.h"
-
 
 namespace ChronoShift {
 
@@ -87,8 +84,8 @@ namespace ChronoShift {
       //m_slots.push_back(slot);
     }
     // Move Buttons for Mouse Click Selection of Moves
-    if (!move_buttons.empty()) return;
-    for (int i = 0; i < 3; i++)
+    //if (!move_buttons.empty()) return;
+    /*for (int i = 0; i < 3; i++)
     {
       Vector2 position = { 900.f, 450.f + (80.f * i) };
 
@@ -111,7 +108,7 @@ namespace ChronoShift {
        });
       move_button.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
       move_buttons.push_back(move_button);
-    }
+    }*/
   }
 
   void BattleSystem::AddCharacters(std::vector<FlexECS::Entity> characters) {
@@ -145,7 +142,6 @@ namespace ChronoShift {
 
   void BattleSystem::BeginBattle()
   {
-    ResetCharacters();
     std::sort(m_characters.begin(), m_characters.end(), SortLowestSpeed());
 
     auto scene = FlexECS::Scene::GetActiveScene();
@@ -185,8 +181,106 @@ namespace ChronoShift {
     std::cout << "\n";
 
     FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
-    battle_state.GetComponent<BattleState>()->active_character = m_characters.front();
-    battle_state.GetComponent<BattleState>()->phase = BP_MOVE_SELECTION;
+    //battle_state.GetComponent<BattleState>()->active_character = m_characters.front();
+    battle_state.GetComponent<BattleState>()->phase = BP_STATUS_RUN;
+  }
+
+  void BattleSystem::RunCharacterStatus() {
+    std::vector<FlexECS::Entity> dead_character;
+    dead_character.clear();
+    FlexECS::Entity current_active = m_characters.front();
+    std::string name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(current_active.GetComponent<Character>()->character_name);
+    if (current_active.HasComponent<Shock>()) {
+      current_active.GetComponent<Character>()->current_health -= current_active.GetComponent<Shock>()->damage_value;
+      std::cout << name << " lost ";
+      std::cout << current_active.GetComponent<Shock>()->damage_value << " HP from shock DOT." << std::endl;
+      std::cout << name << "'s current HP: " << current_active.GetComponent<Character>()->current_health << std::endl;
+      if (--(current_active.GetComponent<Shock>()->remaining_turns) == 0) {
+        std::cout << name << "'s shock effect has ended.\n";
+        current_active.RemoveComponent<Shock>();
+      }
+      else {
+        std::cout << name << "'s shock effect still has ";
+        std::cout << current_active.GetComponent<Shock>()->remaining_turns << " turns.\n";
+      }
+    }
+
+    if (current_active.HasComponent<Burn>()) {
+      current_active.GetComponent<Character>()->current_health -= current_active.GetComponent<Burn>()->damage_value;
+      std::cout << name << " lost ";
+      std::cout << current_active.GetComponent<Burn>()->damage_value << " HP from burn DOT." << std::endl;
+      std::cout << name << "'s current HP: " << current_active.GetComponent<Character>()->current_health << std::endl;
+      if (--(current_active.GetComponent<Burn>()->remaining_turns) == 0) {
+        std::cout << name << "'s burn effect has ended.\n";
+        current_active.RemoveComponent<Burn>();
+      }
+      else {
+        std::cout << name << "'s burn effect still has ";
+        std::cout << current_active.GetComponent<Burn>()->remaining_turns << " turns.\n";
+      }
+    }
+
+    if (current_active.HasComponent<Shear>()) {
+      current_active.GetComponent<Character>()->current_health -= current_active.GetComponent<Shear>()->damage_value;
+      std::cout << name << " lost ";
+      std::cout << current_active.GetComponent<Shear>()->damage_value << " HP from shear DOT." << std::endl;
+      std::cout << name << "'s current HP: " << current_active.GetComponent<Character>()->current_health << std::endl;
+      if (--(current_active.GetComponent<Shear>()->remaining_turns) == 0) {
+        std::cout << name << "'s shear effect has ended.\n";
+        current_active.RemoveComponent<Shear>();
+      }
+      else {
+        std::cout << name << "'s shear effect still has ";
+        std::cout << current_active.GetComponent<Shear>()->remaining_turns << " turns.\n";
+      }
+    }
+
+    if (current_active.HasComponent<Recovery>()) {
+      current_active.GetComponent<Character>()->current_health += current_active.GetComponent<Recovery>()->heal_value;
+      std::cout << name << " recovered ";
+      std::cout << current_active.GetComponent<Recovery>()->heal_value << " HP.\n";
+      std::cout << name << "'s current HP: " << current_active.GetComponent<Character>()->current_health << std::endl;
+      if (--(current_active.GetComponent<Recovery>()->remaining_turns) == 0) {
+        current_active.RemoveComponent<Recovery>();
+        std::cout << name << "'s healing effect has ended.\n";
+      }
+      else {
+        std::cout << name << "'s healing effect still has ";
+        std::cout << current_active.GetComponent<Recovery>()->remaining_turns << " turns.\n";
+      }
+    }
+
+    if (current_active.HasComponent<Immunity>()) {
+      if (--(current_active.GetComponent<Immunity>()->remaining_turns) <= 0) {
+        std::cout << name << "'s immunity has ended.\n";
+        current_active.RemoveComponent<Immunity>();
+      }
+      else {
+        std::cout << name << " is immune to all damage for another ";
+        std::cout << current_active.GetComponent<Immunity>()->remaining_turns << " turns.\n";
+      }
+    }
+    // Just a note that the stun should be the last check for now cause if stun then i would rather just go
+    // to next character and skip his turn
+    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
+    if (current_active.HasComponent<Stun>()) {
+      std::cout << name << " is stunned. So moving on~" << std::endl;
+      current_active.GetComponent<Character>()->current_speed += current_active.GetComponent<Character>()->base_speed;
+      if (--(current_active.GetComponent<Stun>()->remaining_turns) <= 0) {
+        std::cout << name << " stun status has ended." << std::endl;
+        current_active.RemoveComponent<Stun>();
+      }
+      else std::cout << name << " stun status still has " << current_active.GetComponent<Stun>()->remaining_turns << " turns left." << std::endl;
+      std::sort(m_characters.begin(), m_characters.end(), SortLowestSpeed());
+      battle_state.GetComponent<BattleState>()->phase = BP_PROCESSING;
+    }
+    else battle_state.GetComponent<BattleState>()->phase = BP_MOVE_SELECTION;
+
+    if (current_active.GetComponent<Character>()->current_health <= 0) {
+      dead_character.push_back(current_active);
+      std::cout << name << " has been killed." << std::endl;
+      DeathProcession(dead_character);
+    }
   }
 
   void BattleSystem::Update()
@@ -195,6 +289,9 @@ namespace ChronoShift {
     int battle_phase = battle_state.GetComponent<BattleState>()->phase;
     if (battle_phase == BP_PROCESSING) {
       UpdateSpeedStack();
+    }
+    else if (battle_phase == BP_STATUS_RUN) {
+      RunCharacterStatus();
     }
     else if (battle_phase == BP_MOVE_SELECTION) {
       PlayerMoveSelection();
@@ -224,26 +321,37 @@ namespace ChronoShift {
       move_decision = Range(0, 2).Get();
     }
     else {
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, MoveButton>()) {
+      if (Input::GetKeyDown(GLFW_KEY_1)) move_decision = 0;
+      else if (Input::GetKeyDown(GLFW_KEY_2)) move_decision = 1;
+      else if (Input::GetKeyDown(GLFW_KEY_3)) move_decision = 2;
+      if (Input::GetKeyDown(GLFW_KEY_1) || Input::GetKeyDown(GLFW_KEY_2) || Input::GetKeyDown(GLFW_KEY_3)) {
+        Move player_move = MoveRegistry::GetMove(
+        FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(
+          character_moves[move_decision]));
+        std::cout << "Move Selected: " << player_move.name << std::endl;
+        if (player_move.is_target_enemy) selected_num = m_enemies.begin();
+        else selected_num = m_players.begin();
+      }
+      /*for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, MoveButton>()) {
         entity.GetComponent<IsActive>()->is_active = true;
-      }
+      }*/
       // move selection system by mouse click for players
-      GetMoveSelection();
-      for (auto& entity : FlexECS::Scene::GetActiveScene()->View<OnClick, MoveButton>())
-      {
-        auto& click_status = entity.GetComponent<OnClick>()->is_clicked;
-        if (click_status == true) {
-          move_decision = entity.GetComponent<MoveButton>()->move_number;
-          Move player_move = MoveRegistry::GetMove(
-            FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(
-              character_moves[move_decision]));
-          std::cout << "Move Selected: " << player_move.name << std::endl;
-          if (player_move.is_target_enemy) selected_num = m_enemies.begin();
-          else selected_num = m_players.begin();
-          //selected_num = (!player_move.is_target_player * players_displayed);
-          //selected_num += (!player_move.is_target_player * players_displayed);
-        }
-      }
+      //GetMoveSelection();
+      //for (auto& entity : FlexECS::Scene::GetActiveScene()->View<OnClick, MoveButton>())
+      //{
+      //  auto& click_status = entity.GetComponent<OnClick>()->is_clicked;
+      //  if (click_status == true) {
+      //    move_decision = entity.GetComponent<MoveButton>()->move_number;
+      //    Move player_move = MoveRegistry::GetMove(
+      //      FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(
+      //        character_moves[move_decision]));
+      //    std::cout << "Move Selected: " << player_move.name << std::endl;
+      //    if (player_move.is_target_enemy) selected_num = m_enemies.begin();
+      //    else selected_num = m_players.begin();
+      //    //selected_num = (!player_move.is_target_player * players_displayed);
+      //    //selected_num += (!player_move.is_target_player * players_displayed);
+      //  }
+      //}
     }
     if (move_decision == -1) return;
     Move selected_move = MoveRegistry::GetMove(
@@ -349,12 +457,15 @@ namespace ChronoShift {
   {
     //get the move user
     FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
-    FlexECS::Entity user = battle_state.GetComponent<BattleState>()->active_character;
+    FlexECS::Entity user = m_characters.front();//battle_state.GetComponent<BattleState>()->active_character;
     Move move = MoveRegistry::GetMove(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(move_id));
     std::vector<FlexECS::Entity> targets;
     targets.insert(targets.begin(), selected_targets.begin(), selected_targets.end());
     //execute move
-    move.effect(targets, move.damage);
+    move.move_function(targets, move.move_value);
+    if (move.effect_duration != 0) {
+      move.effect_function(targets, move.effect_value, move.effect_duration);
+    }
     user.GetComponent<Character>()->current_speed += move.cost + user.GetComponent<Character>()->base_speed;
     user.GetComponent<Action>()->move_to_use = FlexECS::Entity::Null;
     std::sort(m_characters.begin(), m_characters.end(), SortLowestSpeed());
@@ -388,8 +499,8 @@ namespace ChronoShift {
         << "'s " << move.name << std::endl;
     }
     std::cout << "\n";
-    battle_state.GetComponent<BattleState>()->current_target_count = 0;
-    battle_state.GetComponent<BattleState>()->active_character = FlexECS::Entity::Null;
+    //battle_state.GetComponent<BattleState>()->current_target_count = 0;
+    //battle_state.GetComponent<BattleState>()->active_character = FlexECS::Entity::Null;
     DeathProcession(targets);
   }
 
@@ -431,7 +542,7 @@ namespace ChronoShift {
   void BattleSystem::EndBattleScene() {
     FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->View<BattleState>()[0];
     if (m_enemies.empty()) {
-      std::cout << "VICTORY!!!!" << std::endl;
+      std::cout << "VICTORY!!!! Click R to fight again." << std::endl;
       battle_state.GetComponent<BattleState>()->phase = BP_BATTLE_FINISH;
     }
     if (m_players.empty()) {

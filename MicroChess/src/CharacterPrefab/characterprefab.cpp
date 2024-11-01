@@ -36,10 +36,28 @@ void SaveCharacters() {
 
 void ResetCharacters() {
   auto scene = FlexECS::Scene::GetActiveScene();
-  for (auto& entity : scene->View<ChronoShift::Character>()) {
+  for (auto& entity : scene->View<Character>()) {
     auto character = entity.GetComponent<Character>();
     character->current_health = character->base_health;
     character->current_speed = character->base_speed;
+  }
+  for (auto& entity : scene->View<Shock>()) {
+    entity.RemoveComponent<Shock>();
+  }
+  for (auto& entity : scene->View<Burn>()) {
+    entity.RemoveComponent<Burn>();
+  }
+  for (auto& entity : scene->View<Shear>()) {
+    entity.RemoveComponent<Shear>();
+  }
+  for (auto& entity : scene->View<Immunity>()) {
+    entity.RemoveComponent<Immunity>();
+  }
+  for (auto& entity : scene->View<Recovery>()) {
+    entity.RemoveComponent<Recovery>();
+  }
+  for (auto& entity : scene->View<Stun>()) {
+    entity.RemoveComponent<Stun>();
   }
   std::cout << "Reset Complete" << std::endl;
 }

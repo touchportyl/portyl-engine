@@ -62,6 +62,7 @@ namespace ChronoShift
 
     //BattleState m_battle_state;
     void UpdateSpeedStack();
+    void RunCharacterStatus();
     void PlayerMoveSelection();
     void DeathProcession(std::vector<FlexECS::Entity> list_of_deaths);
     void ExecuteMove(FlexECS::Scene::StringIndex move_id, std::vector<FlexECS::Entity> selected_targets);
