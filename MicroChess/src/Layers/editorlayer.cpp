@@ -12,10 +12,14 @@ namespace ChronoShift
   void EditorLayer::OnAttach()
   {
     FLX_FLOW_BEGINSCOPE();
-    Editor::GetInstance()->Init();
+    Editor::GetInstance().Init();
 
     RegisterRenderingComponents();
     RegisterBattleComponents();
+
+    FreeQueue::Push([]() {
+      Editor::GetInstance().Shutdown();
+    }, "Editor Shutdown");
   }
 
   void EditorLayer::OnDetach()
@@ -25,7 +29,7 @@ namespace ChronoShift
 
   void EditorLayer::Update()
   {
-    Editor::GetInstance()->Update();
+    Editor::GetInstance().Update();
 
     ImGui::Begin("Tools");
     ImGui::Checkbox("Show Colliders", &show_colliders);

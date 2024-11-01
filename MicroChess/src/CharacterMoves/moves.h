@@ -26,17 +26,21 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 using namespace FlexEngine;
 namespace ChronoShift
 {
-  
-  using MoveEffect = std::function<void(std::vector<FlexECS::Entity> targets)>;
+  enum MoveFunctions : int
+  {
+    REDUCE_HP = 1,
+    INCREASE_HP = 2,
+  };
+  using MoveEffect = std::function<void(std::vector<FlexECS::Entity> targets, int value)>;
   struct Move {
     std::string name; //use to access map of moves
     std::string description;
-    
+
     int cost;
 
-    bool is_target_player;
+    bool is_target_enemy;
     int target_type;
-    int target_count; //how many times you need to target
+    int damage; //how many times you need to target
     //std::pair<MOVE_TARGET_TYPE, int>
     MoveEffect effect;
   };
@@ -44,7 +48,7 @@ namespace ChronoShift
   class MoveRegistry {
   public:
     MoveRegistry(MoveRegistry&) = delete;
-    MoveRegistry& operator=(MoveRegistry &) = delete;
+    MoveRegistry& operator=(MoveRegistry&) = delete;
 
     static void RegisterMoves();
 
@@ -54,6 +58,6 @@ namespace ChronoShift
     MoveRegistry();
     ~MoveRegistry();
 
-    static std::unordered_map<std::string, Move> s_move_registry;  //this one used for the moves in the specific battle only
+    static std::unordered_map<int, MoveEffect> s_move_function_registry;
   };
 }

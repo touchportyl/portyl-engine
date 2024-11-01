@@ -41,7 +41,7 @@ namespace ChronoShift
 
 			entity.GetComponent<IsActive>()->is_active = true;
 			entity.GetComponent<Position>()->position = { 50.f, 100.f + (80.f * i) };
-			entity.GetComponent<Sprite>()->color = character.GetComponent<Sprite>()->color;
+			//entity.GetComponent<Sprite>()->color = character.GetComponent<Sprite>()->color;
 			entity.GetComponent<Sprite>()->color_to_add = character.GetComponent<Sprite>()->color_to_add;
 			entity.GetComponent<Sprite>()->color_to_multiply = character.GetComponent<Sprite>()->color_to_multiply;
 			entity.GetComponent<Sprite>()->texture = character.GetComponent<Sprite>()->texture;
