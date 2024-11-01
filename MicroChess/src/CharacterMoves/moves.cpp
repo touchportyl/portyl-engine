@@ -56,16 +56,14 @@ namespace ChronoShift
 		}
 	}
 
-	void Move_Immunity(std::vector<FlexECS::Entity> targets, int status_duration, int block_damage) {
-		UNREFERENCED_PARAMETER(block_damage);
+	void Move_Immunity(std::vector<FlexECS::Entity> targets, int status_duration) {
 		for (FlexECS::Entity& t : targets) {
 			if (t.HasComponent<Immunity>()) t.GetComponent<Immunity>()->remaining_turns += status_duration;
 			else t.AddComponent<Immunity>({ status_duration }); // remaining turns
 		}
 	}
 
-	void Move_Stun(std::vector<FlexECS::Entity> targets, int status_duration, int stun_value) {
-		UNREFERENCED_PARAMETER(stun_value);
+	void Move_Stun(std::vector<FlexECS::Entity> targets, int status_duration) {
 		for (FlexECS::Entity& t : targets) {
 			if (t.HasComponent<Stun>()) t.GetComponent<Stun>()->remaining_turns += status_duration;
 			else t.AddComponent<Stun>({ status_duration }); // remaining turns
@@ -120,6 +118,8 @@ namespace ChronoShift
 		FlexEngine::Log::Debug("Registering Move Functions:");
 		s_move_function_registry["DAMAGE"] = Move_DealDamage;
 		s_move_function_registry["HEAL"] = Move_Recover;
+		s_move_function_registry["IMMUNITY"] = Move_Immunity;
+		s_move_function_registry["STUN"] = Move_Stun;
 		FlexEngine::Log::Debug("Move Functions Registered");
 	}
 
@@ -129,8 +129,6 @@ namespace ChronoShift
 		s_status_function_registry["BURN"] = Move_Burn;
 		s_status_function_registry["SHEAR"] = Move_Shear;
 		s_status_function_registry["SHOCK"] = Move_Shock;
-		s_status_function_registry["IMMUNITY"] = Move_Immunity;
-		s_status_function_registry["STUN"] = Move_Stun;
 		FlexEngine::Log::Debug("Status Functions Registered");
 
 	}

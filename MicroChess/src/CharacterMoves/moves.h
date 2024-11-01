@@ -69,7 +69,8 @@ namespace ChronoShift
       {"QUARUPLE", 4},
       {"QUINTUPLE", 5},
       {"SEXTUPLE", 6},
-      {"ALL", -1}
+      {"ALL", -1},
+      {"SELF", -2},
     };
   };
 }

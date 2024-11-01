@@ -1,13 +1,11 @@
 {
     "flxdata": {
         "name": "Flashbang",
-        "description": "Hits 1 Target for 5 damage",
+        "description": "Stuns Target for 2 turns",
         "speed_cost": 5,
         "is_target_enemy": true,
         "target_type": "SINGLE",
-        "move_value": 5,
-        "move_function": "DAMAGE",
-	"effect_duration": 1,
-	"effect_function": "STUN"
+        "move_value": 2,
+        "move_function": "STUN"
     }
 }

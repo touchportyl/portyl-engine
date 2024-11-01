@@ -31,7 +31,7 @@ void SaveCharacters() {
   for (auto& entity : scene->Query<ChronoShift::Character>()) {
     scene->SaveEntityAsPrefab(entity, scene->Internal_StringStorage_Get(*(entity.GetComponent<EntityName>())));
   }*/
-  File& file = File::Open(Path::current().append("pee.flxscene"));
+  File& file = File::Open(Path::current().append("demobattle.flxscene"));
   FlexECS::Scene::SaveActiveScene(file);
   std::cout << "Saved Completed" << std::endl;
 }
