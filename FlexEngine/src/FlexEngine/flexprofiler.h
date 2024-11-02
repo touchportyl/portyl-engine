@@ -22,10 +22,11 @@
 #include <chrono>
 #include <map>
 #include "imgui.h"
+#include "flx_api.h"
 
 namespace FlexEngine
 {
-  class Profiler
+  class __FLX_API Profiler
   {
     std::map<std::string, std::chrono::high_resolution_clock::time_point> start_times;
     static std::map<std::string, std::chrono::microseconds> execute_times;
