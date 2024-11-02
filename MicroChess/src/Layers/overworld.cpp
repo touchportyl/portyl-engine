@@ -11,6 +11,7 @@
 #include "BattleSystems/physicssystem.h"
 
 #include "Renderer/sprite2d.h"
+#include "flexprofiler.h"
 
 namespace ChronoShift {
     float OverworldLayer::m_ScaleDebugTest = 0.8f;
@@ -333,7 +334,8 @@ namespace ChronoShift {
 
   void OverworldLayer::Update()
   {
-      FLX_START_COUNTER();
+      Profiler profiler;
+      profiler.StartCounter("Misc");
       for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput>())
       {
           entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
@@ -368,8 +370,7 @@ namespace ChronoShift {
                 velocity.x = 300.0f;
             }
         }
-      FLX_END_COUNTER_MISC();
-
+      profiler.EndCounter("Misc");
       //For testing 2500 objects
       //Create one, then clone the rest
       if (Input::GetKeyDown(GLFW_KEY_0))
@@ -469,9 +470,10 @@ namespace ChronoShift {
         }
         #endif
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        FLX_START_COUNTER();
+        profiler.StartCounter("Physics");
         UpdatePhysicsSystem();
-        FLX_END_COUNTER_PHYSICS();
+        profiler.EndCounter("Physics");
+
 
        #pragma region simpleCamMove i know its shit
         OpenGLCamera* cam_entity = SceneCamSorter::GetMainCamera();
@@ -494,9 +496,10 @@ namespace ChronoShift {
         }
         #pragma endregion
         //Render All Entities
-        FLX_START_COUNTER();
+        profiler.StartCounter("Graphics");
         RendererSprite2D();
-        FLX_END_COUNTER_GRAPHICS();
+        profiler.EndCounter("Graphics");
 
+        profiler.ShowProfilerWindow();
     }
 }
