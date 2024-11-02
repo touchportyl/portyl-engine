@@ -11,7 +11,6 @@
 #include "BattleSystems/physicssystem.h"
 
 #include "Renderer/sprite2d.h"
-#include "flexprofiler.h"
 
 namespace ChronoShift {
     float OverworldLayer::m_ScaleDebugTest = 0.8f;
