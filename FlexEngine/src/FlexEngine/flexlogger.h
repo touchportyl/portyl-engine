@@ -8,10 +8,8 @@
 // The logger will dump the logs to a file when the application closes.
 //
 // AUTHORS
-// [90%] Chan Wen Loong (wenloong.c\@digipen.edu)
+// [100%] Chan Wen Loong (wenloong.c\@digipen.edu)
 //   - Main Author
-// [10%] Kuan Yew Chong (yewchong.k\@digipen.edu)
-//   - FLX_COUNTERS
 // 
 // Copyright (c) 2024 DigiPen, All rights reserved.
 
@@ -22,7 +20,6 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
-#include <chrono>
 
 // These macros are used to track the flow of the application
 // Putting these into the code will make it easier to see if the application is behaving as expected
@@ -33,13 +30,6 @@
 #define FLX_FLOW_BEGINSCOPE() FLX_FLOW_FUNCTION(); FlexEngine::Log::UpdateFlowScope(1)
 #define FLX_FLOW_ENDSCOPE()   FlexEngine::Log::UpdateFlowScope(-1); FLX_FLOW_FUNCTION()
 
-#define FLX_START_COUNTER()            FlexEngine::Log::start_time = std::chrono::high_resolution_clock::now();
-#define FLX_END_COUNTER_GRAPHICS()     { auto end_time = std::chrono::high_resolution_clock::now(); \
-                                         FlexEngine::Log::graphics_time = static_cast<int>(std::chrono::duration_cast<std::chrono::microseconds>(end_time - FlexEngine::Log::start_time).count()); }
-#define FLX_END_COUNTER_PHYSICS()      { auto end_time = std::chrono::high_resolution_clock::now(); \
-                                         FlexEngine::Log::physics_time = static_cast<int>(std::chrono::duration_cast<std::chrono::microseconds>(end_time - FlexEngine::Log::start_time).count()); }
-#define FLX_END_COUNTER_MISC()         { auto end_time = std::chrono::high_resolution_clock::now(); \
-                                         FlexEngine::Log::misc_time = static_cast<int>(std::chrono::duration_cast<std::chrono::microseconds>(end_time - FlexEngine::Log::start_time).count()); }
 namespace FlexEngine
 {
 
@@ -92,16 +82,6 @@ namespace FlexEngine
     // Use the FLX_FLOW_BEGINSCOPE() and FLX_FLOW_ENDSCOPE() macros
     // This is not meant to be used directly
     static void UpdateFlowScope(int indent) { flow_scope += indent; }
-
-    // Logging time taken for each area of the code
-    static std::chrono::high_resolution_clock::time_point start_time;
-    static int graphics_time;
-    static int physics_time;
-    static int misc_time;
-    static double GetCombinedTime(void) { return Log::graphics_time + Log::physics_time + Log::misc_time; }
-    static double GetGraphicsTimePercent(void) { return Log::graphics_time / GetCombinedTime() * 100; }
-    static double GetPhysicsTimePercent(void) { return Log::physics_time / GetCombinedTime() * 100; }
-    static double GetMiscTimePercent(void) { return Log::misc_time / GetCombinedTime() * 100; }
 
   private:
     enum WarningLevel
