@@ -59,6 +59,7 @@
 // Use FLX_FLOW_BEGINSCOPE() to log the start of a system scope flow.
 // Use FLX_FLOW_ENDSCOPE() to log the end of a system scope flow.
 #include "FlexEngine/flexlogger.h"
+#include "FlexEngine/flexprofiler.h"
 
 // Assertion wrapper for handling fatal errors.
 // These are used to check for destructive errors like memory leaks.

@@ -333,6 +333,8 @@ namespace ChronoShift {
 
   void OverworldLayer::Update()
   {
+      Profiler profiler;
+      profiler.StartCounter("Misc");
       for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput>())
       {
           entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
@@ -367,7 +369,7 @@ namespace ChronoShift {
                 velocity.x = 300.0f;
             }
         }
-
+      profiler.EndCounter("Misc");
       //For testing 2500 objects
       //Create one, then clone the rest
       if (Input::GetKeyDown(GLFW_KEY_0))
@@ -467,30 +469,36 @@ namespace ChronoShift {
         }
         #endif
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        profiler.StartCounter("Physics");
         UpdatePhysicsSystem();
+        profiler.EndCounter("Physics");
+
 
        #pragma region simpleCamMove i know its shit
         OpenGLCamera* cam_entity = SceneCamSorter::GetMainCamera();
-            if (Input::GetKey(GLFW_KEY_UP))
-            {
-                cam_entity->Move(Vector2(0.0f, -5.f));
-            }
-            else if (Input::GetKey(GLFW_KEY_DOWN))
-            {
-                cam_entity->Move(Vector2(0.0f, 5.f));
-            }
+        if (Input::GetKey(GLFW_KEY_UP))
+        {
+          cam_entity->Move(Vector2(0.0f, -5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+        }
+        else if (Input::GetKey(GLFW_KEY_DOWN))
+        {
+          cam_entity->Move(Vector2(0.0f, 5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+        }
 
-            if (Input::GetKey(GLFW_KEY_RIGHT))
-            {
-                cam_entity->Move(Vector2(5.f, 0.0f));
-            }
-            else if (Input::GetKey(GLFW_KEY_LEFT))
-            {
-                cam_entity->Move(Vector2(-5.f, 0.0f));
-            }
+        if (Input::GetKey(GLFW_KEY_RIGHT))
+        {
+          cam_entity->Move(Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+        }
+        else if (Input::GetKey(GLFW_KEY_LEFT))
+        {
+          cam_entity->Move(Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+        }
         #pragma endregion
-
         //Render All Entities
+        profiler.StartCounter("Graphics");
         RendererSprite2D();
+        profiler.EndCounter("Graphics");
+
+        profiler.ShowProfilerWindow();
     }
 }
