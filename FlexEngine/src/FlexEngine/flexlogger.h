@@ -52,8 +52,6 @@ namespace FlexEngine
     static bool is_fatal;
     static int flow_scope;
 
-    static double GetCombinedTime(void) { return (double)(graphics_time + physics_time); }
-
   public:
     Log();
     ~Log();
@@ -100,6 +98,7 @@ namespace FlexEngine
     static int graphics_time;
     static int physics_time;
     static int misc_time;
+    static double GetCombinedTime(void) { return Log::graphics_time + Log::physics_time + Log::misc_time; }
     static double GetGraphicsTimePercent(void) { return Log::graphics_time / GetCombinedTime() * 100; }
     static double GetPhysicsTimePercent(void) { return Log::physics_time / GetCombinedTime() * 100; }
     static double GetMiscTimePercent(void) { return Log::misc_time / GetCombinedTime() * 100; }

@@ -316,6 +316,7 @@ ImGui::EndMainMenuBar();
 
         ImGui::NewLine();
         ImGui::Text("Run time breakdown per game loop:");
+        ImGui::Text("Total Time (in microseconds): %lf", Log::GetCombinedTime());
         ImGui::Text("Graphics Time (in %%) : %lf", Log::GetGraphicsTimePercent());
         ImGui::Text("Physics Time (in %%) : %lf", Log::GetPhysicsTimePercent());
         ImGui::Text("System Run Time (in %%) : %lf", Log::GetMiscTimePercent());
