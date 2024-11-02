@@ -26,6 +26,31 @@ FMOD::Studio::System* FMODWrapper::fmod_studio_system = NULL;
 FMOD_RESULT FMODWrapper::result;
 std::map<std::string, FMOD::Channel*> FMODWrapper::Core::channels;
 
+// Callback function which calls stop sound when the sound is done playing
+FMOD_RESULT F_CALLBACK channelCallback(FMOD_CHANNELCONTROL* channelControl, FMOD_CHANNELCONTROL_TYPE controlType [[maybe_unused]], 
+                                       FMOD_CHANNELCONTROL_CALLBACK_TYPE callbackType, 
+                                       void* commandData1 [[maybe_unused]], void* commandData2 [[maybe_unused]] )
+{
+  if (callbackType == FMOD_CHANNELCONTROL_CALLBACK_END)
+  {
+    // Get ptr to the channel and read data
+    FMOD::Channel* channel = reinterpret_cast<FMOD::Channel*>(channelControl);
+    std::string* id = nullptr;
+    channel->getUserData(reinterpret_cast<void**>(&id));
+
+    if (id)
+    {
+      // Remove the channel from the map
+      FMODWrapper::Core::StopSound(*id);
+
+      // Free userdata memory alloc
+      delete id;
+      channel->setUserData(nullptr);
+    }
+  }
+  return FMOD_OK;
+}
+
 /*!
   \brief Constructor for the FMODWrapper. Handles the creation of the FMOD system.
 */
@@ -52,11 +77,6 @@ void FMODWrapper::Update()
   FMOD_ASSERT(fmod_studio_system->update()); // Invokes fmod core's update as well...
 }
 
-/*!
-  \brief Plays the sound.
-  \param identifier The identifier of the sound for controlling
-  \param sound The sound to play
-*/
 void FMODWrapper::Core::PlaySound(std::string const& identifier, Asset::Sound const& asset)
 {
   // Play the sound given a sound handle and a channel...
@@ -64,6 +84,26 @@ void FMODWrapper::Core::PlaySound(std::string const& identifier, Asset::Sound co
   {
     FMOD::Channel* channel;
     FMOD_ASSERT(fmod_system->playSound(asset.sound, nullptr, false, &channel));
+
+    // Set it to automatically remove from list when done
+    std::string* id = new std::string(identifier);
+    channel->setCallback(channelCallback); 
+    channel->setUserData(reinterpret_cast<void*>(id));
+
+    channels[identifier] = channel;
+  }
+  else Log::Warning("Channel already exists for identifier: " + identifier);
+}
+
+void FMODWrapper::Core::PlayLoopingSound(std::string const& identifier, Asset::Sound const& asset)
+{
+  // Play the sound given a sound handle and a channel...
+  if (channels.find(identifier) == channels.end()) // not already used identifier
+  {
+    FMOD::Channel* channel;
+    FMOD_ASSERT(fmod_system->playSound(asset.sound, nullptr, false, &channel));
+    channel->setMode(FMOD_LOOP_NORMAL); 
+    //channel->setLoopCount(-1);
     channels[identifier] = channel;
   }
   else Log::Warning("Channel already exists for identifier: " + identifier);

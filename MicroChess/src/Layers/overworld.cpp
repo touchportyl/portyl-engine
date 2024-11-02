@@ -403,9 +403,31 @@ namespace ChronoShift {
                 }
             }
         }
+
+      if (Input::GetKeyDown(GLFW_KEY_5))
+      {
+        FMODWrapper::Core::PlaySound("ding", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/ding-126626.mp3")));
+      }
+      if (Input::GetKeyDown(GLFW_KEY_6))
+      {
+        FMODWrapper::Core::PlaySound("boom", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/big-cine-boom-sound-effect-245851.mp3")));
+      }
+      if (Input::GetKeyDown(GLFW_KEY_7))
+      {
+        FMODWrapper::Core::PlaySound("wow", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/wow-171498.mp3")));
+      }
+      if (Input::GetKeyDown(GLFW_KEY_8))
+      {
+        FMODWrapper::Core::PlayLoopingSound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/mario.mp3")));
+      }
+      if (Input::GetKeyDown(GLFW_KEY_9))
+      {
+        FMODWrapper::Core::StopSound("mario");
+      }
+
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Debug Tests
-    //Key hold (Can just alter here, not very elegant but will do for now)
+        // Debug Tests
+        //Key hold (Can just alter here, not very elegant but will do for now)
         #if 0 //DEBUG
         if (Input::GetKey(GLFW_KEY_F))
         {
@@ -416,6 +438,7 @@ namespace ChronoShift {
             m_ScaleDebugTest += 0.008f;
         }
 
+      UpdatePhysicsSystem();
         if (Input::GetKey(GLFW_KEY_Q))
         {
             m_RotateDebugTest.z += 1.0f;
@@ -471,7 +494,6 @@ namespace ChronoShift {
         }
         #pragma endregion
         //Render All Entities
-        
         FLX_START_COUNTER();
         RendererSprite2D();
         FLX_END_COUNTER_GRAPHICS();
