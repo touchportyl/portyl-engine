@@ -8,8 +8,10 @@
 // The logger will dump the logs to a file when the application closes.
 //
 // AUTHORS
-// [100%] Chan Wen Loong (wenloong.c\@digipen.edu)
+// [90%] Chan Wen Loong (wenloong.c\@digipen.edu)
 //   - Main Author
+// [10%] Kuan Yew Chong (yewchong.k\@digipen.edu)
+//   - FLX_COUNTERS
 // 
 // Copyright (c) 2024 DigiPen, All rights reserved.
 
@@ -53,6 +55,10 @@ namespace FlexEngine
   bool Log::is_fatal = false;
   int Log::flow_scope = 0;
   bool Log::is_initialized = false;
+  std::chrono::steady_clock::time_point Log::start_time;
+  int Log::graphics_time;
+  int Log::physics_time;
+  int Log::misc_time;
 
   Log::Log()
   {

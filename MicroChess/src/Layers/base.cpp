@@ -313,6 +313,12 @@ ImGui::EndMainMenuBar();
         ImGui::Text("Window Size: %d x %d", window->GetWidth(), window->GetHeight());
         ImGui::Text("FPS: %d", window->GetFPS());
         ImGui::Text("Delta Time: %.3f ms", window->GetDeltaTime());
+
+        ImGui::NewLine();
+        ImGui::Text("Run time breakdown per game loop:");
+        ImGui::Text("Graphics Time (in %%) : %lf", Log::GetGraphicsTimePercent());
+        ImGui::Text("Physics Time (in %%) : %lf", Log::GetPhysicsTimePercent());
+        ImGui::Text("System Run Time (in %%) : %lf", Log::GetMiscTimePercent());
       }
 
       if (ImGui::CollapsingHeader("Scene", tree_node_flags))
