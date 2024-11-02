@@ -13,10 +13,9 @@ namespace FlexEngine
       FMOD_ASSERT(FMODWrapper::fmod_system->createSound(path.c_str(), FMOD_DEFAULT, 0, &sound));
     }
 
+    // Cannot free sound as FMOD frees it internally
     Sound::~Sound() noexcept
     {
-      //Log::Fatal("Sound destructor called");
-      //sound->release();
     }
   }
 }

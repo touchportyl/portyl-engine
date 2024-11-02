@@ -7,6 +7,8 @@
  * 
  *   It doesn't handle any of the audio playing, and meant to be run in a system in the game layer.
  * 
+ *   Note that you can't run two sounds under the same name unless the previous sound is a one shot and finished playing or was stopped.
+ * 
  *   Now here's the sauce...
  *   For a quick start: https://www.fmod.com/docs/2.02/api/white-papers-getting-started.html#fmod-core-api-initialization-do-not-use-this-if-using-fmod-studio-api-initialization
  *   Core API reference: https://www.fmod.com/docs/2.02/api/core-api-system.html#system_playsound
@@ -53,12 +55,23 @@ public:
     static std::map<std::string, FMOD::Channel*> channels; // Stores all instances of channels in existence
 
   public:
-    /*
-      Usage: FMODWrapper::Core::PlaySound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/test.mp3")));
+    /*!
+      \brief Plays the sound. Usage: FMODWrapper::Core::PlaySound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/test.mp3")));
+      \param identifier The identifier of the sound for controlling
+      \param sound The sound to play
     */
     static void PlaySound(std::string const&, Asset::Sound const&);
+
+    /*!
+    \brief Plays a sound which loops automatically. Usage: FMODWrapper::Core::PlayLoopingSound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/test.mp3")));
+    \param identifier The identifier of the sound for controlling
+    \param sound The sound to play
+    */
+    static void PlayLoopingSound(std::string const& identifier, Asset::Sound const& asset);
+
     /*
-      Usage: FMODWrapper::Core::StopSound("mario2");
+      \brief Stops playing a sound. Usage: FMODWrapper::Core::StopSound("mario2");
+      \param identifier The identifier of the sound to stop
     */
     static void StopSound(std::string const&);
   };
