@@ -70,9 +70,6 @@ namespace FlexEngine
     static void Fatal(std::string message)      { Fatal(message.c_str()); }
     static void Fatal(std::stringstream& ss)    { Fatal(ss.str()); }
 
-    // Dumps the logs to a file
-    static void DumpLogs(void);
-
     // This flag is set to true when a fatal error is logged
     // It is used to determine if the application should dump logs when closing
     static bool IsFatal(void) { return is_fatal; }
@@ -112,6 +109,10 @@ namespace FlexEngine
     static void SetLogLevel(LogLevel level = LogLevel_Info);
 #endif
 
+    // Dumps the logs to a file
+    // Copies the hidden log_stream to an unhidden named file
+    static void DumpLogs(void);
+
   private:
     static bool is_initialized;
     static std::filesystem::path log_base_path;
@@ -120,10 +121,12 @@ namespace FlexEngine
     static bool is_fatal;
     static int flow_scope;
     static LogLevel log_level;
+    static const std::string datetime; // The cached datetime when the logger started
 
+    #pragma region File Splitter
 
     // Maximum log size before it is dumped to a file
-    static constexpr size_t MAX_LOG_FILE_SIZE = 1024 * 1024 * 10; // 10MB
+    static const size_t max_log_file_size;
 
     static int current_file_index;
     static size_t current_file_size;
@@ -132,6 +135,7 @@ namespace FlexEngine
     // Increments the log file number
     static void Internal_IncrementLogFile();
 
+    #pragma endregion
 
     // INTERNAL FUNCTION
     // This handles the logging of messages

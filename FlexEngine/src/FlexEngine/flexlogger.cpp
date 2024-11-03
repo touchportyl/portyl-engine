@@ -47,14 +47,18 @@ namespace FlexEngine
 {
 
   // static member initialization
+  bool Log::is_initialized = false;
   std::filesystem::path Log::log_base_path{ std::filesystem::current_path() / ".log" }; // same path as executable
   std::filesystem::path Log::log_file_path{ log_base_path / "~$flex.log" };
   std::fstream Log::log_stream;
   bool Log::is_fatal = false;
   int Log::flow_scope = 0;
-  bool Log::is_initialized = false;
   Log::LogLevel Log::log_level = LogLevel_All;
+  const std::string Log::datetime = DateTime::GetFormattedDateTime("%Y-%m-%d-%H-%M-%S");
 
+  // static member initialization (file splitter)
+  //const size_t Log::max_log_file_size = 1024 * 1024 * 10; // 10MB
+  //const size_t Log::max_log_file_size = 20;
   int Log::current_file_index = 0;
   size_t Log::current_file_size = 0;
 
@@ -113,18 +117,36 @@ namespace FlexEngine
   {
     log_level = level;
   }
-
-  void Log::Internal_IncrementLogFile()
+  
+  void Log::DumpLogs(void)
   {
     // get filename
     std::stringstream filename{};
-    filename << DateTime::GetFormattedDateTime("%Y-%m-%d") << "_" << std::setw(3) << std::setfill('0') << current_file_index << ".log";
-    std::filesystem::path new_log_file_path = log_base_path / filename.str();
+    filename << datetime << ".log";
+    //filename << datetime << "_" << std::setw(3) << std::setfill('0') << current_file_index << ".log";
+    std::filesystem::path save_path = log_base_path / filename.str();
 
     // save log file
-    
-    // unhide the file
-    // open new log file
+    bool success = std::filesystem::copy_file(log_file_path, save_path, std::filesystem::copy_options::overwrite_existing);
+    if (success)
+    {
+      SetFileAttributes(save_path.c_str(), FILE_ATTRIBUTE_NORMAL);
+      Info("Log file saved to " + save_path.string());
+    }
+    else
+    {
+      Error("Error copying log file.");
+    }
+  }
+
+  void Log::Internal_IncrementLogFile()
+  {
+    Log::DumpLogs();
+
+    // clear log stream
+    log_stream.seekp(0, std::ios::beg);
+    log_stream << std::endl;
+    log_stream.seekp(0, std::ios::beg);
 
     // increment file index
     current_file_index++;
@@ -187,7 +209,8 @@ namespace FlexEngine
       << std::string((level == LogLevel_Fatal), ' ')
       << message
       << std::string((level == LogLevel_Fatal), ' ')
-      << ANSI_RESET<< "\n"
+      << ANSI_RESET
+      << "\n"
     ;
 
     // clean the stream of ANSI color codes for file logging
@@ -203,10 +226,10 @@ namespace FlexEngine
     current_file_size += log_string.size() + 1; // +1 for newline
 
     // if log file is too large, increment log file
-    if (current_file_size > MAX_LOG_FILE_SIZE)
-    {
-      Internal_IncrementLogFile();
-    }
+    //if (current_file_size > max_log_file_size)
+    //{
+    //  Internal_IncrementLogFile();
+    //}
 
     // log to console and file based on warning level
 #ifdef _DEBUG
@@ -231,27 +254,5 @@ namespace FlexEngine
       Log::DumpLogs();
       std::exit(EXIT_FAILURE);
     }
-  }
-  
-  void Log::DumpLogs(void)
-  {
-    // get filename
-    std::stringstream filename{};
-    filename << DateTime::GetFormattedDateTime("%Y-%m-%d") << ".log";
-    std::filesystem::path save_path = log_base_path / filename.str();
-
-    // save log file
-    bool success = false;
-    success = std::filesystem::copy_file(log_file_path, save_path, std::filesystem::copy_options::overwrite_existing);
-    if (success)
-    {
-      SetFileAttributes(save_path.c_str(), FILE_ATTRIBUTE_NORMAL);
-      Info("Log file saved to " + save_path.string());
-    }
-    else
-    {
-      Error("Error copying log file.");
-    }
-
   }
 }
