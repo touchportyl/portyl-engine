@@ -1,0 +1,11 @@
+{
+    "flxdata": {
+        "name": "Full Recovery",
+        "description": "Whole team recover full health",
+        "speed_cost": 10,
+        "is_target_enemy": false,
+        "target_type": 5,
+        "damage": 100,
+        "Function": 2
+    }
+}

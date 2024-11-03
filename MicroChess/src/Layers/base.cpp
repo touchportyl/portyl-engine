@@ -1,3 +1,19 @@
+/* Start Header
+*****************************************************************/
+/*!
+WLVERSE [https://wlverse.web.app]
+\file      base.cpp
+\author    [100%] Rocky Sutarius
+\par       rocky.sutarius\@digipen.edu
+\date      03 October 2024
+\brief     This file 
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header
+*******************************************************************/
 #include "base.h"
 
 #include "States.h"
@@ -5,7 +21,7 @@
 
 #include "Components/rendering.h"
 
-namespace MicroChess
+namespace ChronoShift
 {
 
   void BaseLayer::OnAttach()
@@ -22,11 +38,17 @@ namespace MicroChess
     window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_icon_white.png)"));
 
     //window->PushLayer(std::make_shared<MenuLayer>());
-    window->PushLayer(std::make_shared<BoardLayer>());
+    //window->PushLayer(std::make_shared<BoardLayer>());
+    window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
+    //window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
+    window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
+
 
     // Renderer Setup
 
     OpenGLRenderer::EnableBlending();
+    Vector2 windowsize{ static_cast<float>(window->GetWidth()), static_cast<float>(window->GetHeight()) };
+    OpenGLSpriteRenderer::Init(windowsize);
   }
 
   void BaseLayer::OnDetach()
@@ -309,6 +331,42 @@ ImGui::EndMainMenuBar();
 
     #pragma endregion
 
+
+    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_B))
+    {
+      function_queue.Insert({
+        []()
+        {
+          FlexEngine::Window* window = Application::GetCurrentWindow();
+          window->PopLayer();
+          //window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
+          //window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
+        }
+      });
+    }
+    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_N))
+    {
+      function_queue.Insert({
+        []()
+        {
+          FlexEngine::Window* window = Application::GetCurrentWindow();
+          //window->PopLayer();
+          //window->PopLayer();
+          window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
+          window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
+      }
+      });
+    }
+    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_M))
+    {
+      function_queue.Insert({
+        []()
+        {
+          FlexEngine::Window* window = Application::GetCurrentWindow();
+          window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
+      }
+      });
+    }
 
     function_queue.Flush();
 

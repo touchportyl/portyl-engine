@@ -1,3 +1,5 @@
+
+
 #include "pch.h"
 
 #include "window.h"
@@ -43,6 +45,7 @@ namespace FlexEngine
     for (auto& hint : s_props.window_hints)
     {
       glfwWindowHint(hint.first, hint.second);
+
     }
 
     // create window
@@ -109,6 +112,7 @@ namespace FlexEngine
 
     // clear screen
     OpenGLRenderer::ClearColor({ 0.1f, 0.2f, 0.3f, 1.0f });
+    OpenGLRenderer::ClearFrameBuffer();
 
     m_frameratecontroller.BeginFrame();
     ImGuiWrapper::BeginFrame();
