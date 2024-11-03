@@ -53,6 +53,7 @@ namespace ChronoShift
     size_t players_displayed;
     // Used for speed queue
     std::vector<FlexECS::Entity> m_characters;
+    std::list<FlexECS::Entity> m_speed_queue_display;
     //std::vector<FlexECS::Entity> m_slots;
     // These 2 vectors are gonna replace m_slots instead cause god bless me
     std::vector<FlexECS::Entity> m_players;
@@ -62,6 +63,7 @@ namespace ChronoShift
 
     //BattleState m_battle_state;
     void UpdateSpeedStack();
+    void RunCharacterStatus();
     void PlayerMoveSelection();
     void DeathProcession(std::vector<FlexECS::Entity> list_of_deaths);
     void ExecuteMove(FlexECS::Scene::StringIndex move_id, std::vector<FlexECS::Entity> selected_targets);

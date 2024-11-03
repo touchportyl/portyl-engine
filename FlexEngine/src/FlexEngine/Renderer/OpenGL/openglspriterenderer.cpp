@@ -39,7 +39,7 @@ namespace FlexEngine
     bool OpenGLSpriteRenderer::m_depth_test = false;
     bool OpenGLSpriteRenderer::m_blending = false;
 
-    std::vector<VertexBufferObject> OpenGLSpriteRenderer::m_vbos;
+    std::vector<MeshBuffer> OpenGLSpriteRenderer::m_vbos;
     std::vector<GLuint> OpenGLSpriteRenderer::m_batchSSBOs;
 
     std::filesystem::path curr_file_path = __FILE__;
@@ -271,7 +271,7 @@ namespace FlexEngine
         /////////////////////////////////////////////////////////////////////////////////////
         // Create VAOs and VBOs (CAN BE DONE BETTER)
         struct VertexData {
-            VertexBufferObject buffer;
+            MeshBuffer buffer;
             const float* vertices;
             int count;
         };
@@ -317,10 +317,10 @@ namespace FlexEngine
 
         VertexData vertexData[] =
         {
-            {VertexBufferObject(), quadVertices, sizeof(quadVertices) / sizeof(float)},
-            {VertexBufferObject(), quadInvertedVertices, sizeof(quadInvertedVertices) / sizeof(float)},
-            {VertexBufferObject(), lineVertices, sizeof(lineVertices) / sizeof(float)},
-            {VertexBufferObject(), postProcessingVertices, sizeof(postProcessingVertices) / sizeof(float)}
+            {MeshBuffer(), quadVertices, sizeof(quadVertices) / sizeof(float)},
+            {MeshBuffer(), quadInvertedVertices, sizeof(quadInvertedVertices) / sizeof(float)},
+            {MeshBuffer(), lineVertices, sizeof(lineVertices) / sizeof(float)},
+            {MeshBuffer(), postProcessingVertices, sizeof(postProcessingVertices) / sizeof(float)}
         };
 
         for (auto& data : vertexData)
@@ -474,11 +474,13 @@ namespace FlexEngine
         asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
 
         // Transformation & Orthographic Projection
-        asset_shader.SetUniform_mat4("u_model", props.transform);
+        Vector2 camPos = Vector2::Zero;
+        if (SceneCamSorter::IsMainCameraActive())
+            camPos = SceneCamSorter::GetMainCamera()->GetPosition();
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
-          0.0f, props.window_size.x,
-          props.window_size.y, 0.0f,
+          camPos.x, camPos.x + props.window_size.x,
+          camPos.y + props.window_size.y, camPos.y,
           -2.0f, 2.0f
         ) * view_matrix;
         asset_shader.SetUniform_mat4("u_projection_view", projection_view);
@@ -530,7 +532,7 @@ namespace FlexEngine
         glBindVertexArray(0);
     }
 
-    void OpenGLSpriteRenderer::DrawBatchTexture2D(const Renderer2DProps& props, const BatchInstanceBlock& data)
+    void OpenGLSpriteRenderer::DrawBatchTexture2D(const Renderer2DProps& props, const Sprite_Batch_Inst& data)
     {
         // Guard
         if (data.m_transformationData.size() != data.m_colorAddData.size() ||
@@ -576,10 +578,13 @@ namespace FlexEngine
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         // Orthographic Projection
+        Vector2 camPos = Vector2::Zero;
+        if (SceneCamSorter::IsMainCameraActive())
+            camPos = SceneCamSorter::GetMainCamera()->GetPosition();
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
-          0.0f, props.window_size.x,
-          props.window_size.y, 0.0f,
+          camPos.x, camPos.x + props.window_size.x,
+          camPos.y + props.window_size.y, camPos.y,
           -2.0f, 2.0f
         ) * view_matrix;
         asset_shader.SetUniform_mat4("u_projection_view", projection_view);

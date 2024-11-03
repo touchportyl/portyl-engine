@@ -59,6 +59,7 @@
 // Use FLX_FLOW_BEGINSCOPE() to log the start of a system scope flow.
 // Use FLX_FLOW_ENDSCOPE() to log the end of a system scope flow.
 #include "FlexEngine/flexlogger.h"
+#include "FlexEngine/flexprofiler.h"
 
 // Assertion wrapper for handling fatal errors.
 // These are used to check for destructive errors like memory leaks.
@@ -140,6 +141,9 @@
 #include "FlexEngine/Renderer/OpenGL/openglrenderer.h"
 // The current implementation is exclusively for OpenGL. For 2D sprites
 #include "FlexEngine/Renderer/OpenGL/openglspriterenderer.h"
+// The current implementation is exclusively for OpenGL. For freetype text
+#include "FlexEngine/Renderer/OpenGL/opengltextrenderer.h"
+
 
 // Stores one vertex for the mesh.
 // The current implementation is exclusively for OpenGL.

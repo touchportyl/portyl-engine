@@ -30,6 +30,8 @@
 #include "flx_api.h"
 #include "FlexMath/vector4.h"
 #include "opengltexture.h"
+#include "../scenecamsorter.h"
+
 #include <glad/glad.h>
 
 namespace FlexEngine
@@ -89,7 +91,7 @@ namespace FlexEngine
     };
 
     /*!***************************************************************************
-    * \struct VertexBufferObject
+    * \struct MeshBuffer
     * \brief
     * Structure that represents a Vertex Buffer Object (VBO) and its associated
     * Vertex Array Object (VAO).
@@ -97,15 +99,15 @@ namespace FlexEngine
     * This structure is used for managing OpenGL resources related to vertex
     * data, facilitating the rendering process.
     *****************************************************************************/
-    struct __FLX_API VertexBufferObject
+    struct __FLX_API MeshBuffer
     {
-        GLuint vao = 0;
-        GLuint vbo = 0;
+        GLuint vao = 0; // Vertex Array Object
+        GLuint vbo = 0; // Vertex Buffer Object
     };
 
-    struct __FLX_API BatchInstanceBlock
+    struct __FLX_API Sprite_Batch_Inst
     {
-        GLuint m_vboid;
+        GLuint m_vboid = 0;
 
         std::vector<Matrix4x4> m_transformationData;
         std::vector<Vector3> m_colorAddData, m_colorMultiplyData;
@@ -131,7 +133,7 @@ namespace FlexEngine
         static bool m_depth_test;                      /*!< Flag for enabling depth testing */
         static bool m_blending;                        /*!< Flag for enabling blending */
 
-        static std::vector<VertexBufferObject> m_vbos; /*!< Vector of Vertex Buffer Objects */
+        static std::vector<MeshBuffer> m_vbos; /*!< Vector of Vertex Buffer Objects */
         static std::vector<GLuint> m_batchSSBOs;
 
         static Asset::Shader m_bloom_brightness_shader;
@@ -296,7 +298,7 @@ namespace FlexEngine
         *****************************************************************************/
         static void DrawTexture2D(const Renderer2DProps& props = {});
         static void DrawTexture2D(GLuint TextureID, const Renderer2DProps& props = {});
-        static void DrawBatchTexture2D(const Renderer2DProps& props = {}, const BatchInstanceBlock& data = {});
+        static void DrawBatchTexture2D(const Renderer2DProps& props = {}, const Sprite_Batch_Inst& data = {});
 
         /*!***************************************************************************
         * \brief

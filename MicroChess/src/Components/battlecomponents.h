@@ -118,64 +118,68 @@ namespace ChronoShift
     FlexECS::Scene::StringIndex move_to_use;   //ID of move in movelist
   };
 
-  //Attach these components to move entity
-  /*class MoveID
+  #pragma region Status Effects Components
+  class Burn
   { FLX_REFL_SERIALIZABLE
   public:
-    std::string move_name;  //string accessing MoveRegistry
-  };
-  
-  class MoveDuration
-  { FLX_REFL_SERIALIZABLE
-  public:
-    int move_duration;
-  };
-  
-  class MoveCooldown
-  { FLX_REFL_SERIALIZABLE
-  public:
-    int move_cooldown;
-  };*/
-
-  /*class MoveList 
-  { FLX_REFL_SERIALIZABLE
-  public:
-    FlexECS::EntityID move_one;
-    FlexECS::EntityID move_two;
-    FlexECS::EntityID move_three;
-  };*/
-
-  //Stats for battling character
-
-  struct EffectValues
-  { FLX_REFL_SERIALIZABLE
-    int duration;
-    int value;
+    int remaining_turns = 0;
+    int damage_value = 0;
   };
 
-  class StatusEffects
-  { FLX_REFL_SERIALIZABLE
+  class Shock
+  {
+    FLX_REFL_SERIALIZABLE
   public:
-    EffectValues strength;
-    EffectValues speed;
+    int remaining_turns = 0;
+    int damage_value = 0;
   };
+
+  class Shear
+  {
+    FLX_REFL_SERIALIZABLE
+  public:
+    int remaining_turns = 0;
+    int damage_value = 0;
+  };
+
+  class Immunity
+  {
+    FLX_REFL_SERIALIZABLE
+  public:
+    int remaining_turns = 0;
+  };
+
+  class Recovery
+  {
+    FLX_REFL_SERIALIZABLE
+  public:
+    int remaining_turns = 0;
+    int heal_value = 0;
+  };
+
+  class Stun
+  {
+    FLX_REFL_SERIALIZABLE
+  public:
+    int remaining_turns = 0;
+  };
+  #pragma endregion
 
   //Battling components
   
   enum BattlePhase : int {
-    BP_PLAYER_TURN,   //waiting for player input
-    BP_ENEMY_TURN,
-    BP_MOVE_DEATH_PROCESSION,
-    BP_MOVE_EXECUTION, //Animation playing
-    BP_PROCESSING,    //Speed stack moving around, showing who's next
-    BP_MOVE_SELECTION,
-    BP_BATTLE_FINISH,
+    BP_MOVE_DEATH_PROCESSION, // Checking whether anyone has died or not, and to remove dead characters from the battle scene
+    BP_MOVE_EXECUTION,        // Executing Move Functions here (along with animation play in the future)
+    BP_PROCESSING,            // Speed stack moving around, showing who's next
+    BP_MOVE_SELECTION,        // Selection of Move and Targets
+    BP_BATTLE_FINISH,         // Detect whether entire enemy or player team is dead (Display win or lose screens respectively)
+    BP_STATUS_RUN,            // Run through all status effects characters have
   };
   
   class BattleState 
   { FLX_REFL_SERIALIZABLE
   public:
-    int phase;
+    int phase;/*
     FlexECS::EntityID active_character;
     int target_one = -1;
     int target_two = -1;
@@ -183,7 +187,7 @@ namespace ChronoShift
     int target_four = -1;
     int target_five = -1;
 
-    int current_target_count = 0;
+    int current_target_count = 0;*/
   };
 
   class BattleSlot
@@ -235,11 +239,11 @@ namespace ChronoShift
   };
 
   enum MoveTargetType : int {
-    MOVE_TARGET_SELF = 1,
+    MOVE_TARGET_SELF = -2,
+    MOVE_TARGET_ALL = -1,
     MOVE_TARGET_SINGLE = 1,
     MOVE_TARGET_DOUBLE = 2,
     MOVE_TARGET_TRIPLE = 3,
-    MOVE_TARGET_ALL = 5,
   };
 
   //struct Move {

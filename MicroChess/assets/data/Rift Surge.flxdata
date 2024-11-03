@@ -1,11 +1,14 @@
 {
     "flxdata": {
         "name": "Rift Surge",
-        "description": "Hit entire enemy team for 2 damage each",
+        "description": "Hit entire enemy team for 2 damage each and inflicts shear on them for 2 turns",
         "speed_cost": 10,
         "is_target_enemy": true,
-        "target_type": 5,
-        "damage": 2,
-        "Function": 1
+        "target_type": "ALL",
+        "move_value": 2,
+        "move_function": "DAMAGE",
+	"effect_value": 1,
+	"effect_duration": 2,
+	"effect_function": "SHEAR"
     }
 }

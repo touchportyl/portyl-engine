@@ -33,12 +33,10 @@ namespace ChronoShift
     FreeQueue::Push(std::bind(&AssetManager::Unload), "MicroChess AssetManager");
 
     FlexEngine::Window* window = Application::GetCurrentWindow();
-    window->SetTargetFPS();
+    window->SetTargetFPS(60);
     window->SetVSync(false);
     window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_icon_white.png)"));
 
-    //window->PushLayer(std::make_shared<MenuLayer>());
-    //window->PushLayer(std::make_shared<BoardLayer>());
     //window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
     window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
     window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
@@ -49,6 +47,7 @@ namespace ChronoShift
     OpenGLRenderer::EnableBlending();
     Vector2 windowsize{ static_cast<float>(window->GetWidth()), static_cast<float>(window->GetHeight()) };
     OpenGLSpriteRenderer::Init(windowsize);
+    OpenGLTextRenderer::Init();
   }
 
   void BaseLayer::OnDetach()
@@ -67,7 +66,9 @@ namespace ChronoShift
     FunctionQueue function_queue;
 
     // setup dockspace
-    ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_NoDockingInCentralNode;
+    //ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_NoDockingInCentralNode;
+    ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+    //ImGuiDockNodeFlags dockspace_flags = 0;
     #pragma warning(suppress: 4189) // local variable is initialized but not referenced
     ImGuiID dockspace_main_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), dockspace_flags);
     
@@ -102,6 +103,7 @@ namespace ChronoShift
               [this]()
               {
                 //CreateDefaultScene();
+                FlexECS::Scene::SetActiveScene(std::make_shared<FlexECS::Scene>());
               }
             });
           }
@@ -316,7 +318,7 @@ ImGui::EndMainMenuBar();
       if (ImGui::CollapsingHeader("Scene", tree_node_flags))
       {
         ImGui::Text("Active Scene: %s", current_save_name.c_str());
-        ImGui::Text("Entities: %d", FlexECS::Scene::GetActiveScene()->View<EntityName>().size());
+        ImGui::Text("Entities: %d", FlexECS::Scene::GetActiveScene()->CachedQuery<EntityName>().size());
         ImGui::Text("Archetypes: %d", ARCHETYPE_INDEX.size());
       }
 
@@ -330,46 +332,6 @@ ImGui::EndMainMenuBar();
     #endif
 
     #pragma endregion
-
-
-    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_B))
-    {
-      function_queue.Insert({
-        []()
-        {
-          FlexEngine::Window* window = Application::GetCurrentWindow();
-          window->PopLayer();
-          //window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
-          //window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
-        }
-      });
-    }
-    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_N))
-    {
-      function_queue.Insert({
-        []()
-        {
-          FlexEngine::Window* window = Application::GetCurrentWindow();
-          //window->PopLayer();
-          //window->PopLayer();
-          window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
-          window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
-      }
-      });
-    }
-    if (FlexEngine::Input::GetKeyDown(GLFW_KEY_M))
-    {
-      function_queue.Insert({
-        []()
-        {
-          FlexEngine::Window* window = Application::GetCurrentWindow();
-          window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
-      }
-      });
-    }
-
-    function_queue.Flush();
-
   }
 
 }

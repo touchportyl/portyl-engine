@@ -50,7 +50,7 @@ namespace ChronoShift
     {
         auto& local_transform = currEntity.GetComponent<Transform>()->transform;
         if (!currEntity.GetComponent<Transform>()->is_dirty) return;
-       
+
         auto& local_position = currEntity.GetComponent<Position>()->position;
         auto& local_scale = currEntity.GetComponent<Scale>()->scale;
         // Get rotation component if it exists
@@ -60,13 +60,18 @@ namespace ChronoShift
 
         //Alignment of sprite
         static Vector2 sprite_alignment = Vector2::Zero;
-        switch (currEntity.GetComponent<Sprite>()->alignment)
+        // Get sprite component if it exists
+        Sprite* checkSprite = nullptr;
+        if (currEntity.TryGetComponent<Sprite>(checkSprite))
         {
-        case Renderer2DProps::Alignment::Alignment_TopLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, local_scale.y * 0.5f); break;
-        case Renderer2DProps::Alignment::Alignment_TopRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, local_scale.y * 0.5f); break;
-        case Renderer2DProps::Alignment::Alignment_BottomLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
-        case Renderer2DProps::Alignment::Alignment_BottomRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
-        default: case Renderer2DProps::Alignment::Alignment_Center: sprite_alignment = Vector2::Zero; break;
+            switch (currEntity.GetComponent<Sprite>()->alignment)
+            {
+            case Renderer2DProps::Alignment::Alignment_TopLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, local_scale.y * 0.5f); break;
+            case Renderer2DProps::Alignment::Alignment_TopRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, local_scale.y * 0.5f); break;
+            case Renderer2DProps::Alignment::Alignment_BottomLeft: sprite_alignment = Vector2(local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
+            case Renderer2DProps::Alignment::Alignment_BottomRight: sprite_alignment = Vector2(-local_scale.x * 0.5f, -local_scale.y * 0.5f); break;
+            default: case Renderer2DProps::Alignment::Alignment_Center: sprite_alignment = Vector2::Zero; break;
+            }
         }
 
         // calculate the transform
@@ -75,7 +80,7 @@ namespace ChronoShift
         Matrix4x4 scale_matrix = Matrix4x4::Scale(Matrix4x4::Identity, local_scale);
 
         // Apply parent entity's matrix
-       local_transform = parent_entity_matrix * (translation_matrix * rotation_matrix * scale_matrix);
+        local_transform = parent_entity_matrix * (translation_matrix * rotation_matrix * scale_matrix);
     }
 
     /*!***************************************************************************
@@ -97,7 +102,7 @@ namespace ChronoShift
         static std::unordered_set<FlexECS::EntityID> t_processedEntities;
         t_processedEntities.clear();
 
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Transform>())
         {
             // Check if this entity has already been processed
             if (t_processedEntities.find(entity.Get()) != t_processedEntities.end() || !entity.GetComponent<IsActive>()->is_active) continue; //Skip
@@ -111,14 +116,14 @@ namespace ChronoShift
             {
                 // Push the entity into the stack to process later
                 t_entitystack.push_back(t_currentEntity);
-                entity_isdirty = t_currentEntity->GetComponent<Transform>()->is_dirty? true: entity_isdirty;
+                entity_isdirty = t_currentEntity->GetComponent<Transform>()->is_dirty ? true : entity_isdirty;
 
                 // Get the parent of the current entity
                 Parent* t_parententity = nullptr;
                 if ((*t_currentEntity).TryGetComponent<Parent>(t_parententity))
                 {
                     t_parententity = (*t_currentEntity).GetComponent<Parent>();
-                    
+
                     // Move up to the parent entity
                     t_currentEntity = &t_parententity->parent;
                 }
@@ -147,13 +152,13 @@ namespace ChronoShift
 
                 //Log::Debug(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*(*it)->GetComponent<EntityName>()));
             }
-           // Log::Debug(" ");
+            // Log::Debug(" ");
             t_entitystack.clear();
         }
         //Log::Debug("****************************************************************");
-        
+
         //Ensure all entities is no longer dirty
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, Transform>())
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Transform>())
         {
             if (!entity.GetComponent<IsActive>()->is_active) continue;
 
@@ -177,7 +182,6 @@ namespace ChronoShift
         Renderer2DProps props;
         props.window_size = { static_cast<float>(window_props.width), static_cast<float>(window_props.height) };
 
-        FunctionQueue pp_render_queue, non_pp_render_queue, finalized_render_queue;
         ////////////////////////////////////////////////////////////////////////////////
         // Potential Issues
         ////////////////////////////////////////////////////////////////////////////////
@@ -187,12 +191,15 @@ namespace ChronoShift
         //auto end = std::chrono::high_resolution_clock::now();
         //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
         //std::cout << "Time taken: " << duration << " ms" << std::endl;
-
+        
+        FunctionQueue finalized_render_queue;
         // Render all entities via normal draw call(no batching)
         #if 0
         {
+            FunctionQueue pp_render_queue, non_pp_render_queue;
+
             //same thing as update transformations, flush update queue (lags if more than 2500 objects)
-            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
 
@@ -211,12 +218,7 @@ namespace ChronoShift
                 props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
                 props.vbo_id = sprite->vbo_id;
 
-                //FIRST TWO IFS SHOULD NOT BE HERE
-                if ("finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", z_index });
-                else if ("editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_finalRender),props); }, "", z_index });
-                else if (sprite->post_processed)
+                if (sprite->post_processed)
                     pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
                 else
                     non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
@@ -230,7 +232,7 @@ namespace ChronoShift
             bool blending = OpenGLRenderer::IsBlendingEnabled();
             if (!blending) OpenGLRenderer::EnableBlending();
 
-            
+
 
             //Batch Rendering objs in scene
             {
@@ -263,10 +265,10 @@ namespace ChronoShift
         // Integrating batching to pipeline
         #if 1
         {
-            std::unordered_map<std::string, BatchInstanceBlock> batchMap;
+            std::unordered_map<std::string, Sprite_Batch_Inst> batchMap;
 
             //same thing as update transformations, flush update queue (lags if more than 2500 objects)
-            for (auto& entity : FlexECS::Scene::GetActiveScene()->View<IsActive, ZIndex, Transform, Shader, Sprite>())
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
                 auto entity_name_component = entity.GetComponent<EntityName>();
 
@@ -297,16 +299,16 @@ namespace ChronoShift
                     finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_finalRender),props); }, "", 0 });
                     continue;
                 }
-                    
+
                 // Use texture as the unique key for batching (or combine multiple properties as needed)
                 std::string batchKey = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
                 // If a batch for this sprite type doesn't exist, create it
-                if (batchMap.find(batchKey) == batchMap.end()) 
+                if (batchMap.find(batchKey) == batchMap.end())
                 {
-                    batchMap[batchKey] = BatchInstanceBlock();
+                    batchMap[batchKey] = Sprite_Batch_Inst();
                     batchMap[batchKey].m_vboid = sprite->vbo_id;
                 }
-                // Push transformation and color data to the BatchInstanceBlock
+                // Push transformation and color data to the Sprite_Batch_Inst
                 batchMap[batchKey].m_transformationData.push_back(transform);
                 batchMap[batchKey].m_colorAddData.push_back(props.color_to_add);
                 batchMap[batchKey].m_colorMultiplyData.push_back(props.color_to_multiply);
@@ -327,7 +329,7 @@ namespace ChronoShift
                 OpenGLSpriteRenderer::SetEditorFrameBuffer();
                 OpenGLSpriteRenderer::ClearFrameBuffer();
 
-                for (auto& [key, batchData] : batchMap) 
+                for (auto& [key, batchData] : batchMap)
                 {
                     props.texture = key;
                     props.vbo_id = batchData.m_vboid;
@@ -347,6 +349,52 @@ namespace ChronoShift
             if (!blending) OpenGLRenderer::DisableBlending();
         }
         #endif
-    }
 
+        #if 1
+        {
+
+            FunctionQueue text_render_queue;
+            Renderer2DText sample;
+            for (auto& txtentity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Text>())
+            {
+                /////////////////////////////////////
+                //How to retrieve
+                /////////////////////////////////////
+               //auto i = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->fonttype);
+               //auto& asset_font = FLX_ASSET_GET(Asset::Font, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->fonttype));
+
+                if (!txtentity.GetComponent<IsActive>()->is_active) continue;
+                Matrix4x4 transform = txtentity.GetComponent<Transform>()->transform;
+                auto shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Shader>()->shader);
+                auto font = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->fonttype);
+                
+                sample.m_words = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(txtentity.GetComponent<Text>()->text);
+                sample.m_shader = shader;
+                sample.m_fonttype = font;
+                sample.m_transform = transform;
+                sample.m_alignment = {
+                    static_cast<Renderer2DText::AlignmentX>(txtentity.GetComponent<Text>()->alignment.first),
+                    static_cast<Renderer2DText::AlignmentY>(txtentity.GetComponent<Text>()->alignment.second)
+                };
+                sample.m_color = txtentity.GetComponent<Text>()->color;
+                
+                text_render_queue.Insert({ [sample]() { OpenGLTextRenderer::DrawText2D(sample); }, "", 0 });
+            }
+
+            //Push Settings
+            bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
+            if (depth_test) OpenGLRenderer::DisableDepthTest();
+
+            bool blending = OpenGLRenderer::IsBlendingEnabled();
+            if (!blending) OpenGLRenderer::EnableBlending();
+
+            OpenGLSpriteRenderer::SetEditorFrameBuffer();
+            text_render_queue.Flush();  // Final rendering (UI, etc.)
+            OpenGLSpriteRenderer::SetDefaultFrameBuffer();
+            // pop settings
+            if (depth_test) OpenGLRenderer::EnableDepthTest();
+            if (!blending) OpenGLRenderer::DisableBlending();
+        #endif
+        }
+    }
 }

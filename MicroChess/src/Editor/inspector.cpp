@@ -124,13 +124,19 @@ namespace ChronoShift
 				ImGui::InputTextWithHint("##ComponentSearch", "Search Component...", search_query, IM_ARRAYSIZE(search_query));
 
 				std::string query = search_query;
-				std::transform(query.begin(), query.end(), query.begin(), [](char c) { return std::tolower(c); });
+				for (auto& c : query)
+				{
+					c = static_cast<char>(tolower(static_cast<int>(c)));
+				}
 
 				for (const std::string& component_name : ComponentViewRegistry::GetComponentList())
 				{
 					// Convert the component name to lowercase for comparison
 					std::string lower_component_name = component_name;
-					std::transform(lower_component_name.begin(), lower_component_name.end(), lower_component_name.begin(), [](char c) { return std::tolower(c); });
+					for (auto& c : lower_component_name)
+					{
+						c = static_cast<char>(tolower(static_cast<int>(c)));
+					}
 
 					if (query.empty() || lower_component_name.find(query) != std::string::npos)
 					{

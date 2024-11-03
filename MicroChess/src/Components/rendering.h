@@ -138,6 +138,16 @@ using namespace FlexEngine;
     bool post_processed = false;
   };
   
+  class Text
+  { FLX_REFL_SERIALIZABLE
+  public:
+      FlexECS::Scene::StringIndex fonttype = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+      FlexECS::Scene::StringIndex text = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("TEST");
+      Vector3 color = Vector3::One;
+      // border color, border size, underline, etc
+      std::pair<int,int> alignment = {Renderer2DText::Alignment_Center, Renderer2DText::Alignment_Middle}; // Default value: centered (all bits set)
+  };
+
   /*!***************************************************************************
   * \class Camera
   * \brief
@@ -151,16 +161,18 @@ using namespace FlexEngine;
       FLX_REFL_SERIALIZABLE
   public:
       bool is_dirty = true;
-      Vector3 front;
-      Vector3 right;
-      Vector3 up;
-      const Vector3 world_up = Vector3::Up;
-      Matrix4x4 view;
-      Matrix4x4 projection;
-      bool perspective = true;
-      float fov = 45.0f;
-      float near = 0.1f;
-      float far = 100.0f;
+      //Vector3 front;
+      //Vector3 right;
+      //Vector3 up;
+      //const Vector3 world_up = Vector3::Up;
+      //Matrix4x4 view;
+      //Matrix4x4 projection;
+      //bool perspective = true;
+      //float fov = 45.0f;
+      //float near = 0.1f;
+      //float far = 100.0f;
+      //Integrate into opengl camera
+      //OpenGLCamera camera;
   };
 
   void RegisterRenderingComponents();

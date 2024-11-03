@@ -195,6 +195,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\FlexMath\vector4.cpp" />
     <ClCompile Include="src\FlexEngine\flexid.cpp" />
     <ClCompile Include="src\FlexEngine\flexprefs.cpp" />
+    <ClCompile Include="src\FlexEngine\flexprofiler.cpp" />
     <ClCompile Include="src\FlexEngine\flxdata.cpp" />
     <ClCompile Include="src\FlexEngine\FMOD\FMODWrapper.cpp" />
     <ClCompile Include="src\FlexEngine\FMOD\Sound.cpp" />
@@ -204,16 +205,19 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Renderer\buffer.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglbuffer.cpp" />
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglcamera.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengldebugrenderer.cpp" />
-    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglfreetype.cpp" />
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglfont.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmaterial.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmesh.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglmodel.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglrenderer.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglshader.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglspriterenderer.cpp" />
+    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengltextrenderer.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengltexture.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglvertex.cpp" />
+    <ClCompile Include="src\FlexEngine\Renderer\scenecamsorter.cpp" />
     <ClCompile Include="src\FlexEngine\StateManager\statemanager.cpp" />
     <ClCompile Include="src\FlexEngine\uuid.cpp" />
     <ClCompile Include="src\FlexEngine\Wrapper\assimp.cpp" />
@@ -237,7 +241,6 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="openglfreetype.h" />
     <ClInclude Include="src\FlexEngine\AssetManager\assetkey.h" />
     <ClInclude Include="src\FlexEngine\AssetManager\assetmanager.h" />
     <ClInclude Include="src\FlexEngine\Core\frameratecontroller.h" />
@@ -262,6 +265,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\FlexMath\vector4.h" />
     <ClInclude Include="src\FlexEngine\flexid.h" />
     <ClInclude Include="src\FlexEngine\flexprefs.h" />
+    <ClInclude Include="src\FlexEngine\flexprofiler.h" />
     <ClInclude Include="src\FlexEngine\flxdata.h" />
     <ClInclude Include="src\FlexEngine\FMOD\FMODWrapper.h" />
     <ClInclude Include="src\FlexEngine\FMOD\Sound.h" />
@@ -272,15 +276,19 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Renderer\buffer.h" />
     <ClInclude Include="src\FlexEngine\Renderer\DebugRenderer\debugrenderer.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglbuffer.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglcamera.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengldebugrenderer.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglfont.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmaterial.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmesh.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglmodel.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglrenderer.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglshader.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglspriterenderer.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengltextrenderer.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengltexture.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglvertex.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\scenecamsorter.h" />
     <ClInclude Include="src\FlexEngine\StateManager\state.h" />
     <ClInclude Include="src\FlexEngine\StateManager\statemanager.h" />
     <ClInclude Include="src\FlexEngine\timer.h" />
