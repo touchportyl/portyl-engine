@@ -152,6 +152,7 @@ using namespace FlexEngine;
       float m_animationTimer = 0.f;
       float m_animationDurationPerFrame = 0.02f;
       int m_currentSpriteIndex = 0; // start from first sprite
+      Vector4 m_currUV = Vector4::Zero;
   };
 
   class Text

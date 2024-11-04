@@ -592,6 +592,61 @@ namespace FlexEngine
         glBindVertexArray(0);
     }
 
+    void OpenGLSpriteRenderer::DrawAnim2D(const Renderer2DProps& props, const Vector4 uv)
+    {
+        // Guard
+        if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
+            Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
+        if (props.shader == "" || props.transform == Matrix4x4::Zero)
+            return;
+
+        // Bind all
+        glBindVertexArray(m_vbos[props.vbo_id].vao);
+
+        // Apply Shader
+        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, props.shader);
+        asset_shader.Use();
+
+        // Apply Texture
+        if (props.texture != "")
+        {
+            asset_shader.SetUniform_bool("u_use_texture", true);
+            auto& asset_texture = FLX_ASSET_GET(Asset::Texture, props.texture);
+            //std::cout << props.texture << "\n";
+            asset_texture.Bind(asset_shader, "u_texture", 0);
+        }
+        else
+        {
+            asset_shader.SetUniform_bool("u_use_texture", false);
+            asset_shader.SetUniform_vec3("u_color", props.color_to_add);
+        }
+
+        asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
+        asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
+        //float u_min = uv.x;
+        //float v_min = uv.y;
+        //float u_max = u_min + uv.z;
+        //float v_max = v_min + uv.w;
+        //asset_shader.SetUniform_vec2("u_UvMin", Vector2{ u_min, v_min });
+        //asset_shader.SetUniform_vec2("u_UvMax", Vector2{ u_max, v_max });
+
+        // Transformation & Orthographic Projection
+        Vector2 camPos = (SceneCamSorter::GetInstance().GetMainCamera() != -1) ? (Vector2)SceneCamSorter::GetInstance().GetCameraData(SceneCamSorter::GetInstance().GetMainCamera())->position : Vector2::Zero;
+        static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
+        Matrix4x4 projection_view = Matrix4x4::Orthographic(
+          camPos.x, camPos.x + props.window_size.x,
+          camPos.y + props.window_size.y, camPos.y,
+          -2.0f, 2.0f
+        ) * view_matrix;
+        asset_shader.SetUniform_mat4("u_projection_view", projection_view);
+
+        // Draw
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        m_draw_calls++;
+
+        glBindVertexArray(0);
+    }
+
     /*!***************************************************************************
     * \brief
     * Draws the post-processing layer after all other rendering operations.

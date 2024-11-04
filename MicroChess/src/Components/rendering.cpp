@@ -82,6 +82,7 @@ namespace ChronoShift
       FLX_REFL_REGISTER_PROPERTY(m_animationTimer)
       FLX_REFL_REGISTER_PROPERTY(m_animationDurationPerFrame)
       FLX_REFL_REGISTER_PROPERTY(m_currentSpriteIndex)
+      FLX_REFL_REGISTER_PROPERTY(m_currUV)
   FLX_REFL_REGISTER_END;
 
   FLX_REFL_REGISTER_START(Text)
@@ -144,6 +145,16 @@ namespace ChronoShift
     COMPONENT_VIEWER_CHECKBOX(post_processed)
   COMPONENT_VIEWER_END(Sprite)
 
+  COMPONENT_VIEWER_START(Animation)
+    COMPONENT_VIEWER_TEXTURE_PATH(spritesheet)
+    COMPONENT_VIEWER_COLOR3(color_to_add)
+    COMPONENT_VIEWER_COLOR3(color_to_multiply)
+  COMPONENT_VIEWER_END(Animation)
+
+  COMPONENT_VIEWER_START(Camera)
+      COMPONENT_VIEWER_BOOL(is_dirty)
+  COMPONENT_VIEWER_END(Camera)
+
   //TODO @ROCKY to add the font pic and have a dropbox of available fonts
   COMPONENT_VIEWER_START(Text)
       COMPONENT_VIEWER_STRING(fonttype)
@@ -164,5 +175,7 @@ namespace ChronoShift
     REGISTER_COMPONENT_VIEWER(Shader);
     REGISTER_COMPONENT_VIEWER(Sprite);
     REGISTER_COMPONENT_VIEWER(Text);
+    REGISTER_COMPONENT_VIEWER(Camera);
+    REGISTER_COMPONENT_VIEWER(Animation);
   }
 }

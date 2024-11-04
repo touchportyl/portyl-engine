@@ -299,7 +299,7 @@ namespace FlexEngine
         static void DrawTexture2D(const Renderer2DProps& props = {});
         static void DrawTexture2D(GLuint TextureID, const Renderer2DProps& props = {});
         static void DrawBatchTexture2D(const Renderer2DProps& props = {}, const Sprite_Batch_Inst& data = {});
-
+        static void DrawAnim2D(const Renderer2DProps& props = {}, const Vector4 uv = Vector4::Zero);
         /*!***************************************************************************
         * \brief
         * Draws the post-processing layer after all other rendering operations.

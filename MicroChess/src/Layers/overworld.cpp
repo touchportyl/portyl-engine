@@ -210,15 +210,24 @@ namespace ChronoShift {
 
         FlexECS::Entity anim1 = FlexECS::Scene::CreateEntity("anim1");
         anim1.AddComponent<IsActive>({ true });
-        anim1.AddComponent<Position>({ {350, 500 } });
-        anim1.AddComponent<Scale>({ { 150,150 } });
+        anim1.AddComponent<Position>({ {650, 600} });
+        anim1.AddComponent<Scale>({ { 2500,1500 } });
+        anim1.AddComponent<Rotation>({});
         anim1.AddComponent<Transform>({});
         anim1.AddComponent<ZIndex>({ 10 });
-        anim1.AddComponent<Animation>({
+        //anim1.AddComponent<Animation>({
+        //        scene->Internal_StringStorage_New(R"(\images\Grace_Idle_Attack_Anim_Sheet.png)"),
+        //        1, //Rows
+        //        8, //Cols
+        //        8 //Num
+        //       });
+        anim1.AddComponent<Sprite>({
                 scene->Internal_StringStorage_New(R"(\images\Grace_Idle_Attack_Anim_Sheet.png)"),
-                1, //Rows
-                8, //Cols
-                8 //Num
+                { 1.2f, 1.0f, 1.30f },
+                Vector3::One,
+                Renderer2DProps::Alignment_Center,
+                0,
+                true
                });
         anim1.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
