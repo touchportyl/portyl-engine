@@ -12,7 +12,7 @@ namespace FlexEngine
     * and transformation matrices.
     *************************************************************************/
     struct __FLX_API CameraData
-    { 
+    { FLX_REFL_SERIALIZABLE
         Vector3 position = Vector3::Zero;        /*!< Camera position in world space */
         Vector3 direction = Vector3::Zero;       /*!< Direction the camera is facing */
         Vector3 up = Vector3::Up;              /*!< Up vector for the camera's orientation */
@@ -123,6 +123,17 @@ namespace FlexEngine
             }
             Log::Warning("GetCameraData(...) => Entity ID not found.");
             return nullptr;
+        }
+
+        void UpdateData(const FlexECS::EntityID entityID, const CameraData& curr)
+        {
+            auto it = m_cameraEntities.find(entityID);
+            if (it != m_cameraEntities.end())
+            {
+                it->second = curr;
+            }
+            else
+            Log::Warning("UpdateData(...) => Entity ID not found.");
         }
         #pragma endregion
     };

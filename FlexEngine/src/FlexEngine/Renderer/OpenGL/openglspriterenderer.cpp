@@ -545,7 +545,7 @@ namespace FlexEngine
         }
         if (props.shader == "")
             return;
-        GLsizei dataSize = data.m_transformationData.size();
+        GLsizei dataSize = (GLsizei)data.m_transformationData.size();
 
         // Bind all
         glBindVertexArray(m_vbos[props.vbo_id].vao);

@@ -67,3 +67,24 @@
 //    }
 //    #pragma endregion
 //}
+
+#include "scenecamsorter.h"
+
+namespace FlexEngine
+{
+	#pragma region Reflection
+    FLX_REFL_REGISTER_START(CameraData)
+        FLX_REFL_REGISTER_PROPERTY(position)
+        FLX_REFL_REGISTER_PROPERTY(direction)
+        FLX_REFL_REGISTER_PROPERTY(up)
+        FLX_REFL_REGISTER_PROPERTY(right)
+        FLX_REFL_REGISTER_PROPERTY(viewMatrix)
+        FLX_REFL_REGISTER_PROPERTY(projMatrix)
+        FLX_REFL_REGISTER_PROPERTY(fieldOfView)
+        FLX_REFL_REGISTER_PROPERTY(aspectRatio)
+        FLX_REFL_REGISTER_PROPERTY(nearClip)
+        FLX_REFL_REGISTER_PROPERTY(farClip)
+        FLX_REFL_REGISTER_PROPERTY(m_isOrthographic)
+    FLX_REFL_REGISTER_END;
+	#pragma endregion
+}

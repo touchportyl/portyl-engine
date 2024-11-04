@@ -321,17 +321,6 @@ namespace ChronoShift {
         SceneCamSorter::GetInstance().AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
         SceneCamSorter::GetInstance().SwitchMainCamera(camera.Get());
 
-        //OpenGLCamera testcam;
-        //camera.AddComponent<Camera>({true, testcam});
-        //OpenGLCamera* testcam = new OpenGLCamera();
-        //SceneCamSorter::SetMainCamera(*testcam);
-        //FreeQueue::Push(
-        //  [=]()
-        //{
-        //    delete testcam;
-        //}
-        //);
-
         #endif
     }
 
@@ -518,6 +507,7 @@ namespace ChronoShift {
         {
             camera2D::Move(Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()), curr_cam);
         }
+        SceneCamSorter::GetInstance().UpdateData(cam_entity, curr_cam);
         #pragma endregion
         //Render All Entities
         profiler.StartCounter("Graphics");

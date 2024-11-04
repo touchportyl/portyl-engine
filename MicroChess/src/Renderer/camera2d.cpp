@@ -70,11 +70,11 @@ namespace FlexEngine
         //    //UpdateViewMatrix();
         //}
 
-        void Move(const Vector2& movement, CameraData& currpos)
+        void Move(const Vector2& movement, CameraData& curr)
         {
             // Translate camera based on movement input (x - right, y - up)
             curr.position += curr.right * movement.x + curr.up * movement.y;
-
+            
             //UpdateViewMatrix(); // Update view matrix to reflect new position
         }
 
