@@ -72,18 +72,6 @@ namespace ChronoShift
     FLX_REFL_REGISTER_PROPERTY(post_processed)
   FLX_REFL_REGISTER_END;
 
-  FLX_REFL_REGISTER_START(Animation)
-      FLX_REFL_REGISTER_PROPERTY(spritesheet)
-      FLX_REFL_REGISTER_PROPERTY(rows)
-      FLX_REFL_REGISTER_PROPERTY(cols)
-      FLX_REFL_REGISTER_PROPERTY(max_sprites)
-      FLX_REFL_REGISTER_PROPERTY(color_to_add)
-      FLX_REFL_REGISTER_PROPERTY(color_to_multiply)
-      FLX_REFL_REGISTER_PROPERTY(m_animationTimer)
-      FLX_REFL_REGISTER_PROPERTY(m_animationDurationPerFrame)
-      FLX_REFL_REGISTER_PROPERTY(m_currentSpriteIndex)
-  FLX_REFL_REGISTER_END;
-
   FLX_REFL_REGISTER_START(Text)
       FLX_REFL_REGISTER_PROPERTY(fonttype)
       FLX_REFL_REGISTER_PROPERTY(text)
@@ -97,8 +85,18 @@ namespace ChronoShift
   FLX_REFL_REGISTER_START(Camera)
       FLX_REFL_REGISTER_PROPERTY(is_dirty)
       FLX_REFL_REGISTER_PROPERTY(camera)          // Already registered as it contains CameraData
-  FLX_REFL_REGISTER_END
-
+      //FLX_REFL_REGISTER_PROPERTY(position)
+      //FLX_REFL_REGISTER_PROPERTY(direction)
+      //FLX_REFL_REGISTER_PROPERTY(up)
+      //FLX_REFL_REGISTER_PROPERTY(right)
+      //FLX_REFL_REGISTER_PROPERTY(viewMatrix)
+      //FLX_REFL_REGISTER_PROPERTY(projMatrix)
+      //FLX_REFL_REGISTER_PROPERTY(fieldOfView)
+      //FLX_REFL_REGISTER_PROPERTY(aspectRatio)
+      //FLX_REFL_REGISTER_PROPERTY(nearClip)
+      //FLX_REFL_REGISTER_PROPERTY(farClip)
+      //FLX_REFL_REGISTER_PROPERTY(m_isOrthographic)
+FLX_REFL_REGISTER_END
 
 
 

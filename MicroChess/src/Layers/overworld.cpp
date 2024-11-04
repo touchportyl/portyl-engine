@@ -214,12 +214,15 @@ namespace ChronoShift {
         anim1.AddComponent<Scale>({ { 150,150 } });
         anim1.AddComponent<Transform>({});
         anim1.AddComponent<ZIndex>({ 10 });
-        anim1.AddComponent<Animation>({
-                scene->Internal_StringStorage_New(R"(\images\Grace_Idle_Attack_Anim_Sheet.png)"),
-                1, //Rows
-                8, //Cols
-                8 //Num
-               });
+        //anim1.AddComponent<Sprite>({
+        //    scene->Internal_StringStorage_New(R"(\images\misc\wireframe_darkbg.png)"),
+        //    { 0.35f, 0.58f, 0.80f },
+        //    Vector3::One,
+        //    Renderer2DProps::Alignment_Center,
+        //    0,
+        //    true
+        //   });
+        //anim1.AddComponent
         anim1.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
         #endif

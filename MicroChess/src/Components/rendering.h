@@ -138,22 +138,6 @@ using namespace FlexEngine;
     bool post_processed = false;
   };
   
-  class Animation
-  {
-      FLX_REFL_SERIALIZABLE
-  public:
-      FlexECS::Scene::StringIndex spritesheet = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
-      GLuint rows = 1;
-      GLuint cols = 0;
-      GLuint max_sprites = 0;
-      Vector3 color_to_add = Vector3::Zero;
-      Vector3 color_to_multiply = Vector3::One;
-      //Dont set
-      float m_animationTimer = 0.f;
-      float m_animationDurationPerFrame = 0.02f;
-      int m_currentSpriteIndex = 0; // start from first sprite
-  };
-
   class Text
   { FLX_REFL_SERIALIZABLE
   public:
