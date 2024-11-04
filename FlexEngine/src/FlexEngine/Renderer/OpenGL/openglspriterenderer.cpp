@@ -482,7 +482,7 @@ namespace FlexEngine
           -2.0f, 2.0f
         ) * view_matrix;
         asset_shader.SetUniform_mat4("u_projection_view", projection_view);
-
+        asset_shader.SetUniform_mat4("u_model", props.transform);
         // Draw
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
@@ -623,12 +623,12 @@ namespace FlexEngine
 
         asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
         asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
-        //float u_min = uv.x;
-        //float v_min = uv.y;
-        //float u_max = u_min + uv.z;
-        //float v_max = v_min + uv.w;
-        //asset_shader.SetUniform_vec2("u_UvMin", Vector2{ u_min, v_min });
-        //asset_shader.SetUniform_vec2("u_UvMax", Vector2{ u_max, v_max });
+        float u_min = uv.x;
+        float v_min = uv.y;
+        float u_max = u_min + uv.z;
+        float v_max = v_min + uv.w;
+        asset_shader.SetUniform_vec2("u_UvMin", Vector2{ u_min, v_min });
+        asset_shader.SetUniform_vec2("u_UvMax", Vector2{ u_max, v_max });
 
         // Transformation & Orthographic Projection
         Vector2 camPos = (SceneCamSorter::GetInstance().GetMainCamera() != -1) ? (Vector2)SceneCamSorter::GetInstance().GetCameraData(SceneCamSorter::GetInstance().GetMainCamera())->position : Vector2::Zero;
@@ -639,7 +639,7 @@ namespace FlexEngine
           -2.0f, 2.0f
         ) * view_matrix;
         asset_shader.SetUniform_mat4("u_projection_view", projection_view);
-
+        asset_shader.SetUniform_mat4("u_model", props.transform);
         // Draw
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;

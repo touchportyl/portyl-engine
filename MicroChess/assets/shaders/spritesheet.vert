@@ -22,5 +22,5 @@ void main()
   gl_Position = u_projection_view * u_model * vec4(m_position, 1.0);
 
   // data passthrough
-  tex_coord = m_tex_coord;//mix(u_UvMin, u_UvMax, m_tex_coord);
+  tex_coord = mix(u_UvMin, u_UvMax, m_tex_coord);
 }

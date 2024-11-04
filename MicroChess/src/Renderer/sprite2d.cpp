@@ -194,7 +194,7 @@ namespace ChronoShift
         
         FunctionQueue finalized_render_queue;
         // Render all entities via normal draw call(no batching)
-        #if 1
+        #if 0
         {
             FunctionQueue pp_render_queue, non_pp_render_queue;
 
@@ -263,7 +263,7 @@ namespace ChronoShift
         #endif
 
         // Integrating batching to pipeline
-        #if 0
+        #if 1
         {
             std::unordered_map<std::string, Sprite_Batch_Inst> batchMap;
             
@@ -319,8 +319,7 @@ namespace ChronoShift
                 props.color_to_add = anim->color_to_add;
                 props.color_to_multiply = anim->color_to_multiply;
 
-                //anim_render_queue.Insert({ [props,anim]() { OpenGLSpriteRenderer::DrawAnim2D(props, anim->m_currUV); }, "", z_index });
-                anim_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
+                anim_render_queue.Insert({ [props,anim]() { OpenGLSpriteRenderer::DrawAnim2D(props, anim->m_currUV); }, "", z_index });
             }
 
             //Push Settings

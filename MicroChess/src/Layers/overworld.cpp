@@ -211,25 +211,50 @@ namespace ChronoShift {
         FlexECS::Entity anim1 = FlexECS::Scene::CreateEntity("anim1");
         anim1.AddComponent<IsActive>({ true });
         anim1.AddComponent<Position>({ {650, 600} });
-        anim1.AddComponent<Scale>({ { 2500,1500 } });
+        anim1.AddComponent<Scale>({ { 300,475 } });
         anim1.AddComponent<Rotation>({});
         anim1.AddComponent<Transform>({});
         anim1.AddComponent<ZIndex>({ 10 });
-        //anim1.AddComponent<Animation>({
-        //        scene->Internal_StringStorage_New(R"(\images\Grace_Idle_Attack_Anim_Sheet.png)"),
-        //        1, //Rows
-        //        8, //Cols
-        //        8 //Num
-        //       });
-        anim1.AddComponent<Sprite>({
+        anim1.AddComponent<Animation>({
                 scene->Internal_StringStorage_New(R"(\images\Grace_Idle_Attack_Anim_Sheet.png)"),
-                { 1.2f, 1.0f, 1.30f },
-                Vector3::One,
-                Renderer2DProps::Alignment_Center,
-                0,
-                true
+                1, //Rows
+                8, //Cols
+                8, //Num
+                0.15f
                });
-        anim1.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+        anim1.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\spritesheet)") });
+
+        FlexECS::Entity anim2 = FlexECS::Scene::CreateEntity("anim2");
+        anim2.AddComponent<IsActive>({ true });
+        anim2.AddComponent<Position>({ {850, 600} });
+        anim2.AddComponent<Scale>({ { 150,400 } });
+        anim2.AddComponent<Rotation>({});
+        anim2.AddComponent<Transform>({});
+        anim2.AddComponent<ZIndex>({ 10 });
+        anim2.AddComponent<Animation>({
+                scene->Internal_StringStorage_New(R"(\images\Renko_Idle_Relaxed_Right_Anim_Sheet.png)"),
+                1, //Rows
+                7, //Cols
+                7, //Num
+                0.15f
+               });
+        anim2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\spritesheet)") });
+
+        FlexECS::Entity anim3 = FlexECS::Scene::CreateEntity("anim3");
+        anim3.AddComponent<IsActive>({ true });
+        anim3.AddComponent<Position>({ {50, 600} });
+        anim3.AddComponent<Scale>({ { 400,600 } });
+        anim3.AddComponent<Rotation>({});
+        anim3.AddComponent<Transform>({});
+        anim3.AddComponent<ZIndex>({ 10 });
+        anim3.AddComponent<Animation>({
+                scene->Internal_StringStorage_New(R"(\images\Jack_Idle_Anim_Sheet.png)"),
+                1, //Rows
+                32, //Cols
+                32, //Num
+                0.07f
+               });
+        anim3.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\spritesheet)") });
 
         #endif
         //2500 objs
