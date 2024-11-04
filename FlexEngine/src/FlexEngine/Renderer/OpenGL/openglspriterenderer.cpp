@@ -551,7 +551,7 @@ namespace FlexEngine
         glBindVertexArray(m_vbos[props.vbo_id].vao);
 
         // Apply Shader
-        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, "\\shaders\\batch2.0");
+        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, "\\shaders\\batchtexture");
         asset_shader.Use();
 
         // Apply Texture

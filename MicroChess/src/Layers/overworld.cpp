@@ -339,6 +339,26 @@ namespace ChronoShift {
         //How to change font settings(CALL ONCE IF WANT CHANGE -> REGENRATE FONT FOR YOU)
         auto& asset_font = FLX_ASSET_GET(Asset::Font, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(testText.GetComponent<Text>()->fonttype));
         asset_font.SetFontSize(100);
+
+
+        FlexECS::Entity testText2 = FlexECS::Scene::CreateEntity("testText2");
+        testText2.AddComponent<IsActive>({ true });
+        testText2.AddComponent<Position>({ {650, 100 } });
+        testText2.AddComponent<Scale>({ { 0.5,0.5 } });
+        testText2.AddComponent<Rotation>({ });
+        testText2.AddComponent<Transform>({});
+        testText2.AddComponent<ZIndex>({ 9 });
+        testText2.AddComponent<Text>({
+            scene->Internal_StringStorage_New(R"(\fonts\Suez_One\SuezOne-Regular.ttf)"), // R"(\fonts\Suez_One\SuezOne-Regular.ttf)" // R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"
+            scene->Internal_StringStorage_New("M2 Demonstration of Chrono Drift"),
+            Vector3{0.8, 0.7, 0.2},
+            {Renderer2DText::Alignment_Center,Renderer2DText::Alignment_Top}
+        });
+        testText2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\freetypetext)") });
+        //How to change font settings(CALL ONCE IF WANT CHANGE -> REGENRATE FONT FOR YOU)
+        auto& asset_font2 = FLX_ASSET_GET(Asset::Font, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(testText2.GetComponent<Text>()->fonttype));
+        asset_font2.SetFontSize(100); 
+
         #endif
 
         //Camera 

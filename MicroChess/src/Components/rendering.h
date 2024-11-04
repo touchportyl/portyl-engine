@@ -158,7 +158,7 @@ using namespace FlexEngine;
   class Text
   { FLX_REFL_SERIALIZABLE
   public:
-      FlexECS::Scene::StringIndex fonttype = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+      FlexECS::Scene::StringIndex fonttype = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(R"(..\\..\\..\\FlexEngine\\assets\\fonts\\Noto_Sans\\static\\NotoSans-Regular.ttf)");
       FlexECS::Scene::StringIndex text = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("TEST");
       Vector3 color = Vector3::One;
       // border color, border size, underline, etc
@@ -179,16 +179,6 @@ using namespace FlexEngine;
   public:
       CameraData camera;
       bool is_dirty = true;
-              //Vector3 front;
-        //Vector3 right;
-        //Vector3 up;
-        //const Vector3 world_up = Vector3::Up;
-        //Matrix4x4 view;
-        //Matrix4x4 projection;
-        //bool perspective = true;
-        //float fov = 45.0f;
-        //float near = 0.1f;
-        //float far = 100.0f;
   };
 
   void RegisterRenderingComponents();
