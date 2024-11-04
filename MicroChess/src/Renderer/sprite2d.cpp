@@ -266,39 +266,15 @@ namespace ChronoShift
         #if 1
         {
             std::unordered_map<std::string, Sprite_Batch_Inst> batchMap;
-
+            
             //same thing as update transformations, flush update queue (lags if more than 2500 objects)
             for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
-                auto entity_name_component = entity.GetComponent<EntityName>();
-
                 if (!entity.GetComponent<IsActive>()->is_active) continue;
 
                 //auto& z_index = entity.GetComponent<ZIndex>()->z;
                 Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
-                auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
                 auto sprite = entity.GetComponent<Sprite>();
-
-                //Need for editor tex (Remove pls)
-                props.shader = shader;
-                props.transform = transform;
-                //props.texture 
-                props.color_to_add = sprite->color_to_add;
-                props.color_to_multiply = sprite->color_to_multiply;
-                props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
-                props.vbo_id = sprite->vbo_id;
-
-                //FIRST TWO IFS SHOULD NOT BE HERE
-                if ("finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                {
-                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", 1 });
-                    continue;
-                }
-                else if ("editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                {
-                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_finalRender),props); }, "", 0 });
-                    continue;
-                }
 
                 // Use texture as the unique key for batching (or combine multiple properties as needed)
                 std::string batchKey = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
@@ -310,9 +286,14 @@ namespace ChronoShift
                 }
                 // Push transformation and color data to the Sprite_Batch_Inst
                 batchMap[batchKey].m_transformationData.push_back(transform);
-                batchMap[batchKey].m_colorAddData.push_back(props.color_to_add);
-                batchMap[batchKey].m_colorMultiplyData.push_back(props.color_to_multiply);
+                batchMap[batchKey].m_colorAddData.push_back(sprite->color_to_add);
+                batchMap[batchKey].m_colorMultiplyData.push_back(sprite->color_to_multiply);
+            }
 
+            //Draw Animations (Will combine with batching at a later date) 
+            FunctionQueue pp_render_queue;
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Animation>())
+            {
 
             }
 
