@@ -12,6 +12,8 @@
 
 #include "Renderer/sprite2d.h"
 
+#include "Renderer/camera2d.h"
+
 namespace ChronoShift {
     float OverworldLayer::m_ScaleDebugTest = 0.8f;
     Vector3 OverworldLayer::m_RotateDebugTest = Vector3(0.f, 0.f, 0.f);
@@ -205,6 +207,24 @@ namespace ChronoShift {
             box7.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box7.AddComponent<Parent>({ box6 });
         }
+
+        FlexECS::Entity anim1 = FlexECS::Scene::CreateEntity("anim1");
+        anim1.AddComponent<IsActive>({ true });
+        anim1.AddComponent<Position>({ {350, 500 } });
+        anim1.AddComponent<Scale>({ { 150,150 } });
+        anim1.AddComponent<Transform>({});
+        anim1.AddComponent<ZIndex>({ 10 });
+        //anim1.AddComponent<Sprite>({
+        //    scene->Internal_StringStorage_New(R"(\images\misc\wireframe_darkbg.png)"),
+        //    { 0.35f, 0.58f, 0.80f },
+        //    Vector3::One,
+        //    Renderer2DProps::Alignment_Center,
+        //    0,
+        //    true
+        //   });
+        //anim1.AddComponent
+        anim1.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
+
         #endif
         //2500 objs
         #if 0
@@ -292,21 +312,25 @@ namespace ChronoShift {
 
         //Camera 
         #if 1
-        //FlexECS::Entity camera = FlexECS::Scene::CreateEntity("MainCamera");
-        //camera.AddComponent<Position>({ {-150, 300 } });
-        //camera.AddComponent<Scale>({ { 0.5,0.5 } });
-        //camera.AddComponent<Rotation>({ });
-        //camera.AddComponent<Transform>({});
+        FlexECS::Entity camera = FlexECS::Scene::CreateEntity("MainCamera");
+        camera.AddComponent<Position>({ {-150, 300 } });
+        camera.AddComponent<Scale>({ { 0.5,0.5 } });
+        camera.AddComponent<Rotation>({ });
+        camera.AddComponent<Transform>({});
+        camera.AddComponent<Camera>({});
+        SceneCamSorter::GetInstance().AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+        SceneCamSorter::GetInstance().SwitchMainCamera(camera.Get());
+
         //OpenGLCamera testcam;
         //camera.AddComponent<Camera>({true, testcam});
-        OpenGLCamera* testcam = new OpenGLCamera();
-        SceneCamSorter::SetMainCamera(*testcam);
-        FreeQueue::Push(
-          [=]()
-        {
-            delete testcam;
-        }
-        );
+        //OpenGLCamera* testcam = new OpenGLCamera();
+        //SceneCamSorter::SetMainCamera(*testcam);
+        //FreeQueue::Push(
+        //  [=]()
+        //{
+        //    delete testcam;
+        //}
+        //);
 
         #endif
     }
@@ -475,23 +499,24 @@ namespace ChronoShift {
 
 
        #pragma region simpleCamMove i know its shit
-        OpenGLCamera* cam_entity = SceneCamSorter::GetMainCamera();
+        FlexECS::Entity cam_entity = SceneCamSorter::GetInstance().GetMainCamera();
+        auto& curr_cam = cam_entity.GetComponent<Camera>()->camera;
         if (Input::GetKey(GLFW_KEY_UP))
         {
-          cam_entity->Move(Vector2(0.0f, -5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+            camera2D::Move(Vector2(0.0f, -5.f)* (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()), curr_cam);
         }
         else if (Input::GetKey(GLFW_KEY_DOWN))
         {
-          cam_entity->Move(Vector2(0.0f, 5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+            camera2D::Move(Vector2(0.0f, 5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()), curr_cam);
         }
 
         if (Input::GetKey(GLFW_KEY_RIGHT))
         {
-          cam_entity->Move(Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+            camera2D::Move(Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()), curr_cam);
         }
         else if (Input::GetKey(GLFW_KEY_LEFT))
         {
-          cam_entity->Move(Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+            camera2D::Move(Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()), curr_cam);
         }
         #pragma endregion
         //Render All Entities

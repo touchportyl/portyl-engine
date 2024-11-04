@@ -157,6 +157,9 @@
     <ClInclude Include="src\Editor\gameview.h">
       <Filter>src\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\camera2d.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -246,6 +249,9 @@
     </ClCompile>
     <ClCompile Include="src\Editor\gameview.cpp">
       <Filter>src\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\camera2d.cpp">
+      <Filter>src\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
