@@ -351,7 +351,7 @@ namespace ChronoShift {
         testText2.AddComponent<Text>({
             scene->Internal_StringStorage_New(R"(\fonts\Suez_One\SuezOne-Regular.ttf)"), // R"(\fonts\Suez_One\SuezOne-Regular.ttf)" // R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"
             scene->Internal_StringStorage_New("M2 Demonstration of Chrono Drift"),
-            Vector3{0.8, 0.7, 0.2},
+            Vector3{0.8f, 0.7f, 0.2f},
             {Renderer2DText::Alignment_Center,Renderer2DText::Alignment_Top}
         });
         testText2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\freetypetext)") });

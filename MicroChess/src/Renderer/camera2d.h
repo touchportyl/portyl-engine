@@ -8,7 +8,7 @@
 
 namespace FlexEngine
 {
-    //Still debating on this (Move is the only function i trust)
+    //Still debating on this (class is still in development)
     namespace camera2D
     {
         #pragma region Set functions

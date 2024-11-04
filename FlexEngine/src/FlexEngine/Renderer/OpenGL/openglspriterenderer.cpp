@@ -228,7 +228,11 @@ namespace FlexEngine
         }
         );
     }
-
+    
+    /*!***************************************************************************
+    * \brief
+    * Initializes Shader Storage Buffer Objects (SSBOs) for batch rendering.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::InitBatchSSBO()
     {
         // Set up the SSBO for instance data
@@ -489,7 +493,6 @@ namespace FlexEngine
 
         glBindVertexArray(0);
     }
-
     void OpenGLSpriteRenderer::DrawTexture2D(GLuint TextureID, const Renderer2DProps& props)
     {
         // Guard
@@ -529,7 +532,14 @@ namespace FlexEngine
 
         glBindVertexArray(0);
     }
-
+    
+    /*!***************************************************************************
+    * \brief
+    * Draws a batch of 2D textures using the specified properties and batch data.
+    *
+    * \param props The rendering properties, including shaders, textures, and transformations.
+    * \param data The batch instance data including transformation and color information.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::DrawBatchTexture2D(const Renderer2DProps& props, const Sprite_Batch_Inst& data)
     {
         // Guard
@@ -592,6 +602,13 @@ namespace FlexEngine
         glBindVertexArray(0);
     }
 
+    /*!***************************************************************************
+    * \brief
+    * Draws an animated 2D texture with the given properties and texture coordinates.
+    *
+    * \param props The rendering properties, including shaders, textures, and transformations.
+    * \param uv The texture coordinates for the animation frame.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::DrawAnim2D(const Renderer2DProps& props, const Vector4 uv)
     {
         // Guard
@@ -689,7 +706,12 @@ namespace FlexEngine
         glBindVertexArray(0);
     }
 
-    // Brightness extraction pass
+    /*!***************************************************************************
+    * \brief
+    * Applies a brightness threshold pass for the bloom effect.
+    *
+    * \param threshold The brightness threshold to apply.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::ApplyBrightnessPass(float threshold)
     {
         GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
@@ -706,7 +728,14 @@ namespace FlexEngine
         m_draw_calls++;
     }
 
-    // Gaussian blur pass with ping-pong technique
+    /*!***************************************************************************
+    * \brief
+    * Applies a Gaussian blur effect with specified passes, blur distance, and intensity.
+    *
+    * \param blurDrawPasses The number of passes to apply for the blur.
+    * \param blurDistance The distance factor for the blur effect.
+    * \param intensity The intensity of the blur.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::ApplyGaussianBlur(int blurDrawPasses, float blurDistance, int intensity)
     {
         m_bloom_gaussianblur_shader.Use();
@@ -732,7 +761,12 @@ namespace FlexEngine
         }
     }
 
-    // Final composition pass
+    /*!***************************************************************************
+    * \brief
+    * Applies the final bloom composition with a specified opacity level.
+    *
+    * \param opacity The opacity level for the bloom composition.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::ApplyBloomFinalComposition(float opacity)
     {
         SetEditorFrameBuffer();

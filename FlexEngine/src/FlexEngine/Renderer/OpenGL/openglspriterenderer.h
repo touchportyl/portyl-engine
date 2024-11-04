@@ -1,30 +1,30 @@
 /*!************************************************************************
-// WLVERSE [https://wlverse.web.app]
-// openglspriterenderer.h
-//
-// This file implements the OpenGLSpriteRenderer class, which is responsible
-// for handling 2D sprite rendering within the game engine. It provides
-// functions for rendering sprites, applying post-processing effects,
-// and managing the necessary OpenGL resources such as shaders and
-// framebuffers.
-//
-// Key functionalities include:
-// - Rendering 2D sprites with texture binding and transformations.
-// - Supporting post-processing effects such as Gaussian Blur and Bloom.
-// - Providing wrapper functions for commonly used OpenGL operations,
-//   ensuring streamlined usage across the codebase.
-//
-// The renderer is built with a focus on performance and flexibility,
-// allowing for easy customization and extension of rendering capabilities.
-//
-// AUTHORS
-// [100%] Soh Wei Jie (weijie.soh@digipen.edu)
-//   - Main Author
-//   - Developed the core rendering functionalities and post-processing
-//     pipeline, ensuring compatibility with the game engine's architecture.
-//
-// Copyright (c) 2024 DigiPen, All rights reserved.
-**************************************************************************/
+ // WLVERSE [https://wlverse.web.app]
+ // openglspriterenderer.h
+ //
+ // This file implements the OpenGLSpriteRenderer class, responsible for
+ // handling 2D sprite rendering within the game engine. The class provides
+ // functions for rendering sprites, applying post-processing effects, and
+ // managing OpenGL resources such as shaders and framebuffers.
+ //
+ // Key functionalities include:
+ // - Rendering 2D sprites with texture binding, transformations, and alignment.
+ // - Supporting post-processing effects like Gaussian Blur and Bloom.
+ // - Managing multiple framebuffers for various render stages, allowing custom
+ //   effects and optimized batch processing.
+ // - Handling OpenGL state configurations like blending and depth testing.
+ //
+ // This renderer is designed with performance and flexibility in mind, enabling
+ // easy extension and customization for complex rendering tasks in game engines.
+ //
+ // AUTHORS
+ // [100%] Soh Wei Jie (weijie.soh@digipen.edu)
+ //   - Main Author
+ //   - Developed core rendering functionalities, post-processing pipeline, and
+ //     resource management within the FlexEngine architecture.
+ //
+ // Copyright (c) 2024 DigiPen, All rights reserved.
+ **************************************************************************/
 #pragma once
 
 #include "flx_api.h"
@@ -105,6 +105,12 @@ namespace FlexEngine
         GLuint vbo = 0; // Vertex Buffer Object
     };
 
+    /*!***************************************************************************
+    * \struct Sprite_Batch_Inst
+    * \brief
+    * Holds data for batching multiple sprite instances, including transformation
+    * and color data for each instance.
+    *****************************************************************************/
     struct __FLX_API Sprite_Batch_Inst
     {
         GLuint m_vboid = 0;
@@ -224,14 +230,28 @@ namespace FlexEngine
         *****************************************************************************/
         static void DisableBlending();
 
-
+        /*!***************************************************************************
+        * \brief
+        * Sets the default framebuffer for rendering.
+        *****************************************************************************/
         static void SetDefaultFrameBuffer();
+
+        /*!***************************************************************************
+        * \brief
+        * Sets the framebuffer to the editor's framebuffer for rendering.
+        *****************************************************************************/
         static void SetEditorFrameBuffer();
+
         /*!***************************************************************************
         * \brief
         * Enables post-processing effects for rendering.
         *****************************************************************************/
         static void SetPPFrameBuffer();
+
+        /*!***************************************************************************
+        * \brief
+        * Sets the framebuffer specifically for bloom post-processing effects.
+        *****************************************************************************/
         static void SetBloomFrameBuffer();
 
         /*!***************************************************************************
@@ -279,8 +299,13 @@ namespace FlexEngine
         * \param vertexCount The number of vertices in the array.
         *****************************************************************************/
         static void InitQuadVAO_VBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
+        
+        /*!***************************************************************************
+        * \brief
+        * Initializes Shader Storage Buffer Objects (SSBOs) for batch rendering.
+        *****************************************************************************/
         static void InitBatchSSBO();
-        //static void createVAOWithSSBO(GLuint& vao, GLuint& vbo, const float* vertices, int vertexCount);
+        
         /*!***************************************************************************
         * \brief
         * Initializes the VBOs.
@@ -298,16 +323,55 @@ namespace FlexEngine
         *****************************************************************************/
         static void DrawTexture2D(const Renderer2DProps& props = {});
         static void DrawTexture2D(GLuint TextureID, const Renderer2DProps& props = {});
+        
+        /*!***************************************************************************
+        * \brief
+        * Draws a batch of 2D textures using the specified properties and batch data.
+        *
+        * \param props The rendering properties, including shaders, textures, and transformations.
+        * \param data The batch instance data including transformation and color information.
+        *****************************************************************************/
         static void DrawBatchTexture2D(const Renderer2DProps& props = {}, const Sprite_Batch_Inst& data = {});
+        
+        /*!***************************************************************************
+        * \brief
+        * Draws an animated 2D texture with the given properties and texture coordinates.
+        *
+        * \param props The rendering properties, including shaders, textures, and transformations.
+        * \param uv The texture coordinates for the animation frame.
+        *****************************************************************************/
         static void DrawAnim2D(const Renderer2DProps& props = {}, const Vector4 uv = Vector4::Zero);
+        
         /*!***************************************************************************
         * \brief
         * Draws the post-processing layer after all other rendering operations.
         *****************************************************************************/
         static void DrawPostProcessingLayer();
 
+        /*!***************************************************************************
+        * \brief
+        * Applies a brightness threshold pass for the bloom effect.
+        *
+        * \param threshold The brightness threshold to apply.
+        *****************************************************************************/
         static void ApplyBrightnessPass(float threshold = 1.0f);
+        
+        /*!***************************************************************************
+        * \brief
+        * Applies a Gaussian blur effect with specified passes, blur distance, and intensity.
+        *
+        * \param blurDrawPasses The number of passes to apply for the blur.
+        * \param blurDistance The distance factor for the blur effect.
+        * \param intensity The intensity of the blur.
+        *****************************************************************************/
         static void ApplyGaussianBlur(int blurDrawPasses = 4, float blurDistance = 10.0f, int intensity = 12);
+        
+        /*!***************************************************************************
+        * \brief
+        * Applies the final bloom composition with a specified opacity level.
+        *
+        * \param opacity The opacity level for the bloom composition.
+        *****************************************************************************/
         static void ApplyBloomFinalComposition(float opacity = 1.0f);
     };
 }
@@ -316,4 +380,6 @@ namespace FlexEngine
 //TODO:: SPlit up file into OpenglFrameBuffer(Stores textures and switching of frame buffer)
 // , OpenGLPostprocessing (handles post-processing), 
 // OpenglBatchHandler (handles batching, instancing and texture aliasing)
+// 
+// could have added pragma but meh
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
