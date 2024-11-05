@@ -405,7 +405,7 @@ namespace FlexEngine
 
     void Scene::DumpArchetypeIndex() const
     {
-      Log::Info("Dumping archetype_index");
+      FLX_FLOW_BEGINSCOPE();
       for (auto& [archetype, archetype_storage] : archetype_index)
       {
         Log::Debug("Archetype: " + std::to_string(archetype_storage.id));
@@ -418,23 +418,23 @@ namespace FlexEngine
           //Log::Debug("    Entities in component: " + std::to_string(archetype_storage.archetype_table[i].size()));
         }
       }
-      Log::Info("End of dump.");
+      FLX_FLOW_ENDSCOPE();
     }
 
     void Scene::DumpEntityIndex() const
     {
-      Log::Info("Dumping entity_index");
+      FLX_FLOW_BEGINSCOPE();
       for (auto& [id, entity_record] : entity_index)
       {
         Log::Debug("Entity: " + std::to_string(id));
         Log::Debug("  Archetype ID: " + std::to_string(entity_record.archetype->id));
       }
-      Log::Info("End of dump.");
+      FLX_FLOW_ENDSCOPE();
     }
 
     void Scene::DumpComponentIndex() const
     {
-      Log::Info("Dumping component_index");
+      FLX_FLOW_BEGINSCOPE();
       for (auto& [component_id, archetype_map] : component_index)
       {
         Log::Debug("Component: " + component_id);
@@ -444,7 +444,7 @@ namespace FlexEngine
           Log::Debug("    Column: " + std::to_string(archetype_record.column));
         }
       }
-      Log::Info("End of dump.");
+      FLX_FLOW_ENDSCOPE();
     }
 
 #endif

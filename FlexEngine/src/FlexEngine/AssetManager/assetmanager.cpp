@@ -27,7 +27,7 @@ namespace FlexEngine
 
     // add texture to assets
     assets[key] = texture;
-    Log::Info(std::string("AssetManager: Added texture: ") + key);
+    Log::Debug(std::string("AssetManager: Added texture: ") + key);
     return key;
   }
 
@@ -81,7 +81,7 @@ namespace FlexEngine
           assets[key] = Asset::Texture::Null;
           Asset::Texture& texture = std::get<Asset::Texture>(assets[key]);
           texture.Load(file.path);
-          Log::Info("Loaded texture: " + key);
+          Log::Debug("Loaded texture: " + key);
         }
         else if (FLX_EXTENSIONS_CHECK_SAFETY("shader", file_extension.string()))
         {
@@ -130,7 +130,7 @@ namespace FlexEngine
 
           if (loaded_model)
           {
-            //Log::Info("Loaded model: " + key);
+            //Log::Debug("Loaded model: " + key);
             assets[key] = loaded_model;
           }
           FLX_FLOW_ENDSCOPE();
@@ -192,7 +192,7 @@ namespace FlexEngine
       assets[assetkey] = Asset::Shader();
       Asset::Shader& shader = std::get<Asset::Shader>(assets[assetkey]);
       shader.Create(files[Asset::Shader::Type::Vertex]->path, files[Asset::Shader::Type::Fragment]->path);
-      Log::Info("Loaded shader: " + assetkey);
+      Log::Debug("Loaded shader: " + assetkey);
     }
 
     FLX_FLOW_ENDSCOPE();
