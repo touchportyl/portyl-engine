@@ -179,6 +179,7 @@
     <ClInclude Include="src\Layers\overworld.h" />
     <ClInclude Include="src\Physics\box2d.h" />
     <ClInclude Include="src\Renderer\battledisplay.h" />
+    <ClInclude Include="src\Renderer\camera2d.h" />
     <ClInclude Include="src\Renderer\sprite2d.h" />
     <ClInclude Include="src\States.h" />
     <ClInclude Include="src\States\mainstate.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Physics\box2d.cpp" />
     <ClCompile Include="src\Renderer\battledisplay.cpp" />
+    <ClCompile Include="src\Renderer\camera2d.cpp" />
     <ClCompile Include="src\Renderer\sprite2d.cpp" />
     <ClCompile Include="src\States\mainstate.cpp" />
   </ItemGroup>

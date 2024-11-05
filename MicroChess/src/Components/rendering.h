@@ -138,10 +138,27 @@ using namespace FlexEngine;
     bool post_processed = false;
   };
   
+  class Animation
+  {
+      FLX_REFL_SERIALIZABLE
+  public:
+      FlexECS::Scene::StringIndex spritesheet = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+      GLuint rows = 1;
+      GLuint cols = 0;
+      GLuint max_sprites = 0;
+      float m_animationDurationPerFrame = 0.02f;
+      Vector3 color_to_add = Vector3::Zero;
+      Vector3 color_to_multiply = Vector3::One;
+      //Dont set
+      float m_animationTimer = 0.f;
+      int m_currentSpriteIndex = 0; // start from first sprite
+      Vector4 m_currUV = Vector4::Zero;
+  };
+
   class Text
   { FLX_REFL_SERIALIZABLE
   public:
-      FlexECS::Scene::StringIndex fonttype = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+      FlexECS::Scene::StringIndex fonttype = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(R"(..\\..\\..\\FlexEngine\\assets\\fonts\\Noto_Sans\\static\\NotoSans-Regular.ttf)");
       FlexECS::Scene::StringIndex text = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("TEST");
       Vector3 color = Vector3::One;
       // border color, border size, underline, etc
@@ -160,19 +177,8 @@ using namespace FlexEngine;
   {
       FLX_REFL_SERIALIZABLE
   public:
+      CameraData camera;
       bool is_dirty = true;
-      //Vector3 front;
-      //Vector3 right;
-      //Vector3 up;
-      //const Vector3 world_up = Vector3::Up;
-      //Matrix4x4 view;
-      //Matrix4x4 projection;
-      //bool perspective = true;
-      //float fov = 45.0f;
-      //float near = 0.1f;
-      //float far = 100.0f;
-      //Integrate into opengl camera
-      //OpenGLCamera camera;
   };
 
   void RegisterRenderingComponents();
