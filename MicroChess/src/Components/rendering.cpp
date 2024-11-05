@@ -72,6 +72,19 @@ namespace ChronoShift
     FLX_REFL_REGISTER_PROPERTY(post_processed)
   FLX_REFL_REGISTER_END;
 
+  FLX_REFL_REGISTER_START(Animation)
+      FLX_REFL_REGISTER_PROPERTY(spritesheet)
+      FLX_REFL_REGISTER_PROPERTY(rows)
+      FLX_REFL_REGISTER_PROPERTY(cols)
+      FLX_REFL_REGISTER_PROPERTY(max_sprites)
+      FLX_REFL_REGISTER_PROPERTY(color_to_add)
+      FLX_REFL_REGISTER_PROPERTY(color_to_multiply)
+      FLX_REFL_REGISTER_PROPERTY(m_animationTimer)
+      FLX_REFL_REGISTER_PROPERTY(m_animationDurationPerFrame)
+      FLX_REFL_REGISTER_PROPERTY(m_currentSpriteIndex)
+      FLX_REFL_REGISTER_PROPERTY(m_currUV)
+  FLX_REFL_REGISTER_END;
+
   FLX_REFL_REGISTER_START(Text)
       FLX_REFL_REGISTER_PROPERTY(fonttype)
       FLX_REFL_REGISTER_PROPERTY(text)
@@ -81,20 +94,11 @@ namespace ChronoShift
   FLX_REFL_REGISTER_END;
 
 
+
   FLX_REFL_REGISTER_START(Camera)
       FLX_REFL_REGISTER_PROPERTY(is_dirty)
-      /*FLX_REFL_REGISTER_PROPERTY(front)
-      FLX_REFL_REGISTER_PROPERTY(right)
-      FLX_REFL_REGISTER_PROPERTY(up)
-      FLX_REFL_REGISTER_PROPERTY(world_up)
-      FLX_REFL_REGISTER_PROPERTY(view)
-      FLX_REFL_REGISTER_PROPERTY(projection)
-      FLX_REFL_REGISTER_PROPERTY(perspective)
-      FLX_REFL_REGISTER_PROPERTY(fov)
-      FLX_REFL_REGISTER_PROPERTY(near)
-      FLX_REFL_REGISTER_PROPERTY(far)*/
-      //FLX_REFL_REGISTER_PROPERTY(camera)
-  FLX_REFL_REGISTER_END;
+      FLX_REFL_REGISTER_PROPERTY(camera)          // Already registered as it contains CameraData
+  FLX_REFL_REGISTER_END
 
 
 
@@ -141,6 +145,16 @@ namespace ChronoShift
     COMPONENT_VIEWER_CHECKBOX(post_processed)
   COMPONENT_VIEWER_END(Sprite)
 
+  COMPONENT_VIEWER_START(Animation)
+    COMPONENT_VIEWER_TEXTURE_PATH(spritesheet)
+    COMPONENT_VIEWER_COLOR3(color_to_add)
+    COMPONENT_VIEWER_COLOR3(color_to_multiply)
+  COMPONENT_VIEWER_END(Animation)
+
+  COMPONENT_VIEWER_START(Camera)
+      COMPONENT_VIEWER_BOOL(is_dirty)
+  COMPONENT_VIEWER_END(Camera)
+
   //TODO @ROCKY to add the font pic and have a dropbox of available fonts
   COMPONENT_VIEWER_START(Text)
       COMPONENT_VIEWER_STRING(fonttype)
@@ -161,5 +175,7 @@ namespace ChronoShift
     REGISTER_COMPONENT_VIEWER(Shader);
     REGISTER_COMPONENT_VIEWER(Sprite);
     REGISTER_COMPONENT_VIEWER(Text);
+    REGISTER_COMPONENT_VIEWER(Camera);
+    REGISTER_COMPONENT_VIEWER(Animation);
   }
 }

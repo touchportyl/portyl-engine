@@ -218,10 +218,10 @@ namespace ChronoShift
                 props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
                 props.vbo_id = sprite->vbo_id;
 
-                if (sprite->post_processed)
+                //if (sprite->post_processed)
                     pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
-                else
-                    non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
+                //else
+                 //   non_pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
 
             }
 
@@ -249,8 +249,8 @@ namespace ChronoShift
             }
 
             // Switch to default frame buffer for final output rendering
-            OpenGLSpriteRenderer::SetDefaultFrameBuffer();
-            finalized_render_queue.Flush();  // Final rendering (UI, etc.)
+            //OpenGLSpriteRenderer::SetDefaultFrameBuffer();
+            //finalized_render_queue.Flush();  // Final rendering (UI, etc.)
 
             //auto end = std::chrono::high_resolution_clock::now();
             //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
@@ -266,39 +266,15 @@ namespace ChronoShift
         #if 1
         {
             std::unordered_map<std::string, Sprite_Batch_Inst> batchMap;
-
+            
             //same thing as update transformations, flush update queue (lags if more than 2500 objects)
             for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Sprite>())
             {
-                auto entity_name_component = entity.GetComponent<EntityName>();
-
                 if (!entity.GetComponent<IsActive>()->is_active) continue;
 
                 //auto& z_index = entity.GetComponent<ZIndex>()->z;
                 Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
-                auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
                 auto sprite = entity.GetComponent<Sprite>();
-
-                //Need for editor tex (Remove pls)
-                props.shader = shader;
-                props.transform = transform;
-                //props.texture 
-                props.color_to_add = sprite->color_to_add;
-                props.color_to_multiply = sprite->color_to_multiply;
-                props.alignment = static_cast<Renderer2DProps::Alignment>(sprite->alignment);
-                props.vbo_id = sprite->vbo_id;
-
-                //FIRST TWO IFS SHOULD NOT BE HERE
-                if ("finalRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                {
-                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_editor),props); }, "", 1 });
-                    continue;
-                }
-                else if ("editorRender" == FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity_name_component))
-                {
-                    finalized_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CID_finalRender),props); }, "", 0 });
-                    continue;
-                }
 
                 // Use texture as the unique key for batching (or combine multiple properties as needed)
                 std::string batchKey = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
@@ -310,10 +286,40 @@ namespace ChronoShift
                 }
                 // Push transformation and color data to the Sprite_Batch_Inst
                 batchMap[batchKey].m_transformationData.push_back(transform);
-                batchMap[batchKey].m_colorAddData.push_back(props.color_to_add);
-                batchMap[batchKey].m_colorMultiplyData.push_back(props.color_to_multiply);
+                batchMap[batchKey].m_colorAddData.push_back(sprite->color_to_add);
+                batchMap[batchKey].m_colorMultiplyData.push_back(sprite->color_to_multiply);
+            }
 
+            //Draw Animations (Will combine with batching at a later date) 
+            FunctionQueue anim_render_queue;
+            for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Animation>())
+            {
+                if (!entity.GetComponent<IsActive>()->is_active) continue;
+                auto& z_index = entity.GetComponent<ZIndex>()->z;
+                Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
+                auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
+                auto anim = entity.GetComponent<Animation>();
 
+                props.shader = shader;
+                props.transform = transform;
+                props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(anim->spritesheet);
+                anim->m_animationTimer += FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
+                if (anim->m_animationTimer >= anim->m_animationDurationPerFrame)
+                {
+                    anim->m_animationTimer = 0;
+                    anim->m_currentSpriteIndex = ++anim->m_currentSpriteIndex % anim->max_sprites;
+
+                    int current_sprite_row = anim->m_currentSpriteIndex / anim->cols;
+                    int current_sprite_col = anim->m_currentSpriteIndex % anim->cols;
+                    anim->m_currUV.z = 1.f / anim->cols; // sprite_uv_width
+                    anim->m_currUV.w = 1.f / anim->rows; //sprite_uv_height
+                    anim->m_currUV.x = anim->m_currUV.z * current_sprite_col; //m_currentspriteoffsetx
+                    anim->m_currUV.y = anim->m_currUV.w * current_sprite_row; //m_currentspriteoffsety
+                }
+                props.color_to_add = anim->color_to_add;
+                props.color_to_multiply = anim->color_to_multiply;
+
+                anim_render_queue.Insert({ [props,anim]() { OpenGLSpriteRenderer::DrawAnim2D(props, anim->m_currUV); }, "", z_index });
             }
 
             //Push Settings
@@ -337,12 +343,12 @@ namespace ChronoShift
                     // Draw batch for this unique sprite
                     OpenGLSpriteRenderer::DrawBatchTexture2D(props, batchData);
                 }
+                anim_render_queue.Flush();
                 OpenGLSpriteRenderer::DrawPostProcessingLayer();
             }
 
             // Switch to default frame buffer for final output rendering
             OpenGLSpriteRenderer::SetDefaultFrameBuffer();
-            finalized_render_queue.Flush();  // Final rendering (UI, etc.)
 
             // pop settings
             if (depth_test) OpenGLRenderer::EnableDepthTest();

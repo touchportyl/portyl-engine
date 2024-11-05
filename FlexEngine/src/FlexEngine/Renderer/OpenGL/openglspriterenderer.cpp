@@ -228,7 +228,11 @@ namespace FlexEngine
         }
         );
     }
-
+    
+    /*!***************************************************************************
+    * \brief
+    * Initializes Shader Storage Buffer Objects (SSBOs) for batch rendering.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::InitBatchSSBO()
     {
         // Set up the SSBO for instance data
@@ -474,9 +478,7 @@ namespace FlexEngine
         asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
 
         // Transformation & Orthographic Projection
-        Vector2 camPos = Vector2::Zero;
-        if (SceneCamSorter::IsMainCameraActive())
-            camPos = SceneCamSorter::GetMainCamera()->GetPosition();
+        Vector2 camPos = (SceneCamSorter::GetInstance().GetMainCamera() != -1) ? (Vector2)SceneCamSorter::GetInstance().GetCameraData(SceneCamSorter::GetInstance().GetMainCamera())->position : Vector2::Zero;
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           camPos.x, camPos.x + props.window_size.x,
@@ -484,14 +486,13 @@ namespace FlexEngine
           -2.0f, 2.0f
         ) * view_matrix;
         asset_shader.SetUniform_mat4("u_projection_view", projection_view);
-
+        asset_shader.SetUniform_mat4("u_model", props.transform);
         // Draw
         glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
 
         glBindVertexArray(0);
     }
-
     void OpenGLSpriteRenderer::DrawTexture2D(GLuint TextureID, const Renderer2DProps& props)
     {
         // Guard
@@ -531,7 +532,14 @@ namespace FlexEngine
 
         glBindVertexArray(0);
     }
-
+    
+    /*!***************************************************************************
+    * \brief
+    * Draws a batch of 2D textures using the specified properties and batch data.
+    *
+    * \param props The rendering properties, including shaders, textures, and transformations.
+    * \param data The batch instance data including transformation and color information.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::DrawBatchTexture2D(const Renderer2DProps& props, const Sprite_Batch_Inst& data)
     {
         // Guard
@@ -547,13 +555,13 @@ namespace FlexEngine
         }
         if (props.shader == "")
             return;
-        GLsizei dataSize = data.m_transformationData.size();
+        GLsizei dataSize = (GLsizei)data.m_transformationData.size();
 
         // Bind all
         glBindVertexArray(m_vbos[props.vbo_id].vao);
 
         // Apply Shader
-        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, "\\shaders\\batch2.0");
+        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, "\\shaders\\batchtexture");
         asset_shader.Use();
 
         // Apply Texture
@@ -578,9 +586,7 @@ namespace FlexEngine
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         // Orthographic Projection
-        Vector2 camPos = Vector2::Zero;
-        if (SceneCamSorter::IsMainCameraActive())
-            camPos = SceneCamSorter::GetMainCamera()->GetPosition();
+        Vector2 camPos = (SceneCamSorter::GetInstance().GetMainCamera() != -1) ? (Vector2)SceneCamSorter::GetInstance().GetCameraData(SceneCamSorter::GetInstance().GetMainCamera())->position : Vector2::Zero;
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           camPos.x, camPos.x + props.window_size.x,
@@ -591,6 +597,68 @@ namespace FlexEngine
 
         // Draw
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, dataSize);
+        m_draw_calls++;
+
+        glBindVertexArray(0);
+    }
+
+    /*!***************************************************************************
+    * \brief
+    * Draws an animated 2D texture with the given properties and texture coordinates.
+    *
+    * \param props The rendering properties, including shaders, textures, and transformations.
+    * \param uv The texture coordinates for the animation frame.
+    *****************************************************************************/
+    void OpenGLSpriteRenderer::DrawAnim2D(const Renderer2DProps& props, const Vector4 uv)
+    {
+        // Guard
+        if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
+            Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
+        if (props.shader == "" || props.transform == Matrix4x4::Zero)
+            return;
+
+        // Bind all
+        glBindVertexArray(m_vbos[props.vbo_id].vao);
+
+        // Apply Shader
+        auto& asset_shader = FLX_ASSET_GET(Asset::Shader, props.shader);
+        asset_shader.Use();
+
+        // Apply Texture
+        if (props.texture != "")
+        {
+            asset_shader.SetUniform_bool("u_use_texture", true);
+            auto& asset_texture = FLX_ASSET_GET(Asset::Texture, props.texture);
+            //std::cout << props.texture << "\n";
+            asset_texture.Bind(asset_shader, "u_texture", 0);
+        }
+        else
+        {
+            asset_shader.SetUniform_bool("u_use_texture", false);
+            asset_shader.SetUniform_vec3("u_color", props.color_to_add);
+        }
+
+        asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
+        asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
+        float u_min = uv.x;
+        float v_min = uv.y;
+        float u_max = u_min + uv.z;
+        float v_max = v_min + uv.w;
+        asset_shader.SetUniform_vec2("u_UvMin", Vector2{ u_min, v_min });
+        asset_shader.SetUniform_vec2("u_UvMax", Vector2{ u_max, v_max });
+
+        // Transformation & Orthographic Projection
+        Vector2 camPos = (SceneCamSorter::GetInstance().GetMainCamera() != -1) ? (Vector2)SceneCamSorter::GetInstance().GetCameraData(SceneCamSorter::GetInstance().GetMainCamera())->position : Vector2::Zero;
+        static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
+        Matrix4x4 projection_view = Matrix4x4::Orthographic(
+          camPos.x, camPos.x + props.window_size.x,
+          camPos.y + props.window_size.y, camPos.y,
+          -2.0f, 2.0f
+        ) * view_matrix;
+        asset_shader.SetUniform_mat4("u_projection_view", projection_view);
+        asset_shader.SetUniform_mat4("u_model", props.transform);
+        // Draw
+        glDrawArrays(GL_TRIANGLES, 0, 6);
         m_draw_calls++;
 
         glBindVertexArray(0);
@@ -638,7 +706,12 @@ namespace FlexEngine
         glBindVertexArray(0);
     }
 
-    // Brightness extraction pass
+    /*!***************************************************************************
+    * \brief
+    * Applies a brightness threshold pass for the bloom effect.
+    *
+    * \param threshold The brightness threshold to apply.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::ApplyBrightnessPass(float threshold)
     {
         GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
@@ -655,7 +728,14 @@ namespace FlexEngine
         m_draw_calls++;
     }
 
-    // Gaussian blur pass with ping-pong technique
+    /*!***************************************************************************
+    * \brief
+    * Applies a Gaussian blur effect with specified passes, blur distance, and intensity.
+    *
+    * \param blurDrawPasses The number of passes to apply for the blur.
+    * \param blurDistance The distance factor for the blur effect.
+    * \param intensity The intensity of the blur.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::ApplyGaussianBlur(int blurDrawPasses, float blurDistance, int intensity)
     {
         m_bloom_gaussianblur_shader.Use();
@@ -681,7 +761,12 @@ namespace FlexEngine
         }
     }
 
-    // Final composition pass
+    /*!***************************************************************************
+    * \brief
+    * Applies the final bloom composition with a specified opacity level.
+    *
+    * \param opacity The opacity level for the bloom composition.
+    *****************************************************************************/
     void OpenGLSpriteRenderer::ApplyBloomFinalComposition(float opacity)
     {
         SetEditorFrameBuffer();

@@ -12,6 +12,8 @@
 
 #include "Renderer/sprite2d.h"
 
+#include "Renderer/camera2d.h"
+
 namespace ChronoShift {
     float OverworldLayer::m_ScaleDebugTest = 0.8f;
     Vector3 OverworldLayer::m_RotateDebugTest = Vector3(0.f, 0.f, 0.f);
@@ -205,6 +207,55 @@ namespace ChronoShift {
             box7.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
             box7.AddComponent<Parent>({ box6 });
         }
+
+        FlexECS::Entity anim1 = FlexECS::Scene::CreateEntity("anim1");
+        anim1.AddComponent<IsActive>({ true });
+        anim1.AddComponent<Position>({ {650, 600} });
+        anim1.AddComponent<Scale>({ { 300,475 } });
+        anim1.AddComponent<Rotation>({});
+        anim1.AddComponent<Transform>({});
+        anim1.AddComponent<ZIndex>({ 10 });
+        anim1.AddComponent<Animation>({
+                scene->Internal_StringStorage_New(R"(\images\Grace_Idle_Attack_Anim_Sheet.png)"),
+                1, //Rows
+                8, //Cols
+                8, //Num
+                0.15f
+               });
+        anim1.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\spritesheet)") });
+
+        FlexECS::Entity anim2 = FlexECS::Scene::CreateEntity("anim2");
+        anim2.AddComponent<IsActive>({ true });
+        anim2.AddComponent<Position>({ {850, 600} });
+        anim2.AddComponent<Scale>({ { 150,400 } });
+        anim2.AddComponent<Rotation>({});
+        anim2.AddComponent<Transform>({});
+        anim2.AddComponent<ZIndex>({ 10 });
+        anim2.AddComponent<Animation>({
+                scene->Internal_StringStorage_New(R"(\images\Renko_Idle_Relaxed_Right_Anim_Sheet.png)"),
+                1, //Rows
+                7, //Cols
+                7, //Num
+                0.15f
+               });
+        anim2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\spritesheet)") });
+
+        FlexECS::Entity anim3 = FlexECS::Scene::CreateEntity("anim3");
+        anim3.AddComponent<IsActive>({ true });
+        anim3.AddComponent<Position>({ {50, 600} });
+        anim3.AddComponent<Scale>({ { 400,600 } });
+        anim3.AddComponent<Rotation>({});
+        anim3.AddComponent<Transform>({});
+        anim3.AddComponent<ZIndex>({ 10 });
+        anim3.AddComponent<Animation>({
+                scene->Internal_StringStorage_New(R"(\images\Jack_Idle_Anim_Sheet.png)"),
+                1, //Rows
+                32, //Cols
+                32, //Num
+                0.07f
+               });
+        anim3.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\spritesheet)") });
+
         #endif
         //2500 objs
         #if 0
@@ -288,25 +339,38 @@ namespace ChronoShift {
         //How to change font settings(CALL ONCE IF WANT CHANGE -> REGENRATE FONT FOR YOU)
         auto& asset_font = FLX_ASSET_GET(Asset::Font, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(testText.GetComponent<Text>()->fonttype));
         asset_font.SetFontSize(100);
+
+
+        FlexECS::Entity testText2 = FlexECS::Scene::CreateEntity("testText2");
+        testText2.AddComponent<IsActive>({ true });
+        testText2.AddComponent<Position>({ {650, 100 } });
+        testText2.AddComponent<Scale>({ { 0.5,0.5 } });
+        testText2.AddComponent<Rotation>({ });
+        testText2.AddComponent<Transform>({});
+        testText2.AddComponent<ZIndex>({ 9 });
+        testText2.AddComponent<Text>({
+            scene->Internal_StringStorage_New(R"(\fonts\Suez_One\SuezOne-Regular.ttf)"), // R"(\fonts\Suez_One\SuezOne-Regular.ttf)" // R"(\fonts\Prompt\Prompt-ExtraLightItalic.ttf)"
+            scene->Internal_StringStorage_New("M2 Demonstration of Chrono Drift"),
+            Vector3{0.8f, 0.7f, 0.2f},
+            {Renderer2DText::Alignment_Center,Renderer2DText::Alignment_Top}
+        });
+        testText2.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\freetypetext)") });
+        //How to change font settings(CALL ONCE IF WANT CHANGE -> REGENRATE FONT FOR YOU)
+        auto& asset_font2 = FLX_ASSET_GET(Asset::Font, FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(testText2.GetComponent<Text>()->fonttype));
+        asset_font2.SetFontSize(100); 
+
         #endif
 
         //Camera 
         #if 1
-        //FlexECS::Entity camera = FlexECS::Scene::CreateEntity("MainCamera");
-        //camera.AddComponent<Position>({ {-150, 300 } });
-        //camera.AddComponent<Scale>({ { 0.5,0.5 } });
-        //camera.AddComponent<Rotation>({ });
-        //camera.AddComponent<Transform>({});
-        //OpenGLCamera testcam;
-        //camera.AddComponent<Camera>({true, testcam});
-        OpenGLCamera* testcam = new OpenGLCamera();
-        SceneCamSorter::SetMainCamera(*testcam);
-        FreeQueue::Push(
-          [=]()
-        {
-            delete testcam;
-        }
-        );
+        FlexECS::Entity camera = FlexECS::Scene::CreateEntity("MainCamera");
+        camera.AddComponent<Position>({ {-150, 300 } });
+        camera.AddComponent<Scale>({ { 0.5,0.5 } });
+        camera.AddComponent<Rotation>({ });
+        camera.AddComponent<Transform>({});
+        camera.AddComponent<Camera>({});
+        SceneCamSorter::GetInstance().AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+        SceneCamSorter::GetInstance().SwitchMainCamera(camera.Get());
 
         #endif
     }
@@ -475,24 +539,26 @@ namespace ChronoShift {
 
 
        #pragma region simpleCamMove i know its shit
-        OpenGLCamera* cam_entity = SceneCamSorter::GetMainCamera();
+        FlexECS::Entity cam_entity = SceneCamSorter::GetInstance().GetMainCamera();
+        auto& curr_cam = cam_entity.GetComponent<Camera>()->camera;
         if (Input::GetKey(GLFW_KEY_UP))
         {
-          cam_entity->Move(Vector2(0.0f, -5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+            camera2D::Move(Vector2(0.0f, -5.f)* (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()), curr_cam);
         }
         else if (Input::GetKey(GLFW_KEY_DOWN))
         {
-          cam_entity->Move(Vector2(0.0f, 5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+            camera2D::Move(Vector2(0.0f, 5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()), curr_cam);
         }
 
         if (Input::GetKey(GLFW_KEY_RIGHT))
         {
-          cam_entity->Move(Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+            camera2D::Move(Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()), curr_cam);
         }
         else if (Input::GetKey(GLFW_KEY_LEFT))
         {
-          cam_entity->Move(Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+            camera2D::Move(Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()), curr_cam);
         }
+        SceneCamSorter::GetInstance().UpdateData(cam_entity, curr_cam);
         #pragma endregion
         //Render All Entities
         profiler.StartCounter("Graphics");

@@ -3,11 +3,12 @@
 out vec4 fragment_color;
 
 in vec2 tex_coord;
-in vec3 u_color_to_add;
-in vec3 u_color_to_multiply;
 
 // texture
 uniform sampler2D u_texture;
+//uniform vec3 u_color;
+uniform vec3 u_color_to_add;
+uniform vec3 u_color_to_multiply;
 uniform bool u_use_texture;
 
 void main()
