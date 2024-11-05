@@ -114,6 +114,13 @@ namespace FlexEngine
         return false;
     }
 
+    void SceneCamSorter::RemoveCameraEntities()
+    {
+      m_cameraEntities.clear();
+      m_currMainID = -1;
+      m_currEditorID = -1;
+    }
+
     /*!***************************************************************************
     * \brief
     * Updates the CameraData for a given entity ID.
