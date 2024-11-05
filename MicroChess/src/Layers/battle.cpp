@@ -51,7 +51,7 @@ namespace ChronoShift {
 
     MoveRegistry::RegisterMoveFunctions();
     MoveRegistry::RegisterStatusFunctions();
-    m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->Query<Character>());
+    m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->CachedQuery<Character>());
     m_battlesystem.BeginBattle();
   }
 
@@ -78,8 +78,13 @@ namespace ChronoShift {
 
     DisplayTurnOrder(m_battlesystem.GetTurnOrder());
     RendererSprite2D();
-    
-    /*if (Input::GetKeyDown(GLFW_KEY_S)) {
+    /*if (Input::GetKeyDown(GLFW_KEY_4)) {
+      auto temp_scene = FlexECS::Scene::GetActiveScene();
+      for (auto& t : temp_scene->Query<BattleSlot>()) {
+        t.GetComponent<IsActive>()->is_active = false;
+      }
+    }
+    if (Input::GetKeyDown(GLFW_KEY_S)) {
       SaveCharacters();
     }*/
     if (Input::GetKeyDown(GLFW_KEY_R)) {

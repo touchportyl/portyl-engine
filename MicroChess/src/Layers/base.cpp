@@ -225,6 +225,7 @@ if (ImGui::BeginMenu("View"))
 
 ImGui::EndMainMenuBar();
       }
+      function_queue.Flush();
 
       ImGui::PopStyleVar(2);
 
