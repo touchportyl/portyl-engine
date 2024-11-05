@@ -102,8 +102,19 @@ namespace ChronoShift
             function_queue.Insert({
               [this]()
               {
-                //CreateDefaultScene();
+                // Clear the scene and reset statics
+                SceneCamSorter::GetInstance().RemoveCameraEntities();
                 FlexECS::Scene::SetActiveScene(std::make_shared<FlexECS::Scene>());
+
+                // Every default scene should have a camera.
+                FlexECS::Entity camera = FlexECS::Scene::GetActiveScene()->CreateEntity("MainCamera");
+                camera.AddComponent<Position>({ {-150, 300 } });
+                camera.AddComponent<Scale>({ { 0.5,0.5 } });
+                camera.AddComponent<Rotation>({ });
+                camera.AddComponent<Transform>({});
+                camera.AddComponent<Camera>({});
+                SceneCamSorter::GetInstance().AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+                SceneCamSorter::GetInstance().SwitchMainCamera(camera.Get());
               }
             });
           }

@@ -74,6 +74,8 @@ namespace FlexEngine
          *****************************************************************************/
         bool SwitchEditorCamera(FlexECS::EntityID entityID);
 
+        void RemoveCameraEntities();
+
         /*!***************************************************************************
          * \brief
          * Checks if an entity has been added as a camera.
