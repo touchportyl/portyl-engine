@@ -97,21 +97,21 @@ namespace FlexEngine
       // update caches with this archetype if needed
       for (auto& a : Scene::GetActiveScene()->query_cache)
       {
-        // check if new archetype fits any query
-        for (auto& component_to_find : archetype.type)
-        {
-          bool skip = false;
+        // check if query is a subset of the new archetype
+        bool skip = false;
 
-          if (std::find(a.first.begin(), a.first.end(), component_to_find) == a.first.end())
+        for (auto& component_to_find : a.first)
+        {
+          if (std::find(archetype.type.begin(), archetype.type.end(), component_to_find) == archetype.type.end())
           {
             skip = true;
             break;
           }
+        }
 
-          if (!skip)
-          {
-            a.second.AddPtr(reinterpret_cast<std::vector<FlexEngine::FlexECS::Entity>*>(&archetype.entities));
-          }
+        if (!skip)
+        {
+          a.second.AddPtr(reinterpret_cast<std::vector<FlexEngine::FlexECS::Entity>*>(&archetype.entities));
         }
       }
 
