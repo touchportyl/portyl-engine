@@ -500,10 +500,7 @@ namespace ChronoShift {
     for (auto& s : move.sea_function_container) {
       s.effect_function(targets, s.value, s.duration);
     }
-    /*move.move_function(targets, move.move_value);
-    if (move.effect_duration != 0) {
-      move.effect_function(targets, move.effect_value, move.effect_duration);
-    }*/
+
     user.GetComponent<Character>()->current_speed += move.cost + user.GetComponent<Character>()->base_speed;
     user.GetComponent<Action>()->move_to_use = FlexECS::Entity::Null;
     std::sort(m_characters.begin(), m_characters.end(), SortLowestSpeed());
