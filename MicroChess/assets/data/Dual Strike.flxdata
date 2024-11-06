@@ -5,7 +5,6 @@
         "speed_cost": 4,
         "is_target_enemy": true,
         "target_type": "DOUBLE",
-        "move_value": 1,
-        "move_function": "DAMAGE"
+	"functions": "DAMAGE, 0, 1"
     }
 }

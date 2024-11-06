@@ -174,6 +174,7 @@ namespace ChronoShift
     BP_MOVE_SELECTION,        // Selection of Move and Targets
     BP_BATTLE_FINISH,         // Detect whether entire enemy or player team is dead (Display win or lose screens respectively)
     BP_STATUS_RUN,            // Run through all status effects characters have
+    BP_MOVE_ANIMATION,        // Run animation of move selection
   };
   
   class BattleState 

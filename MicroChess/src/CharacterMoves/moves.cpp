@@ -45,7 +45,7 @@ namespace ChronoShift
 		}
 	}
 
-	void Move_Recover(std::vector<FlexECS::Entity> targets, int value) {
+	void Move_RecoverHealth(std::vector<FlexECS::Entity> targets, int value) {
 		// Example of Healing
 		for (FlexECS::Entity target : targets)
 		{
@@ -53,6 +53,23 @@ namespace ChronoShift
 				target.GetComponent<Character>()->current_health = target.GetComponent<Character>()->base_health;
 			}
 			else target.GetComponent<Character>()->current_health += value;
+		}
+	}
+
+	void Move_SpeedBuff(std::vector<FlexECS::Entity> targets, int value) {
+		for (FlexECS::Entity target : targets)
+		{
+			if (target.GetComponent<Character>()->current_speed - value <= 0) {
+				target.GetComponent<Character>()->current_speed = 0;
+			}
+			else target.GetComponent<Character>()->current_speed -= value;
+		} 
+	}
+
+	void Move_SpeedDebuff(std::vector<FlexECS::Entity> targets, int value) {
+		for (FlexECS::Entity target : targets)
+		{
+			target.GetComponent<Character>()->current_speed += value;
 		}
 	}
 
@@ -70,27 +87,7 @@ namespace ChronoShift
 		}
 	}
 
-	void Move_Shear(std::vector<FlexECS::Entity> targets, int status_duration, int shear_value) {
-		for (FlexECS::Entity& t : targets) {
-			if (t.HasComponent<Shear>()) {
-				// to double check whether the damage value to add on or how
-				t.GetComponent<Shear>()->remaining_turns += status_duration;
-			}
-			else t.AddComponent<Shear>({ status_duration , shear_value }); // remaining turns, damage
-		}
-	}
-
-	void Move_Burn(std::vector<FlexECS::Entity> targets, int status_duration, int burn_value) {
-		for (FlexECS::Entity& t : targets) {
-			if (t.HasComponent<Burn>()) {
-				// to double check whether the damage value to add on or how
-				t.GetComponent<Burn>()->remaining_turns += status_duration;
-			}
-			else t.AddComponent<Burn>({ status_duration , burn_value }); // remaining turns, damage
-		}
-	}
-
-	void Move_Shock(std::vector<FlexECS::Entity> targets, int status_duration, int shock_value) {
+	void Move_Shock(std::vector<FlexECS::Entity> targets, int shock_value, int status_duration) {
 		for (FlexECS::Entity& t : targets) {
 			if (t.HasComponent<Shock>()) {
 				// to double check whether the damage value to add on or how
@@ -100,7 +97,7 @@ namespace ChronoShift
 		}
 	}
 
-	void Move_Recovery(std::vector<FlexECS::Entity> targets, int status_duration, int heal_value) {
+	void Move_Recovery(std::vector<FlexECS::Entity> targets, int heal_value, int status_duration) {
 		for (FlexECS::Entity& t : targets) {
 			if (t.HasComponent<Recovery>()) {
 				// to double check whether the damage value to add on or how
@@ -117,7 +114,9 @@ namespace ChronoShift
 	{
 		FlexEngine::Log::Debug("Registering Move Functions:");
 		s_move_function_registry["DAMAGE"] = Move_DealDamage;
-		s_move_function_registry["HEAL"] = Move_Recover;
+		s_move_function_registry["HEAL"] = Move_RecoverHealth;
+		s_move_function_registry["SPD_BUFF"] = Move_RecoverHealth;
+		s_move_function_registry["SPD_DEBUFF"] = Move_RecoverHealth;
 		s_move_function_registry["IMMUNITY"] = Move_Immunity;
 		s_move_function_registry["STUN"] = Move_Stun;
 		FlexEngine::Log::Debug("Move Functions Registered");
@@ -126,8 +125,6 @@ namespace ChronoShift
 	void MoveRegistry::RegisterStatusFunctions() {
 		FlexEngine::Log::Debug("Registering Status Functions:");
 		s_status_function_registry["RECOVERY"] = Move_Recovery;
-		s_status_function_registry["BURN"] = Move_Burn;
-		s_status_function_registry["SHEAR"] = Move_Shear;
 		s_status_function_registry["SHOCK"] = Move_Shock;
 		FlexEngine::Log::Debug("Status Functions Registered");
 
@@ -144,13 +141,44 @@ namespace ChronoShift
 		result.cost = move.GetInt("speed_cost", 0);
 		result.is_target_enemy = move.GetBool("is_target_enemy", false);
 		result.target_type = break_down_numerical_string[move.GetString("target_type", "")];
-		result.move_value = move.GetInt("move_value", 0);
+		
+		std::stringstream ss(move.GetString("functions", ""));
+		std::array<std::string, 3> tokens;
+
+		while (std::getline(ss, tokens[0], ',')) {
+			std::getline(ss, tokens[1], ',');
+			std::getline(ss, tokens[2], ',');
+			for (std::string& token : tokens) {
+				for (std::string::iterator i = token.begin(); i != token.end(); i++) {
+					if (*i == ' ') {
+						token.erase(i);
+						i = token.begin();
+					}
+				}
+			}
+			int status_duration = std::stoi(tokens[1]);
+			int move_value = std::stoi(tokens[2]);
+			if (status_duration == 0 || move_value == 0) {
+				MoveExecution read_move;
+				read_move.move_function = s_move_function_registry[tokens[0]];
+				read_move.value = (move_value == 0) ? status_duration : move_value;
+				result.move_function_container.push_back(read_move);
+			}
+			else {
+				StatusEffectApplication status_effect_move;
+				status_effect_move.duration = status_duration;
+				status_effect_move.value = move_value;
+				status_effect_move.effect_function = s_status_function_registry[tokens[0]];
+				result.sea_function_container.push_back(status_effect_move);
+			}
+		}
+		/*result.move_value = move.GetInt("move_value", 0);
 		result.move_function = s_move_function_registry[move.GetString("move_function", "")];
 		result.effect_value = move.GetInt("effect_value", 0);
 		result.effect_duration = move.GetInt("effect_duration", 0);
 		if (move.GetString("effect_function", "") != "") {
 			result.effect_function = s_status_function_registry[move.GetString("effect_function", "")];
-		}
+		}*/
 		
 		return result;
 	}
