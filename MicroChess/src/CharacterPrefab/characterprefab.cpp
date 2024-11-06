@@ -26,16 +26,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 *******************************************************************/
 #include "characterprefab.h"
 
-void SaveCharacters() {
-  /*auto scene = FlexECS::Scene::GetActiveScene();
-  for (auto& entity : scene->Query<ChronoShift::Character>()) {
-    scene->SaveEntityAsPrefab(entity, scene->Internal_StringStorage_Get(*(entity.GetComponent<EntityName>())));
-  }
-  File& file = File::Open(Path::current().append("demobattle.flxscene"));
-  FlexECS::Scene::SaveActiveScene(file);
-  std::cout << "Saved Completed" << std::endl;*/
-}
-
 void ResetCharacters() {
   auto scene = FlexECS::Scene::GetActiveScene();
   for (auto& entity : scene->Query<ChronoShift::Character>()) {

@@ -57,11 +57,20 @@ namespace ChronoShift
 	}
 
 	void Move_SpeedBuff(std::vector<FlexECS::Entity> targets, int value) {
-
+		for (FlexECS::Entity target : targets)
+		{
+			if (target.GetComponent<Character>()->current_speed - value <= 0) {
+				target.GetComponent<Character>()->current_speed = 0;
+			}
+			else target.GetComponent<Character>()->current_speed -= value;
+		} 
 	}
 
 	void Move_SpeedDebuff(std::vector<FlexECS::Entity> targets, int value) {
-
+		for (FlexECS::Entity target : targets)
+		{
+			target.GetComponent<Character>()->current_speed += value;
+		}
 	}
 
 	void Move_Immunity(std::vector<FlexECS::Entity> targets, int status_duration) {

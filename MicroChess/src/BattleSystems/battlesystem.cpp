@@ -32,7 +32,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Renderer/sprite2d.h"
 
 // Library effective with Windows
-#include <windows.h>
 #include <CharacterPrefab/characterprefab.h>
 
 namespace ChronoShift {

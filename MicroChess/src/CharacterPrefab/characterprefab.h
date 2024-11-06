@@ -38,10 +38,6 @@ using namespace ChronoShift; // This is solution specific...
 */
 FlexECS::Entity& LoadCharacter(const std::string& prefabName);
 /*
-  \brief Saves all character in active scene to prefab file
-*/
-void SaveCharacters();
-/*
   \brief Resets the HP and SPD of all characters in active scene back to MAX HP and initial SPD
 */
 void ResetCharacters();

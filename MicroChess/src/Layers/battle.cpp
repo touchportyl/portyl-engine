@@ -39,26 +39,13 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Renderer/sprite2d.h"
 #include <Components/characterinput.h>
 #include <BattleSystems/physicssystem.h>
+#include <CharacterPrefab/characterprefab.h>
 
 
 namespace ChronoShift {
 
   void BattleLayer::SetupBattle()
   {
-
-    File& file = File::Open(Path::current().append("demobattle2.flxscene"));
-    auto loaded_scene = FlexECS::Scene::Load(file);
-    FlexECS::Scene::SetActiveScene(loaded_scene);
-    
-    auto temp_scene = FlexECS::Scene::GetActiveScene();
-    FlexECS::Entity camera;
-    for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<Camera>()) {
-      camera = entity;
-    }
-    // amazing thing here that is required for the camera to not break down the game
-    SceneCamSorter::GetInstance().AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-    SceneCamSorter::GetInstance().SwitchMainCamera(camera.Get());
-
     MoveRegistry::RegisterMoveFunctions();
     MoveRegistry::RegisterStatusFunctions();
 
@@ -69,13 +56,6 @@ namespace ChronoShift {
   void BattleLayer::OnAttach()
   {
     FLX_FLOW_BEGINSCOPE();
-
-    // ECS Setup
-    auto scene = FlexECS::Scene::CreateScene();
-    FlexECS::Scene::SetActiveScene(scene);
-
-    // Setup the board
-    SetupBattle();
   }
 
   void BattleLayer::OnDetach()
@@ -85,21 +65,23 @@ namespace ChronoShift {
 
   void BattleLayer::Update()
   {
-    m_battlesystem.Update();
+    // Not sure how to set camera position to player position, below is my failed attempt
+    /*auto scene = FlexECS::Scene::GetActiveScene();
+    FlexECS::Entity moving_character;
+    for (auto& s : scene->CachedQuery<CharacterInput>()) {
+      moving_character = s;
+    }
+    for (auto& s : scene->CachedQuery<Camera>()) {
+      s.GetComponent<Position>()->position = moving_character.GetComponent<Position>()->position;
+    }*/
 
     
-    RendererSprite2D();
-    /*if (Input::GetKeyDown(GLFW_KEY_4)) {
-      auto temp_scene = FlexECS::Scene::GetActiveScene();
-      for (auto& t : temp_scene->Query<Character>()) {
-        FlexECS::Scene::StringIndex how = t.GetComponent<Character>()->character_name;
-        std::string temp_name = temp_scene->Internal_StringStorage_Get(how);
-        if (temp_name == "Renko") {
-          t.AddComponent<CharacterInput>({});
-          t.AddComponent<Rigidbody>({ {}, false });
-        }
-      }
-    }*/
+    if (Input::GetKeyDown(GLFW_KEY_4)) SetupBattle(); // Set Up Battle
+
+    // Include a check whether battle system has been activated
+    auto scene = FlexECS::Scene::GetActiveScene();
+    if (!scene->CachedQuery<BattleSlot>().empty()) m_battlesystem.Update();
+
     for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput>())
     {
       entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
@@ -134,7 +116,8 @@ namespace ChronoShift {
         velocity.x = 300.0f;
       }
     }
-
+    
+    RendererSprite2D();
     UpdatePhysicsSystem();
   }
 }
