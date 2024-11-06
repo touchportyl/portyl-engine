@@ -1,25 +1,33 @@
-/**************************************************************************
- * FLEXENGINE [https://flexengine.web.app]
- * SceneCamSorter.cpp
- *
- * This file implements the `SceneCamSorter` class, which is responsible
- * for managing camera entities in the game engine. The class provides
- * functionalities to add, remove, and switch between main and editor cameras,
- * and manages core camera properties through the `CameraData` structure.
- *
- * Key functionalities include:
- * - Adding and removing camera entities with associated data.
- * - Switching the main and editor cameras, with validation.
- * - Providing access to camera data based on entity ID.
- * - Enforcing a singleton design pattern to ensure consistent access.
- *
- * AUTHORS:
- * - [100%] Soh Wei Jie (weijie.soh@digipen.edu)
- *   - Main Author
- *   - Developed core camera management functionalities, singleton handling,
- *     and implemented data structures for storing camera properties.
- *
- * Copyright (c) 2024 DigiPen, All rights reserved.
+/*!************************************************************************
+ // WLVERSE [https://wlverse.web.app]
+ // scenecamsorter.cpp
+ //
+ // This file defines the `SceneCamSorter` class, a singleton utility
+ // within the FlexEngine framework for managing camera entities in a 3D scene.
+ // The `SceneCamSorter` class provides functionalities for registering and
+ // tracking active camera entities, facilitating seamless transitions between
+ // main and editor cameras. It also offers methods to retrieve and update
+ // `CameraData` properties, which encapsulate essential camera attributes
+ // such as position, orientation, and projection matrices.
+ //
+ // Key functionalities include:
+ // - Adding, switching, and removing camera entities in the scene.
+ // - Providing fast access to `CameraData`, including view and projection
+ //   matrices, for any registered camera.
+ // - Ensuring only one instance manages camera sorting, adhering to the
+ //   singleton design pattern.
+ //
+ // The `CameraData` struct, also defined here, includes properties for world
+ // position, orientation vectors, and other parameters essential for view
+ // transformations in both perspective and orthographic projections.
+ //
+ // AUTHORS
+ // [100%] Soh Wei Jie (weijie.soh@digipen.edu)
+ //   - Main Author
+ //   - Developed the camera management interface, singleton pattern, and
+ //     entity registration features within FlexEngine.
+ //
+ // Copyright (c) 2024 DigiPen, All rights reserved.
  **************************************************************************/
 
 #include "scenecamsorter.h"
