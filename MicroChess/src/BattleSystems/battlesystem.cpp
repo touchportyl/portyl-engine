@@ -36,7 +36,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 namespace ChronoShift {
 
-
+  static int move_decision = -1; // variable storing move selection
   //Sorting functions
   struct SortLowestSpeed
   {
@@ -44,7 +44,6 @@ namespace ChronoShift {
       return e1.GetComponent<Character>()->current_speed < e2.GetComponent<Character>()->current_speed;
     }
   };
-
 
   BattleSystem::BattleSystem() : players_displayed(0), enemies_displayed(0) {
 
@@ -297,6 +296,7 @@ namespace ChronoShift {
     FlexECS::Entity battle_state = query[0];
     int battle_phase = battle_state.GetComponent<BattleState>()->phase;
     if (battle_phase == BP_PROCESSING) {
+      move_decision = -1;
       UpdateSpeedStack();
     }
     else if (battle_phase == BP_STATUS_RUN) {
@@ -337,8 +337,7 @@ namespace ChronoShift {
     for (auto& slot : m_players) {
       slot.GetComponent<IsActive>()->is_active = false;
     }
-
-    static int move_decision = -1; // variable storing move selection
+    
     if (!m_characters.front().GetComponent<Character>()->is_player) {
       // Random move selection for enemies
       move_decision = Range(0, 2).Get();
