@@ -31,6 +31,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Physics/box2d.h"
 #include "Renderer/sprite2d.h"
 
+// Library effective with Windows
+#include <CharacterPrefab/characterprefab.h>
 
 namespace ChronoShift {
 
@@ -59,7 +61,7 @@ namespace ChronoShift {
       else slot = m_enemies[i - players_displayed];
       slot.AddComponent<OnClick>({});
       slot.AddComponent<IsActive>({ false });
-      slot.AddComponent<Position>({});
+      slot.AddComponent<Position>({slot.GetComponent<BattleSlot>()->character.GetComponent<Position>()->position});
       slot.AddComponent<Scale>({ { 100,100 } });
       slot.AddComponent<ZIndex>({ 9 });
       slot.AddComponent<Rotation>({});
@@ -74,14 +76,12 @@ namespace ChronoShift {
       });
       slot.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
 
-      if (i < players_displayed) {
+      /*if (i < players_displayed) {
         slot.GetComponent<Position>()->position = { SLOT_POS_HOR_PLAYER + 120.f * i, SLOT_POS_VERT_PLAYER };
-        //m_players.push_back(slot);
       }
       else {
         slot.GetComponent<Position>()->position = { SLOT_POS_HOR_ENEMY + 120.f * (i - players_displayed), SLOT_POS_VERT_ENEMY };
-        //m_enemies.push_back(slot);
-      }
+      }*/
       //m_slots.push_back(slot);
     }
     // Move Buttons for Mouse Click Selection of Moves
@@ -113,23 +113,27 @@ namespace ChronoShift {
   }
 
   void BattleSystem::AddCharacters(std::vector<FlexECS::Entity> characters) {
+    /*auto scene = FlexECS::Scene::GetActiveScene();
+    for (auto& t : scene->Query<BattleSlot>()) {
+      FlexECS::Scene::GetActiveScene()->DestroyEntity(t);
+    }*/
     if (!m_characters.empty()) m_characters.clear();
     if (!m_enemies.empty()) {
       for (auto& e : m_enemies) {
-        FlexECS::Scene::DestroyEntity(e);
+        FlexECS::Scene::GetActiveScene()->DestroyEntity(e);
       }
       m_enemies.clear();
     }
     if (!m_players.empty()) {
       for (auto& p : m_players) {
-        FlexECS::Scene::DestroyEntity(p);
+        FlexECS::Scene::GetActiveScene()->DestroyEntity(p);
       }
       m_players.clear();
     }
     // positions of character sprites should be updated according to the slot positions
     for (size_t i = 0; i < characters.size(); i++) {
       m_characters.push_back(characters[i]);
-      FlexECS::Entity temp_character = FlexECS::Scene::CreateEntity();
+      FlexECS::Entity temp_character = FlexECS::Scene::GetActiveScene()->CreateEntity("Slot " + std::to_string(i));
       temp_character.AddComponent<BattleSlot>({ characters[i] });
       if (characters[i].GetComponent<Character>()->is_player) {
         m_players.push_back(temp_character);
@@ -287,7 +291,10 @@ namespace ChronoShift {
 
   void BattleSystem::Update()
   {
-    FlexECS::Entity battle_state = FlexECS::Scene::GetActiveScene()->Query<BattleState>()[0];
+    auto query = FlexECS::Scene::GetActiveScene()->Query<BattleState>();
+    if (query.empty()) return; // Guard for resetted battle scene
+
+    FlexECS::Entity battle_state = query[0];
     int battle_phase = battle_state.GetComponent<BattleState>()->phase;
     if (battle_phase == BP_PROCESSING) {
       UpdateSpeedStack();
@@ -298,7 +305,21 @@ namespace ChronoShift {
     else if (battle_phase == BP_MOVE_SELECTION) {
       PlayerMoveSelection();
     }
+    else if (battle_phase == BP_MOVE_ANIMATION) {
+      
+    }
     if (battle_phase != BP_BATTLE_FINISH) EndBattleScene();
+
+    /*if (Input::GetKeyDown(GLFW_KEY_S)) {
+      SaveCharacters();
+    }*/
+    if (Input::GetKeyDown(GLFW_KEY_R)) {
+      ResetCharacters();
+      AddCharacters(FlexECS::Scene::GetActiveScene()->CachedQuery<Character>());
+      BeginBattle();
+    }
+
+    DisplayTurnOrder(GetTurnOrder());
   }
 
   void BattleSystem::PlayerMoveSelection()
@@ -473,10 +494,16 @@ namespace ChronoShift {
     std::vector<FlexECS::Entity> targets;
     targets.insert(targets.begin(), selected_targets.begin(), selected_targets.end());
     //execute move
-    move.move_function(targets, move.move_value);
+    for (auto& m : move.move_function_container) {
+      m.move_function(targets, m.value);
+    }
+    for (auto& s : move.sea_function_container) {
+      s.effect_function(targets, s.value, s.duration);
+    }
+    /*move.move_function(targets, move.move_value);
     if (move.effect_duration != 0) {
       move.effect_function(targets, move.effect_value, move.effect_duration);
-    }
+    }*/
     user.GetComponent<Character>()->current_speed += move.cost + user.GetComponent<Character>()->base_speed;
     user.GetComponent<Action>()->move_to_use = FlexECS::Entity::Null;
     std::sort(m_characters.begin(), m_characters.end(), SortLowestSpeed());

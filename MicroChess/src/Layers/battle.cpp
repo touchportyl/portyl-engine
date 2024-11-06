@@ -37,20 +37,18 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 #include "Physics/box2d.h"
 #include "Renderer/sprite2d.h"
-#include "CharacterPrefab/characterprefab.h"
+#include <Components/characterinput.h>
+#include <BattleSystems/physicssystem.h>
+#include <CharacterPrefab/characterprefab.h>
 
 
 namespace ChronoShift {
 
   void BattleLayer::SetupBattle()
   {
-
-    File& file = File::Open(Path::current().append("demobattle.flxscene"));
-    auto loaded_scene = FlexECS::Scene::Load(file);
-    FlexECS::Scene::SetActiveScene(loaded_scene);
-
     MoveRegistry::RegisterMoveFunctions();
     MoveRegistry::RegisterStatusFunctions();
+
     m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->CachedQuery<Character>());
     m_battlesystem.BeginBattle();
   }
@@ -58,13 +56,6 @@ namespace ChronoShift {
   void BattleLayer::OnAttach()
   {
     FLX_FLOW_BEGINSCOPE();
-
-    // ECS Setup
-    auto scene = FlexECS::Scene::CreateScene();
-    FlexECS::Scene::SetActiveScene(scene);
-
-    // Setup the board
-    SetupBattle();
   }
 
   void BattleLayer::OnDetach()
@@ -74,23 +65,59 @@ namespace ChronoShift {
 
   void BattleLayer::Update()
   {
-    m_battlesystem.Update();
+    // Not sure how to set camera position to player position, below is my failed attempt
+    /*auto scene = FlexECS::Scene::GetActiveScene();
+    FlexECS::Entity moving_character;
+    for (auto& s : scene->CachedQuery<CharacterInput>()) {
+      moving_character = s;
+    }
+    for (auto& s : scene->CachedQuery<Camera>()) {
+      s.GetComponent<Position>()->position = moving_character.GetComponent<Position>()->position;
+    }*/
 
-    DisplayTurnOrder(m_battlesystem.GetTurnOrder());
-    RendererSprite2D();
-    /*if (Input::GetKeyDown(GLFW_KEY_4)) {
-      auto temp_scene = FlexECS::Scene::GetActiveScene();
-      for (auto& t : temp_scene->Query<BattleSlot>()) {
-        t.GetComponent<IsActive>()->is_active = false;
+    
+    if (Input::GetKeyDown(GLFW_KEY_4)) SetupBattle(); // Set Up Battle
+
+    // Include a check whether battle system has been activated
+    auto scene = FlexECS::Scene::GetActiveScene();
+    if (!scene->CachedQuery<BattleSlot>().empty()) m_battlesystem.Update();
+
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput>())
+    {
+      entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
+      entity.GetComponent<CharacterInput>()->down = Input::GetKey(GLFW_KEY_S);
+      entity.GetComponent<CharacterInput>()->left = Input::GetKey(GLFW_KEY_A);
+      entity.GetComponent<CharacterInput>()->right = Input::GetKey(GLFW_KEY_D);
+    }
+
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput, Rigidbody>())
+    {
+      auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
+      velocity.x = 0.0f;
+      velocity.y = 0.0f;
+
+      if (entity.GetComponent<CharacterInput>()->up)
+      {
+        velocity.y = -300.0f;
+      }
+
+      if (entity.GetComponent<CharacterInput>()->down)
+      {
+        velocity.y = 300.0f;
+      }
+
+      if (entity.GetComponent<CharacterInput>()->left)
+      {
+        velocity.x = -300.0f;
+      }
+
+      if (entity.GetComponent<CharacterInput>()->right)
+      {
+        velocity.x = 300.0f;
       }
     }
-    if (Input::GetKeyDown(GLFW_KEY_S)) {
-      SaveCharacters();
-    }*/
-    if (Input::GetKeyDown(GLFW_KEY_R)) {
-      ResetCharacters();
-      m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->CachedQuery<Character>());
-      m_battlesystem.BeginBattle();
-    }
+    
+    RendererSprite2D();
+    UpdatePhysicsSystem();
   }
 }

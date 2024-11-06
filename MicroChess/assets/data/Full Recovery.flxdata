@@ -5,10 +5,6 @@
         "speed_cost": 15,
         "is_target_enemy": false,
         "target_type": "ALL",
-        "move_value": 2,
-        "move_function": "HEAL",
-	"effect_value": 2,
-	"effect_duration": 3,
-	"effect_function": "RECOVERY"
+	"functions": "HEAL, 0, 2, RECOVERY, 3, 2"
     }
 }

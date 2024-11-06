@@ -5,10 +5,6 @@
         "speed_cost": 10,
         "is_target_enemy": true,
         "target_type": "ALL",
-        "move_value": 2,
-        "move_function": "DAMAGE",
-	"effect_value": 1,
-	"effect_duration": 2,
-	"effect_function": "SHEAR"
+	"functions": "DAMAGE, 0, 2, SHOCK, 2, 1"
     }
 }

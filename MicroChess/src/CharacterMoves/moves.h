@@ -19,7 +19,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 *******************************************************************/
 #pragma once
 #include <unordered_map>
-#include <typeindex>
 #include <functional>
 #include <string>
 #include <FlexEngine.h>
@@ -30,6 +29,17 @@ namespace ChronoShift
   using MoveFunction = std::function<void(std::vector<FlexECS::Entity> targets, int value)>;
   using EffectFunction = std::function<void(std::vector<FlexECS::Entity> targets, int value, int duration)>;
 
+  struct MoveExecution {
+    int value;
+    MoveFunction move_function;
+  };
+
+  struct StatusEffectApplication {
+    int duration;
+    int value;
+    EffectFunction effect_function;
+  };
+
   struct Move {
     std::string name; //use to access map of moves
     std::string description;
@@ -38,12 +48,9 @@ namespace ChronoShift
 
     bool is_target_enemy = true;
     int target_type = 0;
-    int move_value = 0; 
 
-    MoveFunction move_function;
-    int effect_value = 0;
-    int effect_duration = 0;
-    EffectFunction effect_function;
+    std::vector<MoveExecution> move_function_container;
+    std::vector<StatusEffectApplication> sea_function_container;
   };
 
   class MoveRegistry {
