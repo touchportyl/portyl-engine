@@ -37,7 +37,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 #include "Physics/box2d.h"
 #include "Renderer/sprite2d.h"
-#include "CharacterPrefab/characterprefab.h"
+#include <Components/characterinput.h>
+#include <BattleSystems/physicssystem.h>
 
 
 namespace ChronoShift {
@@ -45,12 +46,22 @@ namespace ChronoShift {
   void BattleLayer::SetupBattle()
   {
 
-    File& file = File::Open(Path::current().append("demobattle.flxscene"));
+    File& file = File::Open(Path::current().append("demobattle2.flxscene"));
     auto loaded_scene = FlexECS::Scene::Load(file);
     FlexECS::Scene::SetActiveScene(loaded_scene);
+    
+    auto temp_scene = FlexECS::Scene::GetActiveScene();
+    FlexECS::Entity camera;
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<Camera>()) {
+      camera = entity;
+    }
+    // amazing thing here that is required for the camera to not break down the game
+    SceneCamSorter::GetInstance().AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+    SceneCamSorter::GetInstance().SwitchMainCamera(camera.Get());
 
     MoveRegistry::RegisterMoveFunctions();
     MoveRegistry::RegisterStatusFunctions();
+
     m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->CachedQuery<Character>());
     m_battlesystem.BeginBattle();
   }
@@ -76,21 +87,54 @@ namespace ChronoShift {
   {
     m_battlesystem.Update();
 
-    DisplayTurnOrder(m_battlesystem.GetTurnOrder());
+    
     RendererSprite2D();
     /*if (Input::GetKeyDown(GLFW_KEY_4)) {
       auto temp_scene = FlexECS::Scene::GetActiveScene();
-      for (auto& t : temp_scene->Query<BattleSlot>()) {
-        t.GetComponent<IsActive>()->is_active = false;
+      for (auto& t : temp_scene->Query<Character>()) {
+        FlexECS::Scene::StringIndex how = t.GetComponent<Character>()->character_name;
+        std::string temp_name = temp_scene->Internal_StringStorage_Get(how);
+        if (temp_name == "Renko") {
+          t.AddComponent<CharacterInput>({});
+          t.AddComponent<Rigidbody>({ {}, false });
+        }
+      }
+    }*/
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput>())
+    {
+      entity.GetComponent<CharacterInput>()->up = Input::GetKey(GLFW_KEY_W);
+      entity.GetComponent<CharacterInput>()->down = Input::GetKey(GLFW_KEY_S);
+      entity.GetComponent<CharacterInput>()->left = Input::GetKey(GLFW_KEY_A);
+      entity.GetComponent<CharacterInput>()->right = Input::GetKey(GLFW_KEY_D);
+    }
+
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput, Rigidbody>())
+    {
+      auto& velocity = entity.GetComponent<Rigidbody>()->velocity;
+      velocity.x = 0.0f;
+      velocity.y = 0.0f;
+
+      if (entity.GetComponent<CharacterInput>()->up)
+      {
+        velocity.y = -300.0f;
+      }
+
+      if (entity.GetComponent<CharacterInput>()->down)
+      {
+        velocity.y = 300.0f;
+      }
+
+      if (entity.GetComponent<CharacterInput>()->left)
+      {
+        velocity.x = -300.0f;
+      }
+
+      if (entity.GetComponent<CharacterInput>()->right)
+      {
+        velocity.x = 300.0f;
       }
     }
-    if (Input::GetKeyDown(GLFW_KEY_S)) {
-      SaveCharacters();
-    }*/
-    if (Input::GetKeyDown(GLFW_KEY_R)) {
-      ResetCharacters();
-      m_battlesystem.AddCharacters(FlexECS::Scene::GetActiveScene()->CachedQuery<Character>());
-      m_battlesystem.BeginBattle();
-    }
+
+    UpdatePhysicsSystem();
   }
 }
