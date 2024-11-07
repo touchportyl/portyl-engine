@@ -43,6 +43,9 @@ namespace ChronoShift
 	class EditorGUI
 	{
 	public:
+		static void DragFloat1(float& data, std::string label1 = "",
+			float width = 65.0f, float drag_speed = 0.1f);
+
 		static void DragFloat2(FlexEngine::Vector2& data, std::string title = "", 
 			//std::string label1 = "X", std::string label2 = "Y",
 			float width = 65.0f, float drag_speed = 0.1f);
@@ -52,6 +55,9 @@ namespace ChronoShift
 			float width = 65.0f, float drag_speed = 0.1f);
 
 		static void DragInt(int& data, std::string label1 = "",
+			float width = 65.0f, float drag_speed = 0.1f);
+
+		static void DragGLuint(GLuint& data, std::string label1 = "",
 			float width = 65.0f, float drag_speed = 0.1f);
 
 		static void CreateCheckbox(bool& value, std::string title = "");

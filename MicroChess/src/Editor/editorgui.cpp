@@ -79,12 +79,35 @@ namespace ChronoShift
 		PopID();
 	}
 
+	void EditorGUI::DragFloat1(float& data, std::string title, float width, float drag_speed)
+	{
+		PushID();
+		ImGui::PushItemWidth(width);
+		ImGui::Text(title.c_str()); ImGui::SameLine();
+		ImGui::DragFloat("", &data, drag_speed);
+		ImGui::PopItemWidth();
+		PopID();
+	}
+
 	void EditorGUI::DragInt(int& data, std::string title, float width, float drag_speed)
 	{
 		PushID();
 		ImGui::PushItemWidth(width);
 		ImGui::Text(title.c_str()); ImGui::SameLine();
 		ImGui::DragInt("", &data, drag_speed);
+		ImGui::PopItemWidth();
+		PopID();
+	}
+
+	void EditorGUI::DragGLuint(GLuint& data, std::string title, float width, float drag_speed)
+	{
+		int tempData = static_cast<int>(data);
+		PushID();
+		ImGui::PushItemWidth(width);
+		ImGui::Text(title.c_str()); ImGui::SameLine();
+		if (ImGui::DragInt("", &tempData, drag_speed)) {
+			data = static_cast<GLuint>(tempData);
+		}
 		ImGui::PopItemWidth();
 		PopID();
 	}

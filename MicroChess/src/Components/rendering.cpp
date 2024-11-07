@@ -146,6 +146,10 @@ namespace ChronoShift
   COMPONENT_VIEWER_END(Sprite)
 
   COMPONENT_VIEWER_START(Animation)
+    COMPONENT_VIEWER_DRAG_GLUINT(cols);
+    COMPONENT_VIEWER_DRAG_GLUINT(rows);
+    COMPONENT_VIEWER_DRAG_GLUINT(max_sprites);
+    COMPONENT_VIEWER_DRAG_FLOAT(m_animationDurationPerFrame);
     COMPONENT_VIEWER_TEXTURE_PATH(spritesheet)
     COMPONENT_VIEWER_COLOR3(color_to_add)
     COMPONENT_VIEWER_COLOR3(color_to_multiply)

@@ -129,7 +129,13 @@ void COMPONENT_VIEWER_##TYPE(FlexEngine::FlexECS::Entity entity) \
   EditorGUI::DragFloat3(entity.GetComponent<T>()->name, #name); 
 
 	#define COMPONENT_VIEWER_DRAG_INT(name) \
-  EditorGUI::DragInt(entity.GetComponent<T>()->name, #name); 
+  EditorGUI::DragInt(entity.GetComponent<T>()->name, #name);
+
+	#define COMPONENT_VIEWER_DRAG_GLUINT(name) \
+  EditorGUI::DragGLuint(entity.GetComponent<T>()->name, #name); 
+
+	#define COMPONENT_VIEWER_DRAG_FLOAT(name) \
+  EditorGUI::DragFloat1(entity.GetComponent<T>()->name, #name);
 
 	#define COMPONENT_VIEWER_CHECKBOX(name) \
   EditorGUI::CreateCheckbox(entity.GetComponent<T>()->name, #name); 
