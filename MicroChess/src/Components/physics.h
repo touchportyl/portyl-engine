@@ -12,6 +12,7 @@ namespace ChronoShift
     Vector2 size = Vector2::One;
     Vector2 min;
     Vector2 max;
+    bool isColliding;
   };
 
   class OnHover
@@ -41,4 +42,6 @@ namespace ChronoShift
     Vector2 velocity;
     bool is_static;
   };
+
+  void RegisterPhysicsComponents();
 }

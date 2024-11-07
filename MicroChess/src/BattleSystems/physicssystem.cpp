@@ -61,6 +61,12 @@ namespace ChronoShift
 			position.x += velocity.x * dt;
 			position.y += velocity.y * dt;
 		}
+
+		// Reset collision data from the previous frame
+    for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<BoundingBox2D>())
+    {
+      entity.GetComponent<BoundingBox2D>()->isColliding = false;
+    }
 	}
 	
 	/*!***************************************************************************
@@ -121,6 +127,10 @@ namespace ChronoShift
 		//float dt = FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
 		for (auto collision : collisions)
 		{
+			//update status of collision
+      collision.first.GetComponent<BoundingBox2D>()->isColliding = true; 
+      collision.second.GetComponent<BoundingBox2D>()->isColliding = true; 
+
 			//auto& a_velocity = collision.first.GetComponent<Rigidbody>()->velocity;
 			auto& a_position = collision.first.GetComponent<Position>()->position;
 			//auto& b_velocity = collision.second.GetComponent<Rigidbody>()->velocity;

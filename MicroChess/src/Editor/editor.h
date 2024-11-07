@@ -60,8 +60,10 @@ namespace ChronoShift
 		void Shutdown();
 
 		//consider shared_ptr instead?
-		template <typename T>
-		T& GetPanel();
+		/*template <typename T>
+		T& GetPanel();*/
+
+		EditorPanel& GetPanel(const std::string& panel_name);
 
 		/*!***************************************************************************
 		* @brief
@@ -76,7 +78,7 @@ namespace ChronoShift
 
 	private:
 		bool m_initialized = false;
-		std::vector<EditorPanel*> m_panels;
+		//std::vector<EditorPanel*> m_panels;
 
 		HierarchyView m_hierarchy;
 		Inspector m_inspector;
@@ -89,7 +91,7 @@ namespace ChronoShift
 		
 		//ComponentViewRegistry m_component_registry;
 		//std::unordered_map<std::type_index, std::string> type_names;
-		//std::unordered_map<std::type_index, EditorPanel*> m_panels;
+		std::unordered_map<std::string, EditorPanel*> m_panels;
 	};
 
 

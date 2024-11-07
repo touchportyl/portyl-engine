@@ -40,6 +40,24 @@ namespace ChronoShift
 			//Note: need to invert UVs vertically.
 			ImGui::Image((ImTextureID)OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CreatedTextureID::CID_finalRender),
 				viewport_size, ImVec2(0, 1), ImVec2(1, 0));
+    
+			
+			// Obtain relative mouse position in the editor view
+			ImVec2 window_top_left = ImGui::GetWindowPos();
+			ImVec2 mouse_pos_ss = ImGui::GetMousePos(); // Screen space mouse pos
+			ImVec2 mouse_pos_imgui_viewport = ImVec2(mouse_pos_ss.x - window_top_left.x - viewport_position.x, 
+																							 mouse_pos_ss.y - window_top_left.y - viewport_position.y); // IMGUI space is screen space - top left of imgui window
+			
+      // Scale coordinates by window size. Originally it was rendered with the game as the target, but then superimposed as a texture onto the imgui window.
+      unsigned scale_x = Application::GetCurrentWindow()->GetWidth();
+			unsigned scale_y = Application::GetCurrentWindow()->GetHeight();
+
+      // Normalize imgui to (0,1) space, then scale by window size, which converts to world as it is a 1 to 1 mapping.
+      int imgui_to_window_x = mouse_pos_imgui_viewport.x / viewport_size.x * static_cast<int>(scale_x);
+      int imgui_to_window_y = mouse_pos_imgui_viewport.y / viewport_size.y * static_cast<int>(scale_y);
+
+      mouse_to_world = FlexEngine::Vector2(imgui_to_window_x, imgui_to_window_y);
+			//Log::Debug("Mouse pos in IMGUI/World space: " + std::to_string(imgui_to_window_x) + " " + std::to_string(imgui_to_window_y));
 		}
 
 		ImGui::End();
