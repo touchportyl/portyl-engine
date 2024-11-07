@@ -122,6 +122,19 @@ namespace ChronoShift
     FLX_REFL_REGISTER_PROPERTY(character_passive_description)
   FLX_REFL_REGISTER_END;
 
+  FLX_REFL_REGISTER_START(CharacterMovementSprites)
+    FLX_REFL_REGISTER_PROPERTY(idle_cols)
+    FLX_REFL_REGISTER_PROPERTY(idle_movement)
+    FLX_REFL_REGISTER_PROPERTY(right_cols)
+    FLX_REFL_REGISTER_PROPERTY(right_movement)
+    FLX_REFL_REGISTER_PROPERTY(left_cols)
+    FLX_REFL_REGISTER_PROPERTY(left_movement)
+    FLX_REFL_REGISTER_PROPERTY(up_cols)
+    FLX_REFL_REGISTER_PROPERTY(up_movement)
+    FLX_REFL_REGISTER_PROPERTY(down_cols)
+    FLX_REFL_REGISTER_PROPERTY(down_movement)
+  FLX_REFL_REGISTER_END;
+
   FLX_REFL_REGISTER_START(Stat)
     FLX_REFL_REGISTER_PROPERTY(stat_name)
     FLX_REFL_REGISTER_PROPERTY(base_stat_value)
@@ -132,6 +145,20 @@ namespace ChronoShift
   /*
   Editor viewer
   */
+
+  COMPONENT_VIEWER_START(CharacterMovementSprites)
+    COMPONENT_VIEWER_DRAG_INT(idle_cols)
+    COMPONENT_VIEWER_TEXTURE_PATH(idle_movement)
+    COMPONENT_VIEWER_DRAG_INT(right_cols)
+    COMPONENT_VIEWER_TEXTURE_PATH(right_movement)
+    COMPONENT_VIEWER_DRAG_INT(left_cols)
+    COMPONENT_VIEWER_TEXTURE_PATH(left_movement)
+    COMPONENT_VIEWER_DRAG_INT(up_cols)
+    COMPONENT_VIEWER_TEXTURE_PATH(up_movement)
+    COMPONENT_VIEWER_DRAG_INT(down_cols)
+    COMPONENT_VIEWER_TEXTURE_PATH(down_movement)
+  COMPONENT_VIEWER_END(CharacterMovementSprites)
+
   COMPONENT_VIEWER_START(Character)
     COMPONENT_VIEWER_BOOL(is_player)
     COMPONENT_VIEWER_EDITABLE_STRING(character_name)
@@ -160,10 +187,9 @@ namespace ChronoShift
     COMPONENT_VIEWER_EDITABLE_STRING(character_passive_description)
   COMPONENT_VIEWER_END(Character)
 
-
-
   void RegisterBattleComponents()
   {
     REGISTER_COMPONENT_VIEWER(Character);
+    REGISTER_COMPONENT_VIEWER(CharacterMovementSprites);
   }
 }

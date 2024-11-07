@@ -293,6 +293,21 @@ namespace ChronoShift
     FlexECS::Scene::StringIndex character_passive_description;
   };
 
+  class CharacterMovementSprites {
+    FLX_REFL_SERIALIZABLE
+  public:
+    int idle_cols = 1;
+    FlexECS::Scene::StringIndex idle_movement = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+    int right_cols = 1;
+    FlexECS::Scene::StringIndex right_movement = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+    int left_cols = 1;
+    FlexECS::Scene::StringIndex left_movement = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+    int up_cols = 1;
+    FlexECS::Scene::StringIndex up_movement = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+    int down_cols = 1;
+    FlexECS::Scene::StringIndex down_movement = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+
+  };
 
   void RegisterBattleComponents();
 }
