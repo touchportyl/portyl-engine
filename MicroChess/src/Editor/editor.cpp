@@ -127,15 +127,18 @@ namespace ChronoShift
 		if (m_initialized) return;
 		m_initialized = true;
 
-		m_panels.push_back(&m_hierarchy);
-		m_panels.push_back(&m_inspector);
-		m_panels.push_back(&m_assetbrowser);
-		m_panels.push_back(&m_sceneview);
-		m_panels.push_back(&m_gameview);
-		for (auto& panel : m_panels)
-		{
-			panel->Init();
-		}
+		// Setup map for all panels
+		m_panels["Hierarchy"] = &m_hierarchy;
+    m_panels["Inspector"] = &m_inspector;
+    m_panels["AssetBrowser"] = &m_assetbrowser;
+    m_panels["SceneView"] = &m_sceneview;
+    m_panels["GameView"] = &m_gameview;
+
+    for (auto iter = m_panels.begin(); iter != m_panels.end(); ++iter)
+    {
+      iter->second->Init();
+    }
+
     SetupImGuiStyle();
 	}
 
@@ -144,15 +147,14 @@ namespace ChronoShift
 	{
 		EditorGUI::StartFrame();
 
-		for (auto& panel : m_panels)
+		for (auto iter = m_panels.begin(); iter != m_panels.end(); ++iter)
 		{
-			panel->Update();
+			iter->second->Update();
 		}
 
-
-		for (auto& panel : m_panels)
+		for (auto iter = m_panels.begin(); iter != m_panels.end(); ++iter)
 		{
-			panel->EditorUI();
+			iter->second->EditorUI();
 		}
 
 		EditorGUI::EndFrame();
@@ -161,29 +163,31 @@ namespace ChronoShift
 
 	void Editor::Shutdown()
 	{
-		for (auto& panel : m_panels)
+		for (auto iter = m_panels.begin(); iter != m_panels.end(); ++iter)
 		{
-			panel->Shutdown();
+			iter->second->Shutdown();
 		}
 
 		m_panels.clear();
 	}
 
+	// Legacy Code
+	//template<typename T>
+	//T& Editor::GetPanel()
+	//{
+	//	for (const auto& panel : m_panels) {
+	//		if (T* cast = dynamic_cast<T*>(panel.get())) 
+	//		{
+	//			return *cast;  // Return if successful cast
+	//		}
+	//	}
+	//	return nullptr;
+	//}
 
-
-
-	template<typename T>
-	T& Editor::GetPanel()
-	{
-		for (const auto& panel : m_panels) {
-			if (T* cast = dynamic_cast<T*>(panel.get())) 
-			{
-				return *cast;  // Return if successful cast
-			}
-		}
-		return nullptr;
-	}
-
+  EditorPanel& Editor::GetPanel(const std::string& panel_name)
+  {
+    return *m_panels[panel_name];
+  }
 
 	void Editor::SelectEntity(FlexECS::Entity entity)
 	{

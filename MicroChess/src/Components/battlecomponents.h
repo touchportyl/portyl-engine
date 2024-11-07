@@ -174,6 +174,7 @@ namespace ChronoShift
     BP_MOVE_SELECTION,        // Selection of Move and Targets
     BP_BATTLE_FINISH,         // Detect whether entire enemy or player team is dead (Display win or lose screens respectively)
     BP_STATUS_RUN,            // Run through all status effects characters have
+    BP_MOVE_ANIMATION,        // Run animation of move selection
   };
   
   class BattleState 
@@ -292,6 +293,21 @@ namespace ChronoShift
     FlexECS::Scene::StringIndex character_passive_description;
   };
 
+  class CharacterMovementSprites {
+    FLX_REFL_SERIALIZABLE
+  public:
+    int idle_cols = 1;
+    FlexECS::Scene::StringIndex idle_movement = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+    int right_cols = 1;
+    FlexECS::Scene::StringIndex right_movement = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+    int left_cols = 1;
+    FlexECS::Scene::StringIndex left_movement = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+    int up_cols = 1;
+    FlexECS::Scene::StringIndex up_movement = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+    int down_cols = 1;
+    FlexECS::Scene::StringIndex down_movement = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+
+  };
 
   void RegisterBattleComponents();
 }

@@ -3,7 +3,7 @@
 #include "FlexEngine/AssetManager/assetmanager.h" // FLX_ASSET_GET
 #include "FlexEngine/DataStructures/freequeue.h"
 #include "FlexEngine/Core/application.h"
-
+#include "openglspriterenderer.h"
 
 #include <filesystem>
 
@@ -83,7 +83,9 @@ namespace FlexEngine
 
         glLineWidth(line_width);
 
+        OpenGLSpriteRenderer::SetEditorFrameBuffer();
         glDrawArrays(GL_LINES, 0, 2);
+        OpenGLSpriteRenderer::SetDefaultFrameBuffer();
 
         glBindVertexArray(0);
     }
