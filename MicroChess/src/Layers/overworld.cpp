@@ -26,7 +26,7 @@ namespace ChronoShift {
         //Tried to just simply rotate on x-axis of a wrapped vbo but kenah the orthographic camera cut off
         //so no choice do lame method
         //Normal Gameobject
-        #if 1
+        #if 0
         FlexECS::Entity background = FlexECS::Scene::CreateEntity("bg");
         background.AddComponent<IsActive>({ true });
         background.AddComponent<Position>({ {650, 600} });
@@ -258,62 +258,8 @@ namespace ChronoShift {
 
         #endif
         //2500 objs
-        #if 0
-        FlexECS::Entity thing = FlexECS::Scene::CreateEntity("White Queen");
-        thing.AddComponent<IsActive>({ true });
-        thing.AddComponent<Position>({ {300,100} });
-        thing.AddComponent<Rotation>({ });
-        thing.AddComponent<Scale>({ { 15,15} });
-        thing.AddComponent<ZIndex>({ 10 });
-        thing.AddComponent<Transform>({ });
-        thing.AddComponent<Sprite>({
-          scene->Internal_StringStorage_New(R"(\images\chess_queen.png)"),
-          Vector3::Zero,
-          Vector3::One,
-          Renderer2DProps::Alignment_Center,
-          Renderer2DProps::VBO_Basic,
-          true
-         });
-        thing.AddComponent<Shader>({ scene->Internal_StringStorage_New(R"(\shaders\texture)") });
-
-        for (size_t x = 0; x < 50; x++)
-        {
-            for (size_t y = 0; y < 50; y++)
-            {
-                if (x == 49 && y == 49)break;
-                FlexECS::Entity cloned_thing = scene->CloneEntity(thing);
-                auto& position = cloned_thing.GetComponent<Position>()->position;
-                position.x += static_cast<float>(15 * (x + 1));
-                position.y += static_cast<float>(15 * (y + 1));
-                auto& color_to_add = cloned_thing.GetComponent<Sprite>()->color_to_add;
-                auto& color_to_multiply = cloned_thing.GetComponent<Sprite>()->color_to_multiply;
-                auto& texture = cloned_thing.GetComponent<Sprite>()->texture;
-                int color_choice = (x + y) % 3;
-                // Reset both colors to zero initially
-                color_to_add = { 0.0f, 0.0f, 0.0f };
-                color_to_multiply = { 1.0f, 1.0f, 1.0f };
-                if (color_choice == 0) {
-                    // Red
-                    color_to_add = { 1.0f, 0.0f, 0.0f };
-                    color_to_multiply = { 1.0f, 0.0f, 0.0f };
-                }
-                else if (color_choice == 1) {
-                    // Green
-                    color_to_add = { 0.0f, 1.0f, 0.0f };
-                    color_to_multiply = { 0.0f, 1.0f, 0.0f };
-                    texture = scene->Internal_StringStorage_New(R"(\images\chess_king.png)");
-                }
-                else {
-                    // Blue
-                    color_to_add = { 0.0f, 0.0f, 1.0f };
-                    color_to_multiply = { 0.0f, 0.0f, 1.0f };
-                    texture = scene->Internal_StringStorage_New(R"(\images\chess_knight.png)");
-                }
-            }
-        }
-        #endif
         //Text
-        #if 1
+        #if 0
         FlexECS::Entity testText = FlexECS::Scene::CreateEntity("testText");
         testText.AddComponent<IsActive>({ true });
         testText.AddComponent<CharacterInput>({ });
@@ -385,7 +331,9 @@ namespace ChronoShift {
         auto scene = FlexECS::Scene::CreateScene();
         FlexECS::Scene::SetActiveScene(scene);
 
+        // Setup for level editor
         RegisterRenderingComponents();
+        RegisterPhysicsComponents();
 
         SetupWorld();
     }
@@ -434,6 +382,7 @@ namespace ChronoShift {
             }
         }
       profiler.EndCounter("Misc");
+
       //For testing 2500 objects
       //Create one, then clone the rest
       if (Input::GetKeyDown(GLFW_KEY_0))
@@ -488,7 +437,6 @@ namespace ChronoShift {
       {
         FMODWrapper::Core::StopSound("mario");
       }
-
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Debug Tests
         //Key hold (Can just alter here, not very elegant but will do for now)
@@ -537,6 +485,22 @@ namespace ChronoShift {
         UpdatePhysicsSystem();
         profiler.EndCounter("Physics");
 
+        // System to handle button collider callbacks
+        for (auto& element : FlexECS::Scene::GetActiveScene()->CachedQuery<Button, Sprite>())
+        {
+          if (!element.GetComponent<IsActive>()->is_active) continue;
+
+          Vector2 mtw = Editor::GetInstance().GetPanel("GameView").mouse_to_world;
+          BoundingBox2D bb = *element.GetComponent<BoundingBox2D>();
+          if (mtw.x > bb.min.x && mtw.x < bb.max.x && mtw.y > bb.min.y && mtw.y < bb.max.y)
+          {
+            element.GetComponent<Sprite>()->color_to_add.x = 255;
+          }
+          else
+          {
+            element.GetComponent<Sprite>()->color_to_add.x = 0;
+          }
+        }
 
        #pragma region simpleCamMove i know its shit
         FlexECS::Entity cam_entity = SceneCamSorter::GetInstance().GetMainCamera();

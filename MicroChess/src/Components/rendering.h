@@ -182,4 +182,12 @@ using namespace FlexEngine;
   };
 
   void RegisterRenderingComponents();
+
+  // Button class for UI, holding an int to decide what behavior it should have
+  class Button
+  {
+    FLX_REFL_SERIALIZABLE
+  public:
+    int behavior;
+  };
 }

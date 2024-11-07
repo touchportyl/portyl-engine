@@ -93,15 +93,14 @@ namespace ChronoShift
       //FLX_REFL_REGISTER_PROPERTY(vbo_id)
   FLX_REFL_REGISTER_END;
 
-
-
   FLX_REFL_REGISTER_START(Camera)
       FLX_REFL_REGISTER_PROPERTY(is_dirty)
       FLX_REFL_REGISTER_PROPERTY(camera)          // Already registered as it contains CameraData
   FLX_REFL_REGISTER_END
 
-
-
+    FLX_REFL_REGISTER_START(Button)
+      FLX_REFL_REGISTER_PROPERTY(behavior)
+    FLX_REFL_REGISTER_END;
 
 //Component registry for editor
 //so the properties panel knows how to display them
@@ -163,6 +162,10 @@ namespace ChronoShift
       //COMPONENT_VIEWER(alignment)
   COMPONENT_VIEWER_END(Text)
 
+  COMPONENT_VIEWER_START(Button)
+     COMPONENT_VIEWER_DRAG_INT(behavior)
+  COMPONENT_VIEWER_END(Button)
+
   void RegisterRenderingComponents()
   {
     REGISTER_COMPONENT_VIEWER(Position);
@@ -177,5 +180,6 @@ namespace ChronoShift
     REGISTER_COMPONENT_VIEWER(Text);
     REGISTER_COMPONENT_VIEWER(Camera);
     REGISTER_COMPONENT_VIEWER(Animation);
+    REGISTER_COMPONENT_VIEWER(Button); // I am going to slot here for now, please clean this up - YC
   }
 }
