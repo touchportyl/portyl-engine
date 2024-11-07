@@ -70,7 +70,7 @@ namespace ChronoShift {
     auto scene = FlexECS::Scene::GetActiveScene();
     if (!scene->CachedQuery<BattleSlot>().empty()) m_battlesystem.Update();
 
-    if (!scene->CachedQuery<CharacterInput>().empty()) {
+    if (!scene->CachedQuery<CharacterInput, Character>().empty()) {
       // Get the current camera (SO COOLLLL!)
       FlexECS::Entity cam_entity = SceneCamSorter::GetInstance().GetMainCamera();
       auto& curr_cam = cam_entity.GetComponent<Camera>()->camera;

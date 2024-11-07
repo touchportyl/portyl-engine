@@ -105,7 +105,8 @@ namespace FlexEngine
     return true;
   }
 
-  static bool Internal_LoadTextureFromMemory(const unsigned char* texture_data, int size, unsigned char** out_texture_data, unsigned int* out_texture, int* out_width, int* out_height)
+  // Unused function for later usage, silencing with a warning now.
+  [[maybe_unused]]  static bool Internal_LoadTextureFromMemory(const unsigned char* texture_data, int size, unsigned char** out_texture_data, unsigned int* out_texture, int* out_width, int* out_height)
   {
     // Decompress the texture
     int channels;
