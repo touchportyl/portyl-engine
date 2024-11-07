@@ -41,7 +41,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <BattleSystems/physicssystem.h>
 #include <CharacterPrefab/characterprefab.h>
 
-
 namespace ChronoShift {
 
   void BattleLayer::SetupBattle()
@@ -65,22 +64,44 @@ namespace ChronoShift {
 
   void BattleLayer::Update()
   {
-    // Not sure how to set camera position to player position, below is my failed attempt
-    /*auto scene = FlexECS::Scene::GetActiveScene();
-    FlexECS::Entity moving_character;
-    for (auto& s : scene->CachedQuery<CharacterInput>()) {
-      moving_character = s;
-    }
-    for (auto& s : scene->CachedQuery<Camera>()) {
-      s.GetComponent<Position>()->position = moving_character.GetComponent<Position>()->position;
-    }*/
-
-    
     if (Input::GetKeyDown(GLFW_KEY_4)) SetupBattle(); // Set Up Battle
 
     // Include a check whether battle system has been activated
     auto scene = FlexECS::Scene::GetActiveScene();
     if (!scene->CachedQuery<BattleSlot>().empty()) m_battlesystem.Update();
+
+    if (!scene->CachedQuery<CharacterInput>().empty()) {
+      // Get the current camera (SO COOLLLL!)
+      FlexECS::Entity cam_entity = SceneCamSorter::GetInstance().GetMainCamera();
+      auto& curr_cam = cam_entity.GetComponent<Camera>()->camera;
+
+      for (auto& s : scene->CachedQuery<CharacterInput>()) {
+        // Set Camera Position to Player with an offset lah
+        curr_cam.position = s.GetComponent<Position>()->position - Vector2(600, 500);
+        if (Input::GetKey(GLFW_KEY_W)) {
+          s.GetComponent<Animation>()->cols = s.GetComponent<CharacterMovementSprites>()->up_cols;
+          s.GetComponent<Animation>()->spritesheet = s.GetComponent<CharacterMovementSprites>()->up_movement;
+        }
+        else if (Input::GetKey(GLFW_KEY_A)) {
+          s.GetComponent<Animation>()->cols = s.GetComponent<CharacterMovementSprites>()->left_cols;
+          s.GetComponent<Animation>()->spritesheet = s.GetComponent<CharacterMovementSprites>()->left_movement;
+        }
+        else if (Input::GetKey(GLFW_KEY_S)) {
+          s.GetComponent<Animation>()->cols = s.GetComponent<CharacterMovementSprites>()->down_cols;
+          s.GetComponent<Animation>()->spritesheet = s.GetComponent<CharacterMovementSprites>()->down_movement;
+        }
+        else if (Input::GetKey(GLFW_KEY_D)) {
+          s.GetComponent<Animation>()->cols = s.GetComponent<CharacterMovementSprites>()->right_cols;
+          s.GetComponent<Animation>()->spritesheet = s.GetComponent<CharacterMovementSprites>()->right_movement;
+        }
+        else {
+          s.GetComponent<Animation>()->cols = s.GetComponent<CharacterMovementSprites>()->idle_cols;
+          s.GetComponent<Animation>()->spritesheet = s.GetComponent<CharacterMovementSprites>()->idle_movement;
+        }
+      }
+      // Updating camera position
+      SceneCamSorter::GetInstance().UpdateData(cam_entity, curr_cam);
+    }
 
     for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput>())
     {
