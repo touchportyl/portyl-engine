@@ -117,8 +117,8 @@ namespace FlexEngine
     void SceneCamSorter::RemoveCameraEntities()
     {
       m_cameraEntities.clear();
-      m_currMainID = -1;
-      m_currEditorID = -1;
+      m_currMainID = static_cast<FlexECS::EntityID>(- 1);
+      m_currEditorID = static_cast<FlexECS::EntityID>(-1);
     }
 
     /*!***************************************************************************

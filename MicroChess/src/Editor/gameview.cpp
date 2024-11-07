@@ -38,7 +38,7 @@ namespace ChronoShift
 
 			ImGui::SetCursorPos(viewport_position);
 			//Note: need to invert UVs vertically.
-			ImGui::Image((ImTextureID)OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CreatedTextureID::CID_finalRender),
+			ImGui::Image(reinterpret_cast<ImTextureID>(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CreatedTextureID::CID_finalRender)),
 				viewport_size, ImVec2(0, 1), ImVec2(1, 0));
     
 			
@@ -53,10 +53,11 @@ namespace ChronoShift
 			unsigned scale_y = Application::GetCurrentWindow()->GetHeight();
 
       // Normalize imgui to (0,1) space, then scale by window size, which converts to world as it is a 1 to 1 mapping.
-      int imgui_to_window_x = mouse_pos_imgui_viewport.x / viewport_size.x * static_cast<int>(scale_x);
-      int imgui_to_window_y = mouse_pos_imgui_viewport.y / viewport_size.y * static_cast<int>(scale_y);
+      int imgui_to_window_x = static_cast<int>(mouse_pos_imgui_viewport.x / viewport_size.x * scale_x);
+      int imgui_to_window_y = static_cast<int>(mouse_pos_imgui_viewport.y / viewport_size.y * scale_y);
 
-      mouse_to_world = FlexEngine::Vector2(imgui_to_window_x, imgui_to_window_y);
+      mouse_to_world = FlexEngine::Vector2(static_cast<FlexEngine::Vector2::value_type>(imgui_to_window_x), 
+																					 static_cast<FlexEngine::Vector2::value_type>(imgui_to_window_y));
 			//Log::Debug("Mouse pos in IMGUI/World space: " + std::to_string(imgui_to_window_x) + " " + std::to_string(imgui_to_window_y));
 		}
 
