@@ -38,8 +38,9 @@ namespace ChronoShift
 
 			ImGui::SetCursorPos(viewport_position);
 			//Note: need to invert UVs vertically.
-			ImGui::Image(reinterpret_cast<ImTextureID>(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CreatedTextureID::CID_finalRender)),
-				viewport_size, ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image(reinterpret_cast<ImTextureID>(
+									 static_cast<uintptr_t>(OpenGLSpriteRenderer::GetCreatedTexture(OpenGLSpriteRenderer::CreatedTextureID::CID_finalRender))),
+									 viewport_size, ImVec2(0, 1), ImVec2(1, 0));
     
 			
 			// Obtain relative mouse position in the editor view
