@@ -146,8 +146,8 @@ namespace FlexEngine
                 // Store the glyph
                 Glyph glyph = {
                     texture,
-                    Vector2(g->bitmap.width, g->bitmap.rows),
-                    Vector2(g->bitmap_left, g->bitmap_top),
+                    Vector2((float)g->bitmap.width, (float)g->bitmap.rows),
+                    Vector2((float)g->bitmap_left, (float)g->bitmap_top),
                     static_cast<GLuint>(g->advance.x >> 6) // 1/64 image size
                 };
                 m_glyphs[c] = glyph;

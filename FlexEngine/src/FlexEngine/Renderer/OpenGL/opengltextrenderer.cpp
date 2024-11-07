@@ -119,10 +119,10 @@ namespace FlexEngine
             pen_pos.x = 0.0f;
             break;
         case Renderer2DText::Alignment_Center:
-            pen_pos.x = FindLineWidth(asset_font, text.m_words) / 2.0f;
+            pen_pos.x = (float)FindLineWidth(asset_font, text.m_words) / 2.0f;
             break;
         case Renderer2DText::Alignment_Right:
-            pen_pos.x = FindLineWidth(asset_font, text.m_words);
+            pen_pos.x = (float)FindLineWidth(asset_font, text.m_words);
             break;
         }
 
@@ -164,8 +164,8 @@ namespace FlexEngine
                 switch (static_cast<Renderer2DText::AlignmentX>(text.m_alignment.first))
                 {
                 case Renderer2DText::Alignment_Left:   pen_pos.x = 0.0f; break;
-                case Renderer2DText::Alignment_Center: pen_pos.x = FindLineWidth(asset_font, t_subwords) / 2.0f; break;
-                case Renderer2DText::Alignment_Right:  pen_pos.x = FindLineWidth(asset_font, t_subwords); break;
+                case Renderer2DText::Alignment_Center: pen_pos.x = (float)FindLineWidth(asset_font, t_subwords) / 2.0f; break;
+                case Renderer2DText::Alignment_Right:  pen_pos.x = (float)FindLineWidth(asset_font, t_subwords); break;
                 }
             }
 
@@ -200,7 +200,7 @@ namespace FlexEngine
         {
             // Get the glyph for the character
             const Asset::Glyph& glyph = font.GetGlyph(c);
-            t_totallength += glyph.advance + m_letterspacing; // Add advance and spacing
+            t_totallength += glyph.advance + (int)m_letterspacing; // Add advance and spacing
             if (t_totallength > DRAW_TEXT_MAX_STRLEN)break;
         }
         return t_totallength > DRAW_TEXT_MAX_STRLEN ? DRAW_TEXT_MAX_STRLEN : t_totallength;
@@ -219,6 +219,7 @@ namespace FlexEngine
     *****************************************************************************/
     void OpenGLTextRenderer::RenderGlyph(const Asset::Glyph& glyph, const Vector2& pen_pos, const Vector3& color)
     {
+        UNREFERENCED_PARAMETER(color);
         // Bind the texture for the glyph
         glBindTexture(GL_TEXTURE_2D, glyph.textureID);
 
