@@ -185,7 +185,9 @@ namespace FlexEngine
     CustomImguiStyle();
 
     // load font
-    io.Fonts->AddFontFromFileTTF("..\\FlexEngine\\assets\\fonts\\Noto_Sans\\static\\NotoSans-Regular.ttf", 21.f);
+    std::string currentDir = std::filesystem::current_path().string();
+    std::string fontPath = currentDir + "/assets/fonts/Suez_One/SuezOne-Regular.ttf";
+    io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 21.f);
 
     // setup platform/renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window->GetGLFWWindow(), true);
