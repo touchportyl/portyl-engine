@@ -120,6 +120,9 @@
       <AdditionalDependencies>FlexEngine.lib;opengl32.lib;glfw3.lib;ImGuid.lib;fmodstudioL_vc.lib;fmodL_vc.lib;assimp-vc143-mtd.lib;freetyped.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)assets" "$(TargetDir)assets" /E /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -139,6 +142,9 @@
       <AdditionalDependencies>FlexEngine.lib;opengl32.lib;glfw3.lib;ImGui.lib;fmodstudio_vc.lib;fmod_vc.lib;assimp-vc143-mt.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrtd.lib</IgnoreSpecificDefaultLibraries>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)assets" "$(TargetDir)assets" /E /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="assets\shaders\batch2.0.frag" />
