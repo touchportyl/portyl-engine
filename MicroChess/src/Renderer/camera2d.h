@@ -5,7 +5,6 @@
 #include "FlexMath/matrix4x4.h"
 #include <Renderer/cameramanager.h>
 
-
 namespace FlexEngine
 {
     /*!************************************************************************
@@ -65,10 +64,11 @@ namespace FlexEngine
         #pragma region Camera Transitions
 
         /*!************************************************************************
-        * \brief
+        * \brief 
         * Initializes a camera as either orthographic or perspective.
         * \param curr The CameraData to initialize.
         * \param ortho True for orthographic, false for perspective.
+        * //DO NOT USE - LEGACY
         *************************************************************************/
         static void CreateCamera(CameraData& curr, bool ortho);
 
@@ -102,6 +102,12 @@ namespace FlexEngine
         *        or perspective), FOV, aspect ratio, and clipping planes.
         *************************************************************************/
         static void UpdateProjectionMatrix(CameraData& curr);
+
+        //// World to Screen Space
+        //static Vector3 WorldToScreen(const CameraData& curr, const Vector2& screenDimensions);
+
+        //// Screen to World Space
+        //static Vector3 ScreenToWorld(const Vector2& screenPosition, const Vector2& screenDimensions);
 
         #pragma endregion
 

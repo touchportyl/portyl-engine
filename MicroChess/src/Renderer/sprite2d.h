@@ -32,11 +32,13 @@
 **************************************************************************/
 
 #include <FlexEngine.h>
+#include "camera2d.h"
+
 using namespace FlexEngine;
 
 namespace ChronoShift
 {
-    void UpdateSprite2DMatrix();
+    void UpdateAllEntitiesMatrix();
 
     /*!***************************************************************************
     * \brief
@@ -45,9 +47,4 @@ namespace ChronoShift
     * post-processing, and batch rendering for efficiency.
     *****************************************************************************/
 	void RendererSprite2D();
-
-    //Different rendering types
-    void RenderNormalEntities();
-    void RenderBatchedEntities();
-    void RenderTextEntities();
 }

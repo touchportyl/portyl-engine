@@ -147,7 +147,7 @@ namespace ChronoShift
                 FlexECS::Scene::SetActiveScene(FlexECS::Scene::Load(file));
 
                 // TODO: Delete this when camera is properly done. This sets the camera to be the one from the scene
-                CameraManager::RemoveCameraEntities(); // Nuclear clear for scene loading.
+                //CameraManager::RemoveCameraEntities(); // Nuclear clear for scene loading.
                 std::vector<FlexECS::Entity> camera_list = FlexECS::Scene::GetActiveScene()->Query<Camera>();
                 if (camera_list.size() > 0)
                 {

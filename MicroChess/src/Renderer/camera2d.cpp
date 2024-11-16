@@ -36,21 +36,77 @@ namespace FlexEngine
 
     void Camera2D::UpdateViewMatrix(CameraData& curr)
     {
-        curr.viewMatrix = Matrix4x4::LookAt(curr.position, curr.position + curr.direction, curr.up);
+        curr.viewMatrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);//Matrix4x4::LookAt(curr.position, curr.position + curr.direction, curr.up);
+        curr.proj_viewMatrix = curr.projMatrix * curr.viewMatrix;
     }
 
     void Camera2D::UpdateProjectionMatrix(CameraData& curr)
     {
         if (curr.m_isOrthographic)
         {
-            curr.projMatrix = Matrix4x4::Orthographic(-1.0f, 1.0f, -1.0f, 1.0f, curr.nearClip, curr.farClip);
+            curr.projMatrix = Matrix4x4::Orthographic(
+                curr.position.x, curr.position.x + FlexEngine::Application::GetCurrentWindow()->GetWidth(), //TODO OI GET WINDOW SIZE LEH
+                curr.position.y + FlexEngine::Application::GetCurrentWindow()->GetHeight(), curr.position.y,
+                -2.0f, 2.0f/*curr.nearClip, curr.farClip*/);
         }
         else
         {
             curr.projMatrix = Matrix4x4::Perspective(curr.fieldOfView, curr.aspectRatio, curr.nearClip, curr.farClip);
         }
+        curr.proj_viewMatrix = curr.projMatrix * curr.viewMatrix;
     }
 
+    // Converts a world space position to a screen space position
+    //Vector3 Camera2D::WorldToScreen(const CameraData& curr, const Vector2& screenDimensions)
+    //{
+    //    // Combine view and projection matrices
+    //    Matrix4x4 viewProjection = curr.proj_viewMatrix;
+
+    //    // Transform the world position to clip space
+    //    Vector4 clipSpacePos = viewProjection * Vector4(curr.position, 1.0f);
+
+    //    // Perform perspective divide to normalize coordinates
+    //    if (clipSpacePos.w != 0.0f)
+    //    {
+    //        clipSpacePos.x /= clipSpacePos.w;
+    //        clipSpacePos.y /= clipSpacePos.w;
+    //    }
+
+    //    // Convert from normalized device coordinates (NDC) to screen coordinates
+    //    Vector2 screenPos;
+    //    screenPos.x = (clipSpacePos.x * 0.5f + 0.5f) * screenDimensions.x;
+    //    screenPos.y = (1.0f - (clipSpacePos.y * 0.5f + 0.5f)) * screenDimensions.y;
+
+    //    return screenPos;
+    //}
+
+    //// Converts a screen space position to a world space position
+    //Vector3 Camera2D::ScreenToWorld(const Vector2& screenPosition, const Vector2& screenDimensions)
+    //{
+    //    // Convert screen position to normalized device coordinates (NDC)
+    //    Vector4 ndcPos;
+    //    ndcPos.x = (2.0f * screenPosition.x) / screenDimensions.x - 1.0f;
+    //    ndcPos.y = 1.0f - (2.0f * screenPosition.y) / screenDimensions.y;
+    //    ndcPos.z = 1.0f; // Assuming we're dealing with a 2D plane
+    //    ndcPos.w = 1.0f;
+
+    //    // Combine view and projection matrices
+    //    Matrix4x4 viewProjection = m_projectionMatrix * m_viewMatrix;
+    //    Matrix4x4 inverseViewProjection = viewProjection.Inverse();
+
+    //    // Transform the NDC position to world space
+    //    Vector4 worldPos = inverseViewProjection * ndcPos;
+
+    //    // Perform perspective divide
+    //    if (worldPos.w != 0.0f)
+    //    {
+    //        worldPos.x /= worldPos.w;
+    //        worldPos.y /= worldPos.w;
+    //        worldPos.z /= worldPos.w;
+    //    }
+
+    //    return Vector3(worldPos.x, worldPos.y, worldPos.z);
+    //}
     #pragma endregion
 
     #pragma region Camera Movement
@@ -73,27 +129,6 @@ namespace FlexEngine
         UpdateViewMatrix(curr);
     }
 
-
-    //void Camera2D::Shake(CameraData& curr, float amplitude, float frequency, float duration)
-    //{
-    //    using namespace std::chrono;
-    //    auto startTime = high_resolution_clock::now();
-
-    //    while (true)
-    //    {
-    //        auto elapsed = duration_cast<duration<float>>(high_resolution_clock::now() - startTime).count();
-    //        if (elapsed > duration) break;
-
-    //        Vector3 offset = GenerateRandomOffset(amplitude);
-    //        curr.position += offset;
-    //        UpdateViewMatrix(curr);
-
-    //        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000.0f / frequency)));
-    //        curr.position -= offset;
-    //        UpdateViewMatrix(curr);
-    //    }
-    //}
-
     //void Camera2D::Cam_Rotate(CameraData& curr, const Vector3& axis, float angle)
     //{
     //    Matrix4x4 rotationMatrix = Matrix4x4::Rotate(angle, axis);
@@ -107,6 +142,7 @@ namespace FlexEngine
 
     #pragma region Camera Transitions
 
+    //DO NOT USE - LEGACY
     void Camera2D::CreateCamera(CameraData& curr, bool ortho)
     {
         curr.m_isOrthographic = ortho;

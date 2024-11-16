@@ -36,6 +36,8 @@
 
 namespace ChronoShift
 {
+    #pragma region Update Matrix / Parent & Child
+
     /*!***************************************************************************
     * \brief
     * Updates the transformation matrix for a given entity based on its local
@@ -83,13 +85,34 @@ namespace ChronoShift
         local_transform = parent_entity_matrix * (translation_matrix * rotation_matrix * scale_matrix);
     }
 
+    void UpdateCamMatrix(FlexECS::Entity& currCam)
+    {
+        auto& local_transform = currCam.GetComponent<Transform>()->transform;
+        if (!currCam.GetComponent<Transform>()->is_dirty) return;
+
+        auto& local_position = currCam.GetComponent<Position>()->position;
+        // Get rotation component if it exists
+        Rotation* local_rotation = nullptr;
+        if (currCam.TryGetComponent<Rotation>(local_rotation))
+            local_rotation = currCam.GetComponent<Rotation>();
+
+        //Update CamData
+        if (!currCam.GetComponent<Transform>()->is_dirty) return; //TODO Check is this necessary
+        auto& local_camData = currCam.GetComponent<Camera>()->camera;
+        local_camData.position = local_position;
+        Camera2D::UpdateProjectionMatrix(local_camData);
+        Camera2D::UpdateViewMatrix(local_camData);
+        
+        CameraManager::UpdateData(currCam.Get(), local_camData);
+    }
+
     /*!***************************************************************************
     * \brief
     * Updates the transformation matrix of 2D sprites within the scene. It ensures
     * proper alignment and processing of entities in the scene, particularly
     * their position and orientation in the hierarchy.
     *****************************************************************************/
-    void UpdateSprite2DMatrix()
+    void UpdateAllEntitiesMatrix()
     {
         //DEBUG CHECKS IF IMAGE IS FROZEN OR NOT SHOWING
         // 1. DID YOU SET IS_DIRTY = true;
@@ -110,7 +133,7 @@ namespace ChronoShift
             // Traverse up the hierarchy and collect parent entities in a stack
             FlexECS::Entity* t_currentEntity = &entity;
             // Track whether any entity in the stack is dirty
-            bool entity_isdirty = false;
+            bool entity_isdirty = true; //false
             //Update the parent order
             while (true)
             {
@@ -127,10 +150,8 @@ namespace ChronoShift
                     // Move up to the parent entity
                     t_currentEntity = &t_parententity->parent;
                 }
-                else
-                {
+                else 
                     break;
-                }
             }
             // At this point, `t_entitystack` contains the chain of entities from the child up to the root
 
@@ -142,8 +163,13 @@ namespace ChronoShift
                 {
                     // If any entity in the hierarchy is dirty, mark all as dirty
                     (*it)->GetComponent<Transform>()->is_dirty = entity_isdirty ? true : (*it)->GetComponent<Transform>()->is_dirty;
+                    
                     //Update current obj transform
                     UpdateTransformationMatrix(**it, globaltransform);
+                    Camera* if_cam = nullptr;
+                    if ((*it)->TryGetComponent<Camera>(if_cam)) 
+                        UpdateCamMatrix(**it);   
+
                     // Mark the entity as processed
                     t_processedEntities.insert((*it)->Get());
                 }
@@ -166,30 +192,9 @@ namespace ChronoShift
         }
     }
 
-    /*!***************************************************************************
-    * \brief
-    * Renders all the 2D sprites in the scene. This function handles the necessary
-    * steps for rendering, including setting up shader properties, handling
-    * post-processing, and batch rendering for efficiency.
-    *****************************************************************************/
-    void RendererSprite2D()
-    {
-        //Update Transformation Matrix of All Entities
-        UpdateSprite2DMatrix();
+    #pragma endregion
 
-        WindowProps window_props = Application::GetCurrentWindow()->GetProps();
-        Renderer2DProps props;
-        props.window_size = { static_cast<float>(window_props.width), static_cast<float>(window_props.height) };
-
-        ////////////////////////////////////////////////////////////////////////////////
-        // Potential Issues
-        ////////////////////////////////////////////////////////////////////////////////
-        // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
-
-        //RenderNormalEntities();
-        RenderBatchedEntities();
-        RenderTextEntities();
-    }
+    #pragma region Rendering Processes
 
     void RenderNormalEntities()
     {
@@ -316,7 +321,6 @@ namespace ChronoShift
         if (!blending) OpenGLRenderer::DisableBlending();
     }
 
-
     void RenderTextEntities()
     {
         FunctionQueue text_render_queue;
@@ -355,5 +359,31 @@ namespace ChronoShift
 
         if (depth_test) OpenGLRenderer::EnableDepthTest();
         if (!blending) OpenGLRenderer::DisableBlending();
+    }
+    #pragma endregion
+
+    /*!***************************************************************************
+    * \brief
+    * Renders all the 2D sprites in the scene. This function handles the necessary
+    * steps for rendering, including setting up shader properties, handling
+    * post-processing, and batch rendering for efficiency.
+    *****************************************************************************/
+    void RendererSprite2D()
+    {
+        //Update Transformation Matrix of All Entities
+        UpdateAllEntitiesMatrix();
+
+        WindowProps window_props = Application::GetCurrentWindow()->GetProps();
+        Renderer2DProps props;
+        props.window_size = { static_cast<float>(window_props.width), static_cast<float>(window_props.height) };
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // Potential Issues
+        ////////////////////////////////////////////////////////////////////////////////
+        // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
+
+        //RenderNormalEntities();
+        RenderBatchedEntities();
+        RenderTextEntities();
     }
 }

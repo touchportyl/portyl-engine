@@ -53,12 +53,13 @@ namespace FlexEngine
         
         Matrix4x4 viewMatrix = Matrix4x4::Zero;  /*!< View matrix calculated from position and orientation */
         Matrix4x4 projMatrix = Matrix4x4::Zero;  /*!< Projection matrix based on FOV and aspect ratio */
-        
+        Matrix4x4 proj_viewMatrix = Matrix4x4::Zero;
+
         float fieldOfView = 45.0f;               /*!< Field of view in degrees */
-        float aspectRatio = 1.0f;               /*!< Aspect ratio (width/height) */
-        float nearClip = 0.1f;                   /*!< Near clipping plane */
-        float farClip = 100.0f;                  /*!< Far clipping plane */
-        bool m_isOrthographic = false;           /*!< Flag indicating orthographic (true) or perspective (false) projection */
+        float aspectRatio = 1.77f;               /*!< Aspect ratio (width/height) */
+        float nearClip = -2.0f;                  /*!< Near clipping plane */
+        float farClip = 2.0f;                    /*!< Far clipping plane */
+        bool m_isOrthographic = true;           /*!< Flag indicating orthographic (true) or perspective (false) projection */
     };
 
     /*!************************************************************************
