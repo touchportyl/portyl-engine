@@ -8,95 +8,104 @@
 
 namespace FlexEngine
 {
-    //Still debating on this (class is still in development)
-    namespace camera2D
+    /*!************************************************************************
+    * \class Camera2D
+    * \brief Utility class for managing 2D camera transformations and properties.
+    *************************************************************************/
+    class __FLX_API Camera2D
     {
-        #pragma region Set functions
+    public:
+        #pragma region Set Functions
+
         /*!************************************************************************
         * \brief
         * Sets the camera's direction vector.
+        * \param curr The CameraData to modify.
         * \param direction New direction vector.
         *************************************************************************/
-        void SetDirection(const Vector3& direction);
+        static void SetDirection(CameraData& curr, const Vector3& direction);
 
         /*!************************************************************************
         * \brief
         * Sets the camera's field of view for perspective projection.
+        * \param curr The CameraData to modify.
         * \param fov Vertical field of view in degrees.
         *************************************************************************/
-        void SetFieldOfView(float fov);
+        static void SetFieldOfView(CameraData& curr, float fov);
 
         /*!************************************************************************
         * \brief
         * Sets the aspect ratio of the camera.
+        * \param curr The CameraData to modify.
         * \param aspect Aspect ratio (width/height).
         *************************************************************************/
-        void SetAspectRatio(float aspect);
+        static void SetAspectRatio(CameraData& curr, float aspect);
 
         /*!************************************************************************
         * \brief
         * Sets the near and far clipping planes.
+        * \param curr The CameraData to modify.
         * \param near Near clipping distance.
         * \param far Far clipping distance.
         *************************************************************************/
-        void SetClippingPlanes(float near, float far);
+        static void SetClippingPlanes(CameraData& curr, float near, float far);
 
         #pragma endregion
 
-        #pragma region Cam Management
+        #pragma region Camera Movement
 
-        ///*!************************************************************************
-        //* \brief
-        //* Initializes the camera with either an orthographic or perspective projection.
-        //* \param ortho True to create an orthographic camera, false for perspective.
-        //*************************************************************************/
-        //void CreateCamera(bool ortho);
-        ///*!************************************************************************
-        //* \brief
-        //* Rotates the camera around a specified axis by an angle in degrees.
-        //* \param axis Axis to rotate around.
-        //* \param angle Angle in degrees.
-        //*************************************************************************/
-        //void Rotate(const Vector3& axis, float angle);
+        static void Move(CameraData& curr, const Vector2& movement);
+        static void MoveTo(CameraData& curr, const Vector3& targetPosition);
+        static void LerpTo(CameraData& curr, const Vector3& targetPosition, float t);
+        //static void Shake(CameraData& curr, float amplitude, float frequency, float duration);
+        //static void Cam_Rotate(CameraData& curr, const Vector3& axis, float angle);
 
-        ///*!************************************************************************
-        //* \brief
-        //* Points the camera at a target position.
-        //* \param target Target position to look at.
-        //*************************************************************************/
-        //void LookAt(const Vector3& target);
+        #pragma endregion
+
+        #pragma region Camera Transitions
 
         /*!************************************************************************
         * \brief
-        * Moves the camera in world space based on input movement direction.
-        * \param movement Movement vector where x corresponds to right/left movement,
-        *                 and y corresponds to up/down movement.
+        * Initializes a camera as either orthographic or perspective.
+        * \param curr The CameraData to initialize.
+        * \param ortho True for orthographic, false for perspective.
         *************************************************************************/
-        void Move(const Vector2& movement, CameraData& curr);
+        static void CreateCamera(CameraData& curr, bool ortho);
 
-        ///*!************************************************************************
-        //* \brief
-        //* Moves the camera in world space to argument position.
-        //*************************************************************************/
-        //void MoveTo(const Vector3& targetPosition);
+        /*!************************************************************************
+        * \brief
+        * Points the camera at a target position.
+        * \param curr The CameraData to modify.
+        * \param target Target position to look at.
+        *************************************************************************/
+        static void LookAt(CameraData& curr, const Vector3& target);
 
-        ///*!************************************************************************
-        //* \brief
-        //* Updates the view matrix based on current position, direction, and up vector.
-        //*************************************************************************/
-        //void UpdateViewMatrix();
+        /*!************************************************************************
+        * \brief
+        * Toggles between perspective and orthographic projection.
+        * \param curr The CameraData to modify.
+        *************************************************************************/
+        static void ToggleProjection(CameraData& curr);
 
-        ///*!************************************************************************
-        //* \brief
-        //* Updates the projection matrix based on current FOV, aspect ratio, near, and far planes.
-        //*************************************************************************/
-        //void UpdateProjectionMatrix();
-
-        ///*!************************************************************************
-        //* \brief
-        //* Toggles between perspective and orthographic projection.
-        //*************************************************************************/
-        //void ToggleProjection();
         #pragma endregion
-    }
+
+        #pragma region Camera Management
+
+        /*!************************************************************************
+        * \brief Updates the camera's view matrix based on current position,
+        *        direction, and up vector.
+        *************************************************************************/
+        static void UpdateViewMatrix(CameraData& curr);
+
+        /*!************************************************************************
+        * \brief Updates the camera's projection matrix based on its type (orthographic
+        *        or perspective), FOV, aspect ratio, and clipping planes.
+        *************************************************************************/
+        static void UpdateProjectionMatrix(CameraData& curr);
+
+        #pragma endregion
+
+    private: 
+        /*static Vector3 GenerateRandomOffset(float amplitude);*/
+    };
 }

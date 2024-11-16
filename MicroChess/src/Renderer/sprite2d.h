@@ -36,6 +36,7 @@ using namespace FlexEngine;
 
 namespace ChronoShift
 {
+    void UpdateSprite2DMatrix();
 
     /*!***************************************************************************
     * \brief
@@ -45,4 +46,8 @@ namespace ChronoShift
     *****************************************************************************/
 	void RendererSprite2D();
 
+    //Different rendering types
+    void RenderNormalEntities();
+    void RenderBatchedEntities();
+    void RenderTextEntities();
 }
