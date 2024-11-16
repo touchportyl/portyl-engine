@@ -36,7 +36,7 @@ namespace FlexEngine
 
     void Camera2D::UpdateViewMatrix(CameraData& curr)
     {
-        curr.viewMatrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up/*curr.position, curr.position+ curr.direction, curr.up*/);//Matrix4x4::LookAt(curr.position, curr.position + curr.direction, curr.up);
+        curr.viewMatrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up/*curr.position, curr.position+ curr.direction, curr.up*/);
         curr.proj_viewMatrix = curr.projMatrix * curr.viewMatrix;
     }
 

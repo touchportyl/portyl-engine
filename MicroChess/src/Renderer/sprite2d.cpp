@@ -87,6 +87,10 @@ namespace ChronoShift
 
     void UpdateCamMatrix(FlexECS::Entity& currCam)
     {
+        //Take note 
+        //Currently this function will not run if obj is not is_dirty due to position, scale, rotation
+        //Add in inspector if needed
+
         auto& local_transform = currCam.GetComponent<Transform>()->transform;
         if (!currCam.GetComponent<Transform>()->is_dirty) return;
 
@@ -133,7 +137,7 @@ namespace ChronoShift
             // Traverse up the hierarchy and collect parent entities in a stack
             FlexECS::Entity* t_currentEntity = &entity;
             // Track whether any entity in the stack is dirty
-            bool entity_isdirty = true; //false
+            bool entity_isdirty = false;
             //Update the parent order
             while (true)
             {

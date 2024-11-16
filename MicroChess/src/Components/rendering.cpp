@@ -121,7 +121,7 @@ namespace ChronoShift
     COMPONENT_VIEWER_CHECKBOX(is_active)
   COMPONENT_VIEWER_END(IsActive)
 
-   COMPONENT_VIEWER_START(Transform)
+  COMPONENT_VIEWER_START(Transform)
     COMPONENT_VIEWER_BOOL(is_dirty)
     COMPONENT_VIEWER_MAT44(transform)
   COMPONENT_VIEWER_END(Transform)
@@ -156,10 +156,12 @@ namespace ChronoShift
   COMPONENT_VIEWER_END(Animation)
 
   COMPONENT_VIEWER_START(Camera)
-     COMPONENT_VIEWER_DRAG_VECTOR3(camera.position)
-     COMPONENT_VIEWER_DRAG_VECTOR3(camera.direction)
-     COMPONENT_VIEWER_DRAG_VECTOR3(camera.up)
-     COMPONENT_VIEWER_DRAG_VECTOR3(camera.right)
+    //Testing
+    {
+        COMPONENT_VIEWER_DRAG_VECTOR3(camera.direction)
+        COMPONENT_VIEWER_DRAG_VECTOR3(camera.up)
+        COMPONENT_VIEWER_DRAG_VECTOR3(camera.right)
+    }
      COMPONENT_VIEWER_DRAG_FLOAT(camera.fieldOfView)
      COMPONENT_VIEWER_DRAG_FLOAT(camera.aspectRatio)
      COMPONENT_VIEWER_DRAG_FLOAT(camera.nearClip)
@@ -195,5 +197,6 @@ namespace ChronoShift
     REGISTER_COMPONENT_VIEWER(Camera);
     REGISTER_COMPONENT_VIEWER(Animation);
     REGISTER_COMPONENT_VIEWER(Button); // I am going to slot here for now, please clean this up - YC
+                                       // Gonna be honest im just gonna leave it - wj
   }
 }
