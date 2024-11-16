@@ -587,13 +587,6 @@ namespace FlexEngine
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         // Orthographic Projection
-        //Vector2 camPos = (CameraManager::GetMainCamera() != -1) ? (Vector2)CameraManager::GetCameraData(CameraManager::GetMainCamera())->position : Vector2::Zero;
-        //static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
-        //Matrix4x4 projection_view = Matrix4x4::Orthographic(
-        //  camPos.x, camPos.x + props.window_size.x,
-        //  camPos.y + props.window_size.y, camPos.y,
-        //  -2.0f, 2.0f
-        //) * view_matrix;
         asset_shader.SetUniform_mat4("u_projection_view", CameraManager::GetCameraData(CameraManager::GetMainCamera())->proj_viewMatrix);
 
         // Draw
@@ -649,13 +642,6 @@ namespace FlexEngine
         asset_shader.SetUniform_vec2("u_UvMax", Vector2{ u_max, v_max });
 
         // Transformation & Orthographic Projection
-        //Vector2 camPos = (CameraManager::GetMainCamera() != -1) ? (Vector2)CameraManager::GetCameraData(CameraManager::GetMainCamera())->position : Vector2::Zero;
-        //static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
-        //Matrix4x4 projection_view = Matrix4x4::Orthographic(
-        //  camPos.x, camPos.x + props.window_size.x,
-        //  camPos.y + props.window_size.y, camPos.y,
-        //  -2.0f, 2.0f
-        //) * view_matrix;
         asset_shader.SetUniform_mat4("u_projection_view", CameraManager::GetCameraData(CameraManager::GetMainCamera())->proj_viewMatrix);
         asset_shader.SetUniform_mat4("u_model", props.transform);
         // Draw

@@ -68,18 +68,17 @@ namespace FlexEngine
      * \param cameraData The CameraData associated with the entity.
      * \return True if the camera entity was added successfully, false if it already exists.
      *****************************************************************************/
-    bool CameraManager::AddCameraEntity(FlexECS::EntityID entityID, const CameraData& cameraData)
+    void CameraManager::AddCameraEntity(FlexECS::EntityID entityID, const CameraData& cameraData)
     {
         auto result = m_cameraEntities.emplace(entityID, cameraData);
         if (result.second)
         {
             Log::Debug("AddCameraEntity(...) => Added camera " + std::to_string(entityID));
-            return true;
         }
         else
         {
-            Log::Fatal("AddCameraEntity(...) => Entity ID already exists. Cannot add camera with entityID " + std::to_string(entityID));
-            return false;
+            Log::Warning("AddCameraEntity(...) => Existing camera with same id. Replacing camera " + std::to_string(entityID));
+            m_cameraEntities[entityID] = cameraData; // Replace existing entry
         }
     }
 

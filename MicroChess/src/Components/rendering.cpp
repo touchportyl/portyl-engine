@@ -29,7 +29,7 @@
 
 namespace ChronoShift
 {
-
+#pragma region Register Variables
   FLX_REFL_REGISTER_START(IsActive)
     FLX_REFL_REGISTER_PROPERTY(is_active)
   FLX_REFL_REGISTER_END;
@@ -85,6 +85,10 @@ namespace ChronoShift
       FLX_REFL_REGISTER_PROPERTY(m_currUV)
   FLX_REFL_REGISTER_END;
 
+  FLX_REFL_REGISTER_START(Camera)
+      FLX_REFL_REGISTER_PROPERTY(camera) //Must put lah or error
+  FLX_REFL_REGISTER_END
+
   FLX_REFL_REGISTER_START(Text)
       FLX_REFL_REGISTER_PROPERTY(fonttype)
       FLX_REFL_REGISTER_PROPERTY(text)
@@ -93,17 +97,14 @@ namespace ChronoShift
       //FLX_REFL_REGISTER_PROPERTY(vbo_id)
   FLX_REFL_REGISTER_END;
 
-  FLX_REFL_REGISTER_START(Camera)
-      FLX_REFL_REGISTER_PROPERTY(is_dirty)
-      FLX_REFL_REGISTER_PROPERTY(camera)          // Already registered as it contains CameraData
-  FLX_REFL_REGISTER_END
-
     FLX_REFL_REGISTER_START(Button)
       FLX_REFL_REGISTER_PROPERTY(behavior)
     FLX_REFL_REGISTER_END;
 
-//Component registry for editor
-//so the properties panel knows how to display them
+#pragma endregion
+
+#pragma region Editable Viewer
+
   COMPONENT_VIEWER_START(Position)
     COMPONENT_VIEWER_DRAG_VECTOR2(position)
   COMPONENT_VIEWER_END(Position)
@@ -155,7 +156,15 @@ namespace ChronoShift
   COMPONENT_VIEWER_END(Animation)
 
   COMPONENT_VIEWER_START(Camera)
-      COMPONENT_VIEWER_BOOL(is_dirty)
+     COMPONENT_VIEWER_DRAG_VECTOR3(camera.position)
+     COMPONENT_VIEWER_DRAG_VECTOR3(camera.direction)
+     COMPONENT_VIEWER_DRAG_VECTOR3(camera.up)
+     COMPONENT_VIEWER_DRAG_VECTOR3(camera.right)
+     COMPONENT_VIEWER_DRAG_FLOAT(camera.fieldOfView)
+     COMPONENT_VIEWER_DRAG_FLOAT(camera.aspectRatio)
+     COMPONENT_VIEWER_DRAG_FLOAT(camera.nearClip)
+     COMPONENT_VIEWER_DRAG_FLOAT(camera.farClip)
+     COMPONENT_VIEWER_BOOL(camera.m_isOrthographic)
   COMPONENT_VIEWER_END(Camera)
 
   //TODO @ROCKY to add the font pic and have a dropbox of available fonts
@@ -169,6 +178,7 @@ namespace ChronoShift
   COMPONENT_VIEWER_START(Button)
      COMPONENT_VIEWER_DRAG_INT(behavior)
   COMPONENT_VIEWER_END(Button)
+#pragma endregion
 
   void RegisterRenderingComponents()
   {

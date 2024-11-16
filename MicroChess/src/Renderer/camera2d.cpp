@@ -47,7 +47,7 @@ namespace FlexEngine
             curr.projMatrix = Matrix4x4::Orthographic(
                 curr.position.x, curr.position.x + FlexEngine::Application::GetCurrentWindow()->GetWidth(), //TODO OI GET WINDOW SIZE LEH
                 curr.position.y + FlexEngine::Application::GetCurrentWindow()->GetHeight(), curr.position.y,
-                -2.0f, 2.0f/*curr.nearClip, curr.farClip*/);
+                curr.nearClip, curr.farClip);
         }
         else
         {

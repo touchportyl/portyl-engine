@@ -81,7 +81,7 @@ namespace FlexEngine
          * \param cameraData Camera data to associate with the entity.
          * \return True if the camera was added, false otherwise.
          *************************************************************************/
-        static bool AddCameraEntity(FlexECS::EntityID entityID, const CameraData& cameraData);
+        static void AddCameraEntity(FlexECS::EntityID entityID, const CameraData& cameraData);
 
         /*!************************************************************************
          * \brief Switches the main camera to the given entity ID.
