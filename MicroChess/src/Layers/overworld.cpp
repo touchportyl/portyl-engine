@@ -30,8 +30,8 @@ namespace ChronoShift {
         camera.AddComponent<Rotation>({ });
         camera.AddComponent<Transform>({});
         camera.AddComponent<Camera>({});
-        SceneCamSorter::GetInstance().AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-        SceneCamSorter::GetInstance().SwitchMainCamera(camera.Get());
+        CameraManager::AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+        CameraManager::SwitchMainCamera(camera.Get());
 
         #endif
     }
@@ -175,7 +175,7 @@ namespace ChronoShift {
       }
 
       #pragma region simpleCamMove i know its shit
-      FlexECS::Entity cam_entity = SceneCamSorter::GetInstance().GetMainCamera();
+      FlexECS::Entity cam_entity = CameraManager::GetMainCamera();
       auto& curr_cam = cam_entity.GetComponent<Camera>()->camera;
       if (Input::GetKey(GLFW_KEY_UP))
       {
@@ -194,7 +194,7 @@ namespace ChronoShift {
       {
           camera2D::Move(Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()), curr_cam);
       }
-      SceneCamSorter::GetInstance().UpdateData(cam_entity, curr_cam);
+      CameraManager::UpdateData(cam_entity, curr_cam);
       #pragma endregion
       
       //Render All Entities

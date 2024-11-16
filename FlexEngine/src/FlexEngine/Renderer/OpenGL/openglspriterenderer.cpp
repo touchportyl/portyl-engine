@@ -66,6 +66,7 @@ namespace FlexEngine
     GLuint OpenGLSpriteRenderer::m_finalRenderTex = {};
 
     float width, height;
+
     //////////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -478,7 +479,7 @@ namespace FlexEngine
         asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
 
         // Transformation & Orthographic Projection
-        Vector2 camPos = (SceneCamSorter::GetInstance().GetMainCamera() != -1) ? (Vector2)SceneCamSorter::GetInstance().GetCameraData(SceneCamSorter::GetInstance().GetMainCamera())->position : Vector2::Zero;
+        Vector2 camPos = (CameraManager::GetMainCamera() != -1) ? (Vector2)CameraManager::GetCameraData(CameraManager::GetMainCamera())->position : Vector2::Zero;
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           camPos.x, camPos.x + props.window_size.x,
@@ -586,7 +587,7 @@ namespace FlexEngine
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         // Orthographic Projection
-        Vector2 camPos = (SceneCamSorter::GetInstance().GetMainCamera() != -1) ? (Vector2)SceneCamSorter::GetInstance().GetCameraData(SceneCamSorter::GetInstance().GetMainCamera())->position : Vector2::Zero;
+        Vector2 camPos = (CameraManager::GetMainCamera() != -1) ? (Vector2)CameraManager::GetCameraData(CameraManager::GetMainCamera())->position : Vector2::Zero;
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           camPos.x, camPos.x + props.window_size.x,
@@ -648,7 +649,7 @@ namespace FlexEngine
         asset_shader.SetUniform_vec2("u_UvMax", Vector2{ u_max, v_max });
 
         // Transformation & Orthographic Projection
-        Vector2 camPos = (SceneCamSorter::GetInstance().GetMainCamera() != -1) ? (Vector2)SceneCamSorter::GetInstance().GetCameraData(SceneCamSorter::GetInstance().GetMainCamera())->position : Vector2::Zero;
+        Vector2 camPos = (CameraManager::GetMainCamera() != -1) ? (Vector2)CameraManager::GetCameraData(CameraManager::GetMainCamera())->position : Vector2::Zero;
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(
           camPos.x, camPos.x + props.window_size.x,

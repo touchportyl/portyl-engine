@@ -103,7 +103,7 @@ namespace ChronoShift
               [this]()
               {
                 // Clear the scene and reset statics
-                SceneCamSorter::GetInstance().RemoveCameraEntities();
+                CameraManager::RemoveCameraEntities();
                 FlexECS::Scene::SetActiveScene(std::make_shared<FlexECS::Scene>());
 
                 // Every default scene should have a camera.
@@ -113,8 +113,8 @@ namespace ChronoShift
                 camera.AddComponent<Rotation>({ });
                 camera.AddComponent<Transform>({});
                 camera.AddComponent<Camera>({});
-                SceneCamSorter::GetInstance().AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-                SceneCamSorter::GetInstance().SwitchMainCamera(camera.Get());
+                CameraManager::AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+                CameraManager::SwitchMainCamera(camera.Get());
               }
             });
           }
@@ -147,13 +147,13 @@ namespace ChronoShift
                 FlexECS::Scene::SetActiveScene(FlexECS::Scene::Load(file));
 
                 // TODO: Delete this when camera is properly done. This sets the camera to be the one from the scene
-                SceneCamSorter::GetInstance().RemoveCameraEntities(); // Nuclear clear for scene loading.
+                CameraManager::RemoveCameraEntities(); // Nuclear clear for scene loading.
                 std::vector<FlexECS::Entity> camera_list = FlexECS::Scene::GetActiveScene()->Query<Camera>();
                 if (camera_list.size() > 0)
                 {
                   FlexECS::Entity camera = camera_list[0];
-                  SceneCamSorter::GetInstance().AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-                  SceneCamSorter::GetInstance().SwitchMainCamera(camera.Get());
+                  CameraManager::AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+                  CameraManager::SwitchMainCamera(camera.Get());
                 }
                 Log::Info("Loaded scene from: " + file.path.string());
               }

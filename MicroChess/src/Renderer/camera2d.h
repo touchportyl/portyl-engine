@@ -3,7 +3,7 @@
 #include "flx_api.h"
 
 #include "FlexMath/matrix4x4.h"
-#include <Renderer/scenecamsorter.h>
+#include <Renderer/cameramanager.h>
 
 
 namespace FlexEngine
