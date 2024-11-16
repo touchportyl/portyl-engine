@@ -190,4 +190,14 @@ using namespace FlexEngine;
   public:
     int behavior;
   };
+
+  // Audio component requires a string to store the audio file path, and the flags to determine if it is meant to play or loop.
+  class Audio
+  {
+    FLX_REFL_SERIALIZABLE
+  public:
+    bool should_play;
+    bool is_looping;
+    FlexECS::Scene::StringIndex audio_file = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New("");
+  };
 }

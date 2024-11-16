@@ -102,6 +102,12 @@ namespace ChronoShift
       FLX_REFL_REGISTER_PROPERTY(behavior)
     FLX_REFL_REGISTER_END;
 
+  FLX_REFL_REGISTER_START(Audio)
+    FLX_REFL_REGISTER_PROPERTY(is_looping)
+    FLX_REFL_REGISTER_PROPERTY(should_play)
+    FLX_REFL_REGISTER_PROPERTY(audio_file)
+  FLX_REFL_REGISTER_END;
+
 //Component registry for editor
 //so the properties panel knows how to display them
   COMPONENT_VIEWER_START(Position)
@@ -170,6 +176,11 @@ namespace ChronoShift
      COMPONENT_VIEWER_DRAG_INT(behavior)
   COMPONENT_VIEWER_END(Button)
 
+  COMPONENT_VIEWER_START(Audio)
+      //COMPONENT_VIEWER_TEXTURE_PATH(audio_file)
+      COMPONENT_VIEWER_BOOL(should_play)
+  COMPONENT_VIEWER_END(Audio)
+
   void RegisterRenderingComponents()
   {
     REGISTER_COMPONENT_VIEWER(Position);
@@ -185,5 +196,6 @@ namespace ChronoShift
     REGISTER_COMPONENT_VIEWER(Camera);
     REGISTER_COMPONENT_VIEWER(Animation);
     REGISTER_COMPONENT_VIEWER(Button); // I am going to slot here for now, please clean this up - YC
+    REGISTER_COMPONENT_VIEWER(Audio); // I am going to slot here for now, please clean this up - YC
   }
 }
