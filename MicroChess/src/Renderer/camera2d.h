@@ -56,7 +56,6 @@ namespace FlexEngine
         static void Move(CameraData& curr, const Vector2& movement);
         static void MoveTo(CameraData& curr, const Vector3& targetPosition);
         static void LerpTo(CameraData& curr, const Vector3& targetPosition, float t);
-        //static void Shake(CameraData& curr, float amplitude, float frequency, float duration);
         //static void Cam_Rotate(CameraData& curr, const Vector3& axis, float angle);
 
         #pragma endregion
@@ -70,8 +69,7 @@ namespace FlexEngine
         * \param ortho True for orthographic, false for perspective.
         * //DO NOT USE - LEGACY
         *************************************************************************/
-        static void CreateCamera(CameraData& curr, bool ortho);
-
+        
         /*!************************************************************************
         * \brief
         * Points the camera at a target position.
@@ -79,13 +77,6 @@ namespace FlexEngine
         * \param target Target position to look at.
         *************************************************************************/
         static void LookAt(CameraData& curr, const Vector3& target);
-
-        /*!************************************************************************
-        * \brief
-        * Toggles between perspective and orthographic projection.
-        * \param curr The CameraData to modify.
-        *************************************************************************/
-        static void ToggleProjection(CameraData& curr);
 
         #pragma endregion
 
@@ -110,8 +101,5 @@ namespace FlexEngine
         //static Vector3 ScreenToWorld(const Vector2& screenPosition, const Vector2& screenDimensions);
 
         #pragma endregion
-
-    private: 
-        /*static Vector3 GenerateRandomOffset(float amplitude);*/
     };
 }

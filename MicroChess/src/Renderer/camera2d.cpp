@@ -36,7 +36,7 @@ namespace FlexEngine
 
     void Camera2D::UpdateViewMatrix(CameraData& curr)
     {
-        curr.viewMatrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);//Matrix4x4::LookAt(curr.position, curr.position + curr.direction, curr.up);
+        curr.viewMatrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up/*curr.position, curr.position+ curr.direction, curr.up*/);//Matrix4x4::LookAt(curr.position, curr.position + curr.direction, curr.up);
         curr.proj_viewMatrix = curr.projMatrix * curr.viewMatrix;
     }
 
@@ -142,38 +142,11 @@ namespace FlexEngine
 
     #pragma region Camera Transitions
 
-    //DO NOT USE - LEGACY
-    void Camera2D::CreateCamera(CameraData& curr, bool ortho)
-    {
-        curr.m_isOrthographic = ortho;
-        if (ortho)
-        {
-            curr.projMatrix = Matrix4x4::Orthographic(-1.0f, 1.0f, -1.0f, 1.0f, curr.nearClip, curr.farClip);
-        }
-        else
-        {
-            curr.projMatrix = Matrix4x4::Perspective(curr.fieldOfView, curr.aspectRatio, curr.nearClip, curr.farClip);
-        }
-    }
-
     void Camera2D::LookAt(CameraData& curr, const Vector3& target)
     {
         curr.direction = (target - curr.position).Normalize();
         curr.right = Cross(curr.up, curr.direction).Normalize();
         curr.viewMatrix = Matrix4x4::LookAt(curr.position, target, curr.up);
-    }
-
-    void Camera2D::ToggleProjection(CameraData& curr)
-    {
-        curr.m_isOrthographic = !curr.m_isOrthographic;
-        if (curr.m_isOrthographic)
-        {
-            curr.projMatrix = Matrix4x4::Orthographic(-1.0f, 1.0f, -1.0f, 1.0f, curr.nearClip, curr.farClip);
-        }
-        else
-        {
-            curr.projMatrix = Matrix4x4::Perspective(curr.fieldOfView, curr.aspectRatio, curr.nearClip, curr.farClip);
-        }
     }
 
     #pragma endregion
