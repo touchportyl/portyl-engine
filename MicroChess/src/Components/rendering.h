@@ -46,7 +46,7 @@ using namespace FlexEngine;
   class Parent
   { FLX_REFL_SERIALIZABLE
   public:
-    FlexECS::Entity parent;
+      FlexECS::Entity parent = FlexECS::Entity::Null;
   };
   /*!***************************************************************************
   * \class Position
@@ -178,16 +178,15 @@ using namespace FlexEngine;
       FLX_REFL_SERIALIZABLE
   public:
       CameraData camera;
-      bool is_dirty = true;
   };
-
-  void RegisterRenderingComponents();
 
   // Button class for UI, holding an int to decide what behavior it should have
   class Button
   {
-    FLX_REFL_SERIALIZABLE
+      FLX_REFL_SERIALIZABLE
   public:
-    int behavior;
+      int behavior;
   };
+
+  void RegisterRenderingComponents();
 }
