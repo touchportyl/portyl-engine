@@ -113,6 +113,38 @@ FLX_REFL_REGISTER_END;
 //Component registry for editor
 //so the properties panel knows how to display them
 #pragma region EDITOR_INSPECTOR
+  FLX_REFL_REGISTER_START(Animation)
+      FLX_REFL_REGISTER_PROPERTY(spritesheet)
+      FLX_REFL_REGISTER_PROPERTY(rows)
+      FLX_REFL_REGISTER_PROPERTY(cols)
+      FLX_REFL_REGISTER_PROPERTY(max_sprites)
+      FLX_REFL_REGISTER_PROPERTY(color_to_add)
+      FLX_REFL_REGISTER_PROPERTY(color_to_multiply)
+      FLX_REFL_REGISTER_PROPERTY(m_animationTimer)
+      FLX_REFL_REGISTER_PROPERTY(m_animationDurationPerFrame)
+      FLX_REFL_REGISTER_PROPERTY(m_currentSpriteIndex)
+      FLX_REFL_REGISTER_PROPERTY(m_currUV)
+  FLX_REFL_REGISTER_END;
+
+  FLX_REFL_REGISTER_START(Text)
+      FLX_REFL_REGISTER_PROPERTY(fonttype)
+      FLX_REFL_REGISTER_PROPERTY(text)
+      FLX_REFL_REGISTER_PROPERTY(color)
+      FLX_REFL_REGISTER_PROPERTY(alignment)
+      //FLX_REFL_REGISTER_PROPERTY(vbo_id)
+  FLX_REFL_REGISTER_END;
+
+  FLX_REFL_REGISTER_START(Camera)
+      FLX_REFL_REGISTER_PROPERTY(is_dirty)
+      FLX_REFL_REGISTER_PROPERTY(camera)          // Already registered as it contains CameraData
+  FLX_REFL_REGISTER_END
+
+    FLX_REFL_REGISTER_START(Button)
+      FLX_REFL_REGISTER_PROPERTY(behavior)
+    FLX_REFL_REGISTER_END;
+
+//Component registry for editor
+//so the properties panel knows how to display them
   COMPONENT_VIEWER_START(Position)
     COMPONENT_VIEWER_DRAG_VECTOR2(position)
   COMPONENT_VIEWER_END(Position)
