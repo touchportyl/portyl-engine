@@ -78,7 +78,11 @@ namespace ChronoShift
 					transform->is_dirty = true;
 				}
 			}
-			// TODO -> Perhaps for camera do as well
+			// For cam only
+			if (entity.HasComponent<Camera>())
+			{
+				transform->is_dirty = true;
+			}
 
 			auto entity_record = ENTITY_INDEX[entity];
 			auto archetype = entity_record.archetype;
