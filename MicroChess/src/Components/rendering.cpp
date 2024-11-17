@@ -29,14 +29,10 @@
 
 namespace ChronoShift
 {
-#pragma region REFLECTION
-FLX_REFL_REGISTER_START(IsActive)
-  FLX_REFL_REGISTER_PROPERTY(is_active)
-FLX_REFL_REGISTER_END;
-
-FLX_REFL_REGISTER_START(Parent)
-  FLX_REFL_REGISTER_PROPERTY(parent)
-FLX_REFL_REGISTER_END;
+#pragma region Register Variables
+  FLX_REFL_REGISTER_START(IsActive)
+    FLX_REFL_REGISTER_PROPERTY(is_active)
+  FLX_REFL_REGISTER_END;
 
 FLX_REFL_REGISTER_START(Position)
   FLX_REFL_REGISTER_PROPERTY(position)
@@ -109,10 +105,26 @@ FLX_REFL_REGISTER_START(Audio)
 FLX_REFL_REGISTER_END;
 #pragma endregion
 
+  FLX_REFL_REGISTER_START(Camera)
+      FLX_REFL_REGISTER_PROPERTY(camera) //Must put lah or error
+  FLX_REFL_REGISTER_END
 
-//Component registry for editor
-//so the properties panel knows how to display them
-#pragma region EDITOR_INSPECTOR
+  FLX_REFL_REGISTER_START(Text)
+      FLX_REFL_REGISTER_PROPERTY(fonttype)
+      FLX_REFL_REGISTER_PROPERTY(text)
+      FLX_REFL_REGISTER_PROPERTY(color)
+      FLX_REFL_REGISTER_PROPERTY(alignment)
+      //FLX_REFL_REGISTER_PROPERTY(vbo_id)
+  FLX_REFL_REGISTER_END;
+
+    FLX_REFL_REGISTER_START(Button)
+      FLX_REFL_REGISTER_PROPERTY(behavior)
+    FLX_REFL_REGISTER_END;
+
+#pragma endregion
+
+#pragma region Editable Viewer
+
   COMPONENT_VIEWER_START(Position)
     COMPONENT_VIEWER_DRAG_VECTOR2(position)
   COMPONENT_VIEWER_END(Position)
@@ -129,7 +141,7 @@ FLX_REFL_REGISTER_END;
     COMPONENT_VIEWER_CHECKBOX(is_active)
   COMPONENT_VIEWER_END(IsActive)
 
-   COMPONENT_VIEWER_START(Transform)
+  COMPONENT_VIEWER_START(Transform)
     COMPONENT_VIEWER_BOOL(is_dirty)
     COMPONENT_VIEWER_MAT44(transform)
   COMPONENT_VIEWER_END(Transform)
@@ -164,7 +176,17 @@ FLX_REFL_REGISTER_END;
   COMPONENT_VIEWER_END(Animation)
 
   COMPONENT_VIEWER_START(Camera)
-    COMPONENT_VIEWER_BOOL(is_dirty)
+    //Testing
+    {
+        COMPONENT_VIEWER_DRAG_VECTOR3(camera.direction)
+        COMPONENT_VIEWER_DRAG_VECTOR3(camera.up)
+        COMPONENT_VIEWER_DRAG_VECTOR3(camera.right)
+    }
+     COMPONENT_VIEWER_DRAG_FLOAT(camera.fieldOfView)
+     COMPONENT_VIEWER_DRAG_FLOAT(camera.aspectRatio)
+     COMPONENT_VIEWER_DRAG_FLOAT(camera.nearClip)
+     COMPONENT_VIEWER_DRAG_FLOAT(camera.farClip)
+     COMPONENT_VIEWER_BOOL(camera.m_isOrthographic)
   COMPONENT_VIEWER_END(Camera)
 
   //TODO @ROCKY to add the font pic and have a dropbox of available fonts
@@ -178,6 +200,7 @@ FLX_REFL_REGISTER_END;
   COMPONENT_VIEWER_START(Button)
      COMPONENT_VIEWER_DRAG_INT(behavior)
   COMPONENT_VIEWER_END(Button)
+#pragma endregion
 
   COMPONENT_VIEWER_START(Audio)
     COMPONENT_VIEWER_BOOL(should_play)
