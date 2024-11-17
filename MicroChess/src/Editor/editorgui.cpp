@@ -124,11 +124,15 @@ namespace ChronoShift
 	void EditorGUI::EntityReference(FlexECS::Entity& entity, std::string title)
 	{
 		PushID();
-		std::string entity_name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<FlexEngine::FlexECS::Scene::StringIndex>());
+		std::string entity_name{ "(no entity)" };
+		if (entity != FlexECS::Entity::Null)
+		{
+			entity_name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<FlexEngine::FlexECS::Scene::StringIndex>());
+		}
 
 		ImGui::BeginGroup();
 		ImGui::Text(title.c_str()); ImGui::SameLine();
-		if (ImGui::Button(entity_name.c_str()))
+		if (ImGui::Button(entity_name.c_str()) && entity != FlexECS::Entity::Null)
 		{
 			Editor::GetInstance().SelectEntity(entity);
 		}
