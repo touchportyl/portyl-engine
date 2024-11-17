@@ -50,14 +50,12 @@ namespace ChronoShift
 			EditorGUI::EditableTextField(name);
 
 			//Your 3 basic transform components
-			auto transform = entity.GetComponent<Transform>();
 			if (entity.HasComponent<Position>())
 			{
 				auto& position = entity.GetComponent<Position>()->position;
 				if (ImGui::CollapsingHeader("Position"))
 				{
 					EditorGUI::DragFloat2(position, "Position");
-					transform->is_dirty = true;
 				}
 			}
 			if (entity.HasComponent<Rotation>())
@@ -66,7 +64,6 @@ namespace ChronoShift
 				if (ImGui::CollapsingHeader("Rotation"))
 				{
 					EditorGUI::DragFloat3(rotation, "Rotation");
-					transform->is_dirty = true;
 				}
 			}
 			if (entity.HasComponent<Scale>())
@@ -75,13 +72,7 @@ namespace ChronoShift
 				if (ImGui::CollapsingHeader("Scale"))
 				{
 					EditorGUI::DragFloat2(scale, "Scale");
-					transform->is_dirty = true;
 				}
-			}
-			// For cam only
-			if (entity.HasComponent<Camera>())
-			{
-				transform->is_dirty = true;
 			}
 
 			auto entity_record = ENTITY_INDEX[entity];
