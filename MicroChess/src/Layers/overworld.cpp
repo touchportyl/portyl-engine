@@ -175,27 +175,32 @@ namespace ChronoShift {
         }
       }
 
-      #pragma region simpleCamMove i know its shit
-      /*FlexECS::Entity cam_entity = CameraManager::GetMainCamera();
-      auto& curr_cam = cam_entity.GetComponent<Camera>()->camera;
+      #pragma region Camera Movement -> Should be moved to scripting
+
+      FlexECS::Entity cam_entity = CameraManager::GetMainCamera();
+      auto& curr_cam = cam_entity.GetComponent<Position>()->position;
+      auto& curr_camt = cam_entity.GetComponent<Transform>()->is_dirty;
       if (Input::GetKey(GLFW_KEY_UP))
       {
-          Camera2D::Move(curr_cam, Vector2(0.0f, -5.f)* (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+          curr_cam += Vector2(0.0f, -5.f)* (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
+          curr_camt = true;
       }
       else if (Input::GetKey(GLFW_KEY_DOWN))
       {
-          Camera2D::Move(curr_cam, Vector2(0.0f, 5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+          curr_cam += Vector2(0.0f, 5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
+          curr_camt = true;
       }
 
       if (Input::GetKey(GLFW_KEY_RIGHT))
       {
-          Camera2D::Move(curr_cam, Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+          curr_cam += Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
+          curr_camt = true;
       }
       else if (Input::GetKey(GLFW_KEY_LEFT))
       {
-          Camera2D::Move(curr_cam, Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
+          curr_cam += Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
+          curr_camt = true;
       }
-      CameraManager::UpdateData(cam_entity, curr_cam);*/
 
       // Regen Cam
       //for (auto& currCam : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Camera>())

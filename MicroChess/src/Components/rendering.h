@@ -46,7 +46,7 @@ using namespace FlexEngine;
   class Parent
   { FLX_REFL_SERIALIZABLE
   public:
-    FlexECS::Entity parent;
+      FlexECS::Entity parent = FlexECS::Entity::Null;
   };
   /*!***************************************************************************
   * \class Position

@@ -147,6 +147,8 @@ namespace ChronoShift
                 {
                     t_parententity = (*t_currentEntity).GetComponent<Parent>();
 
+                    if (t_parententity->parent == FlexECS::Entity::Null) break;
+
                     // Move up to the parent entity
                     t_currentEntity = &t_parententity->parent;
                 }
