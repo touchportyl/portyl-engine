@@ -87,10 +87,6 @@ namespace ChronoShift
 
     void UpdateCamMatrix(FlexECS::Entity& currCam)
     {
-        //Take note 
-        //Currently this function will not run if obj is not is_dirty due to position, scale, rotation
-        //Add in inspector if needed
-
         auto& local_transform = currCam.GetComponent<Transform>()->transform;
         if (!currCam.GetComponent<Transform>()->is_dirty) return;
 

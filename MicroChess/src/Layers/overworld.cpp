@@ -196,14 +196,16 @@ namespace ChronoShift {
           Camera2D::Move(curr_cam, Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime()));
       }
       CameraManager::UpdateData(cam_entity, curr_cam);*/
-      for (auto& currCam : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Camera>())
-      {
-          if (!CameraManager::HasCameraEntity(currCam.Get()))
-          {
-              CameraManager::AddCameraEntity(currCam.Get(), currCam.GetComponent<Camera>()->camera);
-              CameraManager::SwitchMainCamera(currCam.Get());
-          }
-      }
+
+      // Regen Cam
+      //for (auto& currCam : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Camera>())
+      //{
+      //    if (!CameraManager::HasCameraEntity(currCam.Get()))
+      //    {
+      //        CameraManager::AddCameraEntity(currCam.Get(), currCam.GetComponent<Camera>()->camera);
+      //        CameraManager::SwitchMainCamera(currCam.Get());
+      //    }
+      //}
       #pragma endregion
       
       //Render All Entities
