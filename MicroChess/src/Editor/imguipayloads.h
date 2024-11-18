@@ -10,6 +10,7 @@ namespace ChronoShift
 		PREFAB,
 		ENTITY,
 		SHADER,
+		AUDIO,
 		SCENE,
 
 		PAYLOADTAGS_LAST
@@ -23,6 +24,7 @@ namespace ChronoShift
 		case ChronoShift::PREFAB: return "PREFAB";
 		case ChronoShift::ENTITY: return "ENTITY";
 		case ChronoShift::SHADER: return "SHADER";
+		case ChronoShift::AUDIO: return "AUDIO";
 		case ChronoShift::SCENE: return "SCENE";
 		default: return "UNKNOWN";
 		}

@@ -72,7 +72,7 @@ namespace ChronoShift {
 
     if (!scene->CachedQuery<CharacterInput, Character>().empty()) {
       // Get the current camera (SO COOLLLL!)
-      FlexECS::Entity cam_entity = CameraManager::GetMainCamera();
+      FlexECS::Entity cam_entity = SceneCamSorter::GetInstance().GetMainCamera();
       auto& curr_cam = cam_entity.GetComponent<Camera>()->camera;
 
       for (auto& s : scene->CachedQuery<CharacterInput>()) {
@@ -100,7 +100,7 @@ namespace ChronoShift {
         }
       }
       // Updating camera position
-      CameraManager::UpdateData(cam_entity, curr_cam);
+      SceneCamSorter::GetInstance().UpdateData(cam_entity, curr_cam);
     }
 
     for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<CharacterInput>())

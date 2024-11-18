@@ -216,7 +216,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengltextrenderer.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\opengltexture.cpp" />
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglvertex.cpp" />
-    <ClCompile Include="src\FlexEngine\Renderer\cameramanager.cpp" />
+    <ClCompile Include="src\FlexEngine\Renderer\scenecamsorter.cpp" />
     <ClCompile Include="src\FlexEngine\StateManager\statemanager.cpp" />
     <ClCompile Include="src\FlexEngine\uuid.cpp" />
     <ClCompile Include="src\FlexEngine\Wrapper\assimp.cpp" />
@@ -286,7 +286,7 @@ xcopy "$(SolutionDir)third_party\lib\fmod\studio\fmodstudio.dll" "$(OutDir)" /s 
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengltextrenderer.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\opengltexture.h" />
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglvertex.h" />
-    <ClInclude Include="src\FlexEngine\Renderer\cameramanager.h" />
+    <ClInclude Include="src\FlexEngine\Renderer\scenecamsorter.h" />
     <ClInclude Include="src\FlexEngine\StateManager\state.h" />
     <ClInclude Include="src\FlexEngine\StateManager\statemanager.h" />
     <ClInclude Include="src\FlexEngine\timer.h" />

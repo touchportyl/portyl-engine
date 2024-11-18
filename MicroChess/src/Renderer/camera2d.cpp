@@ -2,152 +2,119 @@
 
 namespace FlexEngine 
 {
-    #pragma region Set Functions
-
-    void Camera2D::SetDirection(CameraData& curr, const Vector3& direction)
+    namespace camera2D
     {
-        curr.direction = direction;
-        curr.right = Cross(curr.up, direction).Normalize();
-        curr.viewMatrix = Matrix4x4::LookAt(curr.position, curr.position + curr.direction, curr.up);
-    }
+        #pragma region Set functions
+        //void SetDirection(const Vector3& direction)
+        //{
+        //    //m_cameraData.direction = direction;
+        //    UpdateViewMatrix(); // Recalculate the view matrix based on the new direction
+        //}
 
-    void Camera2D::SetFieldOfView(CameraData& curr, float fov)
-    {
-        curr.fieldOfView = fov;
-        curr.projMatrix = Matrix4x4::Perspective(fov, curr.aspectRatio, curr.nearClip, curr.farClip);
-    }
+        //void SetFieldOfView(float fov)
+        //{
+        //    //m_cameraData.fieldOfView = fov;
+        //    UpdateProjectionMatrix(); // Update projection to reflect the new field of view
+        //}
 
-    void Camera2D::SetAspectRatio(CameraData& curr, float aspect)
-    {
-        curr.aspectRatio = aspect;
-        curr.projMatrix = Matrix4x4::Perspective(curr.fieldOfView, aspect, curr.nearClip, curr.farClip);
-    }
+        //void SetAspectRatio(float aspect)
+        //{
+        //    //m_cameraData.aspectRatio = aspect;
+        //    UpdateProjectionMatrix(); // Adjust projection matrix for new aspect ratio
+        //}
 
-    void Camera2D::SetClippingPlanes(CameraData& curr, float near, float far)
-    {
-        curr.nearClip = near;
-        curr.farClip = far;
-        curr.projMatrix = Matrix4x4::Perspective(curr.fieldOfView, curr.aspectRatio, near, far);
-    }
+        //void SetClippingPlanes(float near, float far)
+        //{
+        //    /*m_cameraData.nearClip = near;
+        //    m_cameraData.farClip = far;*/
+        //    UpdateProjectionMatrix(); // Update projection matrix with new clipping planes
+        //}
+        #pragma endregion
+        #pragma region Get functions
 
-    #pragma endregion
 
-    #pragma region Camera Management
+        //bool IsInView(const Vector3& point)
+        //{
+        //    //// Transform the point to view space
+        //    //Vector4 viewPos = m_cameraData.viewMatrix * Vector4(point, 1.0f);
 
-    void Camera2D::UpdateViewMatrix(CameraData& curr)
-    {
-        curr.viewMatrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up/*curr.position, curr.position+ curr.direction, curr.up*/);
-        curr.proj_viewMatrix = curr.projMatrix * curr.viewMatrix;
-    }
+        //    //// Check if point is within the view frustum
+        //    //return (viewPos.z > m_cameraData.nearClip && viewPos.z < m_cameraData.farClip);
+        //    return false;
+        //}
+        //#pragma endregion
+        //#pragma region Cam Management
+        //void CreateCamera(bool ortho) {
+        //    //m_isOrthographic = ortho;
+        //    UpdateProjectionMatrix(); // Initialize projection matrix based on camera type
+        //}
 
-    void Camera2D::UpdateProjectionMatrix(CameraData& curr)
-    {
-        if (curr.m_isOrthographic)
+        //void Rotate(const Vector3& axis, float angle)
+        //{
+        //    //// Create a rotation matrix from axis and angle
+        //    //Matrix4x4 rotationMatrix = Matrix4x4::Rotation(axis, angle);
+
+        //    //// Rotate direction and up vectors
+        //    //m_cameraData.direction = rotationMatrix * m_cameraData.direction;
+        //    //m_cameraData.up = rotationMatrix * m_cameraData.up;
+
+        //    //UpdateViewMatrix(); // Update view matrix to reflect rotation
+        //}
+
+        //void LookAt(const Vector3& target)
+        //{
+        //    //// Calculate new direction vector towards target
+        //    //m_cameraData.direction = (target - m_cameraData.position).Normalized();
+
+        //    //// Recalculate the view matrix with the updated direction
+        //    //UpdateViewMatrix();
+        //}
+
+        void Move(const Vector2& movement, CameraData& curr)
         {
-            curr.projMatrix = Matrix4x4::Orthographic(
-                curr.position.x, curr.position.x + FlexEngine::Application::GetCurrentWindow()->GetWidth(), //TODO OI GET WINDOW SIZE LEH
-                curr.position.y + FlexEngine::Application::GetCurrentWindow()->GetHeight(), curr.position.y,
-                curr.nearClip, curr.farClip);
+            // Translate camera based on movement input (x - right, y - up)
+            curr.position += curr.right * movement.x + curr.up * movement.y;
+            
+            //UpdateViewMatrix(); // Update view matrix to reflect new position
         }
-        else
-        {
-            curr.projMatrix = Matrix4x4::Perspective(curr.fieldOfView, curr.aspectRatio, curr.nearClip, curr.farClip);
-        }
-        curr.proj_viewMatrix = curr.projMatrix * curr.viewMatrix;
+
+        //void MoveTo(const Vector3& targetPosition)
+        //{
+        //    // Set the camera's position to the target position
+        //    //m_cameraData.position = targetPosition;
+
+        //    // Update the view matrix to reflect the new position
+        //    UpdateViewMatrix();
+        //}
+
+        //void UpdateViewMatrix()
+        //{
+        //    //// Calculate the right vector using cross product of up and direction
+        //    //m_cameraData.right = m_cameraData.up.Cross(m_cameraData.direction).Normalized();
+
+        //    //// Recalculate view matrix based on updated camera orientation and position
+        //    //m_cameraData.viewMatrix = Matrix4x4::LookAt(m_cameraData.position, m_cameraData.position + m_cameraData.direction, m_cameraData.up);
+        //}
+
+        //void UpdateProjectionMatrix()
+        //{
+        //    //if (m_isOrthographic)
+        //    //{
+        //    //    // Set orthographic projection matrix (parameters could be adjusted as needed)
+        //    //    m_cameraData.projMatrix = Matrix4x4::Orthographic(-10, 10, -10 / m_cameraData.aspectRatio, 10 / m_cameraData.aspectRatio, m_cameraData.nearClip, m_cameraData.farClip);
+        //    //}
+        //    //else {
+        //    //    // Set perspective projection matrix based on FOV, aspect ratio, near, and far planes
+        //    //    m_cameraData.projMatrix = Matrix4x4::Perspective(m_cameraData.fieldOfView, m_cameraData.aspectRatio, m_cameraData.nearClip, m_cameraData.farClip);
+        //    //}
+        //}
+
+        //void ToggleProjection()
+        //{
+        //    // Toggle between orthographic and perspective projection
+        //    //m_isOrthographic = !m_isOrthographic;
+        //    UpdateProjectionMatrix(); // Rebuild projection matrix for the new mode
+        //}
+        #pragma endregion
     }
-
-    // Converts a world space position to a screen space position
-    //Vector3 Camera2D::WorldToScreen(const CameraData& curr, const Vector2& screenDimensions)
-    //{
-    //    // Combine view and projection matrices
-    //    Matrix4x4 viewProjection = curr.proj_viewMatrix;
-
-    //    // Transform the world position to clip space
-    //    Vector4 clipSpacePos = viewProjection * Vector4(curr.position, 1.0f);
-
-    //    // Perform perspective divide to normalize coordinates
-    //    if (clipSpacePos.w != 0.0f)
-    //    {
-    //        clipSpacePos.x /= clipSpacePos.w;
-    //        clipSpacePos.y /= clipSpacePos.w;
-    //    }
-
-    //    // Convert from normalized device coordinates (NDC) to screen coordinates
-    //    Vector2 screenPos;
-    //    screenPos.x = (clipSpacePos.x * 0.5f + 0.5f) * screenDimensions.x;
-    //    screenPos.y = (1.0f - (clipSpacePos.y * 0.5f + 0.5f)) * screenDimensions.y;
-
-    //    return screenPos;
-    //}
-
-    //// Converts a screen space position to a world space position
-    //Vector3 Camera2D::ScreenToWorld(const Vector2& screenPosition, const Vector2& screenDimensions)
-    //{
-    //    // Convert screen position to normalized device coordinates (NDC)
-    //    Vector4 ndcPos;
-    //    ndcPos.x = (2.0f * screenPosition.x) / screenDimensions.x - 1.0f;
-    //    ndcPos.y = 1.0f - (2.0f * screenPosition.y) / screenDimensions.y;
-    //    ndcPos.z = 1.0f; // Assuming we're dealing with a 2D plane
-    //    ndcPos.w = 1.0f;
-
-    //    // Combine view and projection matrices
-    //    Matrix4x4 viewProjection = m_projectionMatrix * m_viewMatrix;
-    //    Matrix4x4 inverseViewProjection = viewProjection.Inverse();
-
-    //    // Transform the NDC position to world space
-    //    Vector4 worldPos = inverseViewProjection * ndcPos;
-
-    //    // Perform perspective divide
-    //    if (worldPos.w != 0.0f)
-    //    {
-    //        worldPos.x /= worldPos.w;
-    //        worldPos.y /= worldPos.w;
-    //        worldPos.z /= worldPos.w;
-    //    }
-
-    //    return Vector3(worldPos.x, worldPos.y, worldPos.z);
-    //}
-    #pragma endregion
-
-    #pragma region Camera Movement
-    
-    void Camera2D::Move(CameraData& curr, const Vector2& movement)
-    {
-        curr.position += curr.right * movement.x + curr.up * movement.y;
-        UpdateViewMatrix(curr);
-    }
-
-    void Camera2D::MoveTo(CameraData& curr, const Vector3& targetPosition)
-    {
-        curr.position = targetPosition;
-        UpdateViewMatrix(curr);
-    }
-
-    void Camera2D::LerpTo(CameraData& curr, const Vector3& targetPosition, float t)
-    {
-        curr.position = Lerp(curr.position, targetPosition, t);
-        UpdateViewMatrix(curr);
-    }
-
-    //void Camera2D::Cam_Rotate(CameraData& curr, const Vector3& axis, float angle)
-    //{
-    //    Matrix4x4 rotationMatrix = Matrix4x4::Rotate(angle, axis);
-    //    curr.direction = (rotationMatrix * curr.direction).Normalize();
-    //    curr.right = (rotationMatrix * curr.right).Normalize();
-    //    curr.up = Cross(curr.direction, curr.right).Normalize();
-    //    UpdateViewMatrix(curr);
-    //}
-
-    #pragma endregion
-
-    #pragma region Camera Transitions
-
-    void Camera2D::LookAt(CameraData& curr, const Vector3& target)
-    {
-        curr.direction = (target - curr.position).Normalize();
-        curr.right = Cross(curr.up, curr.direction).Normalize();
-        curr.viewMatrix = Matrix4x4::LookAt(curr.position, target, curr.up);
-    }
-
-    #pragma endregion
 }
