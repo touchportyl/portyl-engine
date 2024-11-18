@@ -124,15 +124,11 @@ namespace ChronoShift
 	void EditorGUI::EntityReference(FlexECS::Entity& entity, std::string title)
 	{
 		PushID();
-		std::string entity_name{ "(no entity)" };
-		if (entity != FlexECS::Entity::Null)
-		{
-			entity_name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<FlexEngine::FlexECS::Scene::StringIndex>());
-		}
+		std::string entity_name = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*entity.GetComponent<FlexEngine::FlexECS::Scene::StringIndex>());
 
 		ImGui::BeginGroup();
 		ImGui::Text(title.c_str()); ImGui::SameLine();
-		if (ImGui::Button(entity_name.c_str()) && entity != FlexECS::Entity::Null)
+		if (ImGui::Button(entity_name.c_str()))
 		{
 			Editor::GetInstance().SelectEntity(entity);
 		}
@@ -198,28 +194,6 @@ namespace ChronoShift
 				Asset::Texture& texture = std::get<Asset::Texture>(*asset_ptr);
 				ImGui::Image(texture.GetTextureImGui(), ImVec2(60.0f, 60.0f));
 			}
-		}
-
-		PopID();
-	}
-
-	void EditorGUI::AudioPath(std::string& path, std::string title)
-	{
-		PushID();
-
-		std::filesystem::path current_texture = path;
-		std::string filename = current_texture.filename().string();
-		if (filename == "") filename = "(no audio)";
-
-		ImGui::Text(title.c_str());
-		ImGui::SameLine();
-		ImGui::Button(filename.c_str());
-
-		if (const char* data = StartPayloadReceiver<const char>(PayloadTags::AUDIO))
-		{
-			std::string new_file_path(data);
-			path = new_file_path;
-			EndPayloadReceiver();
 		}
 
 		PopID();
@@ -304,6 +278,8 @@ namespace ChronoShift
 	{
 		ImGui::EndDragDropSource();
 	}
+
+
 
 	void EditorGUI::EndPayloadReceiver()
 	{

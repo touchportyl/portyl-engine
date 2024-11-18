@@ -73,8 +73,6 @@ namespace ChronoShift
 
 		static void TexturePath(std::string& path, std::string title = "Sprite");
 
-		static void AudioPath(std::string& path, std::string title = "Audio");
-
 		static void Color3(FlexEngine::Vector3& data, std::string title = "color");
 
 		static void EditableTextField(std::string& data, std::string title = "");
