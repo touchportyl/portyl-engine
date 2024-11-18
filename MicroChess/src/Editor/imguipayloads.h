@@ -11,6 +11,7 @@ namespace ChronoShift
 		ENTITY,
 		SHADER,
 		SCENE,
+		AUDIO,
 
 		PAYLOADTAGS_LAST
 	};
@@ -24,6 +25,7 @@ namespace ChronoShift
 		case ChronoShift::ENTITY: return "ENTITY";
 		case ChronoShift::SHADER: return "SHADER";
 		case ChronoShift::SCENE: return "SCENE";
+		case ChronoShift::AUDIO: return "AUDIO";
 		default: return "UNKNOWN";
 		}
 	}

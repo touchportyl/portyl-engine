@@ -133,25 +133,26 @@ namespace ChronoShift {
             }
         }
 
-      if (Input::GetKeyDown(GLFW_KEY_5))
+      // Audio system...
+      for (auto& element : FlexECS::Scene::GetActiveScene()->CachedQuery<Audio>())
       {
-        FMODWrapper::Core::PlaySound("ding", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/ding-126626.mp3")));
-      }
-      if (Input::GetKeyDown(GLFW_KEY_6))
-      {
-        FMODWrapper::Core::PlaySound("boom", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/big-cine-boom-sound-effect-245851.mp3")));
-      }
-      if (Input::GetKeyDown(GLFW_KEY_7))
-      {
-        FMODWrapper::Core::PlaySound("wow", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/wow-171498.mp3")));
-      }
-      if (Input::GetKeyDown(GLFW_KEY_8))
-      {
-        FMODWrapper::Core::PlayLoopingSound("mario", FLX_ASSET_GET(Asset::Sound, AssetKey("/audio/mario.mp3")));
-      }
-      if (Input::GetKeyDown(GLFW_KEY_9))
-      {
-        FMODWrapper::Core::StopSound("mario");
+        if (!element.GetComponent<IsActive>()->is_active) continue; // skip non active entities
+
+        if (element.GetComponent<Audio>()->should_play)
+        {
+          if (element.GetComponent<Audio>()->is_looping)
+          {
+            FMODWrapper::Core::PlayLoopingSound(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*element.GetComponent<EntityName>()),
+                                                FLX_ASSET_GET(Asset::Sound, AssetKey{ FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(element.GetComponent<Audio>()->audio_file) }));
+          }
+          else
+          {
+            FMODWrapper::Core::PlaySound(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(*element.GetComponent<EntityName>()),
+                                         FLX_ASSET_GET(Asset::Sound, AssetKey{ FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(element.GetComponent<Audio>()->audio_file) }));
+          }
+
+          element.GetComponent<Audio>()->should_play = false;
+        }
       }
 
       profiler.StartCounter("Physics");

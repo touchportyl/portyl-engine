@@ -101,6 +101,11 @@ namespace ChronoShift
       FLX_REFL_REGISTER_PROPERTY(behavior)
     FLX_REFL_REGISTER_END;
 
+    FLX_REFL_REGISTER_START(Audio)
+      FLX_REFL_REGISTER_PROPERTY(is_looping)
+      FLX_REFL_REGISTER_PROPERTY(should_play)
+      FLX_REFL_REGISTER_PROPERTY(audio_file)
+    FLX_REFL_REGISTER_END;
 #pragma endregion
 
 #pragma region Editable Viewer
@@ -180,6 +185,11 @@ namespace ChronoShift
   COMPONENT_VIEWER_START(Button)
      COMPONENT_VIEWER_DRAG_INT(behavior)
   COMPONENT_VIEWER_END(Button)
+
+  COMPONENT_VIEWER_START(Audio)
+    COMPONENT_VIEWER_BOOL(should_play)
+    COMPONENT_VIEWER_AUDIO_PATH(audio_file);
+  COMPONENT_VIEWER_END(Audio)
 #pragma endregion
 
   void RegisterRenderingComponents()
@@ -197,6 +207,6 @@ namespace ChronoShift
     REGISTER_COMPONENT_VIEWER(Camera);
     REGISTER_COMPONENT_VIEWER(Animation);
     REGISTER_COMPONENT_VIEWER(Button); // I am going to slot here for now, please clean this up - YC
-                                       // Gonna be honest im just gonna leave it - wj
+    REGISTER_COMPONENT_VIEWER(Audio);                                    // Gonna be honest im just gonna leave it - wj
   }
 }

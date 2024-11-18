@@ -105,10 +105,6 @@ namespace ChronoShift
 				if (ImGui::IsItemClicked())
 				{
 					m_selected_file = file;
-					//if (FLX_EXTENSIONS_CHECK_SAFETY("flx", file.extension().string()))
-					//{
-					//	Editor::GetInstance().SelectPrefab(file);
-					//}
 				}
 
 				//Drag and drop assets
@@ -128,9 +124,20 @@ namespace ChronoShift
 						EditorGUI::StartPayload(PayloadTags::SHADER, payload.c_str(), payload.size() + 1, file.filename().string().c_str());
 						EditorGUI::EndPayload();
 					}
+					else if (FLX_EXTENSIONS_CHECK_SAFETY("audio", file.extension().string()))
+					{
+						EditorGUI::StartPayload(PayloadTags::AUDIO, payload.c_str(), payload.size() + 1, file.filename().string().c_str());
+						EditorGUI::EndPayload();
+					}
 					else if (FLX_EXTENSIONS_CHECK_SAFETY("flx", file.extension().string()))
 					{
 						EditorGUI::StartPayload(PayloadTags::PREFAB, payload.c_str(), payload.size() + 1, file.filename().string().c_str());
+						EditorGUI::EndPayload();
+					}
+					else
+					{
+						//Find rocky if you want your filetype supported
+						ImGui::Text("Unsupported file type: %s", file.extension().string().c_str());
 						EditorGUI::EndPayload();
 					}
 				}
