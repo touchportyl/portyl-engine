@@ -395,12 +395,6 @@ namespace FlexEngine
       template <typename T>
       T* GetComponent();
 
-      // Specialization to get a component safely
-      // out is not modified if the component is not found
-      // Returns true if the component is found
-      template <typename T>
-      bool TryGetComponent(T* out);
-
       // Add a component to an entity
       // Usage: entity.AddComponent<Transform>({ 1, 2, 3 });
       // Usage: entity.AddComponent(Transform(1, 2, 3));

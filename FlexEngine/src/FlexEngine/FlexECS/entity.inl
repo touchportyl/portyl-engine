@@ -80,16 +80,6 @@ T* FlexEngine::FlexECS::Entity::GetComponent()
   return out_component;
 }
 
-template <typename T>
-bool FlexEngine::FlexECS::Entity::TryGetComponent(T* out)
-{
-  // guard
-  if (!HasComponent<T>()) return false;
-
-  out = GetComponent<T>();
-  return (out != nullptr);
-}
-
 
 // Steps to add a component to an entity:
 // - Perform type erasure on the component data
