@@ -32,7 +32,7 @@
 #include "opengltexture.h"
 #include "openglframebuffer.h"
 //#include "openglbatchhandler.h"
-//#include "openglpostprocessing.h"
+#include "openglpostprocessing.h"
 #include "../cameramanager.h"
 
 #include <glad/glad.h>
@@ -145,9 +145,9 @@ namespace FlexEngine
         static std::vector<MeshBuffer> m_vbos; /*!< Vector of Vertex Buffer Objects */
         static std::vector<GLuint> m_batchSSBOs;
 
-        static Asset::Shader m_bloom_brightness_shader;
-        static Asset::Shader m_bloom_gaussianblur_shader;
-        static Asset::Shader m_bloom_finalcomp_shader;
+        //static Asset::Shader m_bloom_brightness_shader;
+        //static Asset::Shader m_bloom_gaussianblur_shader;
+        //static Asset::Shader m_bloom_finalcomp_shader;
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         // TODO:
@@ -357,7 +357,7 @@ namespace FlexEngine
         *
         * \param threshold The brightness threshold to apply.
         *****************************************************************************/
-        static void ApplyBrightnessPass(float threshold = 1.0f);
+        //static void ApplyBrightnessPass(float threshold = 1.0f);
         
         /*!***************************************************************************
         * \brief
@@ -367,7 +367,7 @@ namespace FlexEngine
         * \param blurDistance The distance factor for the blur effect.
         * \param intensity The intensity of the blur.
         *****************************************************************************/
-        static void ApplyGaussianBlur(int blurDrawPasses = 4, float blurDistance = 10.0f, int intensity = 12);
+        //static void ApplyGaussianBlur(int blurDrawPasses = 4, float blurDistance = 10.0f, int intensity = 12);
         
         /*!***************************************************************************
         * \brief
@@ -375,7 +375,7 @@ namespace FlexEngine
         *
         * \param opacity The opacity level for the bloom composition.
         *****************************************************************************/
-        static void ApplyBloomFinalComposition(float opacity = 1.0f);
+        //static void ApplyBloomFinalComposition(float opacity = 1.0f);
     };
 }
 
