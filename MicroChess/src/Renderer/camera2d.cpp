@@ -45,7 +45,7 @@ namespace FlexEngine
         if (curr.m_isOrthographic)
         {
             curr.projMatrix = Matrix4x4::Orthographic(
-                curr.position.x, curr.position.x + FlexEngine::Application::GetCurrentWindow()->GetWidth(), //TODO OI GET WINDOW SIZE LEH
+                curr.position.x, curr.position.x + FlexEngine::Application::GetCurrentWindow()->GetWidth(),
                 curr.position.y + FlexEngine::Application::GetCurrentWindow()->GetHeight(), curr.position.y,
                 curr.nearClip, curr.farClip);
         }
