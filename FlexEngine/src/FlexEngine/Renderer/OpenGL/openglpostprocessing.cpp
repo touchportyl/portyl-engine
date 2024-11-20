@@ -8,14 +8,17 @@ namespace FlexEngine
     Asset::Shader OpenGLPostProcessing::m_bloom_gaussianblur_shader;
     Asset::Shader OpenGLPostProcessing::m_bloom_finalcomp_shader;
 
-    GLuint OpenGLPostProcessing::m_VAOid = 00;
+    GLuint OpenGLPostProcessing::m_VAOid = 0;
 
+    #pragma region File locations
     std::filesystem::path curr_file_path = __FILE__;
     std::filesystem::path shared_vert_path(curr_file_path.parent_path() / "../../../../assets/shader/Shared.vert");
     std::filesystem::path bloom_brightness_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_bright_extraction.frag");
     std::filesystem::path bloom_blur_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_gaussian_blurN.frag");
     std::filesystem::path bloom_final_frag_path(curr_file_path.parent_path() / "../../../../assets/shader/bloom/bloom_final_composite.frag");
+    #pragma endregion
 
+    #pragma region Init
     void OpenGLPostProcessing::Init(GLuint VAOIDtoSet)
     {
         m_VAOid = VAOIDtoSet;
@@ -32,7 +35,9 @@ namespace FlexEngine
         );
         Log::Info("All post-processing shaders are created.");
     }
+    #pragma endregion
 
+    #pragma region Features
     /*!***************************************************************************
     * \brief
     * Applies a brightness threshold pass for the bloom effect.
@@ -117,4 +122,5 @@ namespace FlexEngine
         glDrawArrays(GL_TRIANGLES, 0, 6);
         //m_draw_calls++;
     }
+    #pragma endregion
 }
