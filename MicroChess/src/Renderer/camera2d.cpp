@@ -4,11 +4,11 @@ namespace FlexEngine
 {
     #pragma region Set Functions
 
-    void Camera2D::SetDirection(CameraData& curr, const Vector3& direction)
+    void Camera2D::SetDirection(CameraData& curr, const Vector3& target)
     {
-        curr.direction = direction;
-        curr.right = Cross(curr.up, direction).Normalize();
-        curr.viewMatrix = Matrix4x4::LookAt(curr.position, curr.position + curr.direction, curr.up);
+        curr.target = target;
+        curr.right = Cross(curr.up, target).Normalize();
+        curr.viewMatrix = Matrix4x4::LookAt(curr.position, curr.position + curr.target, curr.up);
     }
 
     void Camera2D::SetFieldOfView(CameraData& curr, float fov)
@@ -144,8 +144,8 @@ namespace FlexEngine
 
     void Camera2D::LookAt(CameraData& curr, const Vector3& target)
     {
-        curr.direction = (target - curr.position).Normalize();
-        curr.right = Cross(curr.up, curr.direction).Normalize();
+        curr.target = target;
+        curr.right = Cross(curr.up, curr.position - curr.target).Normalize();
         curr.viewMatrix = Matrix4x4::LookAt(curr.position, target, curr.up);
     }
 

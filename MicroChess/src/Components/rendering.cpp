@@ -163,7 +163,7 @@ namespace ChronoShift
   COMPONENT_VIEWER_START(Camera)
     //Testing
     {
-        COMPONENT_VIEWER_DRAG_VECTOR3(camera.direction)
+        COMPONENT_VIEWER_DRAG_VECTOR3(camera.target)
         COMPONENT_VIEWER_DRAG_VECTOR3(camera.up)
         COMPONENT_VIEWER_DRAG_VECTOR3(camera.right)
     }
