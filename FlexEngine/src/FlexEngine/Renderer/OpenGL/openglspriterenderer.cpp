@@ -56,16 +56,16 @@ namespace FlexEngine
     //float OpenGLSpriteRenderer::gamma = 2.2f;
     float OpenGLSpriteRenderer::m_PPopacity = 0.8f;
 
-    GLuint OpenGLSpriteRenderer::m_editorFBO = 0;
-    GLuint OpenGLSpriteRenderer::m_postProcessingFBO = 0;
-    GLuint OpenGLSpriteRenderer::m_bloomFBO = 0;
+    //GLuint OpenGLSpriteRenderer::m_editorFBO = 0;
+    //GLuint OpenGLSpriteRenderer::m_postProcessingFBO = 0;
+    //GLuint OpenGLSpriteRenderer::m_bloomFBO = 0;
+    //
+    //GLuint OpenGLSpriteRenderer::m_pingpongTex[2] = {};
+    //GLuint OpenGLSpriteRenderer::m_postProcessingTex = 0;
+    //GLuint OpenGLSpriteRenderer::m_editorTex = {};
+    //GLuint OpenGLSpriteRenderer::m_finalRenderTex = {};
 
-    GLuint OpenGLSpriteRenderer::m_pingpongTex[2] = {};
-    GLuint OpenGLSpriteRenderer::m_postProcessingTex = 0;
-    GLuint OpenGLSpriteRenderer::m_editorTex = {};
-    GLuint OpenGLSpriteRenderer::m_finalRenderTex = {};
-
-    float width, height;
+    //float width, height;
 
     //////////////////////////////////////////////////////////////
 
@@ -86,10 +86,10 @@ namespace FlexEngine
     *****************************************************************************/
     uint32_t OpenGLSpriteRenderer::GetDrawCallsLastFrame() { return m_draw_calls_last_frame; }
 
-    void OpenGLSpriteRenderer::SetDefaultFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
-    void OpenGLSpriteRenderer::SetEditorFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_editorFBO); }
-    void OpenGLSpriteRenderer::SetPPFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO); }
-    void OpenGLSpriteRenderer::SetBloomFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_bloomFBO); }
+    //void OpenGLSpriteRenderer::SetDefaultFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+    //void OpenGLSpriteRenderer::SetEditorFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_editorFBO); }
+    //void OpenGLSpriteRenderer::SetPPFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO); }
+    //void OpenGLSpriteRenderer::SetBloomFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_bloomFBO); }
 
     /*!***************************************************************************
     * \brief
@@ -146,7 +146,7 @@ namespace FlexEngine
     * \brief
     * Clears the current framebuffer.
     *****************************************************************************/
-    void OpenGLSpriteRenderer::ClearFrameBuffer() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
+    //void OpenGLSpriteRenderer::ClearFrameBuffer() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
     /*!***************************************************************************
     * \brief
     * Clears the color buffer with a specified color.
@@ -168,19 +168,19 @@ namespace FlexEngine
     *****************************************************************************/
     GLuint OpenGLSpriteRenderer::GetVAO_ID(Renderer2DProps::VBO_Type type) { return m_vbos[type].vao; }
 
-    GLuint OpenGLSpriteRenderer::GetCreatedTexture(CreatedTextureID id)
-    {
-        switch (id)
-        {
-        case CreatedTextureID::CID_finalRender:
-            return m_finalRenderTex;
-        case CreatedTextureID::CID_blur:
-            return m_pingpongTex[0];
-        case CreatedTextureID::CID_editor:
-        default:
-            return m_editorTex;
-        }
-    }
+    //GLuint OpenGLSpriteRenderer::GetCreatedTexture(CreatedTextureID id)
+    //{
+    //    switch (id)
+    //    {
+    //    case CreatedTextureID::CID_finalRender:
+    //        return m_finalRenderTex;
+    //    case CreatedTextureID::CID_blur:
+    //        return m_pingpongTex[0];
+    //    case CreatedTextureID::CID_editor:
+    //    default:
+    //        return m_editorTex;
+    //    }
+    //}
     //////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -356,87 +356,88 @@ namespace FlexEngine
         );
         Log::Info("All post-processing shaders are created.");
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////
-        // Create relevant FBO 
-        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-        glGenFramebuffers(1, &m_postProcessingFBO); //For final composite post-process
-        SetPPFrameBuffer();
-        width = windowSize.x;
-        height = windowSize.y;
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //// Create relevant FBO 
+        OpenGLFrameBuffer::Init(windowSize);
+        //GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+        //glGenFramebuffers(1, &m_postProcessingFBO); //For final composite post-process
+        //SetPPFrameBuffer();
+        //width = windowSize.x;
+        //height = windowSize.y;
 
-        // Create Post-processing FBO
-        glGenTextures(1, &m_postProcessingTex);
-        glBindTexture(GL_TEXTURE_2D, m_postProcessingTex);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_postProcessingTex, 0);
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            Log::Fatal("Post-Processing Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
+        //// Create Post-processing FBO
+        //glGenTextures(1, &m_postProcessingTex);
+        //glBindTexture(GL_TEXTURE_2D, m_postProcessingTex);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_postProcessingTex, 0);
+        //if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        //    Log::Fatal("Post-Processing Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
 
-        // Create Specialized Post-processing FBO : BLOOM
-        glGenFramebuffers(1, &m_bloomFBO); //For gaussian blurring
-        SetBloomFrameBuffer();
-        glGenTextures(2, m_pingpongTex);
-        glBindTexture(GL_TEXTURE_2D, m_pingpongTex[0]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongTex[0], 0);
-        glBindTexture(GL_TEXTURE_2D, m_pingpongTex[1]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_pingpongTex[1], 0);
-        glDrawBuffers(2, drawBuffers);
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            Log::Fatal("Bloom Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
+        //// Create Specialized Post-processing FBO : BLOOM
+        //glGenFramebuffers(1, &m_bloomFBO); //For gaussian blurring
+        //SetBloomFrameBuffer();
+        //glGenTextures(2, m_pingpongTex);
+        //glBindTexture(GL_TEXTURE_2D, m_pingpongTex[0]);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingpongTex[0], 0);
+        //glBindTexture(GL_TEXTURE_2D, m_pingpongTex[1]);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_pingpongTex[1], 0);
+        //glDrawBuffers(2, drawBuffers);
+        //if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        //    Log::Fatal("Bloom Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
 
-        // Create editor FBO
-        glGenFramebuffers(1, &m_editorFBO);
-        SetEditorFrameBuffer();
-        glGenTextures(1, &m_editorTex);
-        glBindTexture(GL_TEXTURE_2D, m_editorTex);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_editorTex, 0);
-        glGenTextures(1, &m_finalRenderTex);
-        glBindTexture(GL_TEXTURE_2D, m_finalRenderTex);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_finalRenderTex, 0);
-        glDrawBuffers(2, drawBuffers);
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            Log::Fatal("Editor Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
+        //// Create editor FBO
+        //glGenFramebuffers(1, &m_editorFBO);
+        //SetEditorFrameBuffer();
+        //glGenTextures(1, &m_editorTex);
+        //glBindTexture(GL_TEXTURE_2D, m_editorTex);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_editorTex, 0);
+        //glGenTextures(1, &m_finalRenderTex);
+        //glBindTexture(GL_TEXTURE_2D, m_finalRenderTex);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_finalRenderTex, 0);
+        //glDrawBuffers(2, drawBuffers);
+        //if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        //    Log::Fatal("Editor Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
 
-        // Unbind frame buffer
-        SetDefaultFrameBuffer();
+        //// Unbind frame buffer
+        //SetDefaultFrameBuffer();
 
-        FreeQueue::Push(
-        [=]()
-        {
-            glDeleteFramebuffers(1, &m_postProcessingFBO);
-            glDeleteFramebuffers(1, &m_editorFBO);
-            glDeleteFramebuffers(1, &m_bloomFBO);
+        //FreeQueue::Push(
+        //[=]()
+        //{
+        //    glDeleteFramebuffers(1, &m_postProcessingFBO);
+        //    glDeleteFramebuffers(1, &m_editorFBO);
+        //    glDeleteFramebuffers(1, &m_bloomFBO);
 
-            glDeleteTextures(1, &m_postProcessingTex);
-            glDeleteTextures(1, &m_editorTex);
-            glDeleteTextures(1, &m_finalRenderTex);
-            glDeleteTextures(2, m_pingpongTex);
-        }
-        );
+        //    glDeleteTextures(1, &m_postProcessingTex);
+        //    glDeleteTextures(1, &m_editorTex);
+        //    glDeleteTextures(1, &m_finalRenderTex);
+        //    glDeleteTextures(2, m_pingpongTex);
+        //}
+        //);
     }
 
     /*!***************************************************************************
@@ -657,7 +658,7 @@ namespace FlexEngine
     *****************************************************************************/
     void OpenGLSpriteRenderer::DrawPostProcessingLayer()
     {
-        SetPPFrameBuffer(); // Initial Frame Buffer Setup
+        OpenGLFrameBuffer::SetPostProcessingFrameBuffer(); // Initial Frame Buffer Setup
 
         //CURRENT POST-PROCESS(PP) BEING HANDLED:
         // 1) Reflection / Gloss
@@ -667,7 +668,7 @@ namespace FlexEngine
         // 2) Bloom
         {
             // Step 1: Set to bloom frame buffer -> you do not want to mess with the other effects textures
-            SetBloomFrameBuffer();
+            OpenGLFrameBuffer::SetBloomFrameBuffer();
 
             // Step 2: Brightness Extraction
             ApplyBrightnessPass(0.55f);
@@ -707,7 +708,7 @@ namespace FlexEngine
         m_bloom_brightness_shader.Use();
         m_bloom_brightness_shader.SetUniform_float("u_Threshold", threshold);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_finalRenderTex); // Input: scene texture
+        glBindTexture(GL_TEXTURE_2D, OpenGLFrameBuffer::m_finalRenderTex); // Input: scene texture
         m_bloom_brightness_shader.SetUniform_int("scene", 0);
 
         glBindVertexArray(m_vbos[Renderer2DProps::VBO_Type::VBO_PProcessing].vao);
@@ -735,7 +736,7 @@ namespace FlexEngine
 
             m_bloom_gaussianblur_shader.SetUniform_int("horizontal", horizontal);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_pingpongTex[horizontal]);
+            glBindTexture(GL_TEXTURE_2D, OpenGLFrameBuffer::m_pingpongTex[horizontal]);
             m_bloom_gaussianblur_shader.SetUniform_int("scene", 0);
             m_bloom_gaussianblur_shader.SetUniform_float("blurDistance", blurDistance);
             m_bloom_gaussianblur_shader.SetUniform_int("intensity", intensity);
@@ -756,20 +757,20 @@ namespace FlexEngine
     *****************************************************************************/
     void OpenGLSpriteRenderer::ApplyBloomFinalComposition(float opacity)
     {
-        SetEditorFrameBuffer();
+        OpenGLFrameBuffer::SetEditorFrameBuffer();
         //GLenum drawBuffer = GL_COLOR_ATTACHMENT1;
         GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT1 };
         glDrawBuffers(1, drawBuffers);
 
         m_bloom_finalcomp_shader.Use();
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_editorTex); // Original scene texture
+        glBindTexture(GL_TEXTURE_2D, OpenGLFrameBuffer::m_editorTex); // Original scene texture
         m_bloom_finalcomp_shader.SetUniform_int("screenTex", 0);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, m_pingpongTex[0]); // Blur Vertical
+        glBindTexture(GL_TEXTURE_2D, OpenGLFrameBuffer::m_pingpongTex[0]); // Blur Vertical
         m_bloom_finalcomp_shader.SetUniform_int("bloomVTex", 1);
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, m_pingpongTex[1]); // Blur Horizontal
+        glBindTexture(GL_TEXTURE_2D, OpenGLFrameBuffer::m_pingpongTex[1]); // Blur Horizontal
         m_bloom_finalcomp_shader.SetUniform_int("bloomHTex", 2);
         m_bloom_finalcomp_shader.SetUniform_float("opacity", opacity);
 

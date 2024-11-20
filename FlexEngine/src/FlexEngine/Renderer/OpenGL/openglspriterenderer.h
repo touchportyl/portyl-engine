@@ -30,6 +30,9 @@
 #include "flx_api.h"
 #include "FlexMath/vector4.h"
 #include "opengltexture.h"
+#include "openglframebuffer.h"
+//#include "openglbatchhandler.h"
+//#include "openglpostprocessing.h"
 #include "../cameramanager.h"
 
 #include <glad/glad.h>
@@ -150,15 +153,15 @@ namespace FlexEngine
         // TODO:
         //  ALL FBOS should be moved to seperate files  to handle post-processing
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        static GLuint m_editorFBO;           //replace default framebuffer
-        static GLuint m_postProcessingFBO;         //framebuffer to handle post-processing
-        static GLuint m_bloomFBO;           //framebuffer to handle bloom exclusively
+        //static GLuint m_editorFBO;           //replace default framebuffer
+        //static GLuint m_postProcessingFBO;         //framebuffer to handle post-processing
+        //static GLuint m_bloomFBO;           //framebuffer to handle bloom exclusively
          
         //4 Textures going to be created, 2 for post_processing and 2 for editor and game
-        static GLuint m_pingpongTex[2];            /*!< Ping-pong buffers for intermediate processing */
-        static GLuint m_postProcessingTex;
-        static GLuint m_editorTex;
-        static GLuint m_finalRenderTex;
+        //static GLuint m_pingpongTex[2];            /*!< Ping-pong buffers for intermediate processing */
+        //static GLuint m_postProcessingTex;
+        //static GLuint m_editorTex;
+        //static GLuint m_finalRenderTex;
         static float m_PPopacity;
 
         // Testing variables (subject to change)
@@ -166,13 +169,13 @@ namespace FlexEngine
         //static float gamma;                            /*!< Controls the gamma function */
     public:
 
-        enum __FLX_API CreatedTextureID
-        {
-            CID_editor,
-            CID_finalRender,
-            CID_brightnessPass,
-            CID_blur,
-        };
+        //enum __FLX_API CreatedTextureID
+        //{
+        //    CID_editor,
+        //    CID_finalRender,
+        //    CID_brightnessPass,
+        //    CID_blur,
+        //};
 
         /*!***************************************************************************
         * \brief
@@ -234,31 +237,31 @@ namespace FlexEngine
         * \brief
         * Sets the default framebuffer for rendering.
         *****************************************************************************/
-        static void SetDefaultFrameBuffer();
+       // static void SetDefaultFrameBuffer();
 
         /*!***************************************************************************
         * \brief
         * Sets the framebuffer to the editor's framebuffer for rendering.
         *****************************************************************************/
-        static void SetEditorFrameBuffer();
+        //static void SetEditorFrameBuffer();
 
         /*!***************************************************************************
         * \brief
         * Enables post-processing effects for rendering.
         *****************************************************************************/
-        static void SetPPFrameBuffer();
+        //static void SetPPFrameBuffer();
 
         /*!***************************************************************************
         * \brief
         * Sets the framebuffer specifically for bloom post-processing effects.
         *****************************************************************************/
-        static void SetBloomFrameBuffer();
+        //static void SetBloomFrameBuffer();
 
         /*!***************************************************************************
         * \brief
         * Clears the current framebuffer.
         *****************************************************************************/
-        static void ClearFrameBuffer();
+        //static void ClearFrameBuffer();
 
         /*!***************************************************************************
         * \brief
@@ -277,7 +280,7 @@ namespace FlexEngine
         *****************************************************************************/
         static GLuint GetVAO_ID(Renderer2DProps::VBO_Type type);
 
-        static GLuint GetCreatedTexture(CreatedTextureID id = CID_editor);
+        //static GLuint GetCreatedTexture(CreatedTextureID id = CID_editor);
         /*!***************************************************************************
         * \brief
         * Creates a VAO and VBO with the specified vertices.
@@ -381,5 +384,5 @@ namespace FlexEngine
 // , OpenGLPostprocessing (handles post-processing), 
 // OpenglBatchHandler (handles batching, instancing and texture aliasing)
 // 
-// could have added pragma but meh
+// Add pragma accordingly
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

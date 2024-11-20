@@ -229,8 +229,8 @@ namespace ChronoShift
         bool blending = OpenGLRenderer::IsBlendingEnabled();
         if (!blending) OpenGLRenderer::EnableBlending();
 
-        OpenGLSpriteRenderer::SetEditorFrameBuffer();
-        OpenGLSpriteRenderer::ClearFrameBuffer();
+        OpenGLFrameBuffer::SetEditorFrameBuffer();
+        OpenGLFrameBuffer::ClearFrameBuffer();
 
         pp_render_queue.Flush();
         OpenGLSpriteRenderer::DrawPostProcessingLayer();
@@ -304,8 +304,8 @@ namespace ChronoShift
         bool blending = OpenGLRenderer::IsBlendingEnabled();
         if (!blending) OpenGLRenderer::EnableBlending();
 
-        OpenGLSpriteRenderer::SetEditorFrameBuffer();
-        OpenGLSpriteRenderer::ClearFrameBuffer();
+        OpenGLFrameBuffer::SetEditorFrameBuffer();
+        OpenGLFrameBuffer::ClearFrameBuffer();
 
         Renderer2DProps props;
 
@@ -355,9 +355,9 @@ namespace ChronoShift
         bool blending = OpenGLRenderer::IsBlendingEnabled();
         if (!blending) OpenGLRenderer::EnableBlending();
 
-        OpenGLSpriteRenderer::SetEditorFrameBuffer();
+        OpenGLFrameBuffer::SetEditorFrameBuffer();
         text_render_queue.Flush();
-        OpenGLSpriteRenderer::SetDefaultFrameBuffer();
+        OpenGLFrameBuffer::SetDefaultFrameBuffer();
 
         if (depth_test) OpenGLRenderer::EnableDepthTest();
         if (!blending) OpenGLRenderer::DisableBlending();
