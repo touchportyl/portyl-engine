@@ -24,5 +24,9 @@ namespace ChronoShift
 		void Update();
 		void EditorUI();
 		void Shutdown();
+		void CalculatePositions();
+	private:
+		ImVec2 m_viewport_size;
+		ImVec2 m_viewport_position;
 	};
 }
