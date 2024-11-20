@@ -220,9 +220,6 @@
     <ClCompile Include="src\FlexEngine\flexprofiler.cpp">
       <Filter>src\FlexEngine</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglbatchhandler.cpp">
-      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="src\FlexEngine\Renderer\OpenGL\openglframebuffer.cpp">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClCompile>
@@ -431,9 +428,6 @@
     </ClInclude>
     <ClInclude Include="src\FlexEngine\flexprofiler.h">
       <Filter>src\FlexEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglbatchhandler.h">
-      <Filter>src\FlexEngine\Renderer\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\FlexEngine\Renderer\OpenGL\openglframebuffer.h">
       <Filter>src\FlexEngine\Renderer\OpenGL</Filter>

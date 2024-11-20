@@ -33,6 +33,12 @@ namespace FlexEngine
         Log::Info("All post-processing shaders are created.");
     }
 
+    /*!***************************************************************************
+    * \brief
+    * Applies a brightness threshold pass for the bloom effect.
+    *
+    * \param threshold The brightness threshold to apply.
+    *****************************************************************************/
     void OpenGLPostProcessing::ApplyBrightnessPass(float threshold) 
     {
         GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
@@ -49,6 +55,14 @@ namespace FlexEngine
         //m_draw_calls++;
     }
 
+    ///*!***************************************************************************
+    //* \brief
+    //* Applies a Gaussian blur effect with specified passes, blur distance, and intensity.
+    //*
+    //* \param blurDrawPasses The number of passes to apply for the blur.
+    //* \param blurDistance The distance factor for the blur effect.
+    //* \param intensity The intensity of the blur.
+    //*****************************************************************************/
     void OpenGLPostProcessing::ApplyGaussianBlur(int blurPasses, float blurDistance, int intensity) 
     {
         m_bloom_gaussianblur_shader.Use();
@@ -74,6 +88,12 @@ namespace FlexEngine
         }
     }
 
+    ///*!***************************************************************************
+    //* \brief
+    //* Applies the final bloom composition with a specified opacity level.
+    //*
+    //* \param opacity The opacity level for the bloom composition.
+    //*****************************************************************************/
     void OpenGLPostProcessing::ApplyBloomFinalComposition(float opacity) 
     {
         OpenGLFrameBuffer::SetEditorFrameBuffer();

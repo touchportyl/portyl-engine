@@ -7,11 +7,9 @@ namespace FlexEngine
 {
     class OpenGLFrameBuffer 
     {
-        static GLuint m_editorFBO;
-        static GLuint m_postProcessingFBO;
-        static GLuint m_bloomFBO;
-
-
+        static GLuint m_editorFBO;         //replace default framebuffer
+        static GLuint m_postProcessingFBO; //framebuffer to handle post-processing
+        static GLuint m_bloomFBO;          //framebuffer to handle bloom exclusively
 
     public:
         static GLuint m_pingpongTex[2];
@@ -28,10 +26,30 @@ namespace FlexEngine
         };
 
         static void Init(const Vector2& windowSize);
+        /*!***************************************************************************
+        * \brief
+        * Sets the default framebuffer for rendering.
+        *****************************************************************************/
         static void SetEditorFrameBuffer();
+        /*!***************************************************************************
+        * \brief
+        * Sets the default framebuffer for rendering.
+        *****************************************************************************/
         static void SetDefaultFrameBuffer();
+        /*!***************************************************************************
+        * \brief
+        * Enables post-processing effects for rendering.
+        *****************************************************************************/
         static void SetPostProcessingFrameBuffer();
+        /*!***************************************************************************
+        * \brief
+        * Sets the framebuffer specifically for bloom post-processing effects.
+        *****************************************************************************/
         static void SetBloomFrameBuffer();
+        /*!***************************************************************************
+        * \brief
+        * Clears the current framebuffer.
+        *****************************************************************************/
         static void ClearFrameBuffer();
         static GLuint GetCreatedTexture(GLuint textureID);
     };

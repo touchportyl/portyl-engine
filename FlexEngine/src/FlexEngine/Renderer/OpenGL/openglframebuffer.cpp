@@ -102,6 +102,10 @@ namespace FlexEngine {
 
     void OpenGLFrameBuffer::SetBloomFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_bloomFBO); }
 
+    /*!***************************************************************************
+    * \brief
+    * Clears the current framebuffer.
+    *****************************************************************************/
     void OpenGLFrameBuffer::ClearFrameBuffer() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 
     GLuint OpenGLFrameBuffer::GetCreatedTexture(GLuint textureID) {
