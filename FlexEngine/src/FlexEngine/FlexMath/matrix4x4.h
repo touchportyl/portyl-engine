@@ -32,7 +32,7 @@ namespace FlexEngine
 
     // Data members
 
-    union __FLX_ALIGNAS(16) // __FLX_ALIGNAS(64) // Use 64 alignment for simd
+    union __FLX_ALIGNAS(64)
     {
       #pragma warning(push)
       #pragma warning(disable: 4201) // nonstandard extension used: nameless struct/union

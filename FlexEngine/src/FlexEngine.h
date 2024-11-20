@@ -102,7 +102,6 @@
 #include "FlexEngine/FlexMath/vector3.h"
 #include "FlexEngine/FlexMath/vector4.h"
 #include "FlexEngine/FlexMath/matrix1x1.h"
-#include "FlexEngine/FlexMath/matrix3x3.h"
 #include "FlexEngine/FlexMath/matrix4x4.h"
 #include "FlexEngine/FlexMath/quaternion.h"
 

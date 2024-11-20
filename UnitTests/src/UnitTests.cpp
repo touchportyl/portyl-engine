@@ -139,55 +139,10 @@ static void AreEqualQuaternion(const glm::quat& expected, const Quaternion& actu
 #pragma endregion
 
 
-// Special functions for comparing Matrix3x3 and glm::mat3
-#pragma region AreEqualMatrix3
-
-static void AreEqualMatrix3(const Matrix3x3& expected, const Matrix3x3& actual)
-{
-  for (int i = 0; i < 9; i++)
-  {
-    Assert::AreEqual(expected.data[i], actual.data[i]);
-  }
-}
-
-static void AreEqualMatrix3(const glm::mat3& expected, const Matrix3x3& actual)
-{
-  for (int i = 0; i < 9; i++)
-  {
-    Assert::AreEqual(expected[i / 3][i % 3], actual.data[i]);
-  }
-}
-
-#pragma endregion
-
-#pragma region AreEqualMatrix3 (with float tolerance)
-
-static void AreEqualMatrix3(const Matrix3x3& expected, const Matrix3x3& actual, const float tolerance)
-{
-  for (int i = 0; i < 9; i++)
-  {
-    Assert::AreEqual(expected[i], actual[i], tolerance);
-  }
-}
-
-static void AreEqualMatrix3(const glm::mat3& expected, const Matrix3x3& actual, const float tolerance)
-{
-  for (int i = 0; i < 3; i++)
-  {
-    for (int j = 0; j < 3; j++)
-    {
-      Assert::AreEqual(expected[i][j], actual(i, j), tolerance);
-    }
-  }
-}
-
-#pragma endregion
-
-
 // Special functions for comparing Matrix4x4 and glm::mat4
-#pragma region AreEqualMatrix4
+#pragma region AreEqualMatrix
 
-static void AreEqualMatrix4(const Matrix4x4& expected, const Matrix4x4& actual)
+static void AreEqualMatrix(const Matrix4x4& expected, const Matrix4x4& actual)
 {
   for (int i = 0; i < 16; i++)
   {
@@ -195,7 +150,7 @@ static void AreEqualMatrix4(const Matrix4x4& expected, const Matrix4x4& actual)
   }
 }
 
-static void AreEqualMatrix4(const glm::mat4& expected, const Matrix4x4& actual)
+static void AreEqualMatrix(const glm::mat4& expected, const Matrix4x4& actual)
 {
   for (int i = 0; i < 16; i++)
   {
@@ -205,9 +160,9 @@ static void AreEqualMatrix4(const glm::mat4& expected, const Matrix4x4& actual)
 
 #pragma endregion
 
-#pragma region AreEqualMatrix4 (with float tolerance)
+#pragma region AreEqualMatrix (with float tolerance)
 
-static void AreEqualMatrix4(const Matrix4x4& expected, const Matrix4x4& actual, const float tolerance)
+static void AreEqualMatrix(const Matrix4x4& expected, const Matrix4x4& actual, const float tolerance)
 {
   for (int i = 0; i < 16; i++)
   {
@@ -215,7 +170,7 @@ static void AreEqualMatrix4(const Matrix4x4& expected, const Matrix4x4& actual, 
   }
 }
 
-static void AreEqualMatrix4(const glm::mat4& expected, const Matrix4x4& actual, const float tolerance)
+static void AreEqualMatrix(const glm::mat4& expected, const Matrix4x4& actual, const float tolerance)
 {
   for (int i = 0; i < 4; i++)
   {
@@ -1899,385 +1854,6 @@ namespace T_FlexMath
 
   #pragma endregion
 
-  #pragma region Matrix3x3
-
-  namespace T_Matrix3x3
-  {
-
-    TEST_CLASS(T_Accessors)
-    {
-      Matrix3x3 a;
-      glm::mat3 glm_a;
-
-    public:
-
-      TEST_METHOD_INITIALIZE(Initialize)
-      {
-        a = {
-           1.0f,  2.0f,  3.0f, 
-           4.0f,  5.0f,  6.0f, 
-           7.0f,  8.0f,  9.0f
-        };
-        glm_a = {
-           1.0f,  2.0f,  3.0f,
-           4.0f,  5.0f,  6.0f,
-           7.0f,  8.0f,  9.0f
-        };
-      }
-
-      TEST_METHOD_CLEANUP(Cleanup)
-      {
-      }
-
-      TEST_METHOD(Individual)
-      {
-        Assert::AreEqual(1.0f, a.m00);
-        Assert::AreEqual(2.0f, a.m01);
-        Assert::AreEqual(3.0f, a.m02);
-        Assert::AreEqual(4.0f, a.m10);
-        Assert::AreEqual(5.0f, a.m11);
-        Assert::AreEqual(6.0f, a.m12);
-        Assert::AreEqual(7.0f, a.m20);
-        Assert::AreEqual(8.0f, a.m21);
-        Assert::AreEqual(9.0f, a.m22);
-      }
-
-      TEST_METHOD(Array)
-      {
-        Assert::AreEqual(1.0f, a.data[0]);
-        Assert::AreEqual(2.0f, a.data[1]);
-        Assert::AreEqual(3.0f, a.data[2]);
-        Assert::AreEqual(4.0f, a.data[3]);
-        Assert::AreEqual(5.0f, a.data[4]);
-        Assert::AreEqual(6.0f, a.data[5]);
-        Assert::AreEqual(7.0f, a.data[6]);
-        Assert::AreEqual(8.0f, a.data[7]);
-        Assert::AreEqual(9.0f, a.data[8]);
-      }
-
-      TEST_METHOD(Function)
-      {
-        Assert::AreEqual(1.0f, a(0, 0));
-        Assert::AreEqual(2.0f, a(0, 1));
-        Assert::AreEqual(3.0f, a(0, 2));
-        Assert::AreEqual(4.0f, a(1, 0));
-        Assert::AreEqual(5.0f, a(1, 1));
-        Assert::AreEqual(6.0f, a(1, 2));
-        Assert::AreEqual(7.0f, a(2, 0));
-        Assert::AreEqual(8.0f, a(2, 1));
-        Assert::AreEqual(9.0f, a(2, 2));
-      }
-
-      TEST_METHOD(MemberParity)
-      {
-        Assert::AreEqual(a.m00, a(0, 0));
-        Assert::AreEqual(a.m01, a(0, 1));
-        Assert::AreEqual(a.m02, a(0, 2));
-        Assert::AreEqual(a.m10, a(1, 0));
-        Assert::AreEqual(a.m11, a(1, 1));
-        Assert::AreEqual(a.m12, a(1, 2));
-        Assert::AreEqual(a.m20, a(2, 0));
-        Assert::AreEqual(a.m21, a(2, 1));
-        Assert::AreEqual(a.m22, a(2, 2));
-      }
-
-      TEST_METHOD(ParityWithGLM)
-      {
-        for (int i = 0; i < 3; i++)
-        {
-          for (int j = 0; j < 3; j++)
-          {
-            Assert::AreEqual(glm_a[i][j], a(i, j));
-          }
-        }
-      }
-
-    };
-
-    TEST_CLASS(T_UnaryOperators)
-    {
-      Matrix3x3 a, b, c;
-      glm::mat3 glm_a, glm_b, glm_c;
-
-    public:
-
-      TEST_METHOD_INITIALIZE(Initialize)
-      {
-        a = {
-           1.0f,  2.0f,  3.0f,
-           4.0f,  5.0f,  6.0f,
-           7.0f,  8.0f,  9.0f
-        };
-        b = {
-           1.0f,  2.0f,  3.0f,
-           4.0f,  5.0f,  6.0f,
-           7.0f,  8.0f,  9.0f
-        };
-        c = {
-           2.0f,  4.0f,  6.0f,
-           8.0f, 10.0f, 12.0f,
-          14.0f, 16.0f, 18.0f
-        };
-        glm_a = {
-           1.0f,  2.0f,  3.0f,
-           4.0f,  5.0f,  6.0f,
-           7.0f,  8.0f,  9.0f
-        };
-        glm_b = {
-           1.0f,  2.0f,  3.0f,
-           4.0f,  5.0f,  6.0f,
-           7.0f,  8.0f,  9.0f
-        };
-        glm_c = {
-           2.0f,  4.0f,  6.0f,
-           8.0f, 10.0f, 12.0f,
-          14.0f, 16.0f, 18.0f
-        };
-      }
-
-      TEST_METHOD_CLEANUP(Cleanup)
-      {
-      }
-
-      TEST_METHOD(Comparison_Equality)
-      {
-        Assert::IsTrue(a == b);
-        Assert::IsFalse(a == c);
-      }
-
-      TEST_METHOD(Comparison_Inequality)
-      {
-        Assert::IsFalse(a != b);
-        Assert::IsTrue(a != c);
-      }
-
-      TEST_METHOD(Addition_Matrix)
-      {
-        a += c;
-        glm_a += glm_c;
-        AreEqualMatrix3(glm_a, a);
-      }
-
-      TEST_METHOD(Subtraction_Matrix)
-      {
-        a -= c;
-        glm_a -= glm_c;
-        AreEqualMatrix3(glm_a, a);
-      }
-
-      TEST_METHOD(Multiplication_Matrix)
-      {
-        a *= c;
-        glm_a *= glm_c;
-        AreEqualMatrix3(glm_a, a);
-      }
-
-      TEST_METHOD(Multiplication_Value)
-      {
-        a *= 2.0f;
-        glm_a *= 2.0f;
-        AreEqualMatrix3(glm_a, a);
-      }
-
-      TEST_METHOD(Division_Value)
-      {
-        a /= 2.0f;
-        glm_a /= 2.0f;
-        AreEqualMatrix3(glm_a, a);
-      }
-
-    };
-
-    TEST_CLASS(T_BinaryOperators)
-    {
-      Matrix3x3 a, b;
-      glm::mat3 glm_a, glm_b;
-
-    public:
-
-      TEST_METHOD_INITIALIZE(Initialize)
-      {
-        a = {
-           1.0f,  2.0f,  3.0f,
-           4.0f,  5.0f,  6.0f,
-           7.0f,  8.0f,  9.0f
-        };
-        b = {
-           2.0f,  4.0f,  6.0f,
-           8.0f, 10.0f, 12.0f,
-          14.0f, 16.0f, 18.0f
-        };
-        glm_a = {
-           1.0f,  2.0f,  3.0f,
-           4.0f,  5.0f,  6.0f,
-           7.0f,  8.0f,  9.0f
-        };
-        glm_b = {
-           2.0f,  4.0f,  6.0f,
-           8.0f, 10.0f, 12.0f,
-          14.0f, 16.0f, 18.0f
-        };
-      }
-
-      TEST_METHOD_CLEANUP(Cleanup)
-      {
-      }
-
-      TEST_METHOD(Addition_MatrixToMatrix)
-      {
-        AreEqualMatrix3(glm_a + glm_b, a + b);
-      }
-
-      TEST_METHOD(Subtraction_MatrixToMatrix)
-      {
-        AreEqualMatrix3(glm_a - glm_b, a - b);
-      }
-
-      TEST_METHOD(Multiplication_MatrixToMatrix)
-      {
-        AreEqualMatrix3(glm_a * glm_b, a * b);
-      }
-
-      TEST_METHOD(Multiplication_MatrixToValue)
-      {
-        AreEqualMatrix3(glm_a * 2.0f, a * 2.0f);
-      }
-
-      TEST_METHOD(Multiplication_ValueToMatrix)
-      {
-        AreEqualMatrix3(2.0f * glm_a, 2.0f * a);
-      }
-
-      TEST_METHOD(Division_MatrixToValue)
-      {
-        AreEqualMatrix3(glm_a / 2.0f, a / 2.0f);
-      }
-
-    };
-
-    TEST_CLASS(T_Functions)
-    {
-      Matrix3x3 a;
-      glm::mat3 glm_a;
-
-    public:
-
-      TEST_METHOD_INITIALIZE(Initialize)
-      {
-        a = {
-          5.0f, 6.0f, 6.0f,
-          6.0f, 7.0f, 2.0f,
-          2.0f, 3.0f, 6.0f
-        };
-        glm_a = {
-          5.0f, 6.0f, 6.0f,
-          6.0f, 7.0f, 2.0f,
-          2.0f, 3.0f, 6.0f
-        };
-      }
-
-      TEST_METHOD_CLEANUP(Cleanup)
-      {
-      }
-
-      TEST_METHOD(Transpose)
-      {
-        AreEqualMatrix3(glm::transpose(glm_a), a.Transpose());
-      }
-
-      TEST_METHOD(Determinant)
-      {
-        Assert::AreEqual(glm::determinant(glm_a), a.Determinant());
-      }
-
-      TEST_METHOD(Inverse)
-      {
-        AreEqualMatrix3(glm::inverse(glm_a), a.Inverse());
-      }
-
-    };
-
-    TEST_CLASS(T_Transformations_StaticParity)
-    {
-      Matrix3x3 a;
-      glm::mat3 glm_a;
-
-    public:
-
-      TEST_METHOD_INITIALIZE(Initialize)
-      {
-        a = Matrix3x3::Identity;
-        glm_a = glm::mat3(1.0f);
-      }
-
-      TEST_METHOD_CLEANUP(Cleanup)
-      {
-      }
-
-      TEST_METHOD(Static_Translate)
-      {
-        Matrix3x3 static_translate = Matrix3x3::Translate(a, Vector3(1.0f, 2.0f, 3.0f));
-        Assert::IsTrue(a.Translate(Vector3(1.0f, 2.0f, 3.0f)) == static_translate);
-      }
-
-      TEST_METHOD(Static_Rotate)
-      {
-        Matrix3x3 static_rotate = Matrix3x3::Rotate(a, radians(45.0f), Vector3(0.3f, 0.5f, 0.7f));
-        Assert::IsTrue(a.Rotate(radians(45.0f), Vector3(0.3f, 0.5f, 0.7f)) == static_rotate);
-      }
-
-      TEST_METHOD(Static_RotateDeg)
-      {
-        Matrix3x3 static_rotate_deg = Matrix3x3::RotateDeg(a, 45.0f, Vector3(0.3f, 0.5f, 0.7f));
-        Assert::IsTrue(a.RotateDeg(45.0f, Vector3(0.3f, 0.5f, 0.7f)) == static_rotate_deg);
-      }
-
-      TEST_METHOD(Static_RotateX)
-      {
-        Matrix3x3 static_rotate_x = Matrix3x3::RotateX(a, radians(45.0f));
-        Assert::IsTrue(a.RotateX(radians(45.0f)) == static_rotate_x);
-      }
-
-      TEST_METHOD(Static_RotateY)
-      {
-        Matrix3x3 static_rotate_y = Matrix3x3::RotateY(a, radians(45.0f));
-        Assert::IsTrue(a.RotateY(radians(45.0f)) == static_rotate_y);
-      }
-
-      TEST_METHOD(Static_RotateZ)
-      {
-        Matrix3x3 static_rotate_z = Matrix3x3::RotateZ(a, radians(45.0f));
-        Assert::IsTrue(a.RotateZ(radians(45.0f)) == static_rotate_z);
-      }
-
-      TEST_METHOD(Static_RotateXDeg)
-      {
-        Matrix3x3 static_rotate_x_deg = Matrix3x3::RotateXDeg(a, 45.0f);
-        Assert::IsTrue(a.RotateXDeg(45.0f) == static_rotate_x_deg);
-      }
-
-      TEST_METHOD(Static_RotateYDeg)
-      {
-        Matrix3x3 static_rotate_y_deg = Matrix3x3::RotateYDeg(a, 45.0f);
-        Assert::IsTrue(a.RotateYDeg(45.0f) == static_rotate_y_deg);
-      }
-
-      TEST_METHOD(Static_RotateZDeg)
-      {
-        Matrix3x3 static_rotate_z_deg = Matrix3x3::RotateZDeg(a, 45.0f);
-        Assert::IsTrue(a.RotateZDeg(45.0f) == static_rotate_z_deg);
-      }
-
-      TEST_METHOD(Static_Scale)
-      {
-        Matrix3x3 static_scale = Matrix3x3::Scale(a, Vector3(1.0f, 2.0f, 3.0f));
-        Assert::IsTrue(a.Scale(Vector3(1.0f, 2.0f, 3.0f)) == static_scale);
-      }
-
-    };
-
-  #pragma endregion
-
   #pragma region Matrix4x4
 
   namespace T_Matrix4x4
@@ -2470,35 +2046,35 @@ namespace T_FlexMath
       {
         a += c;
         glm_a += glm_c;
-        AreEqualMatrix4(glm_a, a);
+        AreEqualMatrix(glm_a, a);
       }
 
       TEST_METHOD(Subtraction_Matrix)
       {
         a -= c;
         glm_a -= glm_c;
-        AreEqualMatrix4(glm_a, a);
+        AreEqualMatrix(glm_a, a);
       }
 
       TEST_METHOD(Multiplication_Matrix)
       {
         a *= c;
         glm_a *= glm_c;
-        AreEqualMatrix4(glm_a, a);
+        AreEqualMatrix(glm_a, a);
       }
 
       TEST_METHOD(Multiplication_Value)
       {
         a *= 2.0f;
         glm_a *= 2.0f;
-        AreEqualMatrix4(glm_a, a);
+        AreEqualMatrix(glm_a, a);
       }
 
       TEST_METHOD(Division_Value)
       {
         a /= 2.0f;
         glm_a /= 2.0f;
-        AreEqualMatrix4(glm_a, a);
+        AreEqualMatrix(glm_a, a);
       }
 
     };
@@ -2544,32 +2120,32 @@ namespace T_FlexMath
 
       TEST_METHOD(Addition_MatrixToMatrix)
       {
-        AreEqualMatrix4(glm_a + glm_b, a + b);
+        AreEqualMatrix(glm_a + glm_b, a + b);
       }
 
       TEST_METHOD(Subtraction_MatrixToMatrix)
       {
-        AreEqualMatrix4(glm_a - glm_b, a - b);
+        AreEqualMatrix(glm_a - glm_b, a - b);
       }
 
       TEST_METHOD(Multiplication_MatrixToMatrix)
       {
-        AreEqualMatrix4(glm_a * glm_b, a * b);
+        AreEqualMatrix(glm_a * glm_b, a * b);
       }
 
       TEST_METHOD(Multiplication_MatrixToValue)
       {
-        AreEqualMatrix4(glm_a * 2.0f, a * 2.0f);
+        AreEqualMatrix(glm_a * 2.0f, a * 2.0f);
       }
 
       TEST_METHOD(Multiplication_ValueToMatrix)
       {
-        AreEqualMatrix4(2.0f * glm_a, 2.0f * a);
+        AreEqualMatrix(2.0f * glm_a, 2.0f * a);
       }
 
       TEST_METHOD(Division_MatrixToValue)
       {
-        AreEqualMatrix4(glm_a / 2.0f, a / 2.0f);
+        AreEqualMatrix(glm_a / 2.0f, a / 2.0f);
       }
 
     };
@@ -2603,7 +2179,7 @@ namespace T_FlexMath
 
       TEST_METHOD(Transpose)
       {
-        AreEqualMatrix4(glm::transpose(glm_a), a.Transpose());
+        AreEqualMatrix(glm::transpose(glm_a), a.Transpose());
       }
 
       TEST_METHOD(Determinant)
@@ -2613,7 +2189,7 @@ namespace T_FlexMath
 
       TEST_METHOD(Inverse)
       {
-        AreEqualMatrix4(glm::inverse(glm_a), a.Inverse());
+        AreEqualMatrix(glm::inverse(glm_a), a.Inverse());
       }
 
     };
@@ -2717,61 +2293,61 @@ namespace T_FlexMath
       TEST_METHOD(Common_Translate)
       {
         glm_a = glm::translate(glm_a, glm::vec3(10.0f, -20.0f, 30.0f));
-        AreEqualMatrix4(glm_a, a.Translate(Vector3(10.0f, -20.0f, 30.0f)));
+        AreEqualMatrix(glm_a, a.Translate(Vector3(10.0f, -20.0f, 30.0f)));
       }
 
       TEST_METHOD(Common_Rotate)
       {
         glm_a = glm::rotate(glm_a, glm::radians(45.0f), glm::vec3(0.3f, 0.5f, 0.7f));
-        AreEqualMatrix4(glm_a, a.Rotate(radians(45.0f), Vector3(0.3f, 0.5f, 0.7f)));
+        AreEqualMatrix(glm_a, a.Rotate(radians(45.0f), Vector3(0.3f, 0.5f, 0.7f)));
       }
 
       TEST_METHOD(Common_RotateDeg)
       {
         glm_a = glm::rotate(glm_a, glm::radians(45.0f), glm::vec3(0.3f, 0.5f, 0.7f));
-        AreEqualMatrix4(glm_a, a.RotateDeg(45.0f, Vector3(0.3f, 0.5f, 0.7f)));
+        AreEqualMatrix(glm_a, a.RotateDeg(45.0f, Vector3(0.3f, 0.5f, 0.7f)));
       }
 
       TEST_METHOD(Common_RotateX)
       {
         glm_a = glm::rotate(glm_a, glm::radians(35.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        AreEqualMatrix4(glm_a, a.RotateX(radians(35.0f)));
+        AreEqualMatrix(glm_a, a.RotateX(radians(35.0f)));
       }
 
       TEST_METHOD(Common_RotateY)
       {
         glm_a = glm::rotate(glm_a, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        AreEqualMatrix4(glm_a, a.RotateY(radians(45.0f)));
+        AreEqualMatrix(glm_a, a.RotateY(radians(45.0f)));
       }
 
       TEST_METHOD(Common_RotateZ)
       {
         glm_a = glm::rotate(glm_a, glm::radians(55.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        AreEqualMatrix4(glm_a, a.RotateZ(radians(55.0f)));
+        AreEqualMatrix(glm_a, a.RotateZ(radians(55.0f)));
       }
 
       TEST_METHOD(Common_RotateXDeg)
       {
         glm_a = glm::rotate(glm_a, glm::radians(35.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        AreEqualMatrix4(glm_a, a.RotateXDeg(35.0f));
+        AreEqualMatrix(glm_a, a.RotateXDeg(35.0f));
       }
 
       TEST_METHOD(Common_RotateYDeg)
       {
         glm_a = glm::rotate(glm_a, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        AreEqualMatrix4(glm_a, a.RotateYDeg(45.0f));
+        AreEqualMatrix(glm_a, a.RotateYDeg(45.0f));
       }
 
       TEST_METHOD(Common_RotateZDeg)
       {
         glm_a = glm::rotate(glm_a, glm::radians(55.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        AreEqualMatrix4(glm_a, a.RotateZDeg(55.0f));
+        AreEqualMatrix(glm_a, a.RotateZDeg(55.0f));
       }
 
       TEST_METHOD(Common_Scale)
       {
         glm_a = glm::scale(glm_a, glm::vec3(10.0f, 20.0f, -30.0f));
-        AreEqualMatrix4(glm_a, a.Scale(Vector3(10.0f, 20.0f, -30.0f)));
+        AreEqualMatrix(glm_a, a.Scale(Vector3(10.0f, 20.0f, -30.0f)));
       }
 
     };
@@ -2797,7 +2373,7 @@ namespace T_FlexMath
       {
         glm_a = glm::lookAt(glm::vec3(1.0f, 2.0f, 3.0f), glm::vec3(4.0f, 5.0f, 6.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         a = Matrix4x4::LookAt(Vector3(1.0f, 2.0f, 3.0f), Vector3(4.0f, 5.0f, 6.0f), Vector3(0.0f, 1.0f, 0.0f));
-        AreEqualMatrix4(glm_a, a, 1e-06f);
+        AreEqualMatrix(glm_a, a, 1e-06f);
 #pragma message("Developer's Note: The LookAt test is not to EPSILONf precision but 1e-06f is close enough.")
       }
 
@@ -2805,14 +2381,14 @@ namespace T_FlexMath
       {
         glm_a = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
         a = Matrix4x4::Perspective(radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-        AreEqualMatrix4(glm_a, a);
+        AreEqualMatrix(glm_a, a);
       }
 
       TEST_METHOD(Others_Orthographic)
       {
         glm_a = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
         a = Matrix4x4::Orthographic(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
-        AreEqualMatrix4(glm_a, a);
+        AreEqualMatrix(glm_a, a);
       }
 
     };
@@ -2948,7 +2524,7 @@ namespace T_FlexMath
       {
         // Convert to rotation matrix
         glm::mat4 glm_rot = glm::mat4_cast(glm_a);
-        AreEqualMatrix4(glm_rot, (Matrix4x4)a);
+        AreEqualMatrix(glm_rot, (Matrix4x4)a);
       }
 
       TEST_METHOD(ToBool)
