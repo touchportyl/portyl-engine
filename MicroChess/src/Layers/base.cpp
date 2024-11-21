@@ -243,45 +243,23 @@ namespace ChronoShift
         }
 
         // Set full screen
-        static int mini_window_height, mini_window_width, mini_window_xpos, mini_window_ypos;
+        Window* window = Application::GetCurrentWindow();
+        if (ImGui::Button("Full Screen") && !window->IsFullScreen()) {
+          window->CacheMiniWindowParams();
 
-        if (ImGui::BeginMenu("Full Screen")) {
-          if (ImGui::MenuItem("Editor"))
-          {
-            Window* window = Application::GetCurrentWindow();
-            // Get window parameters
-            //int window_width = window->GetWidth(), window_height = window->GetHeight(), window_xpos = 0, window_ypos = 0;
-            mini_window_height = window->GetHeight();
-            mini_window_width = window->GetWidth();
-            window->GetWindowPosition(&mini_window_xpos, &mini_window_ypos);
+          // Get the primary monitor
+          GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+          // Get the video mode of the monitor
+          const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
-            // Get the primary monitor
-            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-            // Get the video mode of the monitor
-            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
-            // Switch to fullscreen
-            glfwSetWindowMonitor(window->GetGLFWWindow(), monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-
-            // Store Mini Window Parameters
-            //window->SetHeight(window_height);
-            //window->SetWidth(window_width);
-            //window->SetWindowPosition(window_xpos, window_ypos);
-          }/*
-          if (ImGui::MenuItem("Game"))
-          {
-            
-          }*/
-          ImGui::EndMenu();
+          // Switch to fullscreen
+          glfwSetWindowMonitor(window->GetGLFWWindow(), monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
         }
 
         // Minimize!!!
-        if (ImGui::Button("Esc") || Input::GetKeyDown(GLFW_KEY_ESCAPE)) {
-          Window* window = Application::GetCurrentWindow();
-          //int window_xpos = 0, window_ypos = 0;
-          //window->GetWindowPosition(&window_xpos, &window_ypos);
-          //glfwSetWindowMonitor(window->GetGLFWWindow(), NULL, window_xpos, window_ypos, window->GetWidth(), window->GetHeight(), window->GetFPS());
-          glfwSetWindowMonitor(window->GetGLFWWindow(), NULL, mini_window_xpos, mini_window_ypos, mini_window_width, mini_window_height, window->GetFPS());
+        if ((ImGui::Button("Esc") || Input::GetKeyDown(GLFW_KEY_ESCAPE)) && window->IsFullScreen()) {
+          std::pair<int, int> window_pos = window->UnCacheMiniWindowsParams();
+          glfwSetWindowMonitor(window->GetGLFWWindow(), NULL, window_pos.first, window_pos.second, window->GetWidth(), window->GetHeight(), window->GetFPS());
         }
 
         ImGui::EndMainMenuBar();
