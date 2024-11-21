@@ -135,7 +135,7 @@ void FMODWrapper::Core::ResumeAll()
   }
 }
 
-void FMODWrapper::Core::WindowFocusCallback(GLFWwindow* window, int focused)
+void FMODWrapper::Core::WindowFocusCallback([[maybe_unused]] GLFWwindow* window, int focused) // Forced to use this signature, but don't need the window pointer itself.
 {
   if (focused == GLFW_FALSE)
   {
