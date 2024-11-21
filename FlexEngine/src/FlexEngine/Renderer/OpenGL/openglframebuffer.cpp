@@ -108,8 +108,8 @@ namespace FlexEngine {
     *****************************************************************************/
     void OpenGLFrameBuffer::ClearFrameBuffer() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 
-    GLuint OpenGLFrameBuffer::GetCreatedTexture(GLuint textureID) {
-        //TODO Remove
+    GLuint OpenGLFrameBuffer::GetCreatedTexture(GLuint textureID) 
+    {
         switch (textureID)
         {
         case CreatedTextureID::CID_finalRender:

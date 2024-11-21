@@ -86,7 +86,7 @@ namespace ChronoShift
   FLX_REFL_REGISTER_END;
 
   FLX_REFL_REGISTER_START(Camera)
-      FLX_REFL_REGISTER_PROPERTY(camera) //Must put lah or error
+      FLX_REFL_REGISTER_PROPERTY(camera)
   FLX_REFL_REGISTER_END
 
   FLX_REFL_REGISTER_START(Text)
@@ -94,7 +94,6 @@ namespace ChronoShift
       FLX_REFL_REGISTER_PROPERTY(text)
       FLX_REFL_REGISTER_PROPERTY(color)
       FLX_REFL_REGISTER_PROPERTY(alignment)
-      //FLX_REFL_REGISTER_PROPERTY(vbo_id)
   FLX_REFL_REGISTER_END;
 
     FLX_REFL_REGISTER_START(Button)
@@ -161,12 +160,6 @@ namespace ChronoShift
   COMPONENT_VIEWER_END(Animation)
 
   COMPONENT_VIEWER_START(Camera)
-    //Testing
-    {
-        COMPONENT_VIEWER_DRAG_VECTOR3(camera.target)
-        COMPONENT_VIEWER_DRAG_VECTOR3(camera.up)
-        COMPONENT_VIEWER_DRAG_VECTOR3(camera.right)
-    }
      COMPONENT_VIEWER_DRAG_FLOAT(camera.fieldOfView)
      COMPONENT_VIEWER_DRAG_FLOAT(camera.aspectRatio)
      COMPONENT_VIEWER_DRAG_FLOAT(camera.nearClip)
@@ -179,7 +172,6 @@ namespace ChronoShift
       COMPONENT_VIEWER_STRING(fonttype)
       COMPONENT_VIEWER_EDITABLE_STRING(text)
       COMPONENT_VIEWER_COLOR3(color)
-      //COMPONENT_VIEWER(alignment)
   COMPONENT_VIEWER_END(Text)
 
   COMPONENT_VIEWER_START(Button)
@@ -206,7 +198,7 @@ namespace ChronoShift
     REGISTER_COMPONENT_VIEWER(Text);
     REGISTER_COMPONENT_VIEWER(Camera);
     REGISTER_COMPONENT_VIEWER(Animation);
-    REGISTER_COMPONENT_VIEWER(Button); // I am going to slot here for now, please clean this up - YC
-    REGISTER_COMPONENT_VIEWER(Audio);                                    // Gonna be honest im just gonna leave it - wj
+    REGISTER_COMPONENT_VIEWER(Button);
+    REGISTER_COMPONENT_VIEWER(Audio); 
   }
 }
