@@ -74,6 +74,10 @@ public:
       \param identifier The identifier of the sound to stop
     */
     static void StopSound(std::string const&);
+
+    // The below 2 functions are used for manually silencing FMOD. This is meant for things like alt tabbing.
+    static void StopAll();
+    static void ResumeAll();
   };
 
   // Static fmod variables

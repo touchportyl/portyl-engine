@@ -119,6 +119,21 @@ void FMODWrapper::Core::StopSound(std::string const& identifier)
   else Log::Warning("Tried to stop channel that does not exist for identifier: " + identifier);
 }
 
+void FMODWrapper::Core::StopAll()
+{
+  for (auto& channel : channels)
+  {
+    channel.second->setPaused(true);
+  }
+}
+
+void FMODWrapper::Core::ResumeAll()
+{
+  for (auto& channel : channels)
+  {
+    channel.second->setPaused(false);
+  }
+}
 }// namespace FlexEngine
 
   //// Sample code to get if the channel is playing...
