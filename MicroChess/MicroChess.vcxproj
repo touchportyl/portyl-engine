@@ -175,6 +175,7 @@
     <ClInclude Include="src\Editor\hierarchyview.h" />
     <ClInclude Include="src\Editor\imguipayloads.h" />
     <ClInclude Include="src\Editor\inspector.h" />
+    <ClInclude Include="src\Editor\prefabeditor.h" />
     <ClInclude Include="src\Editor\sceneview.h" />
     <ClInclude Include="src\Layers.h" />
     <ClInclude Include="src\Layers\base.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="src\Editor\gameview.cpp" />
     <ClCompile Include="src\Editor\hierarchyview.cpp" />
     <ClCompile Include="src\Editor\inspector.cpp" />
+    <ClCompile Include="src\Editor\prefabeditor.cpp" />
     <ClCompile Include="src\Editor\sceneview.cpp" />
     <ClCompile Include="src\Layers\base.cpp" />
     <ClCompile Include="src\Layers\battle.cpp" />

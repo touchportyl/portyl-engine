@@ -40,8 +40,7 @@ namespace ChronoShift
     window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
     window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());
     window->PushLayer(std::make_shared<ChronoShift::EditorLayer>());
-
-
+   
     // Renderer Setup
 
     OpenGLRenderer::EnableBlending();
@@ -222,29 +221,70 @@ namespace ChronoShift
           ImGui::EndMenu();
         }
 
-//if (ImGui::BeginMenu("Edit"))
-//{
-//  if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
-//  if (ImGui::MenuItem("Redo", "Ctrl+Y")) {}
-//  ImGui::EndMenu();
-//}
+        //if (ImGui::BeginMenu("Edit"))
+        //{
+        //  if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
+        //  if (ImGui::MenuItem("Redo", "Ctrl+Y")) {}
+        //  ImGui::EndMenu();
+        //}
 
-if (ImGui::BeginMenu("View"))
-{
-  if (ImGui::MenuItem("Center Window"))
-  {
-    function_queue.Insert({
-      [this]()
-      {
-        Application::GetCurrentWindow()->CenterWindow();
-      }
-    });
-  }
+        if (ImGui::BeginMenu("View"))
+        {
+          if (ImGui::MenuItem("Center Window"))
+          {
+            function_queue.Insert({
+              [this]()
+              {
+                Application::GetCurrentWindow()->CenterWindow();
+              }
+            });
+          }
+          ImGui::EndMenu();
+        }
 
-  ImGui::EndMenu();
-}
+        // Set full screen
+        static int mini_window_height, mini_window_width, mini_window_xpos, mini_window_ypos;
 
-ImGui::EndMainMenuBar();
+        if (ImGui::BeginMenu("Full Screen")) {
+          if (ImGui::MenuItem("Editor"))
+          {
+            Window* window = Application::GetCurrentWindow();
+            // Get window parameters
+            //int window_width = window->GetWidth(), window_height = window->GetHeight(), window_xpos = 0, window_ypos = 0;
+            mini_window_height = window->GetHeight();
+            mini_window_width = window->GetWidth();
+            window->GetWindowPosition(&mini_window_xpos, &mini_window_ypos);
+
+            // Get the primary monitor
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            // Get the video mode of the monitor
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+            // Switch to fullscreen
+            glfwSetWindowMonitor(window->GetGLFWWindow(), monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+
+            // Store Mini Window Parameters
+            //window->SetHeight(window_height);
+            //window->SetWidth(window_width);
+            //window->SetWindowPosition(window_xpos, window_ypos);
+          }/*
+          if (ImGui::MenuItem("Game"))
+          {
+            
+          }*/
+          ImGui::EndMenu();
+        }
+
+        // Minimize!!!
+        if (ImGui::Button("Esc") || Input::GetKeyDown(GLFW_KEY_ESCAPE)) {
+          Window* window = Application::GetCurrentWindow();
+          //int window_xpos = 0, window_ypos = 0;
+          //window->GetWindowPosition(&window_xpos, &window_ypos);
+          //glfwSetWindowMonitor(window->GetGLFWWindow(), NULL, window_xpos, window_ypos, window->GetWidth(), window->GetHeight(), window->GetFPS());
+          glfwSetWindowMonitor(window->GetGLFWWindow(), NULL, mini_window_xpos, mini_window_ypos, mini_window_width, mini_window_height, window->GetFPS());
+        }
+
+        ImGui::EndMainMenuBar();
       }
       function_queue.Flush();
 

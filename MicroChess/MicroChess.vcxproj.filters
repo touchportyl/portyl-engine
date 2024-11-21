@@ -160,6 +160,9 @@
     <ClInclude Include="src\Renderer\camera2d.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Editor\prefabeditor.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -252,6 +255,9 @@
     </ClCompile>
     <ClCompile Include="src\Renderer\camera2d.cpp">
       <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\prefabeditor.cpp">
+      <Filter>src\Editor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
