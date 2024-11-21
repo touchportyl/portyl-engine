@@ -8,6 +8,7 @@
 #include "imguiwrapper.h"
 #include "input.h"
 #include "Renderer/OpenGL/openglrenderer.h"
+#include "FMOD/FMODWrapper.h"
 
 namespace
 {
@@ -66,7 +67,7 @@ namespace FlexEngine
     //glfwSetWindowSizeCallback(m_glfwwindow, WindowSizeCallback);
     glfwSetFramebufferSizeCallback(m_glfwwindow, FramebufferSizeCallback);
     //glfwSetWindowCloseCallback(m_glfwwindow, WindowCloseCallback);
-    //glfwSetWindowFocusCallback(m_glfwwindow, WindowFocusCallback);
+    glfwSetWindowFocusCallback(m_glfwwindow, FMODWrapper::Core::WindowFocusCallback); // For now only audio requires this, but someone else should handle this centrally.
     //glfwSetCharCallback(m_glfwwindow, CharCallback);
     //glfwSetDropCallback(m_glfwwindow, DropCallback);
 

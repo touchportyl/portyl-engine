@@ -134,6 +134,19 @@ void FMODWrapper::Core::ResumeAll()
     channel.second->setPaused(false);
   }
 }
+
+void FMODWrapper::Core::WindowFocusCallback(GLFWwindow* window, int focused)
+{
+  if (focused == GLFW_FALSE)
+  {
+    StopAll();
+  }
+  else
+  {
+    ResumeAll();
+  }
+}
+
 }// namespace FlexEngine
 
   //// Sample code to get if the channel is playing...
