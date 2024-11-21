@@ -35,7 +35,7 @@ namespace ChronoShift
     FlexEngine::Window* window = Application::GetCurrentWindow();
     window->SetTargetFPS(60);
     window->SetVSync(false);
-    window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine_icon_white.png)"));
+    window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine-256.png)"));
 
     window->PushLayer(std::make_shared<ChronoShift::BattleLayer>());
     window->PushLayer(std::make_shared<ChronoShift::OverworldLayer>());

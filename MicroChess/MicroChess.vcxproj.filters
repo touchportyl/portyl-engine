@@ -163,6 +163,9 @@
     <ClInclude Include="src\Editor\prefabeditor.h">
       <Filter>src\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>assets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -259,5 +262,10 @@
     <ClCompile Include="src\Editor\prefabeditor.cpp">
       <Filter>src\Editor</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MicroChessIcon.rc">
+      <Filter>src</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

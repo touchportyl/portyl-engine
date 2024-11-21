@@ -155,6 +155,7 @@
     <None Include="assets\shaders\texture.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\BattleSystems\battlesystem.h" />
     <ClInclude Include="src\BattleSystems\physicssystem.h" />
     <ClInclude Include="src\BattleSystems\targetingsystem.h" />
@@ -224,6 +225,9 @@
     <ClCompile Include="src\Renderer\camera2d.cpp" />
     <ClCompile Include="src\Renderer\sprite2d.cpp" />
     <ClCompile Include="src\States\mainstate.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MicroChessIcon.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
