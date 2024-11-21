@@ -163,6 +163,7 @@ using namespace FlexEngine;
       Vector3 color = Vector3::One;
       // border color, border size, underline, etc
       std::pair<int,int> alignment = {Renderer2DText::Alignment_Center, Renderer2DText::Alignment_Middle}; // Default value: centered (all bits set)
+      bool refocus;
   };
 
   /*!***************************************************************************
