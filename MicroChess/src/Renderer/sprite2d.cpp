@@ -339,13 +339,14 @@ namespace ChronoShift
             sample.m_shader = shader;
             sample.m_fonttype = font;
             sample.m_transform = transform;
+            sample.m_window_size = Vector2(FlexEngine::Application::GetCurrentWindow()->GetWidth() , FlexEngine::Application::GetCurrentWindow()->GetHeight());
             sample.m_alignment = {
                 static_cast<Renderer2DText::AlignmentX>(txtentity.GetComponent<Text>()->alignment.first),
                 static_cast<Renderer2DText::AlignmentY>(txtentity.GetComponent<Text>()->alignment.second)
             };
             sample.m_color = txtentity.GetComponent<Text>()->color;
 
-            text_render_queue.Insert({ [sample]() { OpenGLTextRenderer::DrawText2D(sample); }, "", 0 });
+            text_render_queue.Insert({ [sample]() { OpenGLTextRenderer::DrawText2D(sample, true); }, "", 0 });
         }
 
         bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
