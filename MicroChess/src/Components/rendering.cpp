@@ -98,7 +98,15 @@ namespace ChronoShift
   FLX_REFL_REGISTER_END;
 
     FLX_REFL_REGISTER_START(Button)
-      FLX_REFL_REGISTER_PROPERTY(behavior)
+        FLX_REFL_REGISTER_PROPERTY(interactable)
+        FLX_REFL_REGISTER_PROPERTY(targetGraphic)
+        FLX_REFL_REGISTER_PROPERTY(normalColor)
+        FLX_REFL_REGISTER_PROPERTY(highlightedColor)
+        FLX_REFL_REGISTER_PROPERTY(pressedColor)
+        FLX_REFL_REGISTER_PROPERTY(selectedColor)
+        FLX_REFL_REGISTER_PROPERTY(disabledColor)
+        FLX_REFL_REGISTER_PROPERTY(colorMultiplier)
+        FLX_REFL_REGISTER_PROPERTY(fadeDuration)
     FLX_REFL_REGISTER_END;
 
     FLX_REFL_REGISTER_START(Audio)
@@ -177,7 +185,15 @@ namespace ChronoShift
   COMPONENT_VIEWER_END(Text)
 
   COMPONENT_VIEWER_START(Button)
-     COMPONENT_VIEWER_DRAG_INT(behavior)
+     COMPONENT_VIEWER_CHECKBOX(interactable)
+     COMPONENT_VIEWER_TEXTURE_PATH(targetGraphic)
+     COMPONENT_VIEWER_COLOR3(normalColor)
+     COMPONENT_VIEWER_COLOR3(highlightedColor)
+     COMPONENT_VIEWER_COLOR3(pressedColor)
+     COMPONENT_VIEWER_COLOR3(selectedColor)
+     COMPONENT_VIEWER_COLOR3(disabledColor)
+     COMPONENT_VIEWER_DRAG_FLOAT(colorMultiplier)
+     COMPONENT_VIEWER_DRAG_FLOAT(fadeDuration)
   COMPONENT_VIEWER_END(Button)
 
   COMPONENT_VIEWER_START(Audio)
