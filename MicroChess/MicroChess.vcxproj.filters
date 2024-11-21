@@ -160,6 +160,12 @@
     <ClInclude Include="src\Renderer\camera2d.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Editor\prefabeditor.h">
+      <Filter>src\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>assets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -253,5 +259,13 @@
     <ClCompile Include="src\Renderer\camera2d.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Editor\prefabeditor.cpp">
+      <Filter>src\Editor</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MicroChessIcon.rc">
+      <Filter>src</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
