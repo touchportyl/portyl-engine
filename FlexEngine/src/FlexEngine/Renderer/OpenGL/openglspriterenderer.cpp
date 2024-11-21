@@ -384,7 +384,7 @@ namespace FlexEngine
         asset_shader.SetUniform_vec3("u_color_to_add", props.color_to_add);
         asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
 
-        // Transformation & Orthographic Projection
+        // Transformation & Orthographic Projection -> Must be hardcoded due to no need of change
         asset_shader.SetUniform_mat4("u_model", props.transform);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(

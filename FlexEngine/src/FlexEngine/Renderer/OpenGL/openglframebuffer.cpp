@@ -2,7 +2,8 @@
 #include "FlexEngine/AssetManager/assetmanager.h" // FLX_ASSET_GET
 #include "FlexEngine/DataStructures/freequeue.h"
 
-namespace FlexEngine {
+namespace FlexEngine 
+{
     GLuint OpenGLFrameBuffer::m_editorFBO = 0;
     GLuint OpenGLFrameBuffer::m_postProcessingFBO = 0;
     GLuint OpenGLFrameBuffer::m_bloomFBO = 0;

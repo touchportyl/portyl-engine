@@ -138,7 +138,7 @@ namespace ChronoShift {
       }
     }
     
-    RendererSprite2D();
+    RenderSprite2D();
     UpdatePhysicsSystem();
   }
 }

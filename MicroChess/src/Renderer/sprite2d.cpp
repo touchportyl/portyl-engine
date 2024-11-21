@@ -87,7 +87,6 @@ namespace ChronoShift
 
     void UpdateCamMatrix(FlexECS::Entity& currCam)
     {
-        auto& local_transform = currCam.GetComponent<Transform>()->transform;
         if (!currCam.GetComponent<Transform>()->is_dirty) return;
 
         auto& local_position = currCam.GetComponent<Position>()->position;
@@ -362,6 +361,31 @@ namespace ChronoShift
         if (depth_test) OpenGLRenderer::EnableDepthTest();
         if (!blending) OpenGLRenderer::DisableBlending();
     }
+
+    void ForceRenderToScreen()
+    {
+        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
+        if (depth_test) OpenGLRenderer::DisableDepthTest();
+
+        bool blending = OpenGLRenderer::IsBlendingEnabled();
+        if (!blending) OpenGLRenderer::EnableBlending();
+
+        OpenGLFrameBuffer::SetDefaultFrameBuffer();
+
+        Renderer2DProps data;
+        data.shader = "\\shaders\\texture";
+        int width = FlexEngine::Application::GetCurrentWindow()->GetWidth();
+        int height = FlexEngine::Application::GetCurrentWindow()->GetHeight();
+        data.transform = Matrix4x4(static_cast<float>(width), 0, 0, 0,
+                                   0, static_cast<float>(height), 0, 0,
+                                   0,0,1.f,0,
+                                   -static_cast<float>(width) / 2.f, static_cast<float>(height) / 2.f,0,1.f);
+        data.vbo_id = Renderer2DProps::VBO_BasicInverted;
+        OpenGLSpriteRenderer::DrawTexture2D(OpenGLFrameBuffer::GetCreatedTexture(OpenGLFrameBuffer::CreatedTextureID::CID_finalRender), data);
+
+        if (depth_test) OpenGLRenderer::EnableDepthTest();
+        if (!blending) OpenGLRenderer::DisableBlending();
+    }
     #pragma endregion
 
     /*!***************************************************************************
@@ -370,7 +394,7 @@ namespace ChronoShift
     * steps for rendering, including setting up shader properties, handling
     * post-processing, and batch rendering for efficiency.
     *****************************************************************************/
-    void RendererSprite2D()
+    void RenderSprite2D()
     {
         //Update Transformation Matrix of All Entities
         UpdateAllEntitiesMatrix();
@@ -387,5 +411,10 @@ namespace ChronoShift
         //RenderNormalEntities();
         RenderBatchedEntities();
         RenderTextEntities();
+
+        //What Rocky wants (TO DELETE)
+        #ifndef _DEBUG
+        ForceRenderToScreen();
+        #endif
     }
 }
