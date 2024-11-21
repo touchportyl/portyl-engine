@@ -341,7 +341,7 @@ namespace ChronoShift
             sample.m_shader = shader;
             sample.m_fonttype = font;
             sample.m_transform = transform;
-            sample.m_window_size = Vector2(FlexEngine::Application::GetCurrentWindow()->GetWidth() , FlexEngine::Application::GetCurrentWindow()->GetHeight());
+            sample.m_window_size = Vector2(static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetWidth()), static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetHeight()));
             sample.m_alignment = {
                 static_cast<Renderer2DText::AlignmentX>(textComponent->alignment.first),
                 static_cast<Renderer2DText::AlignmentY>(textComponent->alignment.second)
@@ -353,7 +353,7 @@ namespace ChronoShift
             {
                 // Adjust font size
                 auto& assetFont = FLX_ASSET_GET(Asset::Font, sample.m_fonttype);
-                assetFont.SetFontSize(sample.m_transform.m00 * FONT_SCALE_FACTOR);
+                assetFont.SetFontSize(static_cast<int>(sample.m_transform.m00 * FONT_SCALE_FACTOR));
                 transform /= FONT_SCALE_FACTOR;
                 Log::Debug("Font: " + sample.m_fonttype + " has been resized to " + std::to_string(sample.m_transform.m00 * FONT_SCALE_FACTOR));
                 // Reset refocus flag
