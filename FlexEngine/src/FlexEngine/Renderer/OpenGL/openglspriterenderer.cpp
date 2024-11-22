@@ -361,8 +361,10 @@ namespace FlexEngine
         GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
         glGenFramebuffers(1, &m_postProcessingFBO); //For final composite post-process
         SetPPFrameBuffer();
-        width = windowSize.x;
-        height = windowSize.y;
+        //width = windowSize.x;
+        //height = windowSize.y;
+        width = 1920;
+        height = 1080;
 
         // Create Post-processing FBO
         glGenTextures(1, &m_postProcessingTex);

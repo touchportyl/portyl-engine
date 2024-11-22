@@ -16,7 +16,6 @@
 
 namespace ChronoShift
 {
-
 	class SceneView : public EditorPanel
 	{
 	public:
@@ -24,8 +23,16 @@ namespace ChronoShift
 		void Update();
 		void EditorUI();
 		void Shutdown();
-		void CalculatePositions();
+	
 	private:
+		void CalculateViewportPosition();	//position of viewport image and size
+		void CheckMouseEvents();
+		FlexEngine::FlexECS::Entity FindClickedEntity();
+		FlexEngine::Vector4 GetWorldClickPosition();
+
+		bool m_gizmo_hovered;
+		bool m_dragging;
+
 		ImVec2 m_viewport_size;
 		ImVec2 m_viewport_position;
 	};
