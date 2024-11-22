@@ -14,11 +14,8 @@
 
 #include "Renderer/camera2d.h"
 
-namespace ChronoShift {
-    //Do we still need this? Im planning to just delete (TO DELETE)
-    float OverworldLayer::m_ScaleDebugTest = 0.8f;
-    Vector3 OverworldLayer::m_RotateDebugTest = Vector3(0.f, 0.f, 0.f);
-
+namespace ChronoShift 
+{
     void OverworldLayer::SetupWorld()
     {
         auto scene = FlexECS::Scene::GetActiveScene();
@@ -216,7 +213,6 @@ namespace ChronoShift {
       #pragma endregion
       
       //Render All Entities
-      // @Yew Chong show me where you want me to move this to base like what u want
       profiler.StartCounter("Graphics");
       UpdateAllEntitiesMatrix();
       RenderSprite2D();
