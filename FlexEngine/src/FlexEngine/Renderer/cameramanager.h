@@ -35,6 +35,7 @@
 #include "FlexECS/datastructures.h"
 #include <unordered_map>
 
+
 namespace FlexEngine
 {
     #pragma region Data-type
@@ -65,6 +66,8 @@ namespace FlexEngine
 
     #pragma endregion
 
+    constexpr uint64_t INVALID_ENTITY_ID = std::numeric_limits<uint64_t>::max();
+
     /*!************************************************************************
     * \class CameraManager
     * \brief
@@ -78,8 +81,8 @@ namespace FlexEngine
     class __FLX_API CameraManager
     {
         std::unordered_map<FlexECS::EntityID, CameraData> m_cameraEntities; /*!< Maps entity IDs to CameraData */
-        FlexECS::EntityID m_currMainID = static_cast<uint64_t>(-1);         /*!< Current main camera entity ID */
-        FlexECS::EntityID m_currEditorID = static_cast<uint64_t>(-1);       /*!< Current editor camera entity ID */
+        FlexECS::EntityID m_currMainID = INVALID_ENTITY_ID;                 /*!< Current main camera entity ID */
+        FlexECS::EntityID m_currEditorID = INVALID_ENTITY_ID;               /*!< Current editor camera entity ID */
         bool m_autoCreateEditorCamera;                                      /*!< Flag for auto editor camera creation */
 
         /*!************************************************************************

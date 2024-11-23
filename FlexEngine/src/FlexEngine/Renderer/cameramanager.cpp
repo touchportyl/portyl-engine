@@ -120,7 +120,22 @@ namespace FlexEngine
      *****************************************************************************/
     void CameraManager::AddCameraEntity(FlexECS::EntityID entityID, const CameraData& cameraData)
     {
-        if (entityID <= static_cast<uint64_t>(0))
+        // Check if editor cam already exists in the map
+        if (entityID == 0)
+        {
+            if (m_cameraEntities.find(entityID) != m_cameraEntities.end())
+            {
+                Log::Warning("AddCameraEntity(...) => entityID = 0 for cameras is used by editor and cannot be overwritten.");
+            }
+            else
+            {
+                m_cameraEntities.emplace(entityID, cameraData);
+                Log::Debug("AddCameraEntity(...) => Added editor camera.");
+            }
+            return;
+        }
+
+        if (entityID == INVALID_ENTITY_ID)
         {
             Log::Error("AddCameraEntity(...) => Invalid entityID provided.");
             return;
@@ -147,7 +162,7 @@ namespace FlexEngine
      *****************************************************************************/
     bool CameraManager::SwitchMainCamera(FlexECS::EntityID entityID)
     {
-        if (entityID <= static_cast<uint64_t>(0) || m_cameraEntities.empty())
+        if (entityID == INVALID_ENTITY_ID || m_cameraEntities.empty())
         {
             Log::Error("SwitchMainCamera(...) => Invalid operation on empty camera list or invalid entityID.");
             return false;
@@ -172,7 +187,7 @@ namespace FlexEngine
      *****************************************************************************/
     bool CameraManager::SwitchEditorCamera(FlexECS::EntityID entityID)
     {
-        if (entityID <= static_cast<uint64_t>(0) || m_cameraEntities.empty())
+        if (entityID == INVALID_ENTITY_ID || m_cameraEntities.empty())
         {
             Log::Error("SwitchEditorCamera(...) => Invalid operation on empty camera list or invalid entityID.");
             return false;
@@ -208,11 +223,11 @@ namespace FlexEngine
             // If the removed entity was the main or editor camera, reset those to invalid values
             if (entityID == m_currMainID)
             {
-                m_currMainID = static_cast<FlexECS::EntityID>(-1); // Reset to invalid ID
+                m_currMainID = INVALID_ENTITY_ID; // Reset to invalid ID
             }
             if (entityID == m_currEditorID)
             {
-                m_currEditorID = static_cast<FlexECS::EntityID>(-1); // Reset to invalid ID
+                m_currEditorID = INVALID_ENTITY_ID; // Reset to invalid ID
             }
             return true;
         }
@@ -276,7 +291,7 @@ namespace FlexEngine
      *****************************************************************************/
     FlexECS::EntityID CameraManager::GetMainCamera() const
     {
-        if (m_currMainID <= static_cast<uint64_t>(-1))
+        if (m_currMainID == INVALID_ENTITY_ID)
         {
             Log::Warning("GetMainCamera() => Main Camera is of an invalid ID.");
         }
@@ -291,7 +306,7 @@ namespace FlexEngine
      *****************************************************************************/
     FlexECS::EntityID CameraManager::GetEditorCamera() const
     {
-        if (m_currEditorID <= static_cast<uint64_t>(-1))
+        if (m_currEditorID == INVALID_ENTITY_ID)
         {
             Log::Warning("GetEditorCamera() => Editor Camera is of an invalid ID.");
         }

@@ -132,6 +132,7 @@ namespace ChronoDrift
 				if (ImGui::MenuItem("Destroy Entity"))
 				{
 					delete_queue.Insert({ [scene, entity]() {scene->DestroyEntity(entity); }, "", 0 });
+					//TODO ADD HERE (Check if this has camera component, call Camera Manager TO delete)
 					Editor::GetInstance().SelectEntity(FlexECS::Entity::Null);
 				}
 				ImGui::EndPopup();
