@@ -10,7 +10,8 @@ namespace ChronoDrift
   class OverworldLayer : public FlexEngine::Layer
   {
   public:
-    OverworldLayer() : Layer("Battle Layer") {}
+    OverworldLayer() = delete;
+    OverworldLayer(CameraManager* CamManager) : Layer("Battle Layer") , m_CamM_Instance(CamManager){}
     ~OverworldLayer() = default;
 
     virtual void OnAttach() override;
@@ -18,11 +19,9 @@ namespace ChronoDrift
     virtual void Update() override;
 
   private:
-    void SetupWorld();
+      void SetupWorld();
 
-    static float m_ScaleDebugTest;
-    static Vector3 m_RotateDebugTest;
-
+      CameraManager* m_CamM_Instance = nullptr;
   };
 
 

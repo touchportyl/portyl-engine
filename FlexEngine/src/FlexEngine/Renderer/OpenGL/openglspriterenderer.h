@@ -143,7 +143,10 @@ namespace FlexEngine
 
         static std::vector<MeshBuffer> m_vbos; /*!< Vector of Vertex Buffer Objects */
         static std::vector<GLuint> m_batchSSBOs;
+        
+        static CameraManager* m_CamM_Instance;
         #pragma endregion
+
     public:
         #pragma region Wrapper Func
         /*!***************************************************************************
@@ -252,11 +255,12 @@ namespace FlexEngine
         
         /*!***************************************************************************
         * \brief
+        * \brief
         * Initializes the VBOs.
         *
         * \param windowSize The size of the rendering window as a Vector2.
         *****************************************************************************/
-        static void Init(const Vector2& windowSize);
+        static void Init(const Vector2& windowSize, CameraManager* m_CamM_Instance);
 
         #pragma endregion
 

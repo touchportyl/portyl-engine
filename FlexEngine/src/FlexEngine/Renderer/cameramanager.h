@@ -34,7 +34,6 @@
 #include "FlexECS/datastructures.h"
 #include <unordered_map>
 
-//Will later shift the code to cpp
 namespace FlexEngine
 {
     #pragma region Data-type
@@ -47,11 +46,11 @@ namespace FlexEngine
     struct __FLX_API CameraData
     {
         FLX_REFL_SERIALIZABLE
-        Vector3 position = Vector3::Zero;        /*!< Camera position in world space */
+            Vector3 position = Vector3::Zero;        /*!< Camera position in world space */
         Vector3 target = Vector3::Zero;          /*!< Target the camera is facing towards */
         Vector3 up = Vector3::Up;                /*!< Up vector for the camera's orientation */
         Vector3 right = Vector3::Right;          /*!< Right vector for the camera's orientation */
-        
+
         Matrix4x4 viewMatrix = Matrix4x4::Zero;  /*!< View matrix calculated from position and orientation */
         Matrix4x4 projMatrix = Matrix4x4::Zero;  /*!< Projection matrix based on FOV and aspect ratio */
         Matrix4x4 proj_viewMatrix = Matrix4x4::Zero;
@@ -71,7 +70,7 @@ namespace FlexEngine
     * A manager for handling camera entities within the ECS framework. It provides
     * functionality to register, update, and retrieve camera data, as well as
     * manage transitions between main and editor cameras.
-    * 
+    *
     * 0 -> Editor Cam
     * 1-Inf -> Scene Cam
     *************************************************************************/
@@ -81,24 +80,30 @@ namespace FlexEngine
         FlexECS::EntityID m_currMainID = static_cast<uint64_t>(-1);         /*!< Current main camera entity ID */
         FlexECS::EntityID m_currEditorID = static_cast<uint64_t>(-1);       /*!< Current editor camera entity ID */
         bool m_autoCreateEditorCamera;                                      /*!< Flag for auto editor camera creation */
-        
+
         /*!************************************************************************
          * \brief Initializes the CameraManager, creating an editor camera if enabled.
          *************************************************************************/
         void CreateDefaultEditorCamera();
 
+        /*!************************************************************************
+        * \brief Removes all registered camera entities.
+        *************************************************************************/
+        void RemoveCameraEntities();
+
     public:
-        // Delete default constructor and copy mechanisms
-        CameraManager() = delete;
-        CameraManager(const CameraManager&) = delete; //might need to change
-        CameraManager& operator=(const CameraManager&) = delete; //might need to change
+        // Non-copyable and non-movable to ensure no accidental duplication
+        //CameraManager(const CameraManager&) = delete;
+        //CameraManager& operator=(const CameraManager&) = delete;
+        //CameraManager(CameraManager&&) = delete;
+        //CameraManager& operator=(CameraManager&&) = delete;
 
         /*!************************************************************************
          * \brief Constructor for CameraManager.
          * \param autoCreateEditor If true, automatically creates an editor camera on initialization.
          *************************************************************************/
         CameraManager(bool autoCreateEditor = true);
-        
+
         /*!************************************************************************
          * \brief Destructor for CameraManager.
          *************************************************************************/
@@ -133,10 +138,7 @@ namespace FlexEngine
          *************************************************************************/
         bool RemoveCameraEntity(FlexECS::EntityID entityID);
 
-        /*!************************************************************************
-         * \brief Removes all registered camera entities.
-         *************************************************************************/
-        void RemoveCameraEntities();
+        void RemoveCamerasInScene();
 
         /*!************************************************************************
          * \brief Retrieves the camera data for a specific entity.

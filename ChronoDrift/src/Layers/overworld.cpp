@@ -29,8 +29,8 @@ namespace ChronoDrift
         camera.AddComponent<Rotation>({ });
         camera.AddComponent<Transform>({});
         camera.AddComponent<Camera>({});
-        CameraManager::AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-        CameraManager::SwitchMainCamera(camera.Get());
+        m_CamM_Instance->AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+        m_CamM_Instance->SwitchMainCamera(camera.Get());
 
         #endif
     }
@@ -147,7 +147,7 @@ namespace ChronoDrift
 
       #pragma region Camera Movement -> Should be moved to scripting
 
-      FlexECS::Entity cam_entity = CameraManager::GetMainCamera();
+      FlexECS::Entity cam_entity = m_CamM_Instance->GetMainCamera();
       auto& curr_cam = cam_entity.GetComponent<Position>()->position;
       auto& curr_camt = cam_entity.GetComponent<Transform>()->is_dirty;
       if (Input::GetKey(GLFW_KEY_UP))

@@ -102,7 +102,8 @@ namespace ChronoDrift
         Camera2D::UpdateProjectionMatrix(local_camData);
         Camera2D::UpdateViewMatrix(local_camData);
         
-        CameraManager::UpdateData(currCam.Get(), local_camData);
+        //TODO REENABLE THIS
+        //CameraManager::UpdateData(currCam.Get(), local_camData);
     }
 
     /*!***************************************************************************

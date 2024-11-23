@@ -65,12 +65,16 @@ namespace FlexEngine
         if (m_autoCreateEditorCamera)
         {
             CreateDefaultEditorCamera();
+            Log::Debug("CameraManager initialized with editor camera.");
         }
+        else
+            Log::Debug("CameraManager initialized without editor camera.");
     }
 
     CameraManager::~CameraManager()
     {
         RemoveCameraEntities();
+        Log::Debug("CameraManager has been successfully destroyed.");
     }
 
     void CameraManager::CreateDefaultEditorCamera()

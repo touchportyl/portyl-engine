@@ -31,22 +31,23 @@ namespace ChronoDrift
     // load assets only after the window has been created
     AssetManager::Load();
     FreeQueue::Push(std::bind(&AssetManager::Unload), "Chrono Drift AssetManager");
+    CamManager = new CameraManager(true);
 
     FlexEngine::Window* window = Application::GetCurrentWindow();
     window->SetTargetFPS(60);
     window->SetVSync(false);
     window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine-256.png)"));
 
-    window->PushLayer(std::make_shared<ChronoDrift::BattleLayer>());
-    window->PushLayer(std::make_shared<ChronoDrift::OverworldLayer>());
+    window->PushLayer(std::make_shared<ChronoDrift::BattleLayer>(CamManager));
+    window->PushLayer(std::make_shared<ChronoDrift::OverworldLayer>(CamManager));
     window->PushLayer(std::make_shared<ChronoDrift::EditorLayer>());
    
     // Renderer Setup
 
     OpenGLRenderer::EnableBlending();
     Vector2 windowsize{ static_cast<float>(window->GetWidth()), static_cast<float>(window->GetHeight()) };
-    OpenGLSpriteRenderer::Init(windowsize);
-    OpenGLTextRenderer::Init();
+    OpenGLSpriteRenderer::Init(windowsize, CamManager);
+    OpenGLTextRenderer::Init(CamManager);
   }
 
   void BaseLayer::OnDetach()
@@ -102,7 +103,7 @@ namespace ChronoDrift
               [this]()
               {
                 // Clear the scene and reset statics
-                CameraManager::RemoveCameraEntities();
+                CamManager->RemoveCamerasInScene();
                 FlexECS::Scene::SetActiveScene(std::make_shared<FlexECS::Scene>());
 
                 // Every default scene should have a camera.
@@ -112,8 +113,8 @@ namespace ChronoDrift
                 camera.AddComponent<Rotation>({ });
                 camera.AddComponent<Transform>({});
                 camera.AddComponent<Camera>({});
-                CameraManager::AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-                CameraManager::SwitchMainCamera(camera.Get());
+                CamManager->AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+                CamManager->SwitchMainCamera(camera.Get());
               }
             });
           }
@@ -151,8 +152,8 @@ namespace ChronoDrift
                 if (camera_list.size() > 0)
                 {
                   FlexECS::Entity camera = camera_list[0];
-                  CameraManager::AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-                  CameraManager::SwitchMainCamera(camera.Get());
+                  CamManager->AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+                  CamManager->SwitchMainCamera(camera.Get());
                 }
                 Log::Info("Loaded scene from: " + file.path.string());
               }

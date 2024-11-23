@@ -77,6 +77,7 @@ namespace FlexEngine
         static GLuint m_VAO, m_VBO; // Vertex Array Object and Vertex Buffer Object
 
         static float m_linespacing, m_letterspacing; // Line and letter spacing settings
+        static CameraManager* m_CamM_Instance;
 
         /*!***************************************************************************
         * \brief
@@ -120,7 +121,7 @@ namespace FlexEngine
         *
         * This public function is called to initialize the text rendering resources.
         ***************************************************************************/
-        static void Init();
+        static void Init(CameraManager* CamManager/* = nullptr*/);
 
         /*!***************************************************************************
         * \brief
