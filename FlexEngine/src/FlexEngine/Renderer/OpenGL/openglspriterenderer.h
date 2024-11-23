@@ -35,6 +35,7 @@
 
 namespace FlexEngine
 {
+    class CameraManager; // Forward declaration
     #pragma region Data-types
     /*!***************************************************************************
     * \struct Renderer2DProps

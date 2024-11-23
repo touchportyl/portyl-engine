@@ -30,6 +30,7 @@
  // Copyright (c) 2024 DigiPen, All rights reserved.
  **************************************************************************/
 #pragma once
+
 #include <FlexEngine.h>
 #include "FlexECS/datastructures.h"
 #include <unordered_map>
@@ -175,5 +176,4 @@ namespace FlexEngine
         void UpdateData(FlexECS::EntityID entityID, const CameraData& curr);
     };
 }
-
 

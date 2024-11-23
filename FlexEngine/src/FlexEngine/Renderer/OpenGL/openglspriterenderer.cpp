@@ -43,7 +43,7 @@ namespace FlexEngine
     std::vector<MeshBuffer> OpenGLSpriteRenderer::m_vbos;
     std::vector<GLuint> OpenGLSpriteRenderer::m_batchSSBOs;
 
-    CameraManager* m_CamM_Instance = nullptr;
+    CameraManager* FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance = nullptr;
     #pragma endregion
 
     #pragma region Wrapper Func
@@ -307,7 +307,7 @@ namespace FlexEngine
 
         /////////////////////////////////////////////////////////////////////////////////////
         // Link Camera Manager
-        m_CamM_Instance = CamManager;
+        FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance = CamManager;
     }
     #pragma endregion
 
@@ -324,7 +324,7 @@ namespace FlexEngine
         // Guard
         if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
             Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
-        if (props.shader == "" || props.transform == Matrix4x4::Zero || m_CamM_Instance->GetMainCamera() == -1)
+        if (props.shader == "" || props.transform == Matrix4x4::Zero || FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance->GetMainCamera() == -1)
             return;
 
         // Bind all
@@ -359,7 +359,7 @@ namespace FlexEngine
         //  camPos.y + props.window_size.y, camPos.y,
         //  -2.0f, 2.0f
         //) * view_matrix;
-        asset_shader.SetUniform_mat4("u_projection_view", m_CamM_Instance->GetCameraData(m_CamM_Instance->GetMainCamera())->proj_viewMatrix);
+        asset_shader.SetUniform_mat4("u_projection_view", FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance->GetCameraData(FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance->GetMainCamera())->proj_viewMatrix);
         asset_shader.SetUniform_mat4("u_model", props.transform);
         // Draw
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -427,7 +427,7 @@ namespace FlexEngine
             Log::Debug("Instance batch data block is empty. Should not run render on this texture");
             return;
         }
-        if (props.shader == "" || m_CamM_Instance->GetMainCamera() == -1)
+        if (props.shader == "" || FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance->GetMainCamera() == -1)
             return;
         GLsizei dataSize = (GLsizei)data.m_transformationData.size();
 
@@ -460,7 +460,7 @@ namespace FlexEngine
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         // Orthographic Projection
-        asset_shader.SetUniform_mat4("u_projection_view", m_CamM_Instance->GetCameraData(m_CamM_Instance->GetMainCamera())->proj_viewMatrix);
+        asset_shader.SetUniform_mat4("u_projection_view", FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance->GetCameraData(FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance->GetMainCamera())->proj_viewMatrix);
 
         // Draw
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, dataSize);
@@ -481,7 +481,7 @@ namespace FlexEngine
         // Guard
         if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
             Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
-        if (props.shader == "" || props.transform == Matrix4x4::Zero || m_CamM_Instance->GetMainCamera() == -1)
+        if (props.shader == "" || props.transform == Matrix4x4::Zero || FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance->GetMainCamera() == -1)
             return;
 
         // Bind all
@@ -515,7 +515,7 @@ namespace FlexEngine
         asset_shader.SetUniform_vec2("u_UvMax", Vector2{ u_max, v_max });
 
         // Transformation & Orthographic Projection
-        asset_shader.SetUniform_mat4("u_projection_view", m_CamM_Instance->GetCameraData(m_CamM_Instance->GetMainCamera())->proj_viewMatrix);
+        asset_shader.SetUniform_mat4("u_projection_view", FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance->GetCameraData(FlexEngine::OpenGLSpriteRenderer::m_CamM_Instance->GetMainCamera())->proj_viewMatrix);
         asset_shader.SetUniform_mat4("u_model", props.transform);
         // Draw
         glDrawArrays(GL_TRIANGLES, 0, 6);

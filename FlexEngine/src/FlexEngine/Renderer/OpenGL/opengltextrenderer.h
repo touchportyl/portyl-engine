@@ -31,6 +31,7 @@
 
 namespace FlexEngine 
 {
+    class CameraManager; // Forward declaration
     /*!***************************************************************************
     * \brief 
     * Struct for 2D text rendering configuration and properties.
