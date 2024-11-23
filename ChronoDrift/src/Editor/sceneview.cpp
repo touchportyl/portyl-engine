@@ -78,15 +78,38 @@ namespace ChronoDrift
 		Vector4 world_pos = inverse * clip;
 		world_pos.x = -world_pos.x;
 
-		//std::cout << "World Pos: " << world_pos << "\n";
 		return world_pos;
+	}
+
+	ImVec2 SceneView::WorldToScreen(const FlexEngine::Vector2& position)
+	{
+		const CameraData* camdata = CameraManager::GetCameraData(CameraManager::GetMainCamera());
+		Vector4 world_pos = { -position.x, position.y, 0.0f, 1.0f };
+		Vector4 clip = camdata->proj_viewMatrix * world_pos;
+		if (clip.w != 0.0f)
+		{
+			clip.x /= clip.w;
+			clip.y /= clip.w;
+			clip.z /= clip.w;
+		}
+
+		// Convert to coordinates relative to viewport 
+		float x_screen = ((clip.x + 1.0f) * 0.5f) * m_viewport_size.x;
+		float y_screen = ((1.0f - clip.y) * 0.5f) * m_viewport_size.y;
+
+		//finally translate viewport relative position to screen relative coords
+		ImVec2 screen_pos = { x_screen, y_screen };
+		screen_pos.x += ImGui::GetWindowPos().x + m_viewport_position.x;
+		screen_pos.y += ImGui::GetWindowPos().y + m_viewport_position.y;
+
+		return screen_pos;
 	}
 
 	FlexECS::Entity SceneView::FindClickedEntity()
 	{
 		FlexECS::Entity clicked_entity = FlexECS::Entity::Null;
 		int selected_z_index = INT_MIN;
-		Vector4 mouse_world_pos = GetWorldClickPosition();
+		Vector4 mouse_world_pos = GetWorldClickPosition();	//Note: need to check if mouse click is within viewport
 
 		//AABB tiem
 		auto scene = FlexECS::Scene::GetActiveScene();
@@ -112,16 +135,22 @@ namespace ChronoDrift
 
 	void SceneView::CheckMouseEvents()
 	{
-		if (ImGui::IsMouseClicked(0))
+		if (ImGui::IsWindowFocused() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
 		{
-			FlexECS::Entity entity = FindClickedEntity();
-			if (entity != FlexECS::Entity::Null)
+			if (ImGui::IsMouseClicked(0))
 			{
-				Editor::GetInstance().SelectEntity(entity);
+				FlexECS::Entity entity = FindClickedEntity();
+				if (entity != FlexECS::Entity::Null)
+				{
+					Editor::GetInstance().SelectEntity(entity);
+				}
+				else
+				{
+					Editor::GetInstance().SelectEntity(FlexECS::Entity::Null);
+				}
 			}
 		}
 	}
-
 
 	void SceneView::EditorUI()
 	{
@@ -130,14 +159,23 @@ namespace ChronoDrift
 
 		ImGui::Begin("Scene", nullptr, window_flags);
 		{
+
+			if (ImGui::IsMouseClicked(1))
+			{
+				std::cout << "Mouse Absolute Position: " << ImGui::GetMousePos().x << ", " << ImGui::GetMousePos().y << "\n";
+			}
 			CalculateViewportPosition();
 			CheckMouseEvents();
 
+			//ImVec2 cursor_pos = ImGui::GetCursorPos();
+			//ImGui::IsItemHovered();
+
 			//Display Scene texture
 			ImGui::SetCursorPos(m_viewport_position);
-			ImGui::Image((ImTextureID)static_cast<uintptr_t>(FlexEngine::OpenGLSpriteRenderer::GetCreatedTexture(FlexEngine::OpenGLSpriteRenderer::CreatedTextureID::CID_editor)),
+			ImGui::Image((ImTextureID)static_cast<uintptr_t>(FlexEngine::OpenGLFrameBuffer::GetCreatedTexture(FlexEngine::OpenGLFrameBuffer::CreatedTextureID::CID_editor)),
 				m_viewport_size, ImVec2(0, 1), ImVec2(1, 0));
 
+			DrawGizmos();
 
 			//Create new entity when dragging an image from assets to scene
 			if (auto image = EditorGUI::StartWindowPayloadReceiver<const char>(PayloadTags::IMAGE))
@@ -162,9 +200,34 @@ namespace ChronoDrift
 		}
 		ImGui::End();
 	}
-}
 
-//Vector2 relPos = { ImGui::GetMousePos().x, ImGui::GetMousePos().y };
-//Vector2 minPos = { ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y };
-//relPos -= minPos;
-//std::cout << relPos.x << ", " << relPos.y << "\n";
+	void SceneView::DrawGizmos()
+	{
+		m_gizmo_hovered = false;
+		FlexECS::Entity selected_entity = Editor::GetInstance().GetSelectedEntity();
+
+		if (selected_entity == FlexECS::Entity::Null) return;
+
+		selected_entity.GetComponent<Transform>()->is_dirty = true;
+		auto& entity_transform = selected_entity.GetComponent<Transform>()->transform;
+		auto& entity_position = selected_entity.GetComponent<Position>()->position;
+		auto& entity_scale = selected_entity.GetComponent<Scale>()->scale;
+
+		const CameraData* camdata = CameraManager::GetCameraData(CameraManager::GetMainCamera());
+
+		Vector2 pos_change{};
+
+		//Find out where on the screen to draw the gizmos
+		//Take entity position and convert it back to screen position
+		ImVec2 gizmo_origin_pos = WorldToScreen(entity_position);
+
+		//Havent diagnosed the reason, but the color changing of gizmo when you hover over stops working
+		//When more than 1 gizmo is drawn.
+		EditorGUI::Gizmo_Right_Arrow(&pos_change.x, { gizmo_origin_pos.x, gizmo_origin_pos.y });
+		EditorGUI::Gizmo_Up_Arrow(&pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y });
+
+		//Scale the change in position with relation to screen size
+		entity_position += pos_change;
+
+	}
+}

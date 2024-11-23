@@ -29,6 +29,9 @@ namespace ChronoDrift
 		void CheckMouseEvents();
 		FlexEngine::FlexECS::Entity FindClickedEntity();
 		FlexEngine::Vector4 GetWorldClickPosition();
+		ImVec2 WorldToScreen(const FlexEngine::Vector2& position);
+		void DrawGizmos();
+
 
 		bool m_gizmo_hovered;
 		bool m_dragging;

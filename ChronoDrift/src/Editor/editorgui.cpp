@@ -305,11 +305,118 @@ namespace ChronoDrift
 		ImGui::EndDragDropSource();
 	}
 
-
-
 	void EditorGUI::EndPayloadReceiver()
 	{
 		ImGui::EndDragDropTarget();
+	}
+
+
+	/*!***************************************************************************
+	* Gizmos
+	******************************************************************************/
+	static constexpr float length = 40.0f;
+	static constexpr float thickness = 12.0f;
+	static constexpr float half_thickness = thickness / 2;
+	static constexpr float arrow_neck_size = 2.0f;
+	static constexpr float length_scale = 1.25f;
+	static constexpr int arrow_gizmo_point_count = 7;
+
+	constexpr ImU32 right_gizmo_color					= IM_COL32(255, 0, 0, 255); // Color of the gizmo
+	constexpr ImU32 right_gizmo_hovered_color = IM_COL32(191, 0, 0, 255); // Color when hovered
+	constexpr ImU32 up_gizmo_color						= IM_COL32(0, 255, 0, 255); // Color of the gizmo
+	constexpr ImU32 up_gizmo_hovered_color		= IM_COL32(0, 191, 0, 255); // Color when hovered
+
+	void EditorGUI::Gizmo_Right_Arrow(float* p_x_axis_change, const ImVec2& origin)
+	{
+		ImGui::SetCursorPos(origin);
+		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		ImVec2 arrow_gizmo[arrow_gizmo_point_count] =
+		{
+			ImVec2{ pos.x + length								, pos.y + half_thickness - arrow_neck_size },
+			ImVec2{ pos.x + length								, pos.y },
+			ImVec2{ pos.x + length * length_scale , pos.y + half_thickness},
+			ImVec2{ pos.x + length								, pos.y + thickness},
+			ImVec2{ pos.x + length								, pos.y + half_thickness + arrow_neck_size },
+			ImVec2{ pos.x													, pos.y + half_thickness + arrow_neck_size },
+			ImVec2{ pos.x													, pos.y + half_thickness - arrow_neck_size }
+		};
+
+		ImGuiContext& context = *GImGui;
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+		if (window->SkipItems) return;
+
+		ImVec2 size = ImGui::CalcItemSize(ImVec2{ thickness * 0.8f, length * length_scale }, 0.0f, 0.0f);
+		ImGuiID id = window->GetID("Gizmo_Translate_Right");
+		ImRect bb({ origin.x, origin.y }, { origin.x + length * length_scale, origin.y + thickness });
+
+		//cursorpos expected to be bb.min
+		ImGui::ItemSize(bb);
+		ImGui::ItemAdd(bb, id);
+
+		//ImGui::GetForegroundDrawList()->AddRect(bb.Min, bb.Max, IM_COL32(255, 255, 0, 255));
+
+		bool hovered, held;
+		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
+
+		ImU32 gizmo_color = (hovered || held) ? right_gizmo_hovered_color : right_gizmo_color;
+
+		if (held)
+		{
+			ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
+			ImGui::ResetMouseDragDelta(); // Reset drag delta for the next frame
+			*p_x_axis_change += drag_delta.x; // Update the arrow's position
+		}
+
+		draw_list->AddConvexPolyFilled(arrow_gizmo, arrow_gizmo_point_count, gizmo_color);
+	}
+
+	void EditorGUI::Gizmo_Up_Arrow(float* p_y_axis_change, const ImVec2& origin)
+	{
+		ImGui::SetCursorPos(origin);
+		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		//Drawing Polygons with Imgui must have a clockwise winding order.
+		ImVec2 arrow_gizmo[arrow_gizmo_point_count] =
+		{
+			ImVec2{ origin.x + half_thickness - arrow_neck_size , origin.y - length},
+			ImVec2{ origin.x																		, origin.y - length},
+			ImVec2{ origin.x + half_thickness										, origin.y - length * length_scale},
+			ImVec2{ origin.x + thickness												, origin.y - length},
+			ImVec2{ origin.x + half_thickness + arrow_neck_size , origin.y - length},
+			ImVec2{ origin.x + half_thickness + arrow_neck_size , origin.y},
+			ImVec2{ origin.x + half_thickness - arrow_neck_size , origin.y}
+		};
+
+		ImGuiContext& context = *GImGui;
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+		
+		if (window->SkipItems) return;
+
+		ImVec2 size = ImGui::CalcItemSize(ImVec2{ thickness * 0.8f, length * length_scale }, 0.0f, 0.0f);
+		ImGuiID id = window->GetID("Gizmo_Translate_Left");
+		ImRect bb({ origin.x, origin.y - length * length_scale } , { origin.x + thickness, origin.y } );
+
+		//cursorpos expected to be bb.min
+		ImGui::ItemSize(bb);
+		ImGui::ItemAdd(bb, id);
+		bool hovered, held;
+		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
+
+		ImU32 gizmo_color = (hovered || held) ? up_gizmo_hovered_color : up_gizmo_color;
+		
+		if (held)
+		{
+			ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
+			ImGui::ResetMouseDragDelta(); // Reset drag delta for the next frame
+			*p_y_axis_change += drag_delta.y; // Update the arrow's position
+		}
+
+		draw_list->AddConvexPolyFilled(arrow_gizmo, arrow_gizmo_point_count, gizmo_color);
+
 	}
 
 
