@@ -1,8 +1,7 @@
 #pragma once
-#include <glad/glad.h>
 #include <vector>
 #include "FlexMath/Vector4.h"
-
+#include <glad/glad.h>
 namespace FlexEngine 
 {
     class OpenGLFrameBuffer 

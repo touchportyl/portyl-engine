@@ -20,6 +20,7 @@
 * Copyright (c) 2024 DigiPen, All rights reserved.
 **************************************************************************/
 #include "openglfont.h"
+#include <glad/glad.h>
 
 namespace FlexEngine
 {
