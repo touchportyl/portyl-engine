@@ -85,7 +85,7 @@ namespace ChronoDrift
         local_transform = parent_entity_matrix * (translation_matrix * rotation_matrix * scale_matrix);
     }
 
-    void UpdateCamMatrix(FlexECS::Entity& currCam)
+    void UpdateCamMatrix(FlexECS::Entity& currCam, CameraManager* CamManager)
     {
         if (!currCam.GetComponent<Transform>()->is_dirty) return;
 
@@ -102,8 +102,7 @@ namespace ChronoDrift
         Camera2D::UpdateProjectionMatrix(local_camData);
         Camera2D::UpdateViewMatrix(local_camData);
         
-        //TODO REENABLE THIS
-        //CameraManager::UpdateData(currCam.Get(), local_camData);
+        CamManager->UpdateData(currCam.Get(), local_camData);
     }
 
     /*!***************************************************************************
@@ -112,7 +111,7 @@ namespace ChronoDrift
     * proper alignment and processing of entities in the scene, particularly
     * their position and orientation in the hierarchy.
     *****************************************************************************/
-    void UpdateAllEntitiesMatrix()
+    void UpdateAllEntitiesMatrix(CameraManager* CamManager)
     {
         //DEBUG CHECKS IF IMAGE IS FROZEN OR NOT SHOWING
         // 1. DID YOU SET IS_DIRTY = true;
@@ -170,7 +169,7 @@ namespace ChronoDrift
                     UpdateTransformationMatrix(**it, globaltransform);
                     Camera* if_cam = nullptr;
                     if ((*it)->TryGetComponent<Camera>(if_cam)) 
-                        UpdateCamMatrix(**it);   
+                        UpdateCamMatrix(**it, CamManager);
 
                     // Mark the entity as processed
                     t_processedEntities.insert((*it)->Get());
@@ -413,7 +412,7 @@ namespace ChronoDrift
     void RenderSprite2D()
     {
         //Update Transformation Matrix of All Entities
-        UpdateAllEntitiesMatrix();
+        //UpdateAllEntitiesMatrix(CamManager);
 
         WindowProps window_props = Application::GetCurrentWindow()->GetProps();
         Renderer2DProps props;
@@ -428,7 +427,7 @@ namespace ChronoDrift
         RenderBatchedEntities();
         RenderTextEntities();
 
-        //What Rocky wants (TO DELETE)
+        //For PLAY
         #ifndef _DEBUG
         ForceRenderToScreen();
         #endif

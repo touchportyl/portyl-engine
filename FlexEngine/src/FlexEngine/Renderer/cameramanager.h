@@ -94,10 +94,10 @@ namespace FlexEngine
 
     public:
         // Non-copyable and non-movable to ensure no accidental duplication
-        //CameraManager(const CameraManager&) = delete;
-        //CameraManager& operator=(const CameraManager&) = delete;
-        //CameraManager(CameraManager&&) = delete;
-        //CameraManager& operator=(CameraManager&&) = delete;
+        CameraManager(const CameraManager&) = delete;
+        CameraManager& operator=(const CameraManager&) = delete;
+        CameraManager(CameraManager&&) = delete;
+        CameraManager& operator=(CameraManager&&) = delete;
 
         /*!************************************************************************
          * \brief Constructor for CameraManager.

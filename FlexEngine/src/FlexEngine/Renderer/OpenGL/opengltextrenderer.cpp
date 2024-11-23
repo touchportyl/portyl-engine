@@ -31,7 +31,7 @@ namespace FlexEngine
     float OpenGLTextRenderer::m_linespacing = 2.0f;
     float OpenGLTextRenderer::m_letterspacing = 5.0f;
 
-    CameraManager* FlexEngine::OpenGLTextRenderer::m_CamM_Instance = nullptr;
+    const CameraManager* FlexEngine::OpenGLTextRenderer::m_CamM_Instance = nullptr;
 
     /*!***************************************************************************
     * \brief 
@@ -40,13 +40,13 @@ namespace FlexEngine
     * This function sets up the VAO and VBO needed to render text quads, binding
     * and configuring vertex attributes.
     *****************************************************************************/
-    void OpenGLTextRenderer::Init(CameraManager* CamManager)
+    void OpenGLTextRenderer::Init(const CameraManager* CamManager)
     {
         InitRenderData();
 
         /////////////////////////////////////////////////////////////////////////////////////
         // Link Camera Manager
-        FlexEngine::OpenGLTextRenderer::m_CamM_Instance = CamManager;
+        m_CamM_Instance = CamManager;
     }
 
 
@@ -102,14 +102,14 @@ namespace FlexEngine
             Log::Fatal("Text Renderer: Unknown font type! Please check what you wrote!");
         if (text.m_words.empty())
             return;
-        if (followcam && FlexEngine::OpenGLTextRenderer::m_CamM_Instance->GetMainCamera() <= -1)
+        if (followcam && m_CamM_Instance->GetMainCamera() <= -1)
             followcam = false;
 
         asset_shader.SetUniform_vec3("u_color", text.m_color);
         asset_shader.SetUniform_mat4("u_model", text.m_transform);
         static const Matrix4x4 view_matrix = Matrix4x4::LookAt(Vector3::Zero, Vector3::Forward, Vector3::Up);
         Matrix4x4 projection_view = Matrix4x4::Orthographic(0.0f, text.m_window_size.x, text.m_window_size.y, 0.0f, -2.0f, 2.0f) * view_matrix;
-        asset_shader.SetUniform_mat4("projection", followcam ? FlexEngine::OpenGLTextRenderer::m_CamM_Instance->GetCameraData(m_CamM_Instance->GetMainCamera())->proj_viewMatrix : projection_view);
+        asset_shader.SetUniform_mat4("projection", followcam ? m_CamM_Instance->GetCameraData(m_CamM_Instance->GetMainCamera())->proj_viewMatrix : projection_view);
 
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(m_VAO);

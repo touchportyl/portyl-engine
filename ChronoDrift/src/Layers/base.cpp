@@ -31,28 +31,29 @@ namespace ChronoDrift
     // load assets only after the window has been created
     AssetManager::Load();
     FreeQueue::Push(std::bind(&AssetManager::Unload), "Chrono Drift AssetManager");
-    CamManager = new CameraManager(true);
+    CamManager = std::make_unique<CameraManager>(true);
 
     FlexEngine::Window* window = Application::GetCurrentWindow();
     window->SetTargetFPS(60);
     window->SetVSync(false);
     window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine-256.png)"));
 
-    window->PushLayer(std::make_shared<ChronoDrift::BattleLayer>(CamManager));
-    window->PushLayer(std::make_shared<ChronoDrift::OverworldLayer>(CamManager));
+    window->PushLayer(std::make_shared<ChronoDrift::BattleLayer>(CamManager.get()));
+    window->PushLayer(std::make_shared<ChronoDrift::OverworldLayer>(CamManager.get()));
     window->PushLayer(std::make_shared<ChronoDrift::EditorLayer>());
    
     // Renderer Setup
-
     OpenGLRenderer::EnableBlending();
     Vector2 windowsize{ static_cast<float>(window->GetWidth()), static_cast<float>(window->GetHeight()) };
-    OpenGLSpriteRenderer::Init(windowsize, CamManager);
-    OpenGLTextRenderer::Init(CamManager);
+    OpenGLSpriteRenderer::Init(windowsize, CamManager.get());
+    OpenGLTextRenderer::Init(CamManager.get());
   }
 
   void BaseLayer::OnDetach()
   {
     FLX_FLOW_ENDSCOPE();
+
+    CamManager.reset();
 
     OpenGLRenderer::DisableBlending();
 
