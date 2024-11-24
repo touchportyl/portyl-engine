@@ -33,7 +33,7 @@ namespace ChronoDrift
 		};
 
 		void CalculateViewportPosition();	//position of viewport image and size
-		void CheckMouseEvents();
+		void HandleMouseAndKeyboardEvents();
 		FlexEngine::FlexECS::Entity FindClickedEntity();
 		FlexEngine::Vector4 GetWorldClickPosition();
 		ImVec2 WorldToScreen(const FlexEngine::Vector2& position);
@@ -42,7 +42,7 @@ namespace ChronoDrift
 		bool m_gizmo_hovered;
 		bool m_dragging;
 
-		GizmoType m_current_gizmo_type = GizmoType::ROTATE;
+		GizmoType m_current_gizmo_type = GizmoType::TRANSLATE;
 
 		ImVec2 m_viewport_size;
 		ImVec2 m_viewport_position;

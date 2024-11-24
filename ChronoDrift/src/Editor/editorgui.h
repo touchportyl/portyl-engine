@@ -103,6 +103,19 @@ namespace ChronoDrift
 
 		/*!***************************************************************************
 		* @brief Gizmos
+		* I could probably shift gizmos to its own class...
+
+		* @param p_x_axis_change / p_y_axis_change
+			* pass in a out float value, the function will return how much the gizmo was moved, in screen space
+
+		* @param origin
+			* origin location to draw the gizmo starting point.
+
+		* @param hovering
+			* pass in a bool, function will tell you whether the gizmo is being hovered over
+		
+		* @param value
+			* move two axises at once, at the same value
 		******************************************************************************/
 		static void GizmoTranslateRight(float* p_x_axis_change, const ImVec2& origin, bool* hovering);
 		static void GizmoTranslateUp(float* p_y_axis_change, const ImVec2& origin, bool* hovering);

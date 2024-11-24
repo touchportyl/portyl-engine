@@ -331,12 +331,12 @@ namespace ChronoDrift
 	static constexpr float circle_thickness = 3.0f;
 	static constexpr int circle_segments = 64;
 
-	constexpr ImU32 red_gizmo_color						= IM_COL32(255, 0, 0, 225);
-	constexpr ImU32 red_gizmo_hovered_color		= IM_COL32(191, 0, 0, 225); 
-	constexpr ImU32 green_gizmo_color							= IM_COL32(0, 230, 0, 225);
-	constexpr ImU32 green_gizmo_hovered_color_gizmo_color			= IM_COL32(0, 170, 0, 225); 
-	constexpr ImU32 blue_gizmo_color					= IM_COL32(0, 55, 255, 225);
-	constexpr ImU32 blue_gizmo_hovered_color = IM_COL32(255, 165, 0, 225);
+	static constexpr ImU32 red_gizmo_color						= IM_COL32(255, 0, 0, 225);
+	static constexpr ImU32 red_gizmo_hovered_color		= IM_COL32(191, 0, 0, 225); 
+	static constexpr ImU32 green_gizmo_color							= IM_COL32(0, 230, 0, 225);
+	static constexpr ImU32 green_gizmo_hovered_color_gizmo_color			= IM_COL32(0, 170, 0, 225); 
+	static constexpr ImU32 blue_gizmo_color					= IM_COL32(0, 55, 255, 225);
+	static constexpr ImU32 blue_gizmo_hovered_color = IM_COL32(255, 165, 0, 225);
 	//constexpr ImU32 blue_gizmo_hovered_color	= IM_COL32(0, 0, 191, 225);
 
 	void EditorGUI::GizmoTranslateRight(float* p_x_axis_change, const ImVec2& origin, bool* hovering)
@@ -396,7 +396,7 @@ namespace ChronoDrift
 
 		draw_list->AddConvexPolyFilled(arrow_gizmo, arrow_gizmo_point_count, gizmo_color);
 	}
-
+	//Note: ImGui dragdelta.y is +ve when you move mouse downwards
 	void EditorGUI::GizmoTranslateUp(float* p_y_axis_change, const ImVec2& origin, bool* hovering)
 	{
 		ImGui::SetCursorPos(origin);
@@ -596,7 +596,6 @@ namespace ChronoDrift
 
 	void EditorGUI::Gizmo_Scale_XY(float* value, const ImVec2& origin, bool* hovering)
 	{
-
 		ImGui::SetCursorPos(origin);
 		ImVec2 pos = ImGui::GetCursorPos();
 		pos.x -= half_thickness;
@@ -624,15 +623,19 @@ namespace ChronoDrift
 		{
 			ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
 			ImGui::ResetMouseDragDelta();
+			
+			//TODO: improve the feel of the scaling
+			*value = drag_delta.x;	//personally it feels better this way, who even scales by moving the mouse upwards instead of right?
+
 			//return to caller the axis with a higher value
-			if (std::abs(drag_delta.x) > std::abs(drag_delta.y))
-			{
-				*value = drag_delta.x;
-			}
-			else
-			{
-				*value = -drag_delta.y;
-			}
+			//if (std::abs(drag_delta.x) > std::abs(drag_delta.y))
+			//{
+			//	*value = drag_delta.x;
+			//}
+			//else
+			//{
+			//	*value = -drag_delta.y;
+			//}
 		}
 		if (released)
 		{
@@ -642,19 +645,17 @@ namespace ChronoDrift
 		draw_list->AddRectFilled(bb.Min, bb.Max, gizmo_color);
 	}
 
+
 	struct RotationInfo
 	{
 		ImVec2 initial_click_pos{};
+		float initial_angle{};	//at the start of click pos
+		float manipulated_angle{}; //track current angle as we are spinning around
 		bool is_manipulating{ false };
-		float value{ };
-		bool hovering{ false };
-		bool held{ false };
-		bool released{ false };
 	};
-
-	RotationInfo rotation_info;
 	void EditorGUI::Gizmo_Rotate_Z(float* value, const ImVec2& origin, bool* hovering)
 	{
+		static RotationInfo rotation_info;
 		ImGui::SetCursorPos(origin);
 		ImVec2 pos = ImGui::GetCursorPos();
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -662,7 +663,7 @@ namespace ChronoDrift
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 		if (window->SkipItems) return;
 
-		ImGuiID id = window->GetID("Gizmo_Rotate_Z");
+		//ImGuiID id = window->GetID("Gizmo_Rotate_Z");
 
 		bool hovered;
 		hovered = CheckCircleMouseCollision(pos, circle_size, circle_thickness);
@@ -675,20 +676,37 @@ namespace ChronoDrift
 				//start dragging
 				rotation_info.is_manipulating = true;
 				rotation_info.initial_click_pos = ImGui::GetMousePos();
+				rotation_info.initial_angle = atan2f(rotation_info.initial_click_pos.y - origin.y,
+																						 rotation_info.initial_click_pos.x - origin.x);
+				rotation_info.manipulated_angle = rotation_info.initial_angle;
 			}
 		}
 
 		if (ImGui::IsMouseReleased(0) && rotation_info.is_manipulating)
 		{
 			//Mouse was released
-			rotation_info.is_manipulating = false;
+			rotation_info.initial_angle = {};
 			rotation_info.initial_click_pos = {};
+			rotation_info.manipulated_angle = {};
+			rotation_info.is_manipulating = false;
 		}
 
 		//Now compute the amount to rotate
 		if (rotation_info.is_manipulating)
 		{
+			ImVec2 current_mouse_pos = ImGui::GetMousePos();
+			float current_angle = atan2f(current_mouse_pos.y - origin.y,
+																	 current_mouse_pos.x - origin.x);
+			float angle_delta = rotation_info.manipulated_angle - current_angle;
+			rotation_info.manipulated_angle = current_angle;
 
+			//normalize to between pi and -pi
+			if (angle_delta > IM_PI)
+				angle_delta -= 2.0f * IM_PI;
+			else if (angle_delta < -IM_PI)
+				angle_delta += 2.0f * IM_PI;
+
+			*value = angle_delta;
 		}
 
 		ImU32 gizmo_color = (hovered || rotation_info.is_manipulating) ? blue_gizmo_hovered_color : blue_gizmo_color;

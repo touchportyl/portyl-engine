@@ -14,7 +14,6 @@ namespace ChronoDrift
 
 	void SceneView::Update()
 	{
-
 	}
 
 	void SceneView::Shutdown()
@@ -135,11 +134,11 @@ namespace ChronoDrift
 		return clicked_entity;
 	}
 
-	void SceneView::CheckMouseEvents()
+	void SceneView::HandleMouseAndKeyboardEvents()
 	{
-		if (ImGui::IsWindowFocused() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+		if (ImGui::IsWindowFocused() )
 		{
-			if (ImGui::IsMouseClicked(0))
+			if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
 			{
 				if (!m_gizmo_hovered)
 				{
@@ -154,6 +153,20 @@ namespace ChronoDrift
 					}
 				}
 			}
+			
+			//Changing Gizmos type
+			if (ImGui::IsKeyPressed(ImGuiKey_W))
+			{
+				m_current_gizmo_type = GizmoType::TRANSLATE;
+			}
+			else if (ImGui::IsKeyPressed(ImGuiKey_E))
+			{
+				m_current_gizmo_type = GizmoType::SCALE;
+			}
+			else if (ImGui::IsKeyPressed(ImGuiKey_R))
+			{
+				m_current_gizmo_type = GizmoType::ROTATE;
+			}
 		}
 	}
 
@@ -165,9 +178,11 @@ namespace ChronoDrift
 		selected_entity.GetComponent<Transform>()->is_dirty = true;
 		auto& entity_transform = selected_entity.GetComponent<Transform>()->transform;
 		auto& entity_position = selected_entity.GetComponent<Position>()->position;
+		auto& entity_rotation = selected_entity.GetComponent<Rotation>()->rotation;
 		auto& entity_scale = selected_entity.GetComponent<Scale>()->scale;
 
-		//Maybe pass in the projection matrix in the future
+		//Maybe pass in the projection matrix
+		//Will probably fix parented objects not being able to be selected
 
 		//Find out where on the screen to draw the gizmos
 		//Take entity position and convert it back to screen position
@@ -181,7 +196,7 @@ namespace ChronoDrift
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 		ImGuiID id = window->GetID("Sprite_BB_Visualizer");
 		ImRect bounding_box (entity_min, entity_max);
-		ImGui::GetForegroundDrawList()->AddRect(bounding_box.Min, bounding_box.Max, IM_COL32(255, 255, 0, 150));
+		ImGui::GetWindowDrawList()->AddRect(bounding_box.Min, bounding_box.Max, IM_COL32(255, 255, 0, 150));
 
 		//Draw Translate Gizmo
 		if (m_current_gizmo_type == GizmoType::TRANSLATE)
@@ -229,7 +244,11 @@ namespace ChronoDrift
 			bool hovered;
 			EditorGUI::Gizmo_Rotate_Z(&value, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &hovered);
 			m_gizmo_hovered = hovered;
-
+			entity_rotation.z += value * (180 / IM_PI);
+			
+			//Clamp to -360 and 360
+			if (entity_rotation.z > 360.0f) entity_rotation.z -= 360.0f;
+			if (entity_rotation.z < -360.0f) entity_rotation.z += 360.0f;
 		}
 	}
 
@@ -248,7 +267,7 @@ namespace ChronoDrift
 				m_viewport_size, ImVec2(0, 1), ImVec2(1, 0));
 
 
-			CheckMouseEvents();
+			HandleMouseAndKeyboardEvents();
 			DrawGizmos();
 
 			//Create new entity when dragging an image from assets to scene
