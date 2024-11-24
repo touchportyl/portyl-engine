@@ -120,7 +120,14 @@ namespace FlexEngine
      *****************************************************************************/
     void CameraManager::AddCameraEntity(FlexECS::EntityID entityID, const CameraData& cameraData)
     {
-        // Check if editor cam already exists in the map
+        //Check validity of ID
+        if (entityID == INVALID_ENTITY_ID)
+        {
+            Log::Error("AddCameraEntity(...) => Invalid entityID provided.");
+            return;
+        }
+
+        //Check if editor cam already exists in the map
         if (entityID == 0)
         {
             if (m_cameraEntities.find(entityID) != m_cameraEntities.end())
@@ -132,15 +139,11 @@ namespace FlexEngine
                 m_cameraEntities.emplace(entityID, cameraData);
                 Log::Debug("AddCameraEntity(...) => Added editor camera.");
             }
+            SwitchEditorCamera(entityID);
             return;
         }
 
-        if (entityID == INVALID_ENTITY_ID)
-        {
-            Log::Error("AddCameraEntity(...) => Invalid entityID provided.");
-            return;
-        }
-
+        //Add Camera to map
         auto result = m_cameraEntities.emplace(entityID, cameraData);
         if (result.second)
         {
@@ -151,6 +154,10 @@ namespace FlexEngine
             Log::Warning("AddCameraEntity(...) => Existing camera with same id. Replacing camera " + std::to_string(entityID));
             m_cameraEntities[entityID] = cameraData; // Replace existing entry
         }
+
+        //Update Main Camera automatically if missing
+        if (m_currMainID == INVALID_ENTITY_ID)
+            SwitchMainCamera(entityID);
     }
 
     /*!***************************************************************************

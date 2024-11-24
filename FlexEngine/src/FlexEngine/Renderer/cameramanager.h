@@ -96,6 +96,7 @@ namespace FlexEngine
         void RemoveCameraEntities();
 
     public:
+        
         // Non-copyable and non-movable to ensure no accidental duplication
         CameraManager(const CameraManager&) = delete;
         CameraManager& operator=(const CameraManager&) = delete;

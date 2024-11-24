@@ -108,6 +108,8 @@ namespace ChronoDrift
 						if (ImGui::MenuItem("Remove Component"))
 						{
 							std::cout << "Removing the component: " << component_name << "\n";
+							if (component_name == "Camera")
+								Editor::GetInstance().GetCamManager().RemoveCameraEntity(entity.Get());
 							ComponentViewRegistry::RemoveComponent(component_name, entity);
 						}
 
@@ -152,6 +154,8 @@ namespace ChronoDrift
 						if (ImGui::Selectable(component_name.c_str()))
 						{
 							ComponentViewRegistry::AddComponent(component_name, entity);
+							if (component_name == "Camera")
+								Editor::GetInstance().GetCamManager().AddCameraEntity(entity.Get(), entity.GetComponent<Camera>()->camera);
 							ImGui::CloseCurrentPopup();
 						}
 					}

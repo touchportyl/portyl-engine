@@ -78,6 +78,7 @@ namespace ChronoDrift
 				new_entity.AddComponent<Rotation>({});
 				new_entity.AddComponent<Scale>({});
 				new_entity.AddComponent<Transform>({});
+				new_entity.AddComponent<ZIndex>({});
 			}
 			ImGui::EndPopup();
 		}
