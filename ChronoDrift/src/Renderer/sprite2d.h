@@ -40,7 +40,7 @@ namespace ChronoDrift
 {
     void UpdateAllEntitiesMatrix(CameraManager* CamManager);
 
-    void UpdateAnimationInScene();
+    void UpdateAnimationInScene(double GameTimeSpeedModifier);
 
     /*!***************************************************************************
     * \brief

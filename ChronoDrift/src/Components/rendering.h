@@ -146,13 +146,14 @@ using namespace FlexEngine;
       GLuint rows = 1;
       GLuint cols = 0;
       GLuint max_sprites = 0;
-      float m_animationDurationPerFrame = 0.02f;
+      float m_animation_speed = 1.0f;
       Vector3 color_to_add = Vector3::Zero;
       Vector3 color_to_multiply = Vector3::One;
       //Dont set
       float m_animationTimer = 0.f;
       int m_currentSpriteIndex = 0; // start from first sprite
       Vector4 m_currUV = Vector4::Zero;
+      bool is_paused = false;
   };
 
   class Text

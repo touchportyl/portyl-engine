@@ -197,25 +197,23 @@ namespace ChronoDrift
 
     #pragma region Rendering Processes
 
-    void UpdateAnimationInScene()
+    void UpdateAnimationInScene(double GameTimeSpeedModifier)
     {
         for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Animation>())
         {
             if (!entity.GetComponent<IsActive>()->is_active) continue;
             
             auto anim = entity.GetComponent<Animation>();
-            anim->m_animationTimer += FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
-            if (anim->m_animationTimer >= anim->m_animationDurationPerFrame)
-            {
+            anim->m_animationTimer += anim->m_animation_speed * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
+            if (anim->m_animationTimer >= 1.0/GameTimeSpeedModifier) {
                 anim->m_animationTimer = 0;
-                anim->m_currentSpriteIndex = ++anim->m_currentSpriteIndex % anim->max_sprites;
-
-                int current_sprite_row = anim->m_currentSpriteIndex / anim->cols;
-                int current_sprite_col = anim->m_currentSpriteIndex % anim->cols;
-                anim->m_currUV.z = 1.f / anim->cols;
-                anim->m_currUV.w = 1.f / anim->rows;
-                anim->m_currUV.x = anim->m_currUV.z * current_sprite_col;
-                anim->m_currUV.y = anim->m_currUV.w * current_sprite_row;
+                int totalSprites = ++anim->m_currentSpriteIndex %= anim->max_sprites;
+                anim->m_currUV = {
+                    (1.f / anim->cols) * (totalSprites % anim->cols),
+                    (1.f / anim->rows) * (totalSprites / anim->cols),
+                    1.f / anim->cols,
+                    1.f / anim->rows
+                };
             }
         }
     }
