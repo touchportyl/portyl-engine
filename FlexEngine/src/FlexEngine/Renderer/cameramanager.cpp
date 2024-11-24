@@ -36,6 +36,7 @@ namespace FlexEngine
 {
 	#pragma region Reflection
     FLX_REFL_REGISTER_START(CameraData)
+        FLX_REFL_REGISTER_PROPERTY(cam_is_active)
         FLX_REFL_REGISTER_PROPERTY(position)
         FLX_REFL_REGISTER_PROPERTY(target)
         FLX_REFL_REGISTER_PROPERTY(up)
@@ -286,6 +287,53 @@ namespace FlexEngine
         }
     }
 
+    bool CameraManager::EnableCameraEntity(FlexECS::EntityID entityID) 
+    {
+        auto it = m_cameraEntities.find(entityID);
+        if (it != m_cameraEntities.end()) 
+        {
+            Log::Debug("EnableCameraEntity(...) => Enabling camera with entityID " + std::to_string(entityID));
+            it->second.cam_is_active = true;
+            return true;
+        }
+        Log::Debug("EnableCameraEntity(...) => Failed to enable camera. EntityID " + std::to_string(entityID) + " not found.");
+        return false;
+    }
+
+    bool CameraManager::DisableCameraEntity(FlexECS::EntityID entityID) 
+    {
+        auto it = m_cameraEntities.find(entityID);
+        if (it != m_cameraEntities.end()) 
+        {
+            Log::Debug("DisableCameraEntity(...) => Disabling camera with entityID " + std::to_string(entityID));
+            it->second.cam_is_active = false;
+            ValidateMainCamera(); // Revalidate the main camera
+            return true;
+        }
+        Log::Debug("DisableCameraEntity(...) => Failed to disable camera. EntityID " + std::to_string(entityID) + " not found.");
+        return false;
+    }
+
+    void CameraManager::ValidateMainCamera() 
+    {
+        // If the current main camera is invalid or inactive
+        if (m_currMainID == INVALID_ENTITY_ID ||
+            m_cameraEntities.find(m_currMainID) == m_cameraEntities.end() ||
+            !m_cameraEntities[m_currMainID].cam_is_active)
+        {
+            // Try to find a new active main camera
+            for (const auto& [id, data] : m_cameraEntities) 
+            {
+                if (data.cam_is_active)
+                {
+                    m_currMainID = id; // Assign the first active camera as the main camera
+                    return;
+                }
+            }
+            // If no active cameras are found, set the main camera to invalid
+            m_currMainID = INVALID_ENTITY_ID;
+        }
+    }
     #pragma endregion
 
     #pragma region Get functions

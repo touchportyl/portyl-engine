@@ -29,6 +29,8 @@ namespace ChronoDrift
 
   void EditorLayer::Update()
   {
+    m_CamM_Instance->ValidateMainCamera();
+
     Editor::GetInstance().Update();
 
     ImGui::Begin("Tools");

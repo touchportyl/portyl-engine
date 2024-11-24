@@ -82,6 +82,21 @@ namespace ChronoDrift
 			if (entity.HasComponent<Camera>())
 			{
 				transform->is_dirty = true;
+				auto& cam = entity.GetComponent<Camera>()->camera;
+				if (entity.HasComponent<IsActive>())
+				{
+					auto& is_active = entity.GetComponent<IsActive>()->is_active;
+					if (!is_active && cam.cam_is_active)
+					{
+						// Disable the camera instead of removing it
+						Editor::GetInstance().GetCamManager().DisableCameraEntity(entity.Get());
+					}
+					else if (is_active && !cam.cam_is_active)
+					{
+						// Enable the camera and validate it as the main camera if necessary
+						Editor::GetInstance().GetCamManager().EnableCameraEntity(entity.Get());
+					}
+				}
 			}
 
 			auto entity_record = ENTITY_INDEX[entity];

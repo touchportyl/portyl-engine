@@ -48,7 +48,8 @@ namespace FlexEngine
     struct __FLX_API CameraData
     {
         FLX_REFL_SERIALIZABLE
-            Vector3 position = Vector3::Zero;        /*!< Camera position in world space */
+        bool cam_is_active = true;
+        Vector3 position = Vector3::Zero;        /*!< Camera position in world space */
         Vector3 target = Vector3::Zero;          /*!< Target the camera is facing towards */
         Vector3 up = Vector3::Up;                /*!< Up vector for the camera's orientation */
         Vector3 right = Vector3::Right;          /*!< Right vector for the camera's orientation */
@@ -178,6 +179,27 @@ namespace FlexEngine
          * \param curr The new CameraData to update.
          *************************************************************************/
         void UpdateData(FlexECS::EntityID entityID, const CameraData& curr);
+    
+        /*!************************************************************************
+        * \brief Enables a camera entity by marking it as active.
+        * \param entityID The ID of the camera entity to enable.
+        * \return True if the camera was successfully enabled, false otherwise.
+        *************************************************************************/
+        bool EnableCameraEntity(FlexECS::EntityID entityID);
+
+        /*!************************************************************************
+         * \brief Disables a camera entity by marking it as inactive.
+         * \param entityID The ID of the camera entity to disable.
+         * \return True if the camera was successfully disabled, false otherwise.
+         *************************************************************************/
+        bool DisableCameraEntity(FlexECS::EntityID entityID);
+
+        /*!************************************************************************
+         * \brief Validates and ensures the main camera ID is always valid.
+         *        If the current main camera becomes inactive, it switches to the first
+         *        available active camera.
+         *************************************************************************/
+        void ValidateMainCamera();
     };
 }
 

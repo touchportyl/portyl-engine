@@ -64,6 +64,7 @@ namespace ChronoDrift {
 
   void BattleLayer::Update()
   {
+    m_CamM_Instance->ValidateMainCamera();
     if (Input::GetKeyDown(GLFW_KEY_4)) SetupBattle(); // Set Up Battle
 
     // Include a check whether battle system has been activated
