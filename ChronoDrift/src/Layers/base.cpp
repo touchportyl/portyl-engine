@@ -156,7 +156,7 @@ namespace ChronoDrift
                         CamManager->AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
                     }
                 }
-                Log::Info("Processed " + std::to_string(camera_list.size()) + " cameras from the active scene.");
+                Log::Info("Processed " + std::to_string(camera_list.size()) + " camera(s) from the active scene.");
                 Log::Info("Loaded scene from: " + file.path.string());
               }
             });

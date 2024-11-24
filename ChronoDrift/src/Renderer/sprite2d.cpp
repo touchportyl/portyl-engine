@@ -224,21 +224,9 @@ namespace ChronoDrift
             pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
         }
 
-        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
-        if (depth_test) OpenGLRenderer::DisableDepthTest();
-
-        bool blending = OpenGLRenderer::IsBlendingEnabled();
-        if (!blending) OpenGLRenderer::EnableBlending();
-
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
-        OpenGLFrameBuffer::ClearFrameBuffer();
-
         pp_render_queue.Flush();
         OpenGLSpriteRenderer::DrawPostProcessingLayer();
         non_pp_render_queue.Flush();
-
-        if (depth_test) OpenGLRenderer::EnableDepthTest();
-        if (!blending) OpenGLRenderer::DisableBlending();
     }
 
     void RenderBatchedEntities()
@@ -299,17 +287,7 @@ namespace ChronoDrift
             anim_render_queue.Insert({ [props, anim]() { OpenGLSpriteRenderer::DrawAnim2D(props, anim->m_currUV); }, "", z_index });
         }
 
-        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
-        if (depth_test) OpenGLRenderer::DisableDepthTest();
-
-        bool blending = OpenGLRenderer::IsBlendingEnabled();
-        if (!blending) OpenGLRenderer::EnableBlending();
-
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
-        OpenGLFrameBuffer::ClearFrameBuffer();
-
         Renderer2DProps props;
-
         for (auto& [key, batchData] : batchMap)
         {
             props.texture = key;
@@ -319,9 +297,6 @@ namespace ChronoDrift
 
         anim_render_queue.Flush();
         OpenGLSpriteRenderer::DrawPostProcessingLayer();
-
-        if (depth_test) OpenGLRenderer::EnableDepthTest();
-        if (!blending) OpenGLRenderer::DisableBlending();
     }
 
     void RenderTextEntities()
@@ -365,18 +340,7 @@ namespace ChronoDrift
             text_render_queue.Insert({ [sample]() { OpenGLTextRenderer::DrawText2D(sample, true); }, "", 0 });
         }
 
-        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
-        if (depth_test) OpenGLRenderer::DisableDepthTest();
-
-        bool blending = OpenGLRenderer::IsBlendingEnabled();
-        if (!blending) OpenGLRenderer::EnableBlending();
-
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
         text_render_queue.Flush();
-        OpenGLFrameBuffer::SetDefaultFrameBuffer();
-
-        if (depth_test) OpenGLRenderer::EnableDepthTest();
-        if (!blending) OpenGLRenderer::DisableBlending();
     }
 
     void ForceRenderToScreen()
@@ -431,13 +395,32 @@ namespace ChronoDrift
         // 3. Combine the animation and static images query together when undergoing batching
         // 4. BUTTONS DONT FORGET LEH
         // 5. Bloom in fullscreen
+
+        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
+        if (depth_test) OpenGLRenderer::DisableDepthTest();
+
+        bool blending = OpenGLRenderer::IsBlendingEnabled();
+        if (!blending) OpenGLRenderer::EnableBlending();
+
+        OpenGLFrameBuffer::SetGameFrameBuffer();
+        OpenGLFrameBuffer::ClearFrameBuffer();
+
         //RenderNormalEntities();
         RenderBatchedEntities();
         RenderTextEntities();
 
-        //For PLAY
+        if (depth_test) OpenGLRenderer::EnableDepthTest();
+        if (!blending) OpenGLRenderer::DisableBlending();
+        OpenGLFrameBuffer::SetDefaultFrameBuffer();
+
+        //For PLAY -> TODO @weijie Change this to Game & editor
         #ifndef _DEBUG
         ForceRenderToScreen();
+        //#else
+        //RenderBatchedEntities();
+        //RenderTextEntities();
         #endif
+
+        
     }
 }

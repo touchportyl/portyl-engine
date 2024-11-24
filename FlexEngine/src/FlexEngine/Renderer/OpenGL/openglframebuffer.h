@@ -6,19 +6,22 @@ namespace FlexEngine
 {
     class OpenGLFrameBuffer 
     {
-        static GLuint m_editorFBO;         //replace default framebuffer
+        static GLuint m_editorFBO;         //framebuffer to handle editor cam
+        static GLuint m_gameFBO;           //framebuffer to handle in-game cam
         static GLuint m_postProcessingFBO; //framebuffer to handle post-processing
         static GLuint m_bloomFBO;          //framebuffer to handle bloom exclusively
-
+        
     public:
         static GLuint m_pingpongTex[2];
         static GLuint m_postProcessingTex;
         static GLuint m_editorTex;
+        static GLuint m_gameRenderTex;
         static GLuint m_finalRenderTex;
 
         enum __FLX_API CreatedTextureID
         {
             CID_editor,
+            CID_gameRender,
             CID_finalRender,
             CID_brightnessPass,
             CID_blur,
@@ -27,9 +30,14 @@ namespace FlexEngine
         static void Init(const Vector2& windowSize);
         /*!***************************************************************************
         * \brief
-        * Sets the default framebuffer for rendering.
+        * Sets the editor framebuffer for rendering.
         *****************************************************************************/
         static void SetEditorFrameBuffer();
+        /*!***************************************************************************
+        * \brief
+        * Sets the game framebuffer for rendering.
+        *****************************************************************************/
+        static void SetGameFrameBuffer();
         /*!***************************************************************************
         * \brief
         * Sets the default framebuffer for rendering.
