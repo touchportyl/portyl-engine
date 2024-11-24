@@ -141,18 +141,55 @@ namespace ChronoDrift
 		{
 			if (ImGui::IsMouseClicked(0))
 			{
-				FlexECS::Entity entity = FindClickedEntity();
-				if (entity != FlexECS::Entity::Null)
+				if (!m_gizmo_hovered)
 				{
-					Editor::GetInstance().SelectEntity(entity);
-				}
-				else
-				{
-					Editor::GetInstance().SelectEntity(FlexECS::Entity::Null);
+					FlexECS::Entity entity = FindClickedEntity();
+					if (entity != FlexECS::Entity::Null)
+					{
+						Editor::GetInstance().SelectEntity(entity);
+					}
+					else
+					{
+						Editor::GetInstance().SelectEntity(FlexECS::Entity::Null);
+					}
 				}
 			}
 		}
 	}
+
+	void SceneView::DrawGizmos()
+	{
+		FlexECS::Entity selected_entity = Editor::GetInstance().GetSelectedEntity();
+		if (selected_entity == FlexECS::Entity::Null) return;
+
+		selected_entity.GetComponent<Transform>()->is_dirty = true;
+		auto& entity_transform = selected_entity.GetComponent<Transform>()->transform;
+		auto& entity_position = selected_entity.GetComponent<Position>()->position;
+		auto& entity_scale = selected_entity.GetComponent<Scale>()->scale;
+
+		//Maybe pass in the projection matrix in the future
+
+		//Find out where on the screen to draw the gizmos
+		//Take entity position and convert it back to screen position
+		ImVec2 gizmo_origin_pos = WorldToScreen(entity_position);
+
+		//Draw Translate Gizmo
+		Vector2 pos_change{};
+		bool right, up, xy;
+		EditorGUI::GizmoTranslateRight(&pos_change.x, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &right);
+		EditorGUI::GizmoTranslateUp(&pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &up);
+		EditorGUI::GizmoTranslateXY(&pos_change.x, &pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &xy);
+		m_gizmo_hovered = right || up || xy;
+
+		//Scale the change in position with relation to screen size
+		//pos_change represents how much the gizmo moved in absolute screen coordinates.
+		//Need to convert screen space to world space
+		pos_change.x *= FlexEngine::Application::GetCurrentWindow()->GetWidth() / m_viewport_size.x;
+		pos_change.y *= FlexEngine::Application::GetCurrentWindow()->GetHeight() / m_viewport_size.y;
+
+		entity_position += pos_change;
+	}
+
 
 	void SceneView::EditorUI()
 	{
@@ -161,16 +198,14 @@ namespace ChronoDrift
 		ImGui::Begin("Scene", nullptr, window_flags);
 		{
 			CalculateViewportPosition();
-			CheckMouseEvents();
-
-			//ImVec2 cursor_pos = ImGui::GetCursorPos();
-			//ImGui::IsItemHovered();
 
 			//Display Scene texture
 			ImGui::SetCursorPos(m_viewport_position);
 			ImGui::Image((ImTextureID)static_cast<uintptr_t>(FlexEngine::OpenGLFrameBuffer::GetCreatedTexture(FlexEngine::OpenGLFrameBuffer::CreatedTextureID::CID_editor)),
 				m_viewport_size, ImVec2(0, 1), ImVec2(1, 0));
 
+
+			CheckMouseEvents();
 			DrawGizmos();
 
 			//Create new entity when dragging an image from assets to scene
@@ -192,46 +227,14 @@ namespace ChronoDrift
 				new_entity.AddComponent<Shader>({ FlexECS::Scene::GetActiveScene()->Internal_StringStorage_New(R"(\shaders\texture)") });
 				EditorGUI::EndPayloadReceiver();
 			}
-
 		}
 		ImGui::End();
 	}
 
-	void SceneView::DrawGizmos()
-	{
-		m_gizmo_hovered = false;
-		FlexECS::Entity selected_entity = Editor::GetInstance().GetSelectedEntity();
-
-		if (selected_entity == FlexECS::Entity::Null) return;
-
-		selected_entity.GetComponent<Transform>()->is_dirty = true;
-		auto& entity_transform = selected_entity.GetComponent<Transform>()->transform;
-		auto& entity_position = selected_entity.GetComponent<Position>()->position;
-		auto& entity_scale = selected_entity.GetComponent<Scale>()->scale;
-
-		//Maybe pass in the projection matrix in the future
-		//const CameraData* camdata = CameraManager::GetCameraData(CameraManager::GetMainCamera());
-
-		//Find out where on the screen to draw the gizmos
-		//Take entity position and convert it back to screen position
-		ImVec2 gizmo_origin_pos = WorldToScreen(entity_position);
-		Vector2 pos_change{};
-
-		//Havent diagnosed the reason, but the color changing of gizmo when you hover over stops working
-		//When more than 1 gizmo is drawn.
-		EditorGUI::Gizmo_Right_Arrow(&pos_change.x, { gizmo_origin_pos.x, gizmo_origin_pos.y });
-		EditorGUI::Gizmo_Up_Arrow(&pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y });
-		EditorGUI::Gizmo_XY_Rect(&pos_change.x, &pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y });
-
-		//Scale the change in position with relation to screen size
-		//pos_change represents how much the gizmo moved in absolute screen coordinates.
-		//Need to convert screen space to world space
-		pos_change.x *= FlexEngine::Application::GetCurrentWindow()->GetWidth() / m_viewport_size.x;
-		pos_change.y *= FlexEngine::Application::GetCurrentWindow()->GetHeight() / m_viewport_size.y;
-		
-		entity_position += pos_change;
-	}
 }
+
+
+
 //if (ImGui::IsMouseClicked(1))
 //{
 //	std::cout << "Mouse Absolute Position: " << ImGui::GetMousePos().x << ", " << ImGui::GetMousePos().y << "\n";

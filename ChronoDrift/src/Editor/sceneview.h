@@ -25,6 +25,13 @@ namespace ChronoDrift
 		void Shutdown();
 
 	private:
+		enum GizmoType
+		{
+			TRANSLATE,
+			SCALE,
+			ROTATE
+		};
+
 		void CalculateViewportPosition();	//position of viewport image and size
 		void CheckMouseEvents();
 		FlexEngine::FlexECS::Entity FindClickedEntity();
@@ -32,9 +39,10 @@ namespace ChronoDrift
 		ImVec2 WorldToScreen(const FlexEngine::Vector2& position);
 		void DrawGizmos();
 
-
 		bool m_gizmo_hovered;
 		bool m_dragging;
+
+		GizmoType m_current_gizmo_type = GizmoType::TRANSLATE;
 
 		ImVec2 m_viewport_size;
 		ImVec2 m_viewport_position;

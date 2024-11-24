@@ -332,7 +332,7 @@ namespace ChronoDrift
 	constexpr ImU32 xy_rect_gizmo_color					= IM_COL32(0, 0, 255, 225); 
 	constexpr ImU32 xy_rect_gizmo_hovered_color	= IM_COL32(0, 0, 191, 225); 
 
-	void EditorGUI::Gizmo_Right_Arrow(float* p_x_axis_change, const ImVec2& origin)
+	void EditorGUI::GizmoTranslateRight(float* p_x_axis_change, const ImVec2& origin, bool* hovering)
 	{
 		ImGui::SetCursorPos(origin);
 		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
@@ -364,10 +364,10 @@ namespace ChronoDrift
 		ImGui::ItemSize(bb);
 		ImGui::ItemAdd(bb, id);
 
-		ImGui::GetForegroundDrawList()->AddRect(bb.Min, bb.Max, IM_COL32(255, 255, 0, 255));
-
 		bool hovered, held;
 		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
+
+		*hovering = hovered;
 
 		ImU32 gizmo_color = (hovered || held) ? right_gizmo_hovered_color : right_gizmo_color;
 
@@ -377,11 +377,16 @@ namespace ChronoDrift
 			ImGui::ResetMouseDragDelta(); // Reset drag delta for the next frame
 			*p_x_axis_change += drag_delta.x; // Update the arrow's position
 		}
+		if (released)
+		{
+			//TODO: When I make the undo feature
+			//Add to undo list
+		}
 
 		draw_list->AddConvexPolyFilled(arrow_gizmo, arrow_gizmo_point_count, gizmo_color);
 	}
 
-	void EditorGUI::Gizmo_Up_Arrow(float* p_y_axis_change, const ImVec2& origin)
+	void EditorGUI::GizmoTranslateUp(float* p_y_axis_change, const ImVec2& origin, bool* hovering)
 	{
 		ImGui::SetCursorPos(origin);
 		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
@@ -414,10 +419,10 @@ namespace ChronoDrift
 		ImGui::ItemSize(bb);
 		ImGui::ItemAdd(bb, id);
 
-		ImGui::GetForegroundDrawList()->AddRect(bb.Min, bb.Max, IM_COL32(255, 255, 0, 255));
-
 		bool hovered, held;
 		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
+
+		*hovering = hovered;
 
 		ImU32 gizmo_color = (hovered || held) ? up_gizmo_hovered_color : up_gizmo_color;
 		
@@ -437,7 +442,7 @@ namespace ChronoDrift
 
 	}
 
-	void EditorGUI::Gizmo_XY_Rect(float* p_x_axis_change, float* p_y_axis_change, const ImVec2& origin)
+	void EditorGUI::GizmoTranslateXY(float* p_x_axis_change, float* p_y_axis_change, const ImVec2& origin, bool* hovering)
 	{
 		ImGui::SetCursorPos(origin);
 		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
@@ -456,10 +461,12 @@ namespace ChronoDrift
 		ImGui::ItemSize(bb);
 		ImGui::ItemAdd(bb, id);
 
-		ImGui::GetForegroundDrawList()->AddRect(bb.Min, bb.Max, IM_COL32(255, 255, 0, 255));
+		//ImGui::GetForegroundDrawList()->AddRect(bb.Min, bb.Max, IM_COL32(255, 255, 0, 255));
 
 		bool hovered, held;
 		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
+
+		*hovering = hovered;
 
 		ImU32 gizmo_color = (hovered || held) ? xy_rect_gizmo_hovered_color : xy_rect_gizmo_color;
 
@@ -469,6 +476,11 @@ namespace ChronoDrift
 			ImGui::ResetMouseDragDelta(); // Reset drag delta for the next frame
 			*p_x_axis_change += drag_delta.x;
 			*p_y_axis_change += drag_delta.y;
+		}
+		if (released)
+		{
+			//TODO: When I make the undo feature
+			//Add to undo list
 		}
 
 		draw_list->AddRectFilled(bb.Min, bb.Max, gizmo_color);
