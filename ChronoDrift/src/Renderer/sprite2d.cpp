@@ -57,14 +57,13 @@ namespace ChronoDrift
         auto& local_scale = currEntity.GetComponent<Scale>()->scale;
         // Get rotation component if it exists
         Rotation* local_rotation = nullptr;
-        if (currEntity.TryGetComponent<Rotation>(local_rotation))
+        if (currEntity.HasComponent<Rotation>())
             local_rotation = currEntity.GetComponent<Rotation>();
 
         //Alignment of sprite
         static Vector2 sprite_alignment = Vector2::Zero;
         // Get sprite component if it exists
-        Sprite* checkSprite = nullptr;
-        if (currEntity.TryGetComponent<Sprite>(checkSprite))
+        if (currEntity.HasComponent<Sprite>())
         {
             switch (currEntity.GetComponent<Sprite>()->alignment)
             {
@@ -94,7 +93,7 @@ namespace ChronoDrift
         //auto& local_position = currCam.GetComponent<Position>()->position;
         // Get rotation component if it exists
         //Rotation* local_rotation = nullptr;
-        //if (currCam.TryGetComponent<Rotation>(local_rotation))
+        //if (currCam.HasComponent<Rotation>())
         //    local_rotation = currCam.GetComponent<Rotation>();
 
         //Update CamData
@@ -144,7 +143,7 @@ namespace ChronoDrift
 
                 // Get the parent of the current entity
                 Parent* t_parententity = nullptr;
-                if ((*t_currentEntity).TryGetComponent<Parent>(t_parententity))
+                if ((*t_currentEntity).HasComponent<Parent>())
                 {
                     t_parententity = (*t_currentEntity).GetComponent<Parent>();
 
@@ -170,7 +169,7 @@ namespace ChronoDrift
                     //Update current obj transform
                     UpdateTransformationMatrix(**it, globaltransform);
                     Camera* if_cam = nullptr;
-                    if ((*it)->TryGetComponent<Camera>(if_cam)) 
+                    if ((*it)->HasComponent<Camera>()) 
                         UpdateCamMatrix(**it, CamManager);
 
                     // Mark the entity as processed
