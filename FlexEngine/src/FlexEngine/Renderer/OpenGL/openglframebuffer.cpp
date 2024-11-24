@@ -4,6 +4,7 @@
 
 namespace FlexEngine 
 {
+    //TODO @weijie -note to self- make this dynamic container
     GLuint OpenGLFrameBuffer::m_editorFBO = 0;
     GLuint OpenGLFrameBuffer::m_postProcessingFBO = 0;
     GLuint OpenGLFrameBuffer::m_bloomFBO = 0;

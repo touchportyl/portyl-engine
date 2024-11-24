@@ -89,6 +89,7 @@ namespace ChronoDrift
     {
         if (!currCam.GetComponent<Transform>()->is_dirty) return;
 
+        //TODO @WEIJIE Hierarchy movement of camera not working as intended -> Inspect (LOW Priority)
         Vector3 local_position = { currCam.GetComponent<Transform>()->transform.m30,currCam.GetComponent<Transform>()->transform.m31, currCam.GetComponent<Transform>()->transform.m32 };
         //auto& local_position = currCam.GetComponent<Position>()->position;
         // Get rotation component if it exists
@@ -424,6 +425,12 @@ namespace ChronoDrift
         ////////////////////////////////////////////////////////////////////////////////
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
 
+        //TODO @WEIJIE 
+        // 1. Z Index not working (not included in current checks)
+        // 2. Animation need batching
+        // 3. Combine the animation and static images query together when undergoing batching
+        // 4. BUTTONS DONT FORGET LEH
+        // 5. Bloom in fullscreen
         //RenderNormalEntities();
         RenderBatchedEntities();
         RenderTextEntities();

@@ -61,6 +61,7 @@ namespace FlexEngine
 
     #pragma region Camera Movement
 
+    //TODO @WEIJIE Make editor cam update movement code here
     void Camera2D::MoveTo(CameraData& curr, const Vector3& targetPosition)
     {
         curr.position = targetPosition;
