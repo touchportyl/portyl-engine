@@ -205,6 +205,8 @@ namespace FlexEngine
   {
     FLX_FLOW_FUNCTION();
 
+    FMODWrapper::Core::ForceStop(); // As weird as this looks, I need this to be here so I can free sounds safely. - YC
+
     for (auto& [key, asset] : assets)
     {
       std::visit(

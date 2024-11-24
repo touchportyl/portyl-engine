@@ -79,6 +79,8 @@ public:
     // Function to support GLFW callback
     static void WindowFocusCallback(GLFWwindow* window, int focused);
 
+    static void ForceStop();
+
   private:
     // The below 2 functions are used for manually silencing FMOD. This is meant for things like alt tabbing.
     static void StopAll();
