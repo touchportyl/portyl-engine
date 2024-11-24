@@ -168,7 +168,6 @@ namespace ChronoDrift
                     
                     //Update current obj transform
                     UpdateTransformationMatrix(**it, globaltransform);
-                    Camera* if_cam = nullptr;
                     if ((*it)->HasComponent<Camera>()) 
                         UpdateCamMatrix(**it, CamManager);
 
@@ -197,6 +196,29 @@ namespace ChronoDrift
     #pragma endregion
 
     #pragma region Rendering Processes
+
+    void UpdateAnimationInScene()
+    {
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Animation>())
+        {
+            if (!entity.GetComponent<IsActive>()->is_active) continue;
+            
+            auto anim = entity.GetComponent<Animation>();
+            anim->m_animationTimer += FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
+            if (anim->m_animationTimer >= anim->m_animationDurationPerFrame)
+            {
+                anim->m_animationTimer = 0;
+                anim->m_currentSpriteIndex = ++anim->m_currentSpriteIndex % anim->max_sprites;
+
+                int current_sprite_row = anim->m_currentSpriteIndex / anim->cols;
+                int current_sprite_col = anim->m_currentSpriteIndex % anim->cols;
+                anim->m_currUV.z = 1.f / anim->cols;
+                anim->m_currUV.w = 1.f / anim->rows;
+                anim->m_currUV.x = anim->m_currUV.z * current_sprite_col;
+                anim->m_currUV.y = anim->m_currUV.w * current_sprite_row;
+            }
+        }
+    }
 
     void RenderNormalEntities(bool want_PP = true)
     {
@@ -266,20 +288,6 @@ namespace ChronoDrift
             props.shader = shader;
             props.transform = transform;
             props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(anim->spritesheet);
-            anim->m_animationTimer += FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
-            if (anim->m_animationTimer >= anim->m_animationDurationPerFrame)
-            {
-                anim->m_animationTimer = 0;
-                anim->m_currentSpriteIndex = ++anim->m_currentSpriteIndex % anim->max_sprites;
-
-                int current_sprite_row = anim->m_currentSpriteIndex / anim->cols;
-                int current_sprite_col = anim->m_currentSpriteIndex % anim->cols;
-                anim->m_currUV.z = 1.f / anim->cols;
-                anim->m_currUV.w = 1.f / anim->rows;
-                anim->m_currUV.x = anim->m_currUV.z * current_sprite_col;
-                anim->m_currUV.y = anim->m_currUV.w * current_sprite_row;
-            }
-
             props.color_to_add = anim->color_to_add;
             props.color_to_multiply = anim->color_to_multiply;
 
