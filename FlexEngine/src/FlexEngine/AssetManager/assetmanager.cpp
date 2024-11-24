@@ -223,6 +223,10 @@ namespace FlexEngine
           {
             arg.Unload();
           }
+          else if constexpr (std::is_same_v<T, Asset::Sound>)
+          {
+            arg.Unload();
+          }
         },
         asset
       );
