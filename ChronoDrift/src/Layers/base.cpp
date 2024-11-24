@@ -40,7 +40,7 @@ namespace ChronoDrift
 
     window->PushLayer(std::make_shared<ChronoDrift::BattleLayer>(CamManager.get()));
     window->PushLayer(std::make_shared<ChronoDrift::OverworldLayer>(CamManager.get()));
-    window->PushLayer(std::make_shared<ChronoDrift::EditorLayer>());
+    window->PushLayer(std::make_shared<ChronoDrift::EditorLayer>(CamManager.get()));
    
     // Renderer Setup
     OpenGLRenderer::EnableBlending();

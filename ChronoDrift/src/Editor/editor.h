@@ -74,8 +74,8 @@ namespace ChronoDrift
 		void SelectEntity(FlexEngine::FlexECS::Entity);
 		FlexEngine::FlexECS::Entity GetSelectedEntity();
 
-
-
+		CameraManager& GetCamManager() const;
+		void SetCamManager(CameraManager& camManager);
 	private:
 		bool m_initialized = false;
 		//std::vector<EditorPanel*> m_panels;
@@ -92,6 +92,8 @@ namespace ChronoDrift
 		//ComponentViewRegistry m_component_registry;
 		//std::unordered_map<std::type_index, std::string> type_names;
 		std::unordered_map<std::string, EditorPanel*> m_panels;
+
+		CameraManager* m_CamM_Instance = nullptr;
 	};
 
 

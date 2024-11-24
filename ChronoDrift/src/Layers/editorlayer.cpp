@@ -13,7 +13,7 @@ namespace ChronoDrift
   {
     FLX_FLOW_BEGINSCOPE();
     Editor::GetInstance().Init();
-
+    Editor::GetInstance().SetCamManager(*m_CamM_Instance);
     RegisterRenderingComponents();
     RegisterBattleComponents();
 

@@ -294,6 +294,7 @@ namespace FlexEngine
         if (m_currMainID == INVALID_ENTITY_ID)
         {
             Log::Warning("GetMainCamera() => Main Camera is of an invalid ID.");
+            return INVALID_ENTITY_ID;
         }
         return m_currMainID;
     }
@@ -309,6 +310,7 @@ namespace FlexEngine
         if (m_currEditorID == INVALID_ENTITY_ID)
         {
             Log::Warning("GetEditorCamera() => Editor Camera is of an invalid ID.");
+            return INVALID_ENTITY_ID;
         }
         return m_currEditorID;
     }

@@ -129,17 +129,17 @@ namespace ChronoDrift
 
 		// Setup map for all panels
 		m_panels["Hierarchy"] = &m_hierarchy;
-    m_panels["Inspector"] = &m_inspector;
-    m_panels["AssetBrowser"] = &m_assetbrowser;
-    m_panels["SceneView"] = &m_sceneview;
-    m_panels["GameView"] = &m_gameview;
+		m_panels["Inspector"] = &m_inspector;
+		m_panels["AssetBrowser"] = &m_assetbrowser;
+		m_panels["SceneView"] = &m_sceneview;
+		m_panels["GameView"] = &m_gameview;
 
-    for (auto iter = m_panels.begin(); iter != m_panels.end(); ++iter)
-    {
-      iter->second->Init();
-    }
+		for (auto iter = m_panels.begin(); iter != m_panels.end(); ++iter)
+		{
+		  iter->second->Init();
+		}
 
-    SetupImGuiStyle();
+		SetupImGuiStyle();
 	}
 
 	//ImGui startframe endframe already called in States::Window
@@ -197,5 +197,14 @@ namespace ChronoDrift
 	FlexECS::Entity Editor::GetSelectedEntity()
 	{
 		return m_selected_entity;
+	}
+
+	CameraManager& Editor::GetCamManager() const
+	{
+		return *m_CamM_Instance;
+	}
+	void Editor::SetCamManager(CameraManager& camManager)
+	{
+		m_CamM_Instance = &camManager;
 	}
 }
