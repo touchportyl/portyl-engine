@@ -15,6 +15,7 @@
 #include "hierarchyview.h"
 #include "inspector.h"
 #include "Components/rendering.h"
+#include "windowsizes.h"
 
 using namespace FlexEngine;
 using EntityName = FlexEngine::FlexECS::Scene::StringIndex;
@@ -30,6 +31,7 @@ namespace ChronoDrift
 
 	void Inspector::EditorUI()
 	{
+		SETINSPECTORWINDOW;
 		ImGui::Begin("Inspector");
 
 		auto scene = FlexECS::Scene::GetActiveScene();

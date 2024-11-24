@@ -5,6 +5,7 @@
 
 #include "FlexEngine/Core/imguiwrapper.h"
 #include "FlexEngine/Renderer/OpenGL/opengldebugrenderer.h"
+#include "windowsizes.h"
 
 
 namespace ChronoDrift 
@@ -31,6 +32,7 @@ namespace ChronoDrift
   {
     Editor::GetInstance().Update();
 
+    SETTOOLSWINDOW
     ImGui::Begin("Tools");
 
     ImGui::Checkbox("Show Colliders", &show_colliders);

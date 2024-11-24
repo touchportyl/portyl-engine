@@ -12,6 +12,7 @@
 #pragma once
 
 #include "flexprofiler.h"
+#include "windowsizes.h"
 
 namespace FlexEngine
 {
@@ -35,6 +36,7 @@ namespace FlexEngine
   // Create profiler window with IMGUI
   void Profiler::ShowProfilerWindow() 
   {
+    SETPROFILERWINDOW
     ImGui::Begin("Profiler");
 
     // Calculating combined time
