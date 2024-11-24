@@ -1,3 +1,25 @@
+/* Start Header
+*****************************************************************/
+/*!
+WLVERSE [https://wlverse.web.app]
+\file      edtiorlayer.cpp
+\author    [90%] Rocky Sutarius
+           - Main author, basically everything here.
+\co-author [10%] Yew Chong
+           - Migrated some code from overworld.cpp like Spawn 2500 Objects
+\par       rocky.sutarius\@digipen.edu
+\par       yewchong.k\@digipen.edu
+\date      24 November 2024
+\brief     Editor layer behavior, editor is initialized in this layer.
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header
+*******************************************************************/
+
+
 #include "editorlayer.h"
 #include "Components/physics.h"
 #include "Components/battlecomponents.h"

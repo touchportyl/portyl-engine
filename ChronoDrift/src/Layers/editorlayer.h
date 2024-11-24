@@ -1,3 +1,20 @@
+/* Start Header
+*****************************************************************/
+/*!
+WLVERSE [https://wlverse.web.app]
+\file      edtiorlayer.h
+\author    [100%] Rocky Sutarius
+\par       rocky.sutarius\@digipen.edu
+\date      24 November 2024
+\brief     Editor layer header, declares a layer for the Editor
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header
+*******************************************************************/
+
 #pragma once
 
 #include <FlexEngine.h>
