@@ -30,7 +30,7 @@ namespace ChronoDrift
     Path current_save_directory = default_save_directory;
     std::string current_save_name = default_save_name;
 
-    std::unique_ptr<CameraManager> CamManager = nullptr;
+    std::unique_ptr<FlexEngine::CameraManager> CamManager = nullptr;
   public:
     BaseLayer() : Layer("Base Layer") {}
     ~BaseLayer() = default;

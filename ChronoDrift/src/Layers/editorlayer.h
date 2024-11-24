@@ -33,10 +33,10 @@ namespace ChronoDrift
 
     bool show_colliders = false;
 
-    CameraManager* m_CamM_Instance = nullptr;
+    FlexEngine::CameraManager* m_CamM_Instance = nullptr;
   public:
       EditorLayer() = delete;
-    EditorLayer(CameraManager* CamManager) : Layer("Debug Layer"), m_CamM_Instance(CamManager) {}
+    EditorLayer(FlexEngine::CameraManager* CamManager) : Layer("Debug Layer"), m_CamM_Instance(CamManager) {}
     ~EditorLayer() = default;
 
     virtual void OnAttach() override;
