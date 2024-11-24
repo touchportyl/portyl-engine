@@ -146,4 +146,17 @@ namespace FlexEngine
             return CID_gameRender;
         }
     }
+
+    GLuint OpenGLFrameBuffer::GetCurrFrameBuffer() 
+    {
+        GLint currentFBO = 0;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &currentFBO);
+        return static_cast<GLuint>(currentFBO);
+    }
+
+    bool OpenGLFrameBuffer::CheckSameFrameBuffer(const GLuint framebufferID) 
+    {
+        const GLuint currentFBO = GetCurrFrameBuffer();
+        return currentFBO == framebufferID;
+    }
 }

@@ -83,11 +83,8 @@ namespace FlexEngine
         // Generate a unique entity ID for the editor camera
         FlexECS::EntityID editorCameraID = 0;
 
-        // Define default camera data for the editor
+        // Define default camera data for the editor -> Will be overwritten in sceneView
         CameraData editorCamera;
-        editorCamera.position = Vector3(0.0f, 0.0f, 10.0f); // Default position
-        editorCamera.target = Vector3::Zero;               // Looking at the origin
-        editorCamera.up = Vector3::Up;                     // Default up vector
 
         // Add the editor camera to the manager
         AddCameraEntity(editorCameraID, editorCamera);

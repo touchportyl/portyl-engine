@@ -83,12 +83,12 @@ namespace FlexEngine
 
         std::string shader = R"(/shaders/texture)";                       /*!< Path to the shader used for rendering textures */
         std::string texture = R"(/images/flexengine/flexengine-256.png)"; /*!< Default texture path */
-        Matrix4x4 transform = Matrix4x4::Identity;       // Transformation matrix per instance
-        Vector3 color_to_add = Vector3(0.0f, 0.0f, 0.0f);        // Color addition effect
-        Vector3 color_to_multiply = Vector3(1.0f, 1.0f, 1.0f); // Color multiplication effect
+        Matrix4x4 transform = Matrix4x4::Identity;                        // Transformation matrix per instance
+        Vector3 color_to_add = Vector3(0.0f, 0.0f, 0.0f);                 // Color addition effect
+        Vector3 color_to_multiply = Vector3(1.0f, 1.0f, 1.0f);            // Color multiplication effect
         Vector2 window_size = Vector2(800.0f, 600.0f);                    /*!< Size of the rendering window */
         Alignment alignment = Alignment_Center;                           /*!< Alignment option for the sprite */
-        GLuint vbo_id = VBO_Basic;                                                /*!< ID for the Vertex Buffer Object */
+        GLuint vbo_id = VBO_Basic;                                        /*!< ID for the Vertex Buffer Object */
     };
 
     /*!***************************************************************************

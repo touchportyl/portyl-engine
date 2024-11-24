@@ -29,7 +29,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "FlexEngine/Renderer/OpenGL/opengldebugrenderer.h"
 #include "windowsizes.h"
 
-
 namespace ChronoDrift 
 {
   void EditorLayer::OnAttach()
@@ -52,8 +51,6 @@ namespace ChronoDrift
 
   void EditorLayer::Update()
   {
-    m_CamM_Instance->ValidateMainCamera();
-
     Editor::GetInstance().Update();
 
     SETTOOLSWINDOW
@@ -112,5 +109,6 @@ namespace ChronoDrift
       }
     }
   }
+
 
 }

@@ -411,17 +411,24 @@ namespace ChronoDrift
         RenderTextEntities();
         #pragma endregion
 
-        //For PLAY -> TODO @weijie Change this to Game & editor
-        #ifndef _DEBUG
-        OpenGLFrameBuffer::SetDefaultFrameBuffer();
-        ForceRenderToScreen();
-        #else
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
-        OpenGLFrameBuffer::ClearFrameBuffer();
-        RenderBatchedEntities(false);
-        RenderTextEntities();
+        //Following is how to proceed with actual rendering onto screen
+        #ifdef GAME
+        {
+            //Render directly for gameplay
+            OpenGLFrameBuffer::SetDefaultFrameBuffer();
+            ForceRenderToScreen();
+        }
+        #else //Render editor view
+        {
+            
+            OpenGLFrameBuffer::SetEditorFrameBuffer();
+            OpenGLFrameBuffer::ClearFrameBuffer();
+            RenderBatchedEntities(false);
+            RenderTextEntities();
+        }
         #endif
 
+        //Refresh settings
         if (depth_test) OpenGLRenderer::EnableDepthTest();
         if (!blending) OpenGLRenderer::DisableBlending();
         OpenGLFrameBuffer::SetDefaultFrameBuffer();

@@ -358,7 +358,9 @@ namespace FlexEngine
         //  camPos.y + props.window_size.y, camPos.y,
         //  -2.0f, 2.0f
         //) * view_matrix;
-        asset_shader.SetUniform_mat4("u_projection_view", m_CamM_Instance->GetCameraData(m_CamM_Instance->GetMainCamera())->proj_viewMatrix);
+        asset_shader.SetUniform_mat4("u_projection_view", m_CamM_Instance->GetCameraData(
+            OpenGLFrameBuffer::CheckSameFrameBuffer(OpenGLFrameBuffer::m_gameFBO) ? m_CamM_Instance->GetMainCamera() : m_CamM_Instance->GetEditorCamera()
+             )->proj_viewMatrix);
         asset_shader.SetUniform_mat4("u_model", props.transform);
         // Draw
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -459,8 +461,9 @@ namespace FlexEngine
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         // Orthographic Projection
-        asset_shader.SetUniform_mat4("u_projection_view", m_CamM_Instance->GetCameraData(m_CamM_Instance->GetMainCamera())->proj_viewMatrix);
-
+        asset_shader.SetUniform_mat4("u_projection_view", m_CamM_Instance->GetCameraData(
+            OpenGLFrameBuffer::CheckSameFrameBuffer(OpenGLFrameBuffer::m_gameFBO) ? m_CamM_Instance->GetMainCamera() : m_CamM_Instance->GetEditorCamera()
+            )->proj_viewMatrix);
         // Draw
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, dataSize);
         m_draw_calls++;
@@ -514,7 +517,9 @@ namespace FlexEngine
         asset_shader.SetUniform_vec2("u_UvMax", Vector2{ u_max, v_max });
 
         // Transformation & Orthographic Projection
-        asset_shader.SetUniform_mat4("u_projection_view", m_CamM_Instance->GetCameraData(m_CamM_Instance->GetMainCamera())->proj_viewMatrix);
+        asset_shader.SetUniform_mat4("u_projection_view", m_CamM_Instance->GetCameraData(
+            OpenGLFrameBuffer::CheckSameFrameBuffer(OpenGLFrameBuffer::m_gameFBO) ? m_CamM_Instance->GetMainCamera() : m_CamM_Instance->GetEditorCamera()
+            )->proj_viewMatrix);
         asset_shader.SetUniform_mat4("u_model", props.transform);
         // Draw
         glDrawArrays(GL_TRIANGLES, 0, 6);

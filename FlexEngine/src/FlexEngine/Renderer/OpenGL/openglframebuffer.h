@@ -6,12 +6,12 @@ namespace FlexEngine
 {
     class OpenGLFrameBuffer 
     {
+    public:
         static GLuint m_editorFBO;         //framebuffer to handle editor cam
         static GLuint m_gameFBO;           //framebuffer to handle in-game cam
         static GLuint m_postProcessingFBO; //framebuffer to handle post-processing
         static GLuint m_bloomFBO;          //framebuffer to handle bloom exclusively
         
-    public:
         static GLuint m_pingpongTex[2];
         static GLuint m_postProcessingTex;
         static GLuint m_editorTex;
@@ -59,5 +59,16 @@ namespace FlexEngine
         *****************************************************************************/
         static void ClearFrameBuffer();
         static GLuint GetCreatedTexture(GLuint textureID);
+        /*!***************************************************************************
+        * \brief Retrieves the ID of the currently bound framebuffer.
+        * \return The ID of the currently bound framebuffer.
+        *****************************************************************************/
+        static GLuint GetCurrFrameBuffer();
+        /*!**************************************************************************
+        * \brief Checks if the currently bound framebuffer matches the given framebuffer ID.
+        * \param framebufferID The ID of the framebuffer to compare against.
+        * \return True if the currently bound framebuffer matches the given ID, false otherwise.
+        ***************************************************************************/
+        static bool CheckSameFrameBuffer(const GLuint framebufferID);
     };
 }

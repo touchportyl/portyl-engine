@@ -14,15 +14,18 @@
 #pragma once
 #include "editorpanel.h"
 
+#include "FlexEngine/Renderer/cameramanager.h"
 namespace ChronoDrift
 {
-
 	class SceneView : public EditorPanel
 	{
+		std::unique_ptr<FlexEngine::CameraData> m_EditorCam;
 	public:
 		void Init();
 		void Update();
 		void EditorUI();
 		void Shutdown();
+
+		void UpdateEditorCam();
 	};
 }
