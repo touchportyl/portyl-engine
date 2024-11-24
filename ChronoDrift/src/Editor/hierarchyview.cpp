@@ -80,6 +80,7 @@ namespace ChronoDrift
 				new_entity.AddComponent<Rotation>({});
 				new_entity.AddComponent<Scale>({});
 				new_entity.AddComponent<Transform>({});
+				new_entity.AddComponent<ZIndex>({});
 			}
 			ImGui::EndPopup();
 		}
@@ -129,11 +130,15 @@ namespace ChronoDrift
 			{
 				if (ImGui::MenuItem("Duplicate Entity"))
 				{
-					scene->CloneEntity(entity);
+					FlexECS::EntityID new_EntityID = scene->CloneEntity(entity);
+					if (entity.HasComponent<Camera>())
+						Editor::GetInstance().GetCamManager().AddCameraEntity(new_EntityID, entity.GetComponent<Camera>()->camera);
 				}
 				if (ImGui::MenuItem("Destroy Entity"))
 				{
 					delete_queue.Insert({ [scene, entity]() {scene->DestroyEntity(entity); }, "", 0 });
+					if (entity.HasComponent<Camera>())
+						Editor::GetInstance().GetCamManager().RemoveCameraEntity(entity.Get());
 					Editor::GetInstance().SelectEntity(FlexECS::Entity::Null);
 				}
 				ImGui::EndPopup();
@@ -161,7 +166,5 @@ namespace ChronoDrift
 	void HierarchyView::Shutdown()
 	{
 	}
-
-
 }
 

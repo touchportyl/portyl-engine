@@ -38,7 +38,7 @@ using namespace FlexEngine;
 
 namespace ChronoDrift
 {
-    void UpdateAllEntitiesMatrix();
+    void UpdateAllEntitiesMatrix(CameraManager* CamManager);
 
     /*!***************************************************************************
     * \brief

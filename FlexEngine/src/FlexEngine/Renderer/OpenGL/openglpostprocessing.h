@@ -1,5 +1,5 @@
 #pragma once
-#include <glad/glad.h>
+#include "OpenGLFrameBuffer.h"
 #include "FlexMath/Matrix4x4.h"
 #include "FlexMath/Vector3.h"
 #include "opengltexture.h"

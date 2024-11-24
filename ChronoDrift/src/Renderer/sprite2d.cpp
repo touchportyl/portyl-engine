@@ -85,15 +85,17 @@ namespace ChronoDrift
         local_transform = parent_entity_matrix * (translation_matrix * rotation_matrix * scale_matrix);
     }
 
-    void UpdateCamMatrix(FlexECS::Entity& currCam)
+    void UpdateCamMatrix(FlexECS::Entity& currCam, CameraManager* CamManager)
     {
         if (!currCam.GetComponent<Transform>()->is_dirty) return;
 
-        auto& local_position = currCam.GetComponent<Position>()->position;
+        //TODO @WEIJIE Hierarchy movement of camera not working as intended -> Inspect (LOW Priority)
+        Vector3 local_position = { currCam.GetComponent<Transform>()->transform.m30,currCam.GetComponent<Transform>()->transform.m31, currCam.GetComponent<Transform>()->transform.m32 };
+        //auto& local_position = currCam.GetComponent<Position>()->position;
         // Get rotation component if it exists
-        Rotation* local_rotation = nullptr;
-        if (currCam.TryGetComponent<Rotation>(local_rotation))
-            local_rotation = currCam.GetComponent<Rotation>();
+        //Rotation* local_rotation = nullptr;
+        //if (currCam.TryGetComponent<Rotation>(local_rotation))
+        //    local_rotation = currCam.GetComponent<Rotation>();
 
         //Update CamData
         if (!currCam.GetComponent<Transform>()->is_dirty) return; //TODO Check is this necessary
@@ -102,7 +104,7 @@ namespace ChronoDrift
         Camera2D::UpdateProjectionMatrix(local_camData);
         Camera2D::UpdateViewMatrix(local_camData);
         
-        CameraManager::UpdateData(currCam.Get(), local_camData);
+        CamManager->UpdateData(currCam.Get(), local_camData);
     }
 
     /*!***************************************************************************
@@ -111,7 +113,7 @@ namespace ChronoDrift
     * proper alignment and processing of entities in the scene, particularly
     * their position and orientation in the hierarchy.
     *****************************************************************************/
-    void UpdateAllEntitiesMatrix()
+    void UpdateAllEntitiesMatrix(CameraManager* CamManager)
     {
         //DEBUG CHECKS IF IMAGE IS FROZEN OR NOT SHOWING
         // 1. DID YOU SET IS_DIRTY = true;
@@ -169,7 +171,7 @@ namespace ChronoDrift
                     UpdateTransformationMatrix(**it, globaltransform);
                     Camera* if_cam = nullptr;
                     if ((*it)->TryGetComponent<Camera>(if_cam)) 
-                        UpdateCamMatrix(**it);   
+                        UpdateCamMatrix(**it, CamManager);
 
                     // Mark the entity as processed
                     t_processedEntities.insert((*it)->Get());
@@ -197,7 +199,7 @@ namespace ChronoDrift
 
     #pragma region Rendering Processes
 
-    void RenderNormalEntities()
+    void RenderNormalEntities(bool want_PP = true)
     {
         FunctionQueue pp_render_queue, non_pp_render_queue;
 
@@ -222,24 +224,12 @@ namespace ChronoDrift
             pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
         }
 
-        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
-        if (depth_test) OpenGLRenderer::DisableDepthTest();
-
-        bool blending = OpenGLRenderer::IsBlendingEnabled();
-        if (!blending) OpenGLRenderer::EnableBlending();
-
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
-        OpenGLFrameBuffer::ClearFrameBuffer();
-
         pp_render_queue.Flush();
-        OpenGLSpriteRenderer::DrawPostProcessingLayer();
+        if(want_PP) OpenGLSpriteRenderer::DrawPostProcessingLayer();
         non_pp_render_queue.Flush();
-
-        if (depth_test) OpenGLRenderer::EnableDepthTest();
-        if (!blending) OpenGLRenderer::DisableBlending();
     }
 
-    void RenderBatchedEntities()
+    void RenderBatchedEntities(bool want_PP = true)
     {
         std::unordered_map<std::string, Sprite_Batch_Inst> batchMap;
 
@@ -297,17 +287,7 @@ namespace ChronoDrift
             anim_render_queue.Insert({ [props, anim]() { OpenGLSpriteRenderer::DrawAnim2D(props, anim->m_currUV); }, "", z_index });
         }
 
-        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
-        if (depth_test) OpenGLRenderer::DisableDepthTest();
-
-        bool blending = OpenGLRenderer::IsBlendingEnabled();
-        if (!blending) OpenGLRenderer::EnableBlending();
-
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
-        OpenGLFrameBuffer::ClearFrameBuffer();
-
         Renderer2DProps props;
-
         for (auto& [key, batchData] : batchMap)
         {
             props.texture = key;
@@ -316,10 +296,7 @@ namespace ChronoDrift
         }
 
         anim_render_queue.Flush();
-        OpenGLSpriteRenderer::DrawPostProcessingLayer();
-
-        if (depth_test) OpenGLRenderer::EnableDepthTest();
-        if (!blending) OpenGLRenderer::DisableBlending();
+        if (want_PP) OpenGLSpriteRenderer::DrawPostProcessingLayer();
     }
 
     void RenderTextEntities()
@@ -363,18 +340,7 @@ namespace ChronoDrift
             text_render_queue.Insert({ [sample]() { OpenGLTextRenderer::DrawText2D(sample, true); }, "", 0 });
         }
 
-        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
-        if (depth_test) OpenGLRenderer::DisableDepthTest();
-
-        bool blending = OpenGLRenderer::IsBlendingEnabled();
-        if (!blending) OpenGLRenderer::EnableBlending();
-
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
         text_render_queue.Flush();
-        OpenGLFrameBuffer::SetDefaultFrameBuffer();
-
-        if (depth_test) OpenGLRenderer::EnableDepthTest();
-        if (!blending) OpenGLRenderer::DisableBlending();
     }
 
     void ForceRenderToScreen()
@@ -412,7 +378,7 @@ namespace ChronoDrift
     void RenderSprite2D()
     {
         //Update Transformation Matrix of All Entities
-        UpdateAllEntitiesMatrix();
+        //UpdateAllEntitiesMatrix(CamManager);
 
         WindowProps window_props = Application::GetCurrentWindow()->GetProps();
         Renderer2DProps props;
@@ -423,13 +389,48 @@ namespace ChronoDrift
         ////////////////////////////////////////////////////////////////////////////////
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
 
+        //TODO @WEIJIE 
+        // 1. Z Index not working (not included in current checks)
+        // 2. Animation need batching
+        // 3. Combine the animation and static images query together when undergoing batching
+        // 4. BUTTONS DONT FORGET LEH
+        // 5. Bloom in fullscreen
+
+        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
+        if (depth_test) OpenGLRenderer::DisableDepthTest();
+
+        bool blending = OpenGLRenderer::IsBlendingEnabled();
+        if (!blending) OpenGLRenderer::EnableBlending();
+
+        OpenGLFrameBuffer::SetGameFrameBuffer();
+        OpenGLFrameBuffer::ClearFrameBuffer();
+
+        #pragma region Draw Scene Entities
         //RenderNormalEntities();
         RenderBatchedEntities();
         RenderTextEntities();
+        #pragma endregion
 
-        //What Rocky wants (TO DELETE)
-        #ifndef _DEBUG
-        ForceRenderToScreen();
+        //Following is how to proceed with actual rendering onto screen
+        #ifdef GAME
+        {
+            //Render directly for gameplay
+            OpenGLFrameBuffer::SetDefaultFrameBuffer();
+            ForceRenderToScreen();
+        }
+        #else //Render editor view
+        {
+            
+            OpenGLFrameBuffer::SetEditorFrameBuffer();
+            OpenGLFrameBuffer::ClearFrameBuffer();
+            RenderBatchedEntities(false);
+            RenderTextEntities();
+        }
         #endif
+
+        //Refresh settings
+        if (depth_test) OpenGLRenderer::EnableDepthTest();
+        if (!blending) OpenGLRenderer::DisableBlending();
+        OpenGLFrameBuffer::SetDefaultFrameBuffer();
     }
 }

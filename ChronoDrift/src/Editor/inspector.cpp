@@ -84,6 +84,23 @@ namespace ChronoDrift
 			if (entity.HasComponent<Camera>())
 			{
 				transform->is_dirty = true;
+				auto& cam = entity.GetComponent<Camera>()->camera;
+				if (entity.HasComponent<IsActive>())
+				{
+					auto& is_active = entity.GetComponent<IsActive>()->is_active;
+					if (!is_active && cam.cam_is_active)
+					{
+						// Disable the camera instead of removing it
+						Editor::GetInstance().GetCamManager().DisableCameraEntity(entity.Get());
+						cam.cam_is_active = is_active;
+					}
+					else if (is_active && !cam.cam_is_active)
+					{
+						// Enable the camera and validate it as the main camera if necessary
+						Editor::GetInstance().GetCamManager().EnableCameraEntity(entity.Get());
+						cam.cam_is_active = is_active;
+					}
+				}
 			}
 
 			auto entity_record = ENTITY_INDEX[entity];
@@ -110,6 +127,8 @@ namespace ChronoDrift
 						if (ImGui::MenuItem("Remove Component"))
 						{
 							std::cout << "Removing the component: " << component_name << "\n";
+							if (component_name == "Camera")
+								Editor::GetInstance().GetCamManager().RemoveCameraEntity(entity.Get());
 							ComponentViewRegistry::RemoveComponent(component_name, entity);
 						}
 
@@ -154,6 +173,8 @@ namespace ChronoDrift
 						if (ImGui::Selectable(component_name.c_str()))
 						{
 							ComponentViewRegistry::AddComponent(component_name, entity);
+							if (component_name == "Camera")
+								Editor::GetInstance().GetCamManager().AddCameraEntity(entity.Get(), entity.GetComponent<Camera>()->camera);
 							ImGui::CloseCurrentPopup();
 						}
 					}

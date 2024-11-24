@@ -1,5 +1,5 @@
 #include "OpenGLPostProcessing.h"
-#include "OpenGLFrameBuffer.h"
+
 #include "FlexEngine/DataStructures/freequeue.h"
 
 namespace FlexEngine 
@@ -101,14 +101,14 @@ namespace FlexEngine
     //*****************************************************************************/
     void OpenGLPostProcessing::ApplyBloomFinalComposition(float opacity) 
     {
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
+        OpenGLFrameBuffer::SetGameFrameBuffer();
         //GLenum drawBuffer = GL_COLOR_ATTACHMENT1;
         GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT1 };
         glDrawBuffers(1, drawBuffers);
 
         m_bloom_finalcomp_shader.Use();
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, OpenGLFrameBuffer::m_editorTex); // Original scene texture
+        glBindTexture(GL_TEXTURE_2D, OpenGLFrameBuffer::m_gameRenderTex); // Original scene texture
         m_bloom_finalcomp_shader.SetUniform_int("screenTex", 0);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, OpenGLFrameBuffer::m_pingpongTex[0]); // Blur Vertical
