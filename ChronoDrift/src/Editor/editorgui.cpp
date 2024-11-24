@@ -23,8 +23,10 @@ namespace ChronoDrift
 
 
 	/*!***************************************************************************
-	* Component viewers
+	* Component viewers ( Inspector )
 	******************************************************************************/
+
+	#pragma region Inspector
 
 	void EditorGUI::DragFloat2(Vector2& data, std::string title,
 		//std::string label1, std::string label2, 
@@ -288,7 +290,7 @@ namespace ChronoDrift
 		PopID();
 	}
 
-
+	#pragma endregion
 
 	/*!***************************************************************************
 	* payloads
@@ -314,6 +316,8 @@ namespace ChronoDrift
 	/*!***************************************************************************
 	* Gizmos
 	******************************************************************************/
+	#pragma region Gizmos
+
 	static constexpr float length = 40.0f;
 	static constexpr float thickness = 12.0f;
 	static constexpr float half_thickness = thickness / 2;
@@ -321,15 +325,19 @@ namespace ChronoDrift
 	static constexpr float length_scale = 1.25f;
 	static constexpr int arrow_gizmo_point_count = 7;
 
-	constexpr ImU32 right_gizmo_color					= IM_COL32(255, 0, 0, 255); // Color of the gizmo
-	constexpr ImU32 right_gizmo_hovered_color = IM_COL32(191, 0, 0, 255); // Color when hovered
-	constexpr ImU32 up_gizmo_color						= IM_COL32(0, 255, 0, 255); // Color of the gizmo
-	constexpr ImU32 up_gizmo_hovered_color		= IM_COL32(0, 191, 0, 255); // Color when hovered
+	constexpr ImU32 right_gizmo_color						= IM_COL32(255, 0, 0, 225);
+	constexpr ImU32 right_gizmo_hovered_color		= IM_COL32(191, 0, 0, 225); 
+	constexpr ImU32 up_gizmo_color							= IM_COL32(0, 255, 0, 225);
+	constexpr ImU32 up_gizmo_hovered_color			= IM_COL32(0, 191, 0, 225); 
+	constexpr ImU32 xy_rect_gizmo_color					= IM_COL32(0, 0, 255, 225); 
+	constexpr ImU32 xy_rect_gizmo_hovered_color	= IM_COL32(0, 0, 191, 225); 
 
 	void EditorGUI::Gizmo_Right_Arrow(float* p_x_axis_change, const ImVec2& origin)
 	{
 		ImGui::SetCursorPos(origin);
 		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
+		pos.x += 7.0f;
+		pos.y -= half_thickness;
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
 		ImVec2 arrow_gizmo[arrow_gizmo_point_count] =
@@ -343,20 +351,20 @@ namespace ChronoDrift
 			ImVec2{ pos.x													, pos.y + half_thickness - arrow_neck_size }
 		};
 
-		ImGuiContext& context = *GImGui;
+		//ImGuiContext& context = *GImGui;
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
 		if (window->SkipItems) return;
 
-		ImVec2 size = ImGui::CalcItemSize(ImVec2{ thickness * 0.8f, length * length_scale }, 0.0f, 0.0f);
+		//ImVec2 size = ImGui::CalcItemSize(ImVec2{ thickness * 0.8f, length * length_scale }, 0.0f, 0.0f);
 		ImGuiID id = window->GetID("Gizmo_Translate_Right");
-		ImRect bb({ origin.x, origin.y }, { origin.x + length * length_scale, origin.y + thickness });
+		ImRect bb({ pos.x, pos.y }, { pos.x + length * length_scale, pos.y + thickness });
 
 		//cursorpos expected to be bb.min
 		ImGui::ItemSize(bb);
 		ImGui::ItemAdd(bb, id);
 
-		//ImGui::GetForegroundDrawList()->AddRect(bb.Min, bb.Max, IM_COL32(255, 255, 0, 255));
+		ImGui::GetForegroundDrawList()->AddRect(bb.Min, bb.Max, IM_COL32(255, 255, 0, 255));
 
 		bool hovered, held;
 		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
@@ -377,32 +385,37 @@ namespace ChronoDrift
 	{
 		ImGui::SetCursorPos(origin);
 		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
+		pos.x -= half_thickness;
+		pos.y -= 7.0f;
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
 		//Drawing Polygons with Imgui must have a clockwise winding order.
 		ImVec2 arrow_gizmo[arrow_gizmo_point_count] =
 		{
-			ImVec2{ origin.x + half_thickness - arrow_neck_size , origin.y - length},
-			ImVec2{ origin.x																		, origin.y - length},
-			ImVec2{ origin.x + half_thickness										, origin.y - length * length_scale},
-			ImVec2{ origin.x + thickness												, origin.y - length},
-			ImVec2{ origin.x + half_thickness + arrow_neck_size , origin.y - length},
-			ImVec2{ origin.x + half_thickness + arrow_neck_size , origin.y},
-			ImVec2{ origin.x + half_thickness - arrow_neck_size , origin.y}
+			ImVec2{ pos.x + half_thickness - arrow_neck_size , pos.y - length},
+			ImVec2{ pos.x																		 , pos.y - length},
+			ImVec2{ pos.x + half_thickness									 , pos.y - length * length_scale},
+			ImVec2{ pos.x + thickness												 , pos.y - length},
+			ImVec2{ pos.x + half_thickness + arrow_neck_size , pos.y - length},
+			ImVec2{ pos.x + half_thickness + arrow_neck_size , pos.y},
+			ImVec2{ pos.x + half_thickness - arrow_neck_size , pos.y}
 		};
 
-		ImGuiContext& context = *GImGui;
+		//ImGuiContext& context = *GImGui;
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 		
 		if (window->SkipItems) return;
 
-		ImVec2 size = ImGui::CalcItemSize(ImVec2{ thickness * 0.8f, length * length_scale }, 0.0f, 0.0f);
+		//ImVec2 size = ImGui::CalcItemSize(ImVec2{ thickness * 0.8f, length * length_scale }, 0.0f, 0.0f);
 		ImGuiID id = window->GetID("Gizmo_Translate_Left");
-		ImRect bb({ origin.x, origin.y - length * length_scale } , { origin.x + thickness, origin.y } );
+		ImRect bb({ pos.x, pos.y - length * length_scale } , { pos.x + thickness, pos.y } );
 
 		//cursorpos expected to be bb.min
 		ImGui::ItemSize(bb);
 		ImGui::ItemAdd(bb, id);
+
+		ImGui::GetForegroundDrawList()->AddRect(bb.Min, bb.Max, IM_COL32(255, 255, 0, 255));
+
 		bool hovered, held;
 		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
 
@@ -414,12 +427,54 @@ namespace ChronoDrift
 			ImGui::ResetMouseDragDelta(); // Reset drag delta for the next frame
 			*p_y_axis_change += drag_delta.y; // Update the arrow's position
 		}
+		if (released)
+		{
+			//TODO: When I make the undo feature
+			//Add to undo list
+		}
 
 		draw_list->AddConvexPolyFilled(arrow_gizmo, arrow_gizmo_point_count, gizmo_color);
 
 	}
 
+	void EditorGUI::Gizmo_XY_Rect(float* p_x_axis_change, float* p_y_axis_change, const ImVec2& origin)
+	{
+		ImGui::SetCursorPos(origin);
+		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
+		pos.x += 12.0f;
+		pos.y -= 12.0f;
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
+		if (window->SkipItems) return;
+
+		ImGuiID id = window->GetID("Gizmo_XY_Rect");
+		ImRect bb({ pos.x, pos.y - 18.0f}, { pos.x + 18.0f, pos.y });
+
+		//cursorpos expected to be bb.min
+		ImGui::ItemSize(bb);
+		ImGui::ItemAdd(bb, id);
+
+		ImGui::GetForegroundDrawList()->AddRect(bb.Min, bb.Max, IM_COL32(255, 255, 0, 255));
+
+		bool hovered, held;
+		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
+
+		ImU32 gizmo_color = (hovered || held) ? xy_rect_gizmo_hovered_color : xy_rect_gizmo_color;
+
+		if (held)
+		{
+			ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
+			ImGui::ResetMouseDragDelta(); // Reset drag delta for the next frame
+			*p_x_axis_change += drag_delta.x;
+			*p_y_axis_change += drag_delta.y;
+		}
+
+		draw_list->AddRectFilled(bb.Min, bb.Max, gizmo_color);
+	}
+
+	#pragma endregion
 
 
 	/*!***************************************************************************

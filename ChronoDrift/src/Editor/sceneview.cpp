@@ -34,7 +34,8 @@ namespace ChronoDrift
 		ImVec2 content_size = { panel_size.x, panel_size.y - title_bar_height };
 
 		//app width and height
-		float app_width = FlexEngine::Application::GetCurrentWindow()->GetWidth(), app_height = FlexEngine::Application::GetCurrentWindow()->GetHeight();
+		float app_width = static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetWidth());
+		float app_height = static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetHeight());
 
 		float width = app_width;
 		float height = app_height;
@@ -55,12 +56,13 @@ namespace ChronoDrift
 	{
 		ImVec2 window_top_left = ImGui::GetWindowPos();
 		ImVec2 mouse_pos_ss = ImGui::GetMousePos(); // Screen space mouse pos
-		float app_width = FlexEngine::Application::GetCurrentWindow()->GetWidth(), app_height = FlexEngine::Application::GetCurrentWindow()->GetHeight();
+		float app_width = static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetWidth()); 
+		float app_height = static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetHeight());
+
 
 		// Get Mouse position relative to the viewport
 		ImVec2 relative_pos = ImVec2(mouse_pos_ss.x - window_top_left.x - m_viewport_position.x,
 																 mouse_pos_ss.y - window_top_left.y - m_viewport_position.y); // IMGUI space is screen space - top left of imgui window
-
 
 		//normalize 0, 1 coords relative to viewport, then scale by app height
 		//This is mouse relative and scaled to "game" screen 
@@ -156,14 +158,8 @@ namespace ChronoDrift
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollWithMouse;
 
-
 		ImGui::Begin("Scene", nullptr, window_flags);
 		{
-
-			if (ImGui::IsMouseClicked(1))
-			{
-				std::cout << "Mouse Absolute Position: " << ImGui::GetMousePos().x << ", " << ImGui::GetMousePos().y << "\n";
-			}
 			CalculateViewportPosition();
 			CheckMouseEvents();
 
@@ -213,21 +209,32 @@ namespace ChronoDrift
 		auto& entity_position = selected_entity.GetComponent<Position>()->position;
 		auto& entity_scale = selected_entity.GetComponent<Scale>()->scale;
 
-		const CameraData* camdata = CameraManager::GetCameraData(CameraManager::GetMainCamera());
-
-		Vector2 pos_change{};
+		//Maybe pass in the projection matrix in the future
+		//const CameraData* camdata = CameraManager::GetCameraData(CameraManager::GetMainCamera());
 
 		//Find out where on the screen to draw the gizmos
 		//Take entity position and convert it back to screen position
 		ImVec2 gizmo_origin_pos = WorldToScreen(entity_position);
+		Vector2 pos_change{};
 
 		//Havent diagnosed the reason, but the color changing of gizmo when you hover over stops working
 		//When more than 1 gizmo is drawn.
 		EditorGUI::Gizmo_Right_Arrow(&pos_change.x, { gizmo_origin_pos.x, gizmo_origin_pos.y });
 		EditorGUI::Gizmo_Up_Arrow(&pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y });
+		EditorGUI::Gizmo_XY_Rect(&pos_change.x, &pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y });
 
 		//Scale the change in position with relation to screen size
+		//pos_change represents how much the gizmo moved in absolute screen coordinates.
+		//Need to convert screen space to world space
+		pos_change.x *= FlexEngine::Application::GetCurrentWindow()->GetWidth() / m_viewport_size.x;
+		pos_change.y *= FlexEngine::Application::GetCurrentWindow()->GetHeight() / m_viewport_size.y;
+		
 		entity_position += pos_change;
-
 	}
 }
+//if (ImGui::IsMouseClicked(1))
+//{
+//	std::cout << "Mouse Absolute Position: " << ImGui::GetMousePos().x << ", " << ImGui::GetMousePos().y << "\n";
+//	std::cout << "VP_SIZE: " << m_viewport_size.x << ", " << m_viewport_size.y << "\n";
+//	std::cout << "App_SIZE : " << app_width << ", " << app_height << "\n";
+//}

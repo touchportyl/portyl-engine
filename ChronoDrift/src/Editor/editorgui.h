@@ -106,6 +106,7 @@ namespace ChronoDrift
 		******************************************************************************/
 		static void Gizmo_Right_Arrow(float* p_x_axis_change, const ImVec2& origin);
 		static void Gizmo_Up_Arrow(float* p_y_axis_change, const ImVec2& origin);
+		static void Gizmo_XY_Rect(float* p_x_axis_change, float* p_y_axis_change, const ImVec2& origin);
 
 		/*!***************************************************************************
 		* @brief
