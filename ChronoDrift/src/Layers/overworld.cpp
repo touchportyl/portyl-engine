@@ -50,6 +50,10 @@ namespace ChronoDrift
         RegisterPhysicsComponents();
 
         SetupWorld();
+
+        #ifdef _MEMLEAK
+        int* a = new int;
+        #endif
     }
 
     void OverworldLayer::OnDetach()
