@@ -152,25 +152,25 @@ namespace ChronoDrift
       {
           auto& curr_cam = cam_entity.GetComponent<Position>()->position;
           auto& curr_camt = cam_entity.GetComponent<Transform>()->is_dirty;
-          if (Input::GetKey(GLFW_KEY_UP))
+          if (Input::GetKey(GLFW_KEY_I))
           {
               curr_cam += Vector2(0.0f, -5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
               curr_camt = true;
           }
-          else if (Input::GetKey(GLFW_KEY_DOWN))
+          else if (Input::GetKey(GLFW_KEY_K))
           {
               curr_cam += Vector2(0.0f, 5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
               curr_camt = true;
           }
 
-          if (Input::GetKey(GLFW_KEY_RIGHT))
-          {
-              curr_cam += Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
-              curr_camt = true;
-          }
-          else if (Input::GetKey(GLFW_KEY_LEFT))
+          if (Input::GetKey(GLFW_KEY_J))
           {
               curr_cam += Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
+              curr_camt = true;
+          }
+          else if (Input::GetKey(GLFW_KEY_L))
+          {
+              curr_cam += Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
               curr_camt = true;
           }
       }

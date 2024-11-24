@@ -199,7 +199,7 @@ namespace ChronoDrift
 
     #pragma region Rendering Processes
 
-    void RenderNormalEntities()
+    void RenderNormalEntities(bool want_PP = true)
     {
         FunctionQueue pp_render_queue, non_pp_render_queue;
 
@@ -225,11 +225,11 @@ namespace ChronoDrift
         }
 
         pp_render_queue.Flush();
-        OpenGLSpriteRenderer::DrawPostProcessingLayer();
+        if(want_PP) OpenGLSpriteRenderer::DrawPostProcessingLayer();
         non_pp_render_queue.Flush();
     }
 
-    void RenderBatchedEntities()
+    void RenderBatchedEntities(bool want_PP = true)
     {
         std::unordered_map<std::string, Sprite_Batch_Inst> batchMap;
 
@@ -296,7 +296,7 @@ namespace ChronoDrift
         }
 
         anim_render_queue.Flush();
-        OpenGLSpriteRenderer::DrawPostProcessingLayer();
+        if (want_PP) OpenGLSpriteRenderer::DrawPostProcessingLayer();
     }
 
     void RenderTextEntities()
@@ -405,22 +405,25 @@ namespace ChronoDrift
         OpenGLFrameBuffer::SetGameFrameBuffer();
         OpenGLFrameBuffer::ClearFrameBuffer();
 
+        #pragma region Draw Scene Entities
         //RenderNormalEntities();
         RenderBatchedEntities();
         RenderTextEntities();
+        #pragma endregion
+
+        //For PLAY -> TODO @weijie Change this to Game & editor
+        #ifndef _DEBUG
+        OpenGLFrameBuffer::SetDefaultFrameBuffer();
+        ForceRenderToScreen();
+        #else
+        OpenGLFrameBuffer::SetEditorFrameBuffer();
+        OpenGLFrameBuffer::ClearFrameBuffer();
+        RenderBatchedEntities(false);
+        RenderTextEntities();
+        #endif
 
         if (depth_test) OpenGLRenderer::EnableDepthTest();
         if (!blending) OpenGLRenderer::DisableBlending();
         OpenGLFrameBuffer::SetDefaultFrameBuffer();
-
-        //For PLAY -> TODO @weijie Change this to Game & editor
-        #ifndef _DEBUG
-        ForceRenderToScreen();
-        //#else
-        //RenderBatchedEntities();
-        //RenderTextEntities();
-        #endif
-
-        
     }
 }
