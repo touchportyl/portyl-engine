@@ -14,6 +14,7 @@
 #include "editor.h"
 #include "hierarchyview.h"
 #include "Components/rendering.h"
+#include "windowsizes.h"
 
 
 using namespace FlexEngine;
@@ -38,6 +39,7 @@ namespace ChronoDrift
 
 		FlexECS::Entity entity_to_delete = FlexECS::Entity::Null;
 
+		SETHIERARCHYWINDOW
 		ImGui::Begin("Scene Hierarchy");
 		//size_t entity_count = scene->entity_index.size();
 		//std::string entity_count_text = "Entity Count:  " + std::to_string(entity_count);
