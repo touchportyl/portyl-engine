@@ -150,6 +150,11 @@ namespace ChronoDrift
 	{
 		ImGui::Begin("Asset Browser");
 
+		if (ImGui::Button("Refresh")) {
+			AssetManager::Load();
+			LoadAllDirectories();
+		}
+
 		for (auto& [path, folder] : m_root_folder.subfolders)
 		{
 			RenderFolder(*folder);
