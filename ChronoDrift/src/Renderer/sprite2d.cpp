@@ -204,8 +204,11 @@ namespace ChronoDrift
             if (!entity.GetComponent<IsActive>()->is_active) continue;
             
             auto anim = entity.GetComponent<Animation>();
+
+            if (!anim->is_paused) continue;
             anim->m_animationTimer += anim->m_animation_speed * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
-            if (anim->m_animationTimer >= 1.0/GameTimeSpeedModifier) {
+            if (anim->m_animationTimer >= 1.0/GameTimeSpeedModifier) 
+            {
                 anim->m_animationTimer = 0;
                 int totalSprites = ++anim->m_currentSpriteIndex %= anim->max_sprites;
                 anim->m_currUV = {
@@ -216,6 +219,8 @@ namespace ChronoDrift
                 };
             }
         }
+        //FOUND FATAL ERROR: When saving scene with a paused animation, causes heap error when exiting engine.
+        // Pls check if persist
     }
 
     void RenderNormalEntities(bool want_PP = true)
