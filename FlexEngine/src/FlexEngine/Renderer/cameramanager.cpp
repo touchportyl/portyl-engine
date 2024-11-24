@@ -148,7 +148,7 @@ namespace FlexEngine
         auto result = m_cameraEntities.emplace(entityID, cameraData);
         if (result.second)
         {
-            Log::Debug("AddCameraEntity(...) => Added camera " + std::to_string(entityID));
+            Log::Debug("AddCameraEntity(...) => Added camera with entityID " + std::to_string(entityID));
         }
         else
         {
@@ -179,7 +179,7 @@ namespace FlexEngine
         if (m_cameraEntities.find(entityID) != m_cameraEntities.end())
         {
             m_currMainID = entityID;
-            Log::Debug("SwitchMainCamera(...) => Switched Main to camera " + std::to_string(entityID));
+            Log::Debug("SwitchMainCamera(...) => Switched Main to camera with entityID " + std::to_string(entityID));
             return true;
         }
         Log::Warning("SwitchMainCamera(...) => Unable to find camera with your entityID. You forgot to add it.");
@@ -204,7 +204,7 @@ namespace FlexEngine
         if (m_cameraEntities.find(entityID) != m_cameraEntities.end())
         {
             m_currEditorID = entityID;
-            Log::Debug("SwitchEditorCamera(...) => Switched Editor to camera " + std::to_string(entityID));
+            Log::Debug("SwitchEditorCamera(...) => Switched Editor to camera with entityID " + std::to_string(entityID));
             return true;
         }
         Log::Warning("SwitchEditorCamera(...) => Unable to find camera with your entityID. You forgot to add it.");
@@ -251,11 +251,12 @@ namespace FlexEngine
     *****************************************************************************/
     void CameraManager::RemoveCamerasInScene()
     {
+        Log::Info("RemoveNonEditorCameras(...) => Removing " + std::to_string(m_cameraEntities.size()-1) + " camera(s) in scene.");
         for (auto it = m_cameraEntities.begin(); it != m_cameraEntities.end();)
         {
             if (it->first != m_currEditorID)
             {
-                Log::Debug("RemoveNonEditorCameras(...) => Removing camera with entityID " + std::to_string(it->first));
+                Log::Debug("L> Removing camera with entityID " + std::to_string(it->first));
                 it = m_cameraEntities.erase(it);
             }
             else
@@ -296,7 +297,7 @@ namespace FlexEngine
             it->second.cam_is_active = true;
             return true;
         }
-        Log::Debug("EnableCameraEntity(...) => Failed to enable camera. EntityID " + std::to_string(entityID) + " not found.");
+        Log::Debug("EnableCameraEntity(...) => Failed to enable camera with entityID " + std::to_string(entityID) + ". EntityID not found.");
         return false;
     }
 
