@@ -151,7 +151,6 @@ namespace ChronoDrift
 		ImGui::Begin("Asset Browser");
 
 		if (ImGui::Button("Refresh")) {
-			AssetManager::Unload();
 			AssetManager::Load();
 			LoadAllDirectories();
 		}
