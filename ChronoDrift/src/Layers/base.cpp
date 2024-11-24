@@ -20,6 +20,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Layers.h"
 
 #include "Components/rendering.h"
+#include "windowsizes.h"
 
 namespace ChronoDrift
 {
@@ -341,6 +342,7 @@ namespace ChronoDrift
 
     #if 1
     {
+      SETSTATISTICSWINDOW
       ImGui::Begin("Statistics");
       ImGuiTreeNodeFlags tree_node_flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnDoubleClick; // open by default
 

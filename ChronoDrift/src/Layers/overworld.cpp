@@ -1,3 +1,23 @@
+/* Start Header
+*****************************************************************/
+/*!
+WLVERSE [https://wlverse.web.app]
+\file      overworld.cpp
+\author    [50%] Yew Chong (yewchong.k\@digipen.edu)
+           - Main query loops, profiler, memleak code
+\co-author [50%] Soh Wei Jie (weijie.soh\@digipen.edu)
+           - Camera code, add registering
+\date      24 November 2024
+\brief     General layer for almost everything in the game to run.
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header
+*******************************************************************/
+
+
 #include "overworld.h"
 
 #include "States.h"
@@ -50,6 +70,10 @@ namespace ChronoDrift
         RegisterPhysicsComponents();
 
         SetupWorld();
+
+        #ifdef _MEMLEAK
+        int* a = new int;
+        #endif
     }
 
     void OverworldLayer::OnDetach()

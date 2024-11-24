@@ -2,6 +2,7 @@
 #include "editorgui.h"
 #include "imguipayloads.h"
 #include <FlexEngine/Renderer/OpenGL/openglspriterenderer.h>
+#include "windowsizes.h"
 
 namespace ChronoDrift
 {
@@ -23,6 +24,7 @@ namespace ChronoDrift
 	void GameView::EditorUI()
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
+		SETGAMEWINDOW
 		ImGui::Begin("Game", nullptr, window_flags);
 		{
 			ImVec2 window_top_left = ImGui::GetWindowPos();
