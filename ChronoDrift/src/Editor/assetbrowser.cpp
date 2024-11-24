@@ -1,6 +1,7 @@
 #include "editor.h"
 #include "assetbrowser.h"
 #include <filesystem>
+#include "windowsizes.h"
 
 namespace ChronoDrift
 {
@@ -148,6 +149,7 @@ namespace ChronoDrift
 
 	void AssetBrowser::EditorUI()
 	{
+		SETASSETBROWSERWINDOW;
 		ImGui::Begin("Asset Browser");
 
 		for (auto& [path, folder] : m_root_folder.subfolders)
