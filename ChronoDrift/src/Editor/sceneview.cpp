@@ -255,7 +255,7 @@ namespace ChronoDrift
 
 	void SceneView::EditorUI()
 	{
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoNav;
 
 		ImGui::Begin("Scene", nullptr, window_flags);
 		{
