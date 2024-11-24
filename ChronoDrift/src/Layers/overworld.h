@@ -1,3 +1,20 @@
+/* Start Header
+*****************************************************************/
+/*!
+WLVERSE [https://wlverse.web.app]
+\file      overworld.h
+\author    [100%] Soh Wei Jie (weijie.soh\@digipen.edu)
+           - Camera code, add registering
+\date      24 November 2024
+\brief     Declaration for the overworld layer.
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header
+*******************************************************************/
+
 #pragma once
 #include <FlexEngine.h>
 
