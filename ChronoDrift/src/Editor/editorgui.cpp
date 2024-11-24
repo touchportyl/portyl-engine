@@ -320,26 +320,38 @@ namespace ChronoDrift
 
 	static constexpr float length = 40.0f;
 	static constexpr float thickness = 12.0f;
+	static constexpr float padding = 7.0f;
 	static constexpr float half_thickness = thickness / 2;
 	static constexpr float arrow_neck_size = 2.0f;
 	static constexpr float length_scale = 1.25f;
 	static constexpr int arrow_gizmo_point_count = 7;
+	static constexpr int box_gizmo_point_count = 8;
 
-	constexpr ImU32 right_gizmo_color						= IM_COL32(255, 0, 0, 225);
-	constexpr ImU32 right_gizmo_hovered_color		= IM_COL32(191, 0, 0, 225); 
-	constexpr ImU32 up_gizmo_color							= IM_COL32(0, 255, 0, 225);
-	constexpr ImU32 up_gizmo_hovered_color			= IM_COL32(0, 191, 0, 225); 
-	constexpr ImU32 xy_rect_gizmo_color					= IM_COL32(0, 0, 255, 225); 
-	constexpr ImU32 xy_rect_gizmo_hovered_color	= IM_COL32(0, 0, 191, 225); 
+	static constexpr float circle_size = 60.0f;
+	static constexpr float circle_thickness = 3.0f;
+	static constexpr int circle_segments = 64;
+
+	constexpr ImU32 red_gizmo_color						= IM_COL32(255, 0, 0, 225);
+	constexpr ImU32 red_gizmo_hovered_color		= IM_COL32(191, 0, 0, 225); 
+	constexpr ImU32 green_gizmo_color							= IM_COL32(0, 230, 0, 225);
+	constexpr ImU32 green_gizmo_hovered_color_gizmo_color			= IM_COL32(0, 170, 0, 225); 
+	constexpr ImU32 blue_gizmo_color					= IM_COL32(0, 55, 255, 225);
+	constexpr ImU32 blue_gizmo_hovered_color = IM_COL32(255, 165, 0, 225);
+	//constexpr ImU32 blue_gizmo_hovered_color	= IM_COL32(0, 0, 191, 225);
 
 	void EditorGUI::GizmoTranslateRight(float* p_x_axis_change, const ImVec2& origin, bool* hovering)
 	{
+		// Origin refers to the center of the entity.
+		//We set imgui cursor pos to start from this place, then we adjust
+		//The gizmos position starting from that position.
 		ImGui::SetCursorPos(origin);
-		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
-		pos.x += 7.0f;
+		ImVec2 pos = ImGui::GetCursorPos();
+		pos.x += padding;
 		pos.y -= half_thickness;
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
+		//Coordinates of arrow polygon
+		//Drawing Polygons with Imgui must have a clockwise winding order.
 		ImVec2 arrow_gizmo[arrow_gizmo_point_count] =
 		{
 			ImVec2{ pos.x + length								, pos.y + half_thickness - arrow_neck_size },
@@ -351,31 +363,30 @@ namespace ChronoDrift
 			ImVec2{ pos.x													, pos.y + half_thickness - arrow_neck_size }
 		};
 
-		//ImGuiContext& context = *GImGui;
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
 		if (window->SkipItems) return;
 
-		//ImVec2 size = ImGui::CalcItemSize(ImVec2{ thickness * 0.8f, length * length_scale }, 0.0f, 0.0f);
 		ImGuiID id = window->GetID("Gizmo_Translate_Right");
 		ImRect bb({ pos.x, pos.y }, { pos.x + length * length_scale, pos.y + thickness });
 
-		//cursorpos expected to be bb.min
+		//Reserve space for an item
 		ImGui::ItemSize(bb);
 		ImGui::ItemAdd(bb, id);
 
+		//Check button is clicked
 		bool hovered, held;
 		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
 
 		*hovering = hovered;
 
-		ImU32 gizmo_color = (hovered || held) ? right_gizmo_hovered_color : right_gizmo_color;
+		ImU32 gizmo_color = (hovered || held) ? red_gizmo_hovered_color : red_gizmo_color;
 
 		if (held)
 		{
 			ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
-			ImGui::ResetMouseDragDelta(); // Reset drag delta for the next frame
-			*p_x_axis_change += drag_delta.x; // Update the arrow's position
+			ImGui::ResetMouseDragDelta(); 
+			*p_x_axis_change += drag_delta.x;
 		}
 		if (released)
 		{
@@ -389,12 +400,11 @@ namespace ChronoDrift
 	void EditorGUI::GizmoTranslateUp(float* p_y_axis_change, const ImVec2& origin, bool* hovering)
 	{
 		ImGui::SetCursorPos(origin);
-		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
+		ImVec2 pos = ImGui::GetCursorPos();
 		pos.x -= half_thickness;
-		pos.y -= 7.0f;
+		pos.y -= padding;
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
-		//Drawing Polygons with Imgui must have a clockwise winding order.
 		ImVec2 arrow_gizmo[arrow_gizmo_point_count] =
 		{
 			ImVec2{ pos.x + half_thickness - arrow_neck_size , pos.y - length},
@@ -406,16 +416,13 @@ namespace ChronoDrift
 			ImVec2{ pos.x + half_thickness - arrow_neck_size , pos.y}
 		};
 
-		//ImGuiContext& context = *GImGui;
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 		
 		if (window->SkipItems) return;
 
-		//ImVec2 size = ImGui::CalcItemSize(ImVec2{ thickness * 0.8f, length * length_scale }, 0.0f, 0.0f);
-		ImGuiID id = window->GetID("Gizmo_Translate_Left");
+		ImGuiID id = window->GetID("Gizmo_Translate_Up");
 		ImRect bb({ pos.x, pos.y - length * length_scale } , { pos.x + thickness, pos.y } );
 
-		//cursorpos expected to be bb.min
 		ImGui::ItemSize(bb);
 		ImGui::ItemAdd(bb, id);
 
@@ -424,18 +431,17 @@ namespace ChronoDrift
 
 		*hovering = hovered;
 
-		ImU32 gizmo_color = (hovered || held) ? up_gizmo_hovered_color : up_gizmo_color;
+		ImU32 gizmo_color = (hovered || held) ? green_gizmo_hovered_color_gizmo_color : green_gizmo_color;
 		
 		if (held)
 		{
 			ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
-			ImGui::ResetMouseDragDelta(); // Reset drag delta for the next frame
-			*p_y_axis_change += drag_delta.y; // Update the arrow's position
+			ImGui::ResetMouseDragDelta(); 
+			*p_y_axis_change += drag_delta.y;
 		}
 		if (released)
 		{
-			//TODO: When I make the undo feature
-			//Add to undo list
+
 		}
 
 		draw_list->AddConvexPolyFilled(arrow_gizmo, arrow_gizmo_point_count, gizmo_color);
@@ -445,7 +451,7 @@ namespace ChronoDrift
 	void EditorGUI::GizmoTranslateXY(float* p_x_axis_change, float* p_y_axis_change, const ImVec2& origin, bool* hovering)
 	{
 		ImGui::SetCursorPos(origin);
-		ImVec2 pos = ImGui::GetCursorPos(); // Get the screen-space position of the Scene View window
+		ImVec2 pos = ImGui::GetCursorPos();
 		pos.x += 12.0f;
 		pos.y -= 12.0f;
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -457,7 +463,6 @@ namespace ChronoDrift
 		ImGuiID id = window->GetID("Gizmo_XY_Rect");
 		ImRect bb({ pos.x, pos.y - 18.0f}, { pos.x + 18.0f, pos.y });
 
-		//cursorpos expected to be bb.min
 		ImGui::ItemSize(bb);
 		ImGui::ItemAdd(bb, id);
 
@@ -468,22 +473,230 @@ namespace ChronoDrift
 
 		*hovering = hovered;
 
-		ImU32 gizmo_color = (hovered || held) ? xy_rect_gizmo_hovered_color : xy_rect_gizmo_color;
+		ImU32 gizmo_color = (hovered || held) ? blue_gizmo_hovered_color : blue_gizmo_color;
 
 		if (held)
 		{
 			ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
-			ImGui::ResetMouseDragDelta(); // Reset drag delta for the next frame
+			ImGui::ResetMouseDragDelta(); 
 			*p_x_axis_change += drag_delta.x;
 			*p_y_axis_change += drag_delta.y;
 		}
 		if (released)
 		{
-			//TODO: When I make the undo feature
-			//Add to undo list
+
 		}
 
 		draw_list->AddRectFilled(bb.Min, bb.Max, gizmo_color);
+	}
+
+
+	void EditorGUI::Gizmo_Scale_X(float* p_x_axis_change, const ImVec2& origin, bool* hovering)
+	{
+		ImGui::SetCursorPos(origin);
+		ImVec2 pos = ImGui::GetCursorPos();
+		pos.x += padding;
+		pos.y -= half_thickness;
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		ImVec2 box_gizmo[box_gizmo_point_count] =
+		{
+			ImVec2{ pos.x + length								, pos.y + half_thickness - arrow_neck_size },
+			ImVec2{ pos.x + length								, pos.y					  },
+			ImVec2{ pos.x + length * length_scale , pos.y 				  },
+			ImVec2{ pos.x + length * length_scale , pos.y + thickness	  },
+			ImVec2{ pos.x + length								, pos.y + thickness	  },
+			ImVec2{ pos.x + length								, pos.y + half_thickness + arrow_neck_size },
+			ImVec2{ pos.x													, pos.y + half_thickness + arrow_neck_size },
+			ImVec2{ pos.x													, pos.y + half_thickness - arrow_neck_size }
+		};
+
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+		if (window->SkipItems) return;
+
+		ImGuiID id = window->GetID("Gizmo_Scale_Right");
+		ImRect bb({ pos.x, pos.y }, { pos.x + length * length_scale, pos.y + thickness });
+
+		ImGui::ItemSize(bb);
+		ImGui::ItemAdd(bb, id);
+
+		bool hovered, held;
+		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
+
+		*hovering = hovered;
+
+		ImU32 gizmo_color = (hovered || held) ? red_gizmo_hovered_color : red_gizmo_color;
+
+		if (held)
+		{
+			ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
+			ImGui::ResetMouseDragDelta();
+			*p_x_axis_change += drag_delta.x;
+		}
+		if (released)
+		{
+
+		}
+
+		draw_list->AddConvexPolyFilled(box_gizmo, box_gizmo_point_count, gizmo_color);
+	}
+
+	void EditorGUI::Gizmo_Scale_Y(float* p_y_axis_change, const ImVec2& origin, bool* hovering)
+	{
+
+		ImGui::SetCursorPos(origin);
+		ImVec2 pos = ImGui::GetCursorPos();
+		pos.x -= half_thickness;
+		pos.y -= padding;
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		ImVec2 box_gizmo[box_gizmo_point_count] =
+		{
+			ImVec2{ pos.x + half_thickness - 1.f						 , pos.y - length},
+			ImVec2{ pos.x																		 , pos.y - length},
+			ImVec2{ pos.x 																	 , pos.y - length * length_scale},
+			ImVec2{ pos.x + thickness												 , pos.y - length * length_scale},
+			ImVec2{ pos.x + thickness 											 , pos.y - length},
+			ImVec2{ pos.x + half_thickness + arrow_neck_size , pos.y - length},
+			ImVec2{ pos.x + half_thickness + arrow_neck_size , pos.y},
+			ImVec2{ pos.x + half_thickness - arrow_neck_size , pos.y}
+		};
+
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+		if (window->SkipItems) return;
+
+		ImGuiID id = window->GetID("Gizmo_Scale_Up");
+		ImRect bb({ pos.x, pos.y - length * length_scale }, { pos.x + thickness, pos.y });
+
+		ImGui::ItemSize(bb);
+		ImGui::ItemAdd(bb, id);
+
+		bool hovered, held;
+		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
+
+		*hovering = hovered;
+
+		ImU32 gizmo_color = (hovered || held) ? green_gizmo_hovered_color_gizmo_color : green_gizmo_color;
+
+		if (held)
+		{
+			ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
+			ImGui::ResetMouseDragDelta();
+			*p_y_axis_change += drag_delta.y;
+		}
+		if (released)
+		{
+
+		}
+
+		draw_list->AddConvexPolyFilled(box_gizmo, box_gizmo_point_count, gizmo_color);
+	}
+
+	void EditorGUI::Gizmo_Scale_XY(float* value, const ImVec2& origin, bool* hovering)
+	{
+
+		ImGui::SetCursorPos(origin);
+		ImVec2 pos = ImGui::GetCursorPos();
+		pos.x -= half_thickness;
+		pos.y -= half_thickness;
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+		if (window->SkipItems) return;
+
+		ImGuiID id = window->GetID("Gizmo_XY_Rect");
+		ImRect bb({ pos.x, pos.y}, { pos.x + thickness, pos.y + thickness });
+
+		ImGui::ItemSize(bb);
+		ImGui::ItemAdd(bb, id);
+
+		bool hovered, held;
+		bool released = ImGui::ButtonBehavior(bb, id, &hovered, &held);
+
+		*hovering = hovered;
+
+		ImU32 gizmo_color = (hovered || held) ? blue_gizmo_hovered_color : blue_gizmo_color;
+
+		if (held)
+		{
+			ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
+			ImGui::ResetMouseDragDelta();
+			//return to caller the axis with a higher value
+			if (std::abs(drag_delta.x) > std::abs(drag_delta.y))
+			{
+				*value = drag_delta.x;
+			}
+			else
+			{
+				*value = -drag_delta.y;
+			}
+		}
+		if (released)
+		{
+
+		}
+
+		draw_list->AddRectFilled(bb.Min, bb.Max, gizmo_color);
+	}
+
+	struct RotationInfo
+	{
+		ImVec2 initial_click_pos{};
+		bool is_manipulating{ false };
+		float value{ };
+		bool hovering{ false };
+		bool held{ false };
+		bool released{ false };
+	};
+
+	RotationInfo rotation_info;
+	void EditorGUI::Gizmo_Rotate_Z(float* value, const ImVec2& origin, bool* hovering)
+	{
+		ImGui::SetCursorPos(origin);
+		ImVec2 pos = ImGui::GetCursorPos();
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+		
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+		if (window->SkipItems) return;
+
+		ImGuiID id = window->GetID("Gizmo_Rotate_Z");
+
+		bool hovered;
+		hovered = CheckCircleMouseCollision(pos, circle_size, circle_thickness);
+		*hovering = hovered || rotation_info.is_manipulating;
+
+		if (hovered)
+		{
+			if (ImGui::IsMouseClicked(0) && !rotation_info.is_manipulating)
+			{
+				//start dragging
+				rotation_info.is_manipulating = true;
+				rotation_info.initial_click_pos = ImGui::GetMousePos();
+			}
+		}
+
+		if (ImGui::IsMouseReleased(0) && rotation_info.is_manipulating)
+		{
+			//Mouse was released
+			rotation_info.is_manipulating = false;
+			rotation_info.initial_click_pos = {};
+		}
+
+		//Now compute the amount to rotate
+		if (rotation_info.is_manipulating)
+		{
+
+		}
+
+		ImU32 gizmo_color = (hovered || rotation_info.is_manipulating) ? blue_gizmo_hovered_color : blue_gizmo_color;
+		draw_list->AddCircle(origin, circle_size, gizmo_color, circle_segments, circle_thickness);
+		if (rotation_info.is_manipulating)
+		{
+			draw_list->AddCircleFilled(rotation_info.initial_click_pos, 10.0f, green_gizmo_color, circle_segments);
+		}
 	}
 
 	#pragma endregion
@@ -512,6 +725,25 @@ namespace ChronoDrift
 	void EditorGUI::PopID()
 	{
 		ImGui::PopID();
+	}
+
+	bool EditorGUI::CheckCircleMouseCollision(ImVec2 _circle_origin, float _circle_size, float _circle_thickness)
+	{
+		// Detect clicks on the circle
+		ImVec2 mouse_pos = ImGui::GetMousePos();
+		float mouse_distance = std::sqrtf((mouse_pos.x - _circle_origin.x) * (mouse_pos.x - _circle_origin.x) +
+																 (mouse_pos.y - _circle_origin.y) * (mouse_pos.y - _circle_origin.y));
+		float inner_radius = _circle_size - _circle_thickness * 0.5f;
+		float outer_radius = _circle_size + _circle_thickness * 0.5f;
+
+		inner_radius -= 3.0f; //tiny tiny modifier because it just feels better like this
+		outer_radius += 1.0f; 
+
+		if (mouse_distance >= inner_radius && mouse_distance <= outer_radius)
+		{
+			return true;
+		}
+		return false;
 	}
 
 

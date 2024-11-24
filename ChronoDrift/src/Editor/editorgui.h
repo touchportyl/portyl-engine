@@ -108,8 +108,11 @@ namespace ChronoDrift
 		static void GizmoTranslateUp(float* p_y_axis_change, const ImVec2& origin, bool* hovering);
 		static void GizmoTranslateXY(float* p_x_axis_change, float* p_y_axis_change, const ImVec2& origin, bool* hovering);
 
-		//static void Gizmo_Right_Arrow(float* p_x_axis_change, const ImVec2& origin, bool* hovering);
+		static void Gizmo_Scale_X(float* p_x_axis_change, const ImVec2& origin, bool* hovering);
+		static void Gizmo_Scale_Y(float* p_x_axis_change, const ImVec2& origin, bool* hovering);
+		static void Gizmo_Scale_XY(float* value, const ImVec2& origin, bool* hovering);
 
+		static void Gizmo_Rotate_Z(float* value, const ImVec2& origin, bool* hovering);
 
 		/*!***************************************************************************
 		* @brief
@@ -122,6 +125,8 @@ namespace ChronoDrift
 		static int PushID();
 		static void PopID();
 	private:
+		static bool CheckCircleMouseCollision(ImVec2 circle_origin, float circle_size, float circle_thickness);
+
 
 		static int m_id;
 	};

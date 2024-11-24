@@ -42,7 +42,7 @@ namespace ChronoDrift
 		bool m_gizmo_hovered;
 		bool m_dragging;
 
-		GizmoType m_current_gizmo_type = GizmoType::TRANSLATE;
+		GizmoType m_current_gizmo_type = GizmoType::ROTATE;
 
 		ImVec2 m_viewport_size;
 		ImVec2 m_viewport_position;

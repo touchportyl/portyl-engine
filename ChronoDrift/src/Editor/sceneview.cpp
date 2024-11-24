@@ -173,27 +173,70 @@ namespace ChronoDrift
 		//Take entity position and convert it back to screen position
 		ImVec2 gizmo_origin_pos = WorldToScreen(entity_position);
 
+		//Display an imgui rect around the sprite so we know where we are clicking, at least
+		Vector2 half_scale = entity_scale; half_scale /= 2;
+		ImVec2 entity_min = WorldToScreen(entity_position - half_scale);
+		ImVec2 entity_max = WorldToScreen(entity_position + half_scale);
+
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+		ImGuiID id = window->GetID("Sprite_BB_Visualizer");
+		ImRect bounding_box (entity_min, entity_max);
+		ImGui::GetForegroundDrawList()->AddRect(bounding_box.Min, bounding_box.Max, IM_COL32(255, 255, 0, 150));
+
 		//Draw Translate Gizmo
-		Vector2 pos_change{};
-		bool right, up, xy;
-		EditorGUI::GizmoTranslateRight(&pos_change.x, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &right);
-		EditorGUI::GizmoTranslateUp(&pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &up);
-		EditorGUI::GizmoTranslateXY(&pos_change.x, &pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &xy);
-		m_gizmo_hovered = right || up || xy;
+		if (m_current_gizmo_type == GizmoType::TRANSLATE)
+		{
+			Vector2 pos_change{};
+			bool right, up, xy;
+			EditorGUI::GizmoTranslateRight(&pos_change.x, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &right);
+			EditorGUI::GizmoTranslateUp(&pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &up);
+			EditorGUI::GizmoTranslateXY(&pos_change.x, &pos_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &xy);
+			m_gizmo_hovered = right || up || xy;
 
-		//Scale the change in position with relation to screen size
-		//pos_change represents how much the gizmo moved in absolute screen coordinates.
-		//Need to convert screen space to world space
-		pos_change.x *= FlexEngine::Application::GetCurrentWindow()->GetWidth() / m_viewport_size.x;
-		pos_change.y *= FlexEngine::Application::GetCurrentWindow()->GetHeight() / m_viewport_size.y;
+			//Scale the change in position with relation to screen size
+			//pos_change represents how much the gizmo moved in absolute screen coordinates.
+			//Need to convert screen space to world space
+			pos_change.x *= FlexEngine::Application::GetCurrentWindow()->GetWidth() / m_viewport_size.x;
+			pos_change.y *= FlexEngine::Application::GetCurrentWindow()->GetHeight() / m_viewport_size.y;
+			entity_position += pos_change;
+		}
+		else if (m_current_gizmo_type == GizmoType::SCALE)
+		{
+			Vector2 scale_change{};
+			float value{};
+			bool right, up, xy;
+			EditorGUI::Gizmo_Scale_X(&scale_change.x, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &right);
+			EditorGUI::Gizmo_Scale_Y(&scale_change.y, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &up);
+			EditorGUI::Gizmo_Scale_XY(&value, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &xy);
+			m_gizmo_hovered = right || up || xy;
+			if (value != 0)	//if using xy scale
+			{
+				scale_change.x = value;
+				scale_change.y = value;
+			}
+			else 
+			{
+				scale_change.y = -scale_change.y;
+			}
 
-		entity_position += pos_change;
+			scale_change.x *= FlexEngine::Application::GetCurrentWindow()->GetWidth() / m_viewport_size.x;
+			scale_change.y *= FlexEngine::Application::GetCurrentWindow()->GetHeight() / m_viewport_size.y;
+			entity_scale += scale_change;
+		}
+		else if (m_current_gizmo_type == GizmoType::ROTATE)
+		{
+			float value{};
+			bool hovered;
+			EditorGUI::Gizmo_Rotate_Z(&value, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &hovered);
+			m_gizmo_hovered = hovered;
+
+		}
 	}
 
 
 	void SceneView::EditorUI()
 	{
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollWithMouse;
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
 
 		ImGui::Begin("Scene", nullptr, window_flags);
 		{

@@ -22,7 +22,7 @@ namespace ChronoDrift
 
 	void GameView::EditorUI()
 	{
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollWithMouse;
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
 		ImGui::Begin("Game", nullptr, window_flags);
 		{
 			ImVec2 window_top_left = ImGui::GetWindowPos();
