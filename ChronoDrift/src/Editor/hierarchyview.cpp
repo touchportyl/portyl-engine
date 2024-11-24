@@ -128,7 +128,9 @@ namespace ChronoDrift
 			{
 				if (ImGui::MenuItem("Duplicate Entity"))
 				{
-					scene->CloneEntity(entity);
+					FlexECS::EntityID new_EntityID = scene->CloneEntity(entity);
+					if (entity.HasComponent<Camera>())
+						Editor::GetInstance().GetCamManager().AddCameraEntity(new_EntityID, entity.GetComponent<Camera>()->camera);
 				}
 				if (ImGui::MenuItem("Destroy Entity"))
 				{
