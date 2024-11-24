@@ -90,11 +90,13 @@ namespace ChronoDrift
 					{
 						// Disable the camera instead of removing it
 						Editor::GetInstance().GetCamManager().DisableCameraEntity(entity.Get());
+						cam.cam_is_active = is_active;
 					}
 					else if (is_active && !cam.cam_is_active)
 					{
 						// Enable the camera and validate it as the main camera if necessary
 						Editor::GetInstance().GetCamManager().EnableCameraEntity(entity.Get());
+						cam.cam_is_active = is_active;
 					}
 				}
 			}

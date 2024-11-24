@@ -90,6 +90,7 @@ namespace ChronoDrift
         if (!currCam.GetComponent<Transform>()->is_dirty) return;
 
         Vector3 local_position = { currCam.GetComponent<Transform>()->transform.m30,currCam.GetComponent<Transform>()->transform.m31, currCam.GetComponent<Transform>()->transform.m32 };
+        //auto& local_position = currCam.GetComponent<Position>()->position;
         // Get rotation component if it exists
         //Rotation* local_rotation = nullptr;
         //if (currCam.TryGetComponent<Rotation>(local_rotation))

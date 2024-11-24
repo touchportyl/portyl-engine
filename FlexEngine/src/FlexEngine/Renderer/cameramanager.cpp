@@ -36,7 +36,6 @@ namespace FlexEngine
 {
 	#pragma region Reflection
     FLX_REFL_REGISTER_START(CameraData)
-        FLX_REFL_REGISTER_PROPERTY(cam_is_active)
         FLX_REFL_REGISTER_PROPERTY(position)
         FLX_REFL_REGISTER_PROPERTY(target)
         FLX_REFL_REGISTER_PROPERTY(up)
@@ -48,6 +47,7 @@ namespace FlexEngine
         FLX_REFL_REGISTER_PROPERTY(nearClip)
         FLX_REFL_REGISTER_PROPERTY(farClip)
         FLX_REFL_REGISTER_PROPERTY(m_isOrthographic)
+        FLX_REFL_REGISTER_PROPERTY(cam_is_active)
     FLX_REFL_REGISTER_END;
 	#pragma endregion
 
@@ -324,6 +324,9 @@ namespace FlexEngine
             // Try to find a new active main camera
             for (const auto& [id, data] : m_cameraEntities) 
             {
+                if (id == m_currEditorID)
+                    continue;
+
                 if (data.cam_is_active)
                 {
                     m_currMainID = id; // Assign the first active camera as the main camera

@@ -48,7 +48,6 @@ namespace FlexEngine
     struct __FLX_API CameraData
     {
         FLX_REFL_SERIALIZABLE
-        bool cam_is_active = true;
         Vector3 position = Vector3::Zero;        /*!< Camera position in world space */
         Vector3 target = Vector3::Zero;          /*!< Target the camera is facing towards */
         Vector3 up = Vector3::Up;                /*!< Up vector for the camera's orientation */
@@ -63,6 +62,8 @@ namespace FlexEngine
         float nearClip = -2.0f;                  /*!< Near clipping plane */
         float farClip = 2.0f;                    /*!< Far clipping plane */
         bool m_isOrthographic = true;           /*!< Flag indicating orthographic (true) or perspective (false) projection */
+    
+        bool cam_is_active = true;
     };
 
     #pragma endregion

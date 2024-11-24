@@ -146,7 +146,6 @@ namespace ChronoDrift
       profiler.EndCounter("Button Callbacks");
 
       #pragma region Camera Movement -> Should be moved to scripting
-      m_CamM_Instance->ValidateMainCamera();
       FlexECS::Entity cam_entity = m_CamM_Instance->GetMainCamera();
       if (cam_entity.Get() != INVALID_ENTITY_ID)
       {
