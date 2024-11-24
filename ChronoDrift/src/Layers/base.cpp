@@ -149,12 +149,14 @@ namespace ChronoDrift
 
                 CamManager->RemoveCamerasInScene();
                 std::vector<FlexECS::Entity> camera_list = FlexECS::Scene::GetActiveScene()->Query<Camera>();
-                if (camera_list.size() > 0)
+                if (!camera_list.empty()) 
                 {
-                  FlexECS::Entity camera = camera_list[0];
-                  CamManager->AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-                  CamManager->SwitchMainCamera(camera.Get());
+                    for (auto& camera : camera_list) 
+                    {
+                        CamManager->AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+                    }
                 }
+                Log::Info("Processed " + std::to_string(camera_list.size()) + " cameras from the active scene.");
                 Log::Info("Loaded scene from: " + file.path.string());
               }
             });
