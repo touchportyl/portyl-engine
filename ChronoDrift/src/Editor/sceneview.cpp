@@ -180,8 +180,7 @@ namespace ChronoDrift
 		selected_entity.GetComponent<Transform>()->is_dirty = true;
 		//auto& entity_transform = selected_entity.GetComponent<Transform>()->transform;
 		auto& entity_position = selected_entity.GetComponent<Position>()->position;
-		auto& entity_rotation = selected_entity.GetComponent<Rotation>()->rotation;
-		auto& entity_scale = selected_entity.GetComponent<Scale>()->scale;
+		auto& entity_scale		= selected_entity.GetComponent<Scale>()->scale;
 
 		//Maybe pass in the projection matrix
 		//Will probably fix parented objects not being able to be selected
@@ -240,15 +239,19 @@ namespace ChronoDrift
 		}
 		else if (m_current_gizmo_type == GizmoType::ROTATE)
 		{
-			float value{};
-			bool hovered;
-			EditorGUI::Gizmo_Rotate_Z(&value, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &hovered);
-			m_gizmo_hovered = hovered;
-			entity_rotation.z += value * (180 / IM_PI);
+			if (selected_entity.HasComponent<Rotation>())
+			{
+				auto& entity_rotation = selected_entity.GetComponent<Rotation>()->rotation;
+				float value{};
+				bool hovered;
+				EditorGUI::Gizmo_Rotate_Z(&value, { gizmo_origin_pos.x, gizmo_origin_pos.y }, &hovered);
+				m_gizmo_hovered = hovered;
+				entity_rotation.z += value * (180 / IM_PI);
 			
-			//Clamp to -360 and 360
-			if (entity_rotation.z > 360.0f) entity_rotation.z -= 360.0f;
-			if (entity_rotation.z < -360.0f) entity_rotation.z += 360.0f;
+				//Clamp to -360 and 360
+				if (entity_rotation.z > 360.0f) entity_rotation.z -= 360.0f;
+				if (entity_rotation.z < -360.0f) entity_rotation.z += 360.0f;
+			}
 		}
 	}
 
