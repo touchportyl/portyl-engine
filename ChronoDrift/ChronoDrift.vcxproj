@@ -210,6 +210,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>FlexEngine.lib;opengl32.lib;glfw3.lib;ImGuid.lib;fmodstudioL_vc.lib;fmodL_vc.lib;assimp-vc143-mtd.lib;freetyped.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcmt.lib;msvcrt.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalOptions>/IGNORE:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)assets" "$(TargetDir)assets" /E /I /Y</Command>
@@ -278,10 +279,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="assets\shaders\batch2.0.frag" />
-    <None Include="assets\shaders\batch2.0.vert" />
+    <None Include="assets\shaders\batchtexture.frag" />
+    <None Include="assets\shaders\batchtexture.vert" />
     <None Include="assets\shaders\freetypetext.frag" />
     <None Include="assets\shaders\freetypetext.vert" />
+    <None Include="assets\shaders\spritesheet.frag" />
+    <None Include="assets\shaders\spritesheet.vert" />
     <None Include="assets\shaders\texture.frag" />
     <None Include="assets\shaders\texture.vert" />
   </ItemGroup>

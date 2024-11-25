@@ -205,6 +205,8 @@ namespace FlexEngine
   {
     FLX_FLOW_FUNCTION();
 
+    FMODWrapper::Core::ForceStop(); // As weird as this looks, I need this to be here so I can free sounds safely. - YC
+
     for (auto& [key, asset] : assets)
     {
       std::visit(
@@ -220,6 +222,10 @@ namespace FlexEngine
             arg.Destroy();
           }
           else if constexpr (std::is_same_v<T, Asset::Font>)
+          {
+            arg.Unload();
+          }
+          else if constexpr (std::is_same_v<T, Asset::Sound>)
           {
             arg.Unload();
           }

@@ -32,27 +32,29 @@ namespace ChronoDrift
     // load assets only after the window has been created
     AssetManager::Load();
     FreeQueue::Push(std::bind(&AssetManager::Unload), "Chrono Drift AssetManager");
+    CamManager = std::make_unique<CameraManager>(true);
 
     FlexEngine::Window* window = Application::GetCurrentWindow();
     window->SetTargetFPS(60);
     window->SetVSync(false);
     window->SetIcon(FLX_ASSET_GET(Asset::Texture, R"(\images\flexengine\flexengine-256.png)"));
 
-    window->PushLayer(std::make_shared<ChronoDrift::BattleLayer>());
-    window->PushLayer(std::make_shared<ChronoDrift::OverworldLayer>());
-    window->PushLayer(std::make_shared<ChronoDrift::EditorLayer>());
+    window->PushLayer(std::make_shared<ChronoDrift::BattleLayer>(CamManager.get()));
+    window->PushLayer(std::make_shared<ChronoDrift::OverworldLayer>(CamManager.get()));
+    window->PushLayer(std::make_shared<ChronoDrift::EditorLayer>(CamManager.get()));
    
     // Renderer Setup
-
     OpenGLRenderer::EnableBlending();
     Vector2 windowsize{ static_cast<float>(window->GetWidth()), static_cast<float>(window->GetHeight()) };
-    OpenGLSpriteRenderer::Init(windowsize);
-    OpenGLTextRenderer::Init();
+    OpenGLSpriteRenderer::Init(windowsize, CamManager.get());
+    OpenGLTextRenderer::Init(CamManager.get());
   }
 
   void BaseLayer::OnDetach()
   {
     FLX_FLOW_ENDSCOPE();
+
+    CamManager.reset();
 
     OpenGLRenderer::DisableBlending();
 
@@ -103,7 +105,7 @@ namespace ChronoDrift
               [this]()
               {
                 // Clear the scene and reset statics
-                CameraManager::RemoveCameraEntities();
+                CamManager->RemoveCamerasInScene();
                 FlexECS::Scene::SetActiveScene(std::make_shared<FlexECS::Scene>());
 
                 // Every default scene should have a camera.
@@ -113,8 +115,8 @@ namespace ChronoDrift
                 camera.AddComponent<Rotation>({ });
                 camera.AddComponent<Transform>({});
                 camera.AddComponent<Camera>({});
-                CameraManager::AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-                CameraManager::SwitchMainCamera(camera.Get());
+                CamManager->AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+                CamManager->SwitchMainCamera(camera.Get());
               }
             });
           }
@@ -146,15 +148,16 @@ namespace ChronoDrift
                 // load the scene
                 FlexECS::Scene::SetActiveScene(FlexECS::Scene::Load(file));
 
-                // TODO: Delete this when camera is properly done. This sets the camera to be the one from the scene
-                //CameraManager::RemoveCameraEntities(); // Nuclear clear for scene loading.
+                CamManager->RemoveCamerasInScene();
                 std::vector<FlexECS::Entity> camera_list = FlexECS::Scene::GetActiveScene()->Query<Camera>();
-                if (camera_list.size() > 0)
+                if (!camera_list.empty()) 
                 {
-                  FlexECS::Entity camera = camera_list[0];
-                  CameraManager::AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-                  CameraManager::SwitchMainCamera(camera.Get());
+                    for (auto& camera : camera_list) 
+                    {
+                        CamManager->AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+                    }
                 }
+                Log::Info("Processed " + std::to_string(camera_list.size()) + " camera(s) from the active scene.");
                 Log::Info("Loaded scene from: " + file.path.string());
               }
             });

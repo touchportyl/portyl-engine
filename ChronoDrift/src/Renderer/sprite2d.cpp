@@ -57,14 +57,13 @@ namespace ChronoDrift
         auto& local_scale = currEntity.GetComponent<Scale>()->scale;
         // Get rotation component if it exists
         Rotation* local_rotation = nullptr;
-        if (currEntity.TryGetComponent<Rotation>(local_rotation))
+        if (currEntity.HasComponent<Rotation>())
             local_rotation = currEntity.GetComponent<Rotation>();
 
         //Alignment of sprite
         static Vector2 sprite_alignment = Vector2::Zero;
         // Get sprite component if it exists
-        Sprite* checkSprite = nullptr;
-        if (currEntity.TryGetComponent<Sprite>(checkSprite))
+        if (currEntity.HasComponent<Sprite>())
         {
             switch (currEntity.GetComponent<Sprite>()->alignment)
             {
@@ -85,15 +84,17 @@ namespace ChronoDrift
         local_transform = parent_entity_matrix * (translation_matrix * rotation_matrix * scale_matrix);
     }
 
-    void UpdateCamMatrix(FlexECS::Entity& currCam)
+    void UpdateCamMatrix(FlexECS::Entity& currCam, CameraManager* CamManager)
     {
         if (!currCam.GetComponent<Transform>()->is_dirty) return;
 
-        auto& local_position = currCam.GetComponent<Position>()->position;
+        //TODO @WEIJIE Hierarchy movement of camera not working as intended -> Inspect (LOW Priority)
+        Vector3 local_position = { currCam.GetComponent<Transform>()->transform.m30,currCam.GetComponent<Transform>()->transform.m31, currCam.GetComponent<Transform>()->transform.m32 };
+        //auto& local_position = currCam.GetComponent<Position>()->position;
         // Get rotation component if it exists
-        Rotation* local_rotation = nullptr;
-        if (currCam.TryGetComponent<Rotation>(local_rotation))
-            local_rotation = currCam.GetComponent<Rotation>();
+        //Rotation* local_rotation = nullptr;
+        //if (currCam.HasComponent<Rotation>())
+        //    local_rotation = currCam.GetComponent<Rotation>();
 
         //Update CamData
         if (!currCam.GetComponent<Transform>()->is_dirty) return; //TODO Check is this necessary
@@ -102,7 +103,7 @@ namespace ChronoDrift
         Camera2D::UpdateProjectionMatrix(local_camData);
         Camera2D::UpdateViewMatrix(local_camData);
         
-        CameraManager::UpdateData(currCam.Get(), local_camData);
+        CamManager->UpdateData(currCam.Get(), local_camData);
     }
 
     /*!***************************************************************************
@@ -111,7 +112,7 @@ namespace ChronoDrift
     * proper alignment and processing of entities in the scene, particularly
     * their position and orientation in the hierarchy.
     *****************************************************************************/
-    void UpdateAllEntitiesMatrix()
+    void UpdateAllEntitiesMatrix(CameraManager* CamManager)
     {
         //DEBUG CHECKS IF IMAGE IS FROZEN OR NOT SHOWING
         // 1. DID YOU SET IS_DIRTY = true;
@@ -142,7 +143,7 @@ namespace ChronoDrift
 
                 // Get the parent of the current entity
                 Parent* t_parententity = nullptr;
-                if ((*t_currentEntity).TryGetComponent<Parent>(t_parententity))
+                if ((*t_currentEntity).HasComponent<Parent>())
                 {
                     t_parententity = (*t_currentEntity).GetComponent<Parent>();
 
@@ -167,9 +168,8 @@ namespace ChronoDrift
                     
                     //Update current obj transform
                     UpdateTransformationMatrix(**it, globaltransform);
-                    Camera* if_cam = nullptr;
-                    if ((*it)->TryGetComponent<Camera>(if_cam)) 
-                        UpdateCamMatrix(**it);   
+                    if ((*it)->HasComponent<Camera>()) 
+                        UpdateCamMatrix(**it, CamManager);
 
                     // Mark the entity as processed
                     t_processedEntities.insert((*it)->Get());
@@ -195,9 +195,71 @@ namespace ChronoDrift
 
     #pragma endregion
 
+    #pragma region Batching helper
+    void AddBatchToQueue(FunctionQueue& queue, const std::string& texture, const Sprite_Batch_Inst& batch, GLuint vbo_id)
+    {
+        if (!batch.m_zindex.empty())
+        {
+            Renderer2DProps props;
+            props.texture = texture;
+            props.vbo_id = vbo_id;
+            queue.Insert({ [props, batch]() { OpenGLSpriteRenderer::DrawBatchTexture2D(props, batch); }, "", batch.m_zindex.back() });
+        }
+    }
+
+    void AddEntityToBatch(FlexECS::Entity& entity, Sprite_Batch_Inst& batch, const std::string& type)
+    {
+        auto z_index = entity.GetComponent<ZIndex>()->z;
+        batch.m_zindex.push_back(z_index);
+        batch.m_transformationData.push_back(entity.GetComponent<Transform>()->transform);
+
+        if (type == "Sprite")
+        {
+            auto sprite = entity.GetComponent<Sprite>();
+            batch.m_colorAddData.push_back(sprite->color_to_add);
+            batch.m_colorMultiplyData.push_back(sprite->color_to_multiply);
+            batch.m_UVmap.push_back(Vector4(0, 0, 1, 1)); // Basic sprite UV
+            batch.m_vboid = sprite->vbo_id;
+        }
+        else if (type == "Animation")
+        {
+            auto anim = entity.GetComponent<Animation>();
+            batch.m_colorAddData.push_back(anim->color_to_add);
+            batch.m_colorMultiplyData.push_back(anim->color_to_multiply);
+            batch.m_UVmap.push_back(anim->m_currUV);
+        }
+    }
+    #pragma endregion
+
     #pragma region Rendering Processes
 
-    void RenderNormalEntities()
+    void UpdateAnimationInScene(double GameTimeSpeedModifier)
+    {
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Animation>())
+        {
+            if (!entity.GetComponent<IsActive>()->is_active) continue;
+            
+            auto anim = entity.GetComponent<Animation>();
+
+            if (anim->is_paused) continue;
+            anim->m_animationTimer += anim->m_animation_speed * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
+            if (anim->m_animationTimer >= 1.0/GameTimeSpeedModifier) 
+            {
+                anim->m_animationTimer = 0;
+                int totalSprites = ++anim->m_currentSpriteIndex %= anim->max_sprites;
+                anim->m_currUV = {
+                    (1.f / anim->cols) * (totalSprites % anim->cols),
+                    (1.f / anim->rows) * (totalSprites / anim->cols),
+                    (1.f / anim->cols)* (totalSprites % anim->cols) + 1.f / anim->cols,
+                    (1.f / anim->rows)* (totalSprites / anim->cols) + 1.f / anim->rows
+                };
+            }
+        }
+        //FOUND FATAL ERROR: When saving scene with a paused animation, causes heap error when exiting engine.
+        // Pls check if persist
+    }
+
+    void RenderNormalEntities(bool want_PP = true)
     {
         FunctionQueue pp_render_queue, non_pp_render_queue;
 
@@ -222,104 +284,62 @@ namespace ChronoDrift
             pp_render_queue.Insert({ [props]() { OpenGLSpriteRenderer::DrawTexture2D(props); }, "", z_index });
         }
 
-        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
-        if (depth_test) OpenGLRenderer::DisableDepthTest();
-
-        bool blending = OpenGLRenderer::IsBlendingEnabled();
-        if (!blending) OpenGLRenderer::EnableBlending();
-
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
-        OpenGLFrameBuffer::ClearFrameBuffer();
-
         pp_render_queue.Flush();
-        OpenGLSpriteRenderer::DrawPostProcessingLayer();
+        if(want_PP) OpenGLSpriteRenderer::DrawPostProcessingLayer();
         non_pp_render_queue.Flush();
-
-        if (depth_test) OpenGLRenderer::EnableDepthTest();
-        if (!blending) OpenGLRenderer::DisableBlending();
     }
 
-    void RenderBatchedEntities()
+    void RenderBatchedEntities(bool want_PP = true)
     {
-        std::unordered_map<std::string, Sprite_Batch_Inst> batchMap;
-
-        for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Sprite>())
+        FunctionQueue batch_render_queue;
+        std::vector<std::pair<std::string, FlexECS::Entity>> sortedEntities;
+        //Sprite
+        for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Sprite>()) 
         {
-            if (!entity.GetComponent<IsActive>()->is_active) continue;
-
-            Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
-            auto sprite = entity.GetComponent<Sprite>();
-
-            std::string batchKey = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(sprite->texture);
-            if (batchMap.find(batchKey) == batchMap.end())
+            if (entity.GetComponent<IsActive>()->is_active) 
             {
-                batchMap[batchKey] = Sprite_Batch_Inst();
-                batchMap[batchKey].m_vboid = sprite->vbo_id;
+                sortedEntities.emplace_back(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Sprite>()->texture),
+                                            entity);
             }
-
-            batchMap[batchKey].m_transformationData.push_back(transform);
-            batchMap[batchKey].m_colorAddData.push_back(sprite->color_to_add);
-            batchMap[batchKey].m_colorMultiplyData.push_back(sprite->color_to_multiply);
         }
-
-        FunctionQueue anim_render_queue;
-
+        //Animation
         for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Animation>())
         {
-            if (!entity.GetComponent<IsActive>()->is_active) continue;
-
-            auto& z_index = entity.GetComponent<ZIndex>()->z;
-            Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
-            auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
-            auto anim = entity.GetComponent<Animation>();
-
-            Renderer2DProps props;
-            props.shader = shader;
-            props.transform = transform;
-            props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(anim->spritesheet);
-            anim->m_animationTimer += FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
-            if (anim->m_animationTimer >= anim->m_animationDurationPerFrame)
+            if (entity.GetComponent<IsActive>()->is_active)
             {
-                anim->m_animationTimer = 0;
-                anim->m_currentSpriteIndex = ++anim->m_currentSpriteIndex % anim->max_sprites;
-
-                int current_sprite_row = anim->m_currentSpriteIndex / anim->cols;
-                int current_sprite_col = anim->m_currentSpriteIndex % anim->cols;
-                anim->m_currUV.z = 1.f / anim->cols;
-                anim->m_currUV.w = 1.f / anim->rows;
-                anim->m_currUV.x = anim->m_currUV.z * current_sprite_col;
-                anim->m_currUV.y = anim->m_currUV.w * current_sprite_row;
+                sortedEntities.emplace_back(FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Animation>()->spritesheet),
+                                            entity);
             }
-
-            props.color_to_add = anim->color_to_add;
-            props.color_to_multiply = anim->color_to_multiply;
-
-            anim_render_queue.Insert({ [props, anim]() { OpenGLSpriteRenderer::DrawAnim2D(props, anim->m_currUV); }, "", z_index });
         }
 
-        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
-        if (depth_test) OpenGLRenderer::DisableDepthTest();
+        //SORT
+        std::sort(sortedEntities.begin(), sortedEntities.end(),
+            [](auto& a, auto& b) {
+            int zA = a.second.GetComponent<ZIndex>()->z; 
+            int zB = b.second.GetComponent<ZIndex>()->z; 
+            return zA < zB; // Compare z-index
+        });
 
-        bool blending = OpenGLRenderer::IsBlendingEnabled();
-        if (!blending) OpenGLRenderer::EnableBlending();
+        //QUEUE
+        Sprite_Batch_Inst currentBatch;
+        std::string currentTexture = "";
 
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
-        OpenGLFrameBuffer::ClearFrameBuffer();
-
-        Renderer2DProps props;
-
-        for (auto& [key, batchData] : batchMap)
+        for (auto& [batchKey, entity] : sortedEntities)
         {
-            props.texture = key;
-            props.vbo_id = batchData.m_vboid;
-            OpenGLSpriteRenderer::DrawBatchTexture2D(props, batchData);
+            if (batchKey != currentTexture)
+            {
+                AddBatchToQueue(batch_render_queue, currentTexture, currentBatch, currentBatch.m_vboid);
+                currentBatch = Sprite_Batch_Inst(); // Reset the batch
+                currentTexture = batchKey;
+            }
+            if (entity.HasComponent<Sprite>()) AddEntityToBatch(entity, currentBatch, "Sprite");
+            else if (entity.HasComponent<Animation>()) AddEntityToBatch(entity, currentBatch, "Animation");
         }
+        // Add the last batch to the queue
+        AddBatchToQueue(batch_render_queue, currentTexture, currentBatch, currentBatch.m_vboid);
 
-        anim_render_queue.Flush();
-        OpenGLSpriteRenderer::DrawPostProcessingLayer();
-
-        if (depth_test) OpenGLRenderer::EnableDepthTest();
-        if (!blending) OpenGLRenderer::DisableBlending();
+        batch_render_queue.Flush();
+        if (want_PP) OpenGLSpriteRenderer::DrawPostProcessingLayer();
     }
 
     void RenderTextEntities()
@@ -363,18 +383,7 @@ namespace ChronoDrift
             text_render_queue.Insert({ [sample]() { OpenGLTextRenderer::DrawText2D(sample, true); }, "", 0 });
         }
 
-        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
-        if (depth_test) OpenGLRenderer::DisableDepthTest();
-
-        bool blending = OpenGLRenderer::IsBlendingEnabled();
-        if (!blending) OpenGLRenderer::EnableBlending();
-
-        OpenGLFrameBuffer::SetEditorFrameBuffer();
         text_render_queue.Flush();
-        OpenGLFrameBuffer::SetDefaultFrameBuffer();
-
-        if (depth_test) OpenGLRenderer::EnableDepthTest();
-        if (!blending) OpenGLRenderer::DisableBlending();
     }
 
     void ForceRenderToScreen()
@@ -412,7 +421,7 @@ namespace ChronoDrift
     void RenderSprite2D()
     {
         //Update Transformation Matrix of All Entities
-        UpdateAllEntitiesMatrix();
+        //UpdateAllEntitiesMatrix(CamManager);
 
         WindowProps window_props = Application::GetCurrentWindow()->GetProps();
         Renderer2DProps props;
@@ -423,13 +432,45 @@ namespace ChronoDrift
         ////////////////////////////////////////////////////////////////////////////////
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
 
+        //TODO @WEIJIE 
+        // 1. BUTTONS DONT FORGET LEH
+        // 2. Bloom in fullscreen
+
+        bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
+        if (depth_test) OpenGLRenderer::DisableDepthTest();
+
+        bool blending = OpenGLRenderer::IsBlendingEnabled();
+        if (!blending) OpenGLRenderer::EnableBlending();
+
+        OpenGLFrameBuffer::SetGameFrameBuffer();
+        OpenGLFrameBuffer::ClearFrameBuffer();
+
+        #pragma region Draw Scene Entities
         //RenderNormalEntities();
         RenderBatchedEntities();
         RenderTextEntities();
+        #pragma endregion
 
-        //What Rocky wants (TO DELETE)
-        #ifndef _DEBUG
-        ForceRenderToScreen();
+        //Following is how to proceed with actual rendering onto screen
+        #ifdef GAME
+        {
+            //Render directly for gameplay
+            OpenGLFrameBuffer::SetDefaultFrameBuffer();
+            ForceRenderToScreen();
+        }
+        #else //Render editor view
+        {
+            
+            OpenGLFrameBuffer::SetEditorFrameBuffer();
+            OpenGLFrameBuffer::ClearFrameBuffer();
+            RenderBatchedEntities(false);
+            RenderTextEntities();
+        }
         #endif
+
+        //Refresh settings
+        if (depth_test) OpenGLRenderer::EnableDepthTest();
+        if (!blending) OpenGLRenderer::DisableBlending();
+        OpenGLFrameBuffer::SetDefaultFrameBuffer();
     }
 }

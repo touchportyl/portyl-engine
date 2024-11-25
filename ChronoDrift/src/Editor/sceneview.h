@@ -14,6 +14,7 @@
 #pragma once
 #include "editorpanel.h"
 
+#include "FlexEngine/Renderer/cameramanager.h"
 namespace ChronoDrift
 {
 	class SceneView : public EditorPanel
@@ -46,5 +47,8 @@ namespace ChronoDrift
 
 		ImVec2 m_viewport_size;
 		ImVec2 m_viewport_position;
+
+		std::unique_ptr<FlexEngine::CameraData> m_EditorCam;
+		void UpdateEditorCam();
 	};
 }

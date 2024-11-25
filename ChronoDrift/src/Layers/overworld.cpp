@@ -49,8 +49,8 @@ namespace ChronoDrift
         camera.AddComponent<Rotation>({ });
         camera.AddComponent<Transform>({});
         camera.AddComponent<Camera>({});
-        CameraManager::AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
-        CameraManager::SwitchMainCamera(camera.Get());
+        m_CamM_Instance->AddCameraEntity(camera.Get(), camera.GetComponent<Camera>()->camera);
+        m_CamM_Instance->SwitchMainCamera(camera.Get());
 
         #endif
     }
@@ -83,6 +83,8 @@ namespace ChronoDrift
 
   void OverworldLayer::Update()
   {
+      m_CamM_Instance->ValidateMainCamera();
+
       Profiler profiler;
 
       profiler.StartCounter("Custom Query Loops");
@@ -169,32 +171,36 @@ namespace ChronoDrift
       }
       profiler.EndCounter("Button Callbacks");
 
+      //TODO MOVE TO SCRIPTING ONCE DONE
       #pragma region Camera Movement -> Should be moved to scripting
+      FlexECS::Entity cam_entity = m_CamM_Instance->GetMainCamera();
+      if (cam_entity.Get() != INVALID_ENTITY_ID)
+      {
+          auto& curr_cam = cam_entity.GetComponent<Position>()->position;
+          auto& curr_camt = cam_entity.GetComponent<Transform>()->is_dirty;
+          if (Input::GetKey(GLFW_KEY_I))
+          {
+              curr_cam += Vector2(0.0f, -5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
+              curr_camt = true;
+          }
+          else if (Input::GetKey(GLFW_KEY_K))
+          {
+              curr_cam += Vector2(0.0f, 5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
+              curr_camt = true;
+          }
 
-      FlexECS::Entity cam_entity = CameraManager::GetMainCamera();
-      auto& curr_cam = cam_entity.GetComponent<Position>()->position;
-      auto& curr_camt = cam_entity.GetComponent<Transform>()->is_dirty;
-      if (Input::GetKey(GLFW_KEY_UP))
-      {
-          curr_cam += Vector2(0.0f, -5.f)* (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
-          curr_camt = true;
+          if (Input::GetKey(GLFW_KEY_J))
+          {
+              curr_cam += Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
+              curr_camt = true;
+          }
+          else if (Input::GetKey(GLFW_KEY_L))
+          {
+              curr_cam += Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
+              curr_camt = true;
+          }
       }
-      else if (Input::GetKey(GLFW_KEY_DOWN))
-      {
-          curr_cam += Vector2(0.0f, 5.f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
-          curr_camt = true;
-      }
-
-      if (Input::GetKey(GLFW_KEY_RIGHT))
-      {
-          curr_cam += Vector2(5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
-          curr_camt = true;
-      }
-      else if (Input::GetKey(GLFW_KEY_LEFT))
-      {
-          curr_cam += Vector2(-5.f, 0.0f) * (30 * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime());
-          curr_camt = true;
-      }
+      
 
       // Regen Cam
       //for (auto& currCam : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, Camera>())
@@ -209,7 +215,8 @@ namespace ChronoDrift
       
       //Render All Entities
       profiler.StartCounter("Graphics");
-      UpdateAllEntitiesMatrix();
+      UpdateAnimationInScene(1.0);
+      UpdateAllEntitiesMatrix(m_CamM_Instance);
       RenderSprite2D();
       profiler.EndCounter("Graphics");
 

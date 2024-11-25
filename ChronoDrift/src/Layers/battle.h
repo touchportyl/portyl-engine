@@ -28,8 +28,9 @@ namespace ChronoDrift
   class BattleLayer : public FlexEngine::Layer
   {
   public:
-    BattleLayer() : Layer("Battle Layer") {}
-    ~BattleLayer() = default;
+      BattleLayer() = delete;
+      BattleLayer(FlexEngine::CameraManager* CamManager) : Layer("Battle Layer"), m_CamM_Instance(CamManager) {}
+      ~BattleLayer() = default;
 
     virtual void OnAttach() override;
     virtual void OnDetach() override;
@@ -39,5 +40,6 @@ namespace ChronoDrift
     void SetupBattle();
 
     BattleSystem m_battlesystem;
+    FlexEngine::CameraManager* m_CamM_Instance = nullptr;
   };
 }

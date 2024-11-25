@@ -52,10 +52,9 @@ namespace FlexEngine
         #pragma endregion
 
         #pragma region Camera Movement
-
         static void MoveTo(CameraData& curr, const Vector3& targetPosition);
         static void LerpTo(CameraData& curr, const Vector3& targetPosition, float t);
-        
+
         #pragma endregion
 
         #pragma region Camera Transitions
@@ -87,3 +86,4 @@ namespace FlexEngine
         #pragma endregion
     };
 }
+

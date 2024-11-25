@@ -26,7 +26,6 @@
 #include "Wrapper/file.h"
 
 #include "FlexMath/matrix4x4.h"
-#include <glad/glad.h>
 #include <string>
 
 namespace FlexEngine
@@ -40,10 +39,10 @@ namespace FlexEngine
         *************************************************************************/
         struct __FLX_API Glyph
         {
-            GLuint textureID = 0;   // Texture ID
+            unsigned int textureID = 0;   // Texture ID
             Vector2 size;    // Size of glyph
             Vector2 bearing; // Offset from baseline to left/top of glyph
-            GLuint advance = 0;      // Horizontal offset to advance to next glyph
+            unsigned int advance = 0;      // Horizontal offset to advance to next glyph
         };
 
         /*!************************************************************************
@@ -55,7 +54,7 @@ namespace FlexEngine
         {
             // Static FreeType library and face for all Font instances
             static FT_Library s_library; /*!< FreeType library instance */
-            static GLuint s_facesCount;  /*!< Count of active font faces */
+            static unsigned int s_facesCount;  /*!< Count of active font faces */
             FT_Face s_face;              /*!< FreeType face object */
             std::map<char, Glyph> m_glyphs; /*!< Stores glyphs for ASCII characters */
 

@@ -29,14 +29,13 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "FlexEngine/Renderer/OpenGL/opengldebugrenderer.h"
 #include "windowsizes.h"
 
-
 namespace ChronoDrift 
 {
   void EditorLayer::OnAttach()
   {
     FLX_FLOW_BEGINSCOPE();
     Editor::GetInstance().Init();
-
+    Editor::GetInstance().SetCamManager(*m_CamM_Instance);
     RegisterRenderingComponents();
     RegisterBattleComponents();
 
@@ -110,5 +109,6 @@ namespace ChronoDrift
       }
     }
   }
+
 
 }

@@ -119,6 +119,26 @@ void FMODWrapper::Core::StopSound(std::string const& identifier)
   else Log::Warning("Tried to stop channel that does not exist for identifier: " + identifier);
 }
 
+void FMODWrapper::Core::ForceStop()
+{
+  // A bizarre choice... but I have no choice because this is not callback safe. I've tried not making a copy but it doesn't work.
+  std::vector<FMOD::Channel*> channelsToStop;
+  for (auto& channel : channels)
+  {
+    channelsToStop.push_back(channel.second);
+  }
+
+  for (auto* channel : channelsToStop)
+  {
+    if (channel)
+    {
+      channel->stop(); 
+    }
+  }
+
+  channels.clear();
+}
+
 void FMODWrapper::Core::StopAll()
 {
   for (auto& channel : channels)

@@ -3,21 +3,25 @@
 #include "imguipayloads.h"
 #include <FlexEngine/Renderer/OpenGL/openglspriterenderer.h>
 
-
+#include "Renderer/camera2d.h"
 namespace ChronoDrift
 {
 	constexpr float TOP_PADDING = 10.0f;
 
 	void SceneView::Init()
 	{
+		//TODO Setup editor cam from saved data upon close of program
+		m_EditorCam = std::make_unique<FlexEngine::CameraData>();
 	}
 
 	void SceneView::Update()
 	{
+		UpdateEditorCam();
 	}
 
 	void SceneView::Shutdown()
 	{
+		m_EditorCam.reset();
 	}
 
 	void SceneView::CalculateViewportPosition()
@@ -68,10 +72,9 @@ namespace ChronoDrift
 		Vector2 screen_pos = { (relative_pos.x / m_viewport_size.x) * app_width,
 													 (relative_pos.y / m_viewport_size.y) * app_height };
 
-		const CameraData* camdata = CameraManager::GetCameraData(CameraManager::GetMainCamera());
 
 		Vector2 ndc_click_pos = { (2 * screen_pos.x / app_width) - 1, 1 - 2 * screen_pos.y / app_height };
-		Matrix4x4 inverse = (camdata->proj_viewMatrix).Inverse();
+		Matrix4x4 inverse = (m_EditorCam->proj_viewMatrix).Inverse();
 		Vector4 clip = { ndc_click_pos.x,
 										 ndc_click_pos.y,
 										 1.0f,
@@ -84,9 +87,8 @@ namespace ChronoDrift
 
 	ImVec2 SceneView::WorldToScreen(const FlexEngine::Vector2& position)
 	{
-		const CameraData* camdata = CameraManager::GetCameraData(CameraManager::GetMainCamera());
 		Vector4 world_pos = { -position.x, position.y, 0.0f, 1.0f };
-		Vector4 clip = camdata->proj_viewMatrix * world_pos;
+		Vector4 clip = m_EditorCam->proj_viewMatrix * world_pos;
 		if (clip.w != 0.0f)
 		{
 			clip.x /= clip.w;
@@ -176,7 +178,7 @@ namespace ChronoDrift
 		if (selected_entity == FlexECS::Entity::Null) return;
 
 		selected_entity.GetComponent<Transform>()->is_dirty = true;
-		auto& entity_transform = selected_entity.GetComponent<Transform>()->transform;
+		//auto& entity_transform = selected_entity.GetComponent<Transform>()->transform;
 		auto& entity_position = selected_entity.GetComponent<Position>()->position;
 		auto& entity_rotation = selected_entity.GetComponent<Rotation>()->rotation;
 		auto& entity_scale = selected_entity.GetComponent<Scale>()->scale;
@@ -194,7 +196,7 @@ namespace ChronoDrift
 		ImVec2 entity_max = WorldToScreen(entity_position + half_scale);
 
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
-		ImGuiID id = window->GetID("Sprite_BB_Visualizer");
+		//ImGuiID id = window->GetID("Sprite_BB_Visualizer");
 		ImRect bounding_box (entity_min, entity_max);
 		ImGui::GetWindowDrawList()->AddRect(bounding_box.Min, bounding_box.Max, IM_COL32(255, 255, 0, 150));
 
@@ -293,13 +295,20 @@ namespace ChronoDrift
 		ImGui::End();
 	}
 
+	void SceneView::UpdateEditorCam()
+	{
+		//Add controls
+		if (Input::GetMouseButton(GLFW_MOUSE_BUTTON_MIDDLE)) //Use middle mouse button to drag and move
+		{
+			//TODO Not sure what functions to call for this @Rocky
+		}
+
+		//Update data
+		Camera2D::UpdateProjectionMatrix(*m_EditorCam.get());
+		Camera2D::UpdateViewMatrix(*m_EditorCam.get());
+
+		//Update Camera Manager
+		FlexECS::EntityID currEditorID = Editor::GetInstance().GetCamManager().GetEditorCamera();
+		Editor::GetInstance().GetCamManager().UpdateData(currEditorID, *m_EditorCam.get());
+	}
 }
-
-
-
-//if (ImGui::IsMouseClicked(1))
-//{
-//	std::cout << "Mouse Absolute Position: " << ImGui::GetMousePos().x << ", " << ImGui::GetMousePos().y << "\n";
-//	std::cout << "VP_SIZE: " << m_viewport_size.x << ", " << m_viewport_size.y << "\n";
-//	std::cout << "App_SIZE : " << app_width << ", " << app_height << "\n";
-//}

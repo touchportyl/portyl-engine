@@ -4,12 +4,16 @@
 
 namespace FlexEngine 
 {
+    //TODO @weijie -note to self- make this dynamic container
+    // & also with regards to regenerate size of textures using callbacks
     GLuint OpenGLFrameBuffer::m_editorFBO = 0;
+    GLuint OpenGLFrameBuffer::m_gameFBO = 0;
     GLuint OpenGLFrameBuffer::m_postProcessingFBO = 0;
     GLuint OpenGLFrameBuffer::m_bloomFBO = 0;
     GLuint OpenGLFrameBuffer::m_pingpongTex[2] = {};
     GLuint OpenGLFrameBuffer::m_postProcessingTex = 0;
     GLuint OpenGLFrameBuffer::m_editorTex = 0;
+    GLuint OpenGLFrameBuffer::m_gameRenderTex = 0;
     GLuint OpenGLFrameBuffer::m_finalRenderTex = 0;
 
     void OpenGLFrameBuffer::Init(const Vector2& windowSize) 
@@ -54,17 +58,17 @@ namespace FlexEngine
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             Log::Fatal("Bloom Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
 
-        // Create editor FBO
-        glGenFramebuffers(1, &m_editorFBO);
-        SetEditorFrameBuffer();
-        glGenTextures(1, &m_editorTex);
-        glBindTexture(GL_TEXTURE_2D, m_editorTex);
+        // Create game FBO
+        glGenFramebuffers(1, &m_gameFBO);
+        SetGameFrameBuffer();
+        glGenTextures(1, &m_gameRenderTex);
+        glBindTexture(GL_TEXTURE_2D, m_gameRenderTex);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(windowSize.x), static_cast<GLsizei>(windowSize.y), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_editorTex, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_gameRenderTex, 0);
         glGenTextures(1, &m_finalRenderTex);
         glBindTexture(GL_TEXTURE_2D, m_finalRenderTex);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, static_cast<GLsizei>(windowSize.x), static_cast<GLsizei>(windowSize.y), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -75,7 +79,21 @@ namespace FlexEngine
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_finalRenderTex, 0);
         glDrawBuffers(2, drawBuffers);
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            Log::Fatal("Editor Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
+            Log::Fatal("Game Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
+
+        // Create editor FBO
+        glGenFramebuffers(1, &m_editorFBO); //For gaussian blurring
+        SetEditorFrameBuffer();
+        glGenTextures(1, &m_editorTex);
+        glBindTexture(GL_TEXTURE_2D, m_editorTex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(windowSize.x), static_cast<GLsizei>(windowSize.y), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_editorTex, 0);
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            Log::Fatal("Post-Processing Framebuffer error: " + glCheckFramebufferStatus(GL_FRAMEBUFFER));
 
         // Unbind frame buffer
         SetDefaultFrameBuffer();
@@ -86,9 +104,11 @@ namespace FlexEngine
             glDeleteFramebuffers(1, &m_postProcessingFBO);
             glDeleteFramebuffers(1, &m_editorFBO);
             glDeleteFramebuffers(1, &m_bloomFBO);
+            glDeleteFramebuffers(1, &m_gameFBO);
 
             glDeleteTextures(1, &m_postProcessingTex);
             glDeleteTextures(1, &m_editorTex);
+            glDeleteTextures(1, &m_gameRenderTex);
             glDeleteTextures(1, &m_finalRenderTex);
             glDeleteTextures(2, m_pingpongTex);
         }
@@ -98,6 +118,8 @@ namespace FlexEngine
     void OpenGLFrameBuffer::SetDefaultFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
     void OpenGLFrameBuffer::SetEditorFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_editorFBO );}
+
+    void OpenGLFrameBuffer::SetGameFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_gameFBO); }
 
     void OpenGLFrameBuffer::SetPostProcessingFrameBuffer() { glBindFramebuffer(GL_FRAMEBUFFER, m_postProcessingFBO); }
 
@@ -118,8 +140,23 @@ namespace FlexEngine
         case CreatedTextureID::CID_blur:
             return m_pingpongTex[0];
         case CreatedTextureID::CID_editor:
-        default:
             return m_editorTex;
+        case CreatedTextureID::CID_gameRender:
+        default:
+            return CID_gameRender;
         }
+    }
+
+    GLuint OpenGLFrameBuffer::GetCurrFrameBuffer() 
+    {
+        GLint currentFBO = 0;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &currentFBO);
+        return static_cast<GLuint>(currentFBO);
+    }
+
+    bool OpenGLFrameBuffer::CheckSameFrameBuffer(const GLuint framebufferID) 
+    {
+        const GLuint currentFBO = GetCurrFrameBuffer();
+        return currentFBO == framebufferID;
     }
 }

@@ -59,6 +59,17 @@ namespace FlexEngine
 
     #pragma endregion
 
+    #pragma region Camera Transitions
+
+    void Camera2D::LookAt(CameraData& curr, const Vector3& target)
+    {
+        curr.target = target;
+        curr.right = Cross(curr.up, curr.position - curr.target).Normalize();
+        curr.viewMatrix = Matrix4x4::LookAt(curr.position, target, curr.up);
+    }
+
+    #pragma endregion
+
     #pragma region Camera Movement
 
     void Camera2D::MoveTo(CameraData& curr, const Vector3& targetPosition)
@@ -72,17 +83,5 @@ namespace FlexEngine
         curr.position = Lerp(curr.position, targetPosition, t);
         UpdateViewMatrix(curr);
     }
-
-    #pragma endregion
-
-    #pragma region Camera Transitions
-
-    void Camera2D::LookAt(CameraData& curr, const Vector3& target)
-    {
-        curr.target = target;
-        curr.right = Cross(curr.up, curr.position - curr.target).Normalize();
-        curr.viewMatrix = Matrix4x4::LookAt(curr.position, target, curr.up);
-    }
-
     #pragma endregion
 }
