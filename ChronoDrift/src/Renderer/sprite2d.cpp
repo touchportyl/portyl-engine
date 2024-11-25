@@ -433,11 +433,8 @@ namespace ChronoDrift
         // 1. the order of post-processed objects is rendered first, then non-post-processed (For the sake of text box)
 
         //TODO @WEIJIE 
-        // 1. Z Index not working (not included in current checks)
-        // 2. Animation need batching
-        // 3. Combine the animation and static images query together when undergoing batching
-        // 4. BUTTONS DONT FORGET LEH
-        // 5. Bloom in fullscreen
+        // 1. BUTTONS DONT FORGET LEH
+        // 2. Bloom in fullscreen
 
         bool depth_test = OpenGLRenderer::IsDepthTestEnabled();
         if (depth_test) OpenGLRenderer::DisableDepthTest();
