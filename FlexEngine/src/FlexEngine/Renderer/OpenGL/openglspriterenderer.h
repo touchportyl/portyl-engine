@@ -118,6 +118,9 @@ namespace FlexEngine
         std::vector<int> m_zindex;
         std::vector<Matrix4x4> m_transformationData;
         std::vector<Vector3> m_colorAddData, m_colorMultiplyData;
+
+        //For animation
+        std::vector<Vector4> m_animationframe;
     };
     #pragma endregion
 

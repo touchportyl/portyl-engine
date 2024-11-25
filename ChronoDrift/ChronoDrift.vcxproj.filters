@@ -47,16 +47,22 @@
     <None Include="assets\shaders\texture.vert">
       <Filter>assets\shaders</Filter>
     </None>
-    <None Include="assets\shaders\batch2.0.frag">
-      <Filter>assets\shaders</Filter>
-    </None>
-    <None Include="assets\shaders\batch2.0.vert">
-      <Filter>assets\shaders</Filter>
-    </None>
     <None Include="assets\shaders\freetypetext.frag">
       <Filter>assets\shaders</Filter>
     </None>
     <None Include="assets\shaders\freetypetext.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\batchtexture.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\batchtexture.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\spritesheet.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\spritesheet.vert">
       <Filter>assets\shaders</Filter>
     </None>
   </ItemGroup>
