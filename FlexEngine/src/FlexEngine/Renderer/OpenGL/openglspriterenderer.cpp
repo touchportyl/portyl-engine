@@ -467,7 +467,7 @@ namespace FlexEngine
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_batchSSBOs[2]);
         glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, dataSize * sizeof(Vector3), data.m_colorMultiplyData.data());
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_batchSSBOs[3]);
-        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, dataSize * sizeof(Vector4), data.m_animationframe.data());
+        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, dataSize * sizeof(Vector4), data.m_UVmap.data());
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         // Orthographic Projection

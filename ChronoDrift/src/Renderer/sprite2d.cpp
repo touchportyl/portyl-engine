@@ -195,6 +195,42 @@ namespace ChronoDrift
 
     #pragma endregion
 
+    #pragma region Batching helper
+    void AddBatchToQueue(FunctionQueue& queue, const std::string& texture, const Sprite_Batch_Inst& batch, GLuint vbo_id)
+    {
+        if (!batch.m_zindex.empty())
+        {
+            Renderer2DProps props;
+            props.texture = texture;
+            props.vbo_id = vbo_id;
+            queue.Insert({ [props, batch]() { OpenGLSpriteRenderer::DrawBatchTexture2D(props, batch); }, "", batch.m_zindex.back() });
+        }
+    }
+
+    void AddEntityToBatch(FlexECS::Entity& entity, Sprite_Batch_Inst& batch, const std::string& type)
+    {
+        auto z_index = entity.GetComponent<ZIndex>()->z;
+        batch.m_zindex.push_back(z_index);
+        batch.m_transformationData.push_back(entity.GetComponent<Transform>()->transform);
+
+        if (type == "Sprite")
+        {
+            auto sprite = entity.GetComponent<Sprite>();
+            batch.m_colorAddData.push_back(sprite->color_to_add);
+            batch.m_colorMultiplyData.push_back(sprite->color_to_multiply);
+            batch.m_UVmap.push_back(Vector4(0, 0, 1, 1)); // Basic sprite UV
+            batch.m_vboid = sprite->vbo_id;
+        }
+        else if (type == "Animation")
+        {
+            auto anim = entity.GetComponent<Animation>();
+            batch.m_colorAddData.push_back(anim->color_to_add);
+            batch.m_colorMultiplyData.push_back(anim->color_to_multiply);
+            batch.m_UVmap.push_back(anim->m_currUV);
+        }
+    }
+    #pragma endregion
+
     #pragma region Rendering Processes
 
     void UpdateAnimationInScene(double GameTimeSpeedModifier)
@@ -205,7 +241,7 @@ namespace ChronoDrift
             
             auto anim = entity.GetComponent<Animation>();
 
-            if (!anim->is_paused) continue;
+            if (anim->is_paused) continue;
             anim->m_animationTimer += anim->m_animation_speed * FlexEngine::Application::GetCurrentWindow()->GetDeltaTime();
             if (anim->m_animationTimer >= 1.0/GameTimeSpeedModifier) 
             {
@@ -287,93 +323,22 @@ namespace ChronoDrift
         //QUEUE
         Sprite_Batch_Inst currentBatch;
         std::string currentTexture = "";
-        for (auto& [batchKey, entity] : sortedEntities) 
+
+        for (auto& [batchKey, entity] : sortedEntities)
         {
-            if (entity.HasComponent<Sprite>())
+            if (batchKey != currentTexture)
             {
-                auto sprite = entity.GetComponent<Sprite>();
-                if (batchKey != currentTexture)
-                {
-                    if (!currentBatch.m_zindex.empty())
-                    {
-                        //New batch if texture is different & not empty
-                        Renderer2DProps props;
-                        props.texture = currentTexture;
-                        props.vbo_id = sprite->vbo_id;
-                        batch_render_queue.Insert({ [props,currentBatch]() { OpenGLSpriteRenderer::DrawBatchTexture2D(props, currentBatch); }, "", currentBatch.m_zindex.back() });
-                    }
-                    currentBatch = Sprite_Batch_Inst();
-                    currentBatch.m_vboid = sprite->vbo_id;
-                    currentBatch.m_animationframe.push_back(Vector4(0, 0, 1, 1));//Basic sprite UV
-                    currentTexture = batchKey;
-                }
-                currentBatch.m_zindex.push_back(entity.GetComponent<ZIndex>()->z);
-                currentBatch.m_transformationData.push_back(entity.GetComponent<Transform>()->transform);
-                currentBatch.m_colorAddData.push_back(sprite->color_to_add);
-                currentBatch.m_colorMultiplyData.push_back(sprite->color_to_multiply);
+                AddBatchToQueue(batch_render_queue, currentTexture, currentBatch, currentBatch.m_vboid);
+                currentBatch = Sprite_Batch_Inst(); // Reset the batch
+                currentTexture = batchKey;
             }
-            else if (entity.HasComponent<Animation>())
-            {
-                auto anim = entity.GetComponent<Animation>();
-                if (batchKey != currentTexture)
-                {
-                    if (!currentBatch.m_zindex.empty())
-                    {
-                        //New batch if texture is different & not empty
-                        Renderer2DProps props;
-                        props.texture = currentTexture;
-                        props.vbo_id = currentBatch.m_vboid;
-                        batch_render_queue.Insert({ [props,currentBatch]() { OpenGLSpriteRenderer::DrawBatchTexture2D(props, currentBatch); }, "", currentBatch.m_zindex.back() });
-                    }
-                    currentBatch = Sprite_Batch_Inst();
-                    currentTexture = batchKey;
-                }
-                currentBatch.m_zindex.push_back(entity.GetComponent<ZIndex>()->z);
-                currentBatch.m_transformationData.push_back(entity.GetComponent<Transform>()->transform);
-                currentBatch.m_colorAddData.push_back(anim->color_to_add);
-                currentBatch.m_colorMultiplyData.push_back(anim->color_to_multiply);
-                currentBatch.m_animationframe.push_back(anim->m_currUV);
-            }
+            if (entity.HasComponent<Sprite>()) AddEntityToBatch(entity, currentBatch, "Sprite");
+            else if (entity.HasComponent<Animation>()) AddEntityToBatch(entity, currentBatch, "Animation");
         }
-        if (!currentBatch.m_zindex.empty())
-        {
-            //Store last recent uninserted batch
-            Renderer2DProps props;
-            props.texture = currentTexture;
-            props.vbo_id = currentBatch.m_vboid;
-            batch_render_queue.Insert({ [props,currentBatch]() { OpenGLSpriteRenderer::DrawBatchTexture2D(props, currentBatch); }, "", currentBatch.m_zindex.back()});
-        }
+        // Add the last batch to the queue
+        AddBatchToQueue(batch_render_queue, currentTexture, currentBatch, currentBatch.m_vboid);
 
-        //FunctionQueue anim_render_queue;
-
-        //for (auto& entity : FlexECS::Scene::GetActiveScene()->CachedQuery<IsActive, ZIndex, Transform, Shader, Animation>())
-        //{
-        //    if (!entity.GetComponent<IsActive>()->is_active) continue;
-
-        //    auto& z_index = entity.GetComponent<ZIndex>()->z;
-        //    Matrix4x4 transform = entity.GetComponent<Transform>()->transform;
-        //    auto& shader = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(entity.GetComponent<Shader>()->shader);
-        //    auto anim = entity.GetComponent<Animation>();
-
-        //    Renderer2DProps props;
-        //    props.shader = shader;
-        //    props.transform = transform;
-        //    props.texture = FlexECS::Scene::GetActiveScene()->Internal_StringStorage_Get(anim->spritesheet);
-        //    props.color_to_add = anim->color_to_add;
-        //    props.color_to_multiply = anim->color_to_multiply;
-
-        //    anim_render_queue.Insert({ [props, anim]() { OpenGLSpriteRenderer::DrawAnim2D(props, anim->m_currUV); }, "", z_index });
-        //}
-
-        //Renderer2DProps props;
-        //for (auto& [key, batchData] : batchMap)
-        //{
-        //    props.texture = key;
-        //    props.vbo_id = batchData.m_vboid;
-        //    OpenGLSpriteRenderer::DrawBatchTexture2D(props, batchData);
-        //}
         batch_render_queue.Flush();
-        //anim_render_queue.Flush();
         if (want_PP) OpenGLSpriteRenderer::DrawPostProcessingLayer();
     }
 

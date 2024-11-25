@@ -120,7 +120,7 @@ namespace FlexEngine
         std::vector<Vector3> m_colorAddData, m_colorMultiplyData;
 
         //For animation
-        std::vector<Vector4> m_animationframe;
+        std::vector<Vector4> m_UVmap;
     };
     #pragma endregion
 
