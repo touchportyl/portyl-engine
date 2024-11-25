@@ -215,6 +215,7 @@ namespace ChronoDrift
       
       //Render All Entities
       profiler.StartCounter("Graphics");
+      UpdateAnimationInScene(1.0);
       UpdateAllEntitiesMatrix(m_CamM_Instance);
       RenderSprite2D();
       profiler.EndCounter("Graphics");

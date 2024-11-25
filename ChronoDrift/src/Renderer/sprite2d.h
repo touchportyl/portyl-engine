@@ -40,6 +40,8 @@ namespace ChronoDrift
 {
     void UpdateAllEntitiesMatrix(CameraManager* CamManager);
 
+    void UpdateAnimationInScene(double GameTimeSpeedModifier);
+
     /*!***************************************************************************
     * \brief
     * Renders all the 2D sprites in the scene. This function handles the necessary

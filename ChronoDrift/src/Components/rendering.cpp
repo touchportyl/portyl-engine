@@ -80,9 +80,10 @@ namespace ChronoDrift
       FLX_REFL_REGISTER_PROPERTY(color_to_add)
       FLX_REFL_REGISTER_PROPERTY(color_to_multiply)
       FLX_REFL_REGISTER_PROPERTY(m_animationTimer)
-      FLX_REFL_REGISTER_PROPERTY(m_animationDurationPerFrame)
+      FLX_REFL_REGISTER_PROPERTY(m_animation_speed)
       FLX_REFL_REGISTER_PROPERTY(m_currentSpriteIndex)
       FLX_REFL_REGISTER_PROPERTY(m_currUV)
+      FLX_REFL_REGISTER_PROPERTY(is_paused)
   FLX_REFL_REGISTER_END;
 
   FLX_REFL_REGISTER_START(Camera)
@@ -159,10 +160,11 @@ namespace ChronoDrift
   COMPONENT_VIEWER_END(Sprite)
 
   COMPONENT_VIEWER_START(Animation)
+    COMPONENT_VIEWER_CHECKBOX(is_paused)
     COMPONENT_VIEWER_DRAG_GLUINT(cols);
     COMPONENT_VIEWER_DRAG_GLUINT(rows);
     COMPONENT_VIEWER_DRAG_GLUINT(max_sprites);
-    COMPONENT_VIEWER_DRAG_FLOAT(m_animationDurationPerFrame);
+    COMPONENT_VIEWER_DRAG_FLOAT(m_animation_speed);
     COMPONENT_VIEWER_TEXTURE_PATH(spritesheet)
     COMPONENT_VIEWER_COLOR3(color_to_add)
     COMPONENT_VIEWER_COLOR3(color_to_multiply)

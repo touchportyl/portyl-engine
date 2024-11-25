@@ -115,9 +115,12 @@ namespace FlexEngine
     struct __FLX_API Sprite_Batch_Inst
     {
         GLuint m_vboid = 0;
-
+        std::vector<int> m_zindex;
         std::vector<Matrix4x4> m_transformationData;
         std::vector<Vector3> m_colorAddData, m_colorMultiplyData;
+
+        //For animation
+        std::vector<Vector4> m_UVmap;
     };
     #pragma endregion
 

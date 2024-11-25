@@ -17,11 +17,12 @@ layout(std430, binding = 2) buffer ColorMultiplyBuffer
 {
     vec3 u_Color_to_multiply[];
 };
+layout(std430, binding = 3) buffer AnimationUVBuffer
+{
+    vec4 u_Uv[];
+};
 
 // Uniforms
-//uniform mat4 u_model;       // converts local space to world space
-//uniform mat4 u_view;        // converts world space to view space
-//uniform mat4 u_projection;  // converts view space to clip space
 uniform mat4 u_projection_view;
 
 // Output data
@@ -31,12 +32,12 @@ out vec3 u_color_to_multiply;
 
 void main()
 {
-
   // multiplication is right to left
   gl_Position = u_projection_view * transformation[gl_InstanceID] * vec4(m_position, 1.0);
 
   // data passthrough
-  tex_coord = m_tex_coord;
+  tex_coord = mix(u_Uv[gl_InstanceID].xy, u_Uv[gl_InstanceID].zw, m_tex_coord);
   u_color_to_add = u_Color_to_add[gl_InstanceID];
   u_color_to_multiply = u_Color_to_multiply[gl_InstanceID];
+
 }

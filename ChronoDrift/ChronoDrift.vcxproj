@@ -279,10 +279,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="assets\shaders\batch2.0.frag" />
-    <None Include="assets\shaders\batch2.0.vert" />
+    <None Include="assets\shaders\batchtexture.frag" />
+    <None Include="assets\shaders\batchtexture.vert" />
     <None Include="assets\shaders\freetypetext.frag" />
     <None Include="assets\shaders\freetypetext.vert" />
+    <None Include="assets\shaders\spritesheet.frag" />
+    <None Include="assets\shaders\spritesheet.vert" />
     <None Include="assets\shaders\texture.frag" />
     <None Include="assets\shaders\texture.vert" />
   </ItemGroup>

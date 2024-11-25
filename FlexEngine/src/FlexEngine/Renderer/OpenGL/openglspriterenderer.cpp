@@ -194,24 +194,30 @@ namespace FlexEngine
     {
         // Set up the SSBO for instance data
         GLuint t_tempSSBO;
+        //Transformation
         glGenBuffers(1, &t_tempSSBO);
         m_batchSSBOs.emplace_back(t_tempSSBO);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, t_tempSSBO);
         glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Matrix4x4), nullptr, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, t_tempSSBO);
-
+        //Color_to_add
         glGenBuffers(1, &t_tempSSBO);
         m_batchSSBOs.emplace_back(t_tempSSBO);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, t_tempSSBO);
         glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Vector3), nullptr, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, t_tempSSBO);
-
+        //Color_to_multiply
         glGenBuffers(1, &t_tempSSBO);
         m_batchSSBOs.emplace_back(t_tempSSBO);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, t_tempSSBO);
         glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Vector3), nullptr, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, t_tempSSBO);
-
+        //Uv - animation
+        glGenBuffers(1, &t_tempSSBO);
+        m_batchSSBOs.emplace_back(t_tempSSBO);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, t_tempSSBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, m_maxInstances * sizeof(Vector4), nullptr, GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, t_tempSSBO);
 
         FreeQueue::Push(
         [=]()
@@ -324,7 +330,7 @@ namespace FlexEngine
         // Guard
         if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
             Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
-        if (props.shader == "" || props.transform == Matrix4x4::Zero || m_CamM_Instance->GetMainCamera() == -1)
+        if (props.shader == "" || props.transform == Matrix4x4::Zero || m_CamM_Instance->GetMainCamera() == INVALID_ENTITY_ID)
             return;
 
         // Bind all
@@ -368,6 +374,8 @@ namespace FlexEngine
 
         glBindVertexArray(0);
     }
+
+    //For Drawing the generate image on screen
     void OpenGLSpriteRenderer::DrawTexture2D(GLuint TextureID, const Renderer2DProps& props)
     {
         // Guard
@@ -428,7 +436,7 @@ namespace FlexEngine
             Log::Debug("Instance batch data block is empty. Should not run render on this texture");
             return;
         }
-        if (props.shader == "" || m_CamM_Instance->GetMainCamera() == -1)
+        if (props.shader == "" || m_CamM_Instance->GetMainCamera() == INVALID_ENTITY_ID)
             return;
         GLsizei dataSize = (GLsizei)data.m_transformationData.size();
 
@@ -458,6 +466,8 @@ namespace FlexEngine
         glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, dataSize * sizeof(Vector3), data.m_colorAddData.data());
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_batchSSBOs[2]);
         glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, dataSize * sizeof(Vector3), data.m_colorMultiplyData.data());
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_batchSSBOs[3]);
+        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, dataSize * sizeof(Vector4), data.m_UVmap.data());
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         // Orthographic Projection
@@ -483,7 +493,7 @@ namespace FlexEngine
         // Guard
         if (props.vbo_id >= m_vbos.size() || props.vbo_id < 0)
             Log::Fatal("Vbo_id is invalid. Pls Check or revert to 0.");
-        if (props.shader == "" || props.transform == Matrix4x4::Zero || m_CamM_Instance->GetMainCamera() == -1)
+        if (props.shader == "" || props.transform == Matrix4x4::Zero || m_CamM_Instance->GetMainCamera() == INVALID_ENTITY_ID)
             return;
 
         // Bind all
@@ -511,8 +521,8 @@ namespace FlexEngine
         asset_shader.SetUniform_vec3("u_color_to_multiply", props.color_to_multiply);
         float u_min = uv.x;
         float v_min = uv.y;
-        float u_max = u_min + uv.z;
-        float v_max = v_min + uv.w;
+        float u_max = uv.z;
+        float v_max = uv.w;
         asset_shader.SetUniform_vec2("u_UvMin", Vector2{ u_min, v_min });
         asset_shader.SetUniform_vec2("u_UvMax", Vector2{ u_max, v_max });
 
