@@ -195,8 +195,6 @@ namespace ChronoDrift
 		ImVec2 entity_min = WorldToScreen(entity_position - half_scale);
 		ImVec2 entity_max = WorldToScreen(entity_position + half_scale);
 
-		ImGuiWindow* window = ImGui::GetCurrentWindow();
-		//ImGuiID id = window->GetID("Sprite_BB_Visualizer");
 		ImRect bounding_box (entity_min, entity_max);
 		ImGui::GetWindowDrawList()->AddRect(bounding_box.Min, bounding_box.Max, IM_COL32(255, 255, 0, 150));
 

@@ -127,6 +127,12 @@ namespace ChronoDrift
 
 		static void Gizmo_Rotate_Z(float* value, const ImVec2& origin, bool* hovering);
 
+
+		/*!***************************************************************************
+		Mouse Pos click -> World Coords, Mouse intersection, etc 
+		******************************************************************************/
+		static bool CheckCircleMouseCollision(ImVec2 circle_origin, float circle_size, float circle_thickness);	//This is only in screen space!
+
 		/*!***************************************************************************
 		* @brief
 		* Similar to ImGui::StartFrame() and ImGui::EndFrame(), 
@@ -138,9 +144,6 @@ namespace ChronoDrift
 		static int PushID();
 		static void PopID();
 	private:
-		static bool CheckCircleMouseCollision(ImVec2 circle_origin, float circle_size, float circle_thickness);
-
-
 		static int m_id;
 	};
 

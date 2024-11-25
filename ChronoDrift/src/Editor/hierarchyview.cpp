@@ -49,7 +49,8 @@ namespace ChronoDrift
 		if (auto image = EditorGUI::StartWindowPayloadReceiver<const char>(PayloadTags::IMAGE))
 		{
 			//calculate position to place, at center
-			Vector3 position = CameraManager::GetCameraData(CameraManager::GetMainCamera())->position;
+			CameraManager& cam_manager = Editor::GetInstance().GetCamManager();
+			Vector3 position = cam_manager.GetCameraData(cam_manager.GetEditorCamera())->position;
 			float width = static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetWidth());
 			float height = static_cast<float>(FlexEngine::Application::GetCurrentWindow()->GetHeight());
 			position.x += width / 2;
