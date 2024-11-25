@@ -282,7 +282,7 @@ namespace ChronoDrift
                     Renderer2DProps props;
                     props.texture = currentTexture;
                     props.vbo_id = sprite->vbo_id;
-                    batch_render_queue.Insert({ [props,currentBatch]() { OpenGLSpriteRenderer::DrawBatchTexture2D(props, currentBatch); }, "", z_index });
+                    batch_render_queue.Insert({ [props,currentBatch]() { OpenGLSpriteRenderer::DrawBatchTexture2D(props, currentBatch); }, "", currentBatch.m_zindex.back() });
                 }
                 currentBatch = Sprite_Batch_Inst();
                 currentBatch.m_vboid = sprite->vbo_id;
