@@ -17,5 +17,14 @@ namespace FlexEngine
     Sound::~Sound() noexcept
     {
     }
+
+    void Sound::Unload()
+    {
+      if (sound)
+      {
+        FMOD_ASSERT(sound->release());
+        sound = nullptr;
+      }
+    }
   }
 }

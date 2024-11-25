@@ -152,6 +152,12 @@ namespace ChronoDrift
 		SETASSETBROWSERWINDOW;
 		ImGui::Begin("Asset Browser");
 
+		if (ImGui::Button("Refresh")) {
+			AssetManager::Unload();
+			AssetManager::Load();
+			LoadAllDirectories();
+		}
+
 		for (auto& [path, folder] : m_root_folder.subfolders)
 		{
 			RenderFolder(*folder);
