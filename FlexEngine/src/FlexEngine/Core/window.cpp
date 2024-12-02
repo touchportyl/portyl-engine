@@ -1,3 +1,5 @@
+
+
 #include "pch.h"
 
 #include "window.h"
@@ -43,14 +45,13 @@ namespace FlexEngine
     for (auto& hint : s_props.window_hints)
     {
       glfwWindowHint(hint.first, hint.second);
+
     }
 
     // create window
     m_glfwwindow = glfwCreateWindow(s_props.width, s_props.height, s_props.title.c_str(), nullptr, nullptr);
     FLX_NULLPTR_ASSERT(m_glfwwindow, "Failed to create GLFW window");
     glfwMakeContextCurrent(m_glfwwindow);
-
-    auto test = glfwGetCurrentContext();
 
     //glfwSetInputMode(m_glfwwindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -109,6 +110,7 @@ namespace FlexEngine
 
     // clear screen
     OpenGLRenderer::ClearColor({ 0.1f, 0.2f, 0.3f, 1.0f });
+    OpenGLRenderer::ClearFrameBuffer();
 
     m_frameratecontroller.BeginFrame();
     ImGuiWrapper::BeginFrame();

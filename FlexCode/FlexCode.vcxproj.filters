@@ -8,6 +8,9 @@
     <Filter Include="src\Code">
       <UniqueIdentifier>{5be727a7-0a49-4108-810b-c937c23b98c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\States">
+      <UniqueIdentifier>{3d73964c-79f5-46e6-811c-c11473e30159}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -16,10 +19,16 @@
     <ClCompile Include="src\Code\layer_code.cpp">
       <Filter>src\Code</Filter>
     </ClCompile>
+    <ClCompile Include="src\States\mainstate.cpp">
+      <Filter>src\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Code\layer_code.h">
       <Filter>src\Code</Filter>
+    </ClInclude>
+    <ClInclude Include="src\States\mainstate.h">
+      <Filter>src\States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
